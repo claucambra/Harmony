@@ -14,6 +14,7 @@
 		535F1BE32B4A8F1600C78D98 /* HarmonyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535F1BE22B4A8F1600C78D98 /* HarmonyTests.swift */; };
 		535F1BED2B4A8F1600C78D98 /* HarmonyUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535F1BEC2B4A8F1600C78D98 /* HarmonyUITests.swift */; };
 		535F1BEF2B4A8F1600C78D98 /* HarmonyUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535F1BEE2B4A8F1600C78D98 /* HarmonyUITestsLaunchTests.swift */; };
+		53D8ED882B55976B00142EAD /* Backend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D8ED872B55976B00142EAD /* Backend.swift */; };
 		53D8ED8B2B559A7A00142EAD /* Song.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D8ED8A2B559A7A00142EAD /* Song.swift */; };
 /* End PBXBuildFile section */
 
@@ -46,6 +47,7 @@
 		535F1BE82B4A8F1600C78D98 /* HarmonyUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HarmonyUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		535F1BEC2B4A8F1600C78D98 /* HarmonyUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HarmonyUITests.swift; sourceTree = "<group>"; };
 		535F1BEE2B4A8F1600C78D98 /* HarmonyUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HarmonyUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		53D8ED872B55976B00142EAD /* Backend.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Backend.swift; sourceTree = "<group>"; };
 		53D8ED8A2B559A7A00142EAD /* Song.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Song.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -74,6 +76,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5310AFAC2B4FB19200E75F9A /* Backend */ = {
+			isa = PBXGroup;
+			children = (
+				53D8ED872B55976B00142EAD /* Backend.swift */,
+			);
+			path = Backend;
+			sourceTree = "<group>";
+		};
 		535F1BC42B4A8F1400C78D98 = {
 			isa = PBXGroup;
 			children = (
@@ -98,6 +108,7 @@
 			isa = PBXGroup;
 			children = (
 				53D8ED892B559A6700142EAD /* Common */,
+				5310AFAC2B4FB19200E75F9A /* Backend */,
 				535F1BD02B4A8F1400C78D98 /* HarmonyApp.swift */,
 				535F1BD22B4A8F1400C78D98 /* ContentView.swift */,
 				535F1BD42B4A8F1600C78D98 /* Assets.xcassets */,
@@ -271,6 +282,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				53D8ED8B2B559A7A00142EAD /* Song.swift in Sources */,
+				53D8ED882B55976B00142EAD /* Backend.swift in Sources */,
 				535F1BD32B4A8F1400C78D98 /* ContentView.swift in Sources */,
 				535F1BD12B4A8F1400C78D98 /* HarmonyApp.swift in Sources */,
 			);
