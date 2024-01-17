@@ -8,7 +8,6 @@
 import Foundation
 
 class LocalBackend : NSObject, Backend {
-    var songs: [Song] = []
     let path: URL
 
     init(path: URL) {
@@ -16,8 +15,8 @@ class LocalBackend : NSObject, Backend {
         super.init()
     }
 
-    func scan() async {
-        let _ = await recursiveScan(path: path)
+    func scan() async -> [URL] {
+        return await recursiveScan(path: path)
     }
 
     private func recursiveScan(path: URL) async -> [URL] {
