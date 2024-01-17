@@ -24,4 +24,22 @@ class AudioFileTests: XCTestCase {
         }
     }
 
+    func testFileHasPlayableExtension() {
+        let playableURL = URL(fileURLWithPath: "song.mp3")
+        XCTAssertTrue(fileHasPlayableExtension(fileURL: playableURL),
+                      "MP3 files should be recognized as having a playable extension.")
+    }
+
+    func testFileHasNonPlayableExtension() {
+        let nonPlayableURL = URL(fileURLWithPath: "document.pdf")
+        XCTAssertFalse(fileHasPlayableExtension(fileURL: nonPlayableURL),
+                       "PDF files should not be recognized as having a playable extension.")
+    }
+
+    func testFileHasNoExtension() {
+        let noExtensionURL = URL(fileURLWithPath: "file")
+        XCTAssertFalse(fileHasPlayableExtension(fileURL: noExtensionURL),
+                       "Files with no extension should not be recognized as having a playable extension.")
+    }
+
 }
