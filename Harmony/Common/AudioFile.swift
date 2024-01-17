@@ -29,7 +29,7 @@ func filePlayability(fileURL: URL) -> FilePlayable {
     guard fileHasPlayableExtension(fileURL: fileURL) else { return .fileNotPlayable }
     do {
         let fileAttributes = try fileURL.resourceValues(forKeys:[.isRegularFileKey])
-        if fileAttributes.isRegularFile! {
+        if fileAttributes.isRegularFile ?? false {
             return .filePlayable
         }
     } catch {
