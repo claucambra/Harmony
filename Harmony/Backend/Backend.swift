@@ -10,6 +10,7 @@ import Foundation
 protocol Backend {
     var songs: [Song] { get }
 
-    func fetchSong(_ song: Song)
-    func evictSong(_ song: Song)
+    func scan() async
+    func fetchSong(_ song: Song) async
+    func evictSong(_ song: Song) async
 }
