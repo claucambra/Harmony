@@ -42,4 +42,32 @@ class AudioFileTests: XCTestCase {
                        "Files with no extension should not be recognized as having a playable extension.")
     }
 
+    func testFilePlayabilityWithPlayableFile() {
+        let tempDirectory = FileManager.default.temporaryDirectory
+        let tempFileURL = tempDirectory.appendingPathComponent("tempSong.mp3")
+        // Create a dummy MP3 file
+        FileManager.default.createFile(atPath: tempFileURL.path, contents: Data(), attributes: nil)
+
+        XCTAssertEqual(filePlayability(fileURL: tempFileURL),
+                       .filePlayable,
+                       "MP3 files should be classified as playable.")
+
+        // Clean up
+        try? FileManager.default.removeItem(at: tempFileURL)
+    }
+
+    func testFilePlayabilityWithNonPlayableFile() {
+        let tempDirectory = FileManager.default.temporaryDirectory
+        let tempFileURL = tempDirectory.appendingPathComponent("tempDocument.pdf")
+
+        // Create a dummy PDF file
+        FileManager.default.createFile(atPath: tempFileURL.path, contents: Data(), attributes: nil)
+
+        XCTAssertEqual(filePlayability(fileURL: tempFileURL), 
+                       .fileNotPlayable,
+                       "PDF files should be classified as not playable.")
+
+        // Clean up
+        try? FileManager.default.removeItem(at: tempFileURL)
+    }
 }
