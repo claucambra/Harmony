@@ -6,3 +6,12 @@
 //
 
 import Foundation
+import AVFoundation
+
+func playableFileExtensions() -> [String] {
+    let avTypes = AVURLAsset.audiovisualTypes()
+    let avExtensions = avTypes
+        .compactMap({ UTType($0.rawValue)?.preferredFilenameExtension })
+        .sorted()
+    return avExtensions
+}
