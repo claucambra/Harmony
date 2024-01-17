@@ -18,6 +18,7 @@
 		53D8ED8B2B559A7A00142EAD /* Song.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D8ED8A2B559A7A00142EAD /* Song.swift */; };
 		53D8ED8E2B55A35400142EAD /* LocalBackend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D8ED8D2B55A35400142EAD /* LocalBackend.swift */; };
 		53D8ED902B56E81600142EAD /* AudioFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D8ED8F2B56E81600142EAD /* AudioFile.swift */; };
+		53D8ED972B56EEB700142EAD /* AudioFileTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D8ED962B56EEB700142EAD /* AudioFileTest.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +54,7 @@
 		53D8ED8A2B559A7A00142EAD /* Song.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Song.swift; sourceTree = "<group>"; };
 		53D8ED8D2B55A35400142EAD /* LocalBackend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalBackend.swift; sourceTree = "<group>"; };
 		53D8ED8F2B56E81600142EAD /* AudioFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioFile.swift; sourceTree = "<group>"; };
+		53D8ED962B56EEB700142EAD /* AudioFileTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioFileTest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -134,6 +136,7 @@
 		535F1BE12B4A8F1600C78D98 /* HarmonyTests */ = {
 			isa = PBXGroup;
 			children = (
+				53D8ED952B56EE9300142EAD /* Common */,
 				535F1BE22B4A8F1600C78D98 /* HarmonyTests.swift */,
 			);
 			path = HarmonyTests;
@@ -163,6 +166,14 @@
 				53D8ED8D2B55A35400142EAD /* LocalBackend.swift */,
 			);
 			path = Local;
+			sourceTree = "<group>";
+		};
+		53D8ED952B56EE9300142EAD /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				53D8ED962B56EEB700142EAD /* AudioFileTest.swift */,
+			);
+			path = Common;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -308,6 +319,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				53D8ED972B56EEB700142EAD /* AudioFileTest.swift in Sources */,
 				535F1BE32B4A8F1600C78D98 /* HarmonyTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
