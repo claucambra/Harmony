@@ -70,4 +70,11 @@ class AudioFileTests: XCTestCase {
         // Clean up
         try? FileManager.default.removeItem(at: tempFileURL)
     }
+
+    func testFilePlayabilityWithRemoteMaybePlayableFile() {
+        let dummyUrl = URL(string: "https://claudiocambra.com/test/location/testSong.mp3")!
+        XCTAssertEqual(filePlayability(fileURL: dummyUrl),
+                       .fileMaybePlayable,
+                       "Non-local MP3 files should be classified as maybe playable.")
+    }
 }
