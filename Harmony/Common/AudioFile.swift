@@ -8,6 +8,10 @@
 import Foundation
 import AVFoundation
 
+enum FilePlayable {
+    case fileNotPlayable, fileMaybePlayable, filePlayable
+}
+
 func playableFileExtensions() -> [String] {
     let avTypes = AVURLAsset.audiovisualTypes()
     let avExtensions = avTypes
@@ -19,4 +23,17 @@ func playableFileExtensions() -> [String] {
 func fileHasPlayableExtension(fileURL: URL) -> Bool {
     let fileExtension = fileURL.pathExtension.lowercased()
     return playableFileExtensions().contains(fileExtension)
+}
+
+func filePlayability(fileURL: URL) -> FilePlayable {
+    guard fileHasPlayableExtension(fileURL: fileURL) else { return .fileNotPlayable }
+    do {
+        let fileAttributes = try fileURL.resourceValues(forKeys:[.isRegularFileKey])
+        if fileAttributes.isRegularFile! {
+            return .filePlayable
+        }
+    } catch {
+        print("Error reading file attributes for \(fileURL): \(error).")
+    }
+    return .fileMaybePlayable
 }
