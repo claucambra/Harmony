@@ -40,6 +40,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		535053202B59524000D7EAF2 /* HarmonyKit */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = HarmonyKit; sourceTree = "<group>"; };
 		535F1BCD2B4A8F1400C78D98 /* Harmony.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Harmony.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		535F1BD02B4A8F1400C78D98 /* HarmonyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HarmonyApp.swift; sourceTree = "<group>"; };
 		535F1BD22B4A8F1400C78D98 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -99,6 +100,7 @@
 				535F1BCF2B4A8F1400C78D98 /* Harmony */,
 				535F1BE12B4A8F1600C78D98 /* HarmonyTests */,
 				535F1BEB2B4A8F1600C78D98 /* HarmonyUITests */,
+				535053202B59524000D7EAF2 /* HarmonyKit */,
 				535F1BCE2B4A8F1400C78D98 /* Products */,
 			);
 			sourceTree = "<group>";
