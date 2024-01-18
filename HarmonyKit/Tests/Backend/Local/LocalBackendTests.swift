@@ -92,4 +92,17 @@ class LocalBackendTests: XCTestCase {
             XCTFail("Error creating nested directory structure: \(error)")
         }
     }
+
+    func testRecursiveScanTime() throws {
+        try createTemporaryDirectoryStructure()
+        let backend = LocalBackend(path: temporaryDirectory)
+        measure {
+            let semaphore = DispatchSemaphore(value: 0)
+            Task {
+                let _ = await backend.scan()
+                semaphore.signal()
+            }
+            semaphore.wait()
+        }
+    }
 }
