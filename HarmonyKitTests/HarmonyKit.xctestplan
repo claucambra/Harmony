@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "C8687CE7-F758-4D6C-9A3C-8DD4878D1202",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:Harmony.xcodeproj",
+        "identifier" : "535053312B5955C800D7EAF2",
+        "name" : "HarmonyKitTests"
+      }
+    }
+  ],
+  "version" : 1
+}

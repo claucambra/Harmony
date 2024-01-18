@@ -6,7 +6,7 @@
 //
 
 import XCTest
-@testable import Harmony
+@testable import HarmonyKit
 
 class AudioFileTests: XCTestCase {
     func testPlayableFileExtensionsNotEmpty() {
