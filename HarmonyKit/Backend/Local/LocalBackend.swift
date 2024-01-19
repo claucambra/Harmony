@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import CryptoKit
 
 class LocalBackend : NSObject, Backend {
     let path: URL
@@ -13,6 +14,18 @@ class LocalBackend : NSObject, Backend {
     init(path: URL) {
         self.path = path
         super.init()
+    }
+
+    public static func calculateMD5Checksum(forFileAtURL url: URL) -> String? {
+        do {
+            let fileData = try Data(contentsOf: url)
+            let checksum = Insecure.MD5.hash(data: fileData)
+            let checksumString = checksum.map { String(format: "%02hhx", $0) }.joined()
+            return checksumString
+        } catch {
+            print("Error reading file or calculating MD5 checksum: \(error)")
+            return nil
+        }
     }
 
     func scan() async -> [URL] {
