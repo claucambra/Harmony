@@ -8,7 +8,7 @@
 import Foundation
 import AVFoundation
 
-enum FilePlayable {
+public enum FilePlayable {
     case fileNotPlayable, fileMaybePlayable, filePlayable
 }
 
@@ -25,7 +25,7 @@ func fileHasPlayableExtension(fileURL: URL) -> Bool {
     return playableFileExtensions().contains(fileExtension)
 }
 
-func filePlayability(fileURL: URL) -> FilePlayable {
+public func filePlayability(fileURL: URL) -> FilePlayable {
     guard fileHasPlayableExtension(fileURL: fileURL) else { return .fileNotPlayable }
     do {
         let fileAttributes = try fileURL.resourceValues(forKeys:[.isRegularFileKey])
