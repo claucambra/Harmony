@@ -39,8 +39,9 @@ class LocalBackend : NSObject, Backend {
         return songs
     }
 
-    func scan() async -> [URL] {
-        return await recursiveScan(path: path)
+    func scan() async -> [Song] {
+        let urls = await recursiveScan(path: path)
+        return await LocalBackend.songsFromLocalUrls(urls)
     }
 
     private func recursiveScan(path: URL) async -> [URL] {

@@ -7,8 +7,8 @@
 
 import Foundation
 
-protocol Backend {
-    func scan() async -> [URL]
+public protocol Backend {
+    func scan() async -> [Song]
     func fetchSong(_ song: Song) async
     func evictSong(_ song: Song) async
 }
