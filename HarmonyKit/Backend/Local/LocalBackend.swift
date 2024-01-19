@@ -5,7 +5,7 @@
 //  Created by Claudio Cambra on 16/1/24.
 //
 
-import Foundation
+import AVFoundation
 import CryptoKit
 
 class LocalBackend : NSObject, Backend {
@@ -26,6 +26,17 @@ class LocalBackend : NSObject, Backend {
             print("Error reading file or calculating MD5 checksum: \(error)")
             return nil
         }
+    }
+
+    public static func songsFromLocalUrls(_ urls:[URL]) async -> [Song] {
+        var songs: [Song] = []
+        for url in urls {
+            let asset = AVAsset(url: url)
+            guard let csum = calculateMD5Checksum(forFileAtURL: url) else { continue }
+            guard let song = await Song.init(fromAsset: asset, withIdentifier: csum) else { continue }
+            songs.append(song)
+        }
+        return songs
     }
 
     func scan() async -> [URL] {
