@@ -19,6 +19,7 @@
 		5350535B2B59565400D7EAF2 /* LocalBackendTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535053582B59565400D7EAF2 /* LocalBackendTests.swift */; };
 		5350535C2B59565400D7EAF2 /* AudioFileTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5350535A2B59565400D7EAF2 /* AudioFileTest.swift */; };
 		535053622B5975A100D7EAF2 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535053612B5975A100D7EAF2 /* Logger.swift */; };
+		535053642B5A416900D7EAF2 /* SongTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535053632B5A416900D7EAF2 /* SongTest.swift */; };
 		535053712B5A9A7500D7EAF2 /* Free_Test_Data_1MB_MP3.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 535053702B5A9A7500D7EAF2 /* Free_Test_Data_1MB_MP3.mp3 */; };
 		535F1BD12B4A8F1400C78D98 /* HarmonyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535F1BD02B4A8F1400C78D98 /* HarmonyApp.swift */; };
 		535F1BD32B4A8F1400C78D98 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535F1BD22B4A8F1400C78D98 /* ContentView.swift */; };
@@ -94,6 +95,7 @@
 		5350535A2B59565400D7EAF2 /* AudioFileTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioFileTest.swift; sourceTree = "<group>"; };
 		5350535D2B59573900D7EAF2 /* HarmonyKit.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = HarmonyKit.xctestplan; sourceTree = "<group>"; };
 		535053612B5975A100D7EAF2 /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
+		535053632B5A416900D7EAF2 /* SongTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongTest.swift; sourceTree = "<group>"; };
 		535053702B5A9A7500D7EAF2 /* Free_Test_Data_1MB_MP3.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = Free_Test_Data_1MB_MP3.mp3; sourceTree = "<group>"; };
 		535F1BCD2B4A8F1400C78D98 /* Harmony.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Harmony.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		535F1BD02B4A8F1400C78D98 /* HarmonyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HarmonyApp.swift; sourceTree = "<group>"; };
@@ -174,9 +176,9 @@
 		535053482B5955F900D7EAF2 /* Common */ = {
 			isa = PBXGroup;
 			children = (
-				535053492B5955F900D7EAF2 /* Song.swift */,
 				5350534A2B5955F900D7EAF2 /* AudioFile.swift */,
 				535053612B5975A100D7EAF2 /* Logger.swift */,
+				535053492B5955F900D7EAF2 /* Song.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -218,6 +220,7 @@
 			isa = PBXGroup;
 			children = (
 				5350535A2B59565400D7EAF2 /* AudioFileTest.swift */,
+				535053632B5A416900D7EAF2 /* SongTest.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -512,6 +515,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				535053642B5A416900D7EAF2 /* SongTest.swift in Sources */,
 				5350535B2B59565400D7EAF2 /* LocalBackendTests.swift in Sources */,
 				5350535C2B59565400D7EAF2 /* AudioFileTest.swift in Sources */,
 			);
