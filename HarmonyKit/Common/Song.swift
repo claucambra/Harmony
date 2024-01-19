@@ -5,16 +5,18 @@
 //  Created by Claudio Cambra on 16/1/24.
 //
 
-import Foundation
+import AVFoundation
+import OSLog
 
-struct Song {
+public class Song {
     var identifier: String
-    var title: String
-    var artist: String
-    var artistIdentifier: String
-    var album: String
-    var albumIdentifier: String
-    var duration: TimeInterval // Duration in seconds
-    var materialised: Bool
-    var localURL: URL
+    var title: String?
+    var artist: String?
+    var album: String?
+    var genre: String?
+    var creator: String?
+    var subject: String?
+    var contributor: String?
+    var type: String?
+    var duration: CMTime?
 }
