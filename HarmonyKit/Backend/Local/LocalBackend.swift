@@ -8,10 +8,10 @@
 import AVFoundation
 import CryptoKit
 
-class LocalBackend : NSObject, Backend {
-    let path: URL
+public class LocalBackend : NSObject, Backend {
+    public let path: URL
 
-    init(path: URL) {
+    public init(path: URL) {
         self.path = path
         super.init()
     }
@@ -39,12 +39,12 @@ class LocalBackend : NSObject, Backend {
         return songs
     }
 
-    func scan() async -> [Song] {
+    public func scan() async -> [Song] {
         let urls = await recursiveScan(path: path)
         return await LocalBackend.songsFromLocalUrls(urls)
     }
 
-    private func recursiveScan(path: URL) async -> [URL] {
+    func recursiveScan(path: URL) async -> [URL] {
         let fileManager = FileManager.default
         var audioFiles: [URL] = []
 
@@ -56,6 +56,7 @@ class LocalBackend : NSObject, Backend {
             )
 
             for item in contents {
+                Logger.localBackend.debug("Found \(item) in \(contents)")
                 var isDirectory: ObjCBool = false
                 if fileManager.fileExists(atPath: item.path, isDirectory: &isDirectory) {
                     if isDirectory.boolValue {
@@ -77,11 +78,11 @@ class LocalBackend : NSObject, Backend {
         return audioFiles
     }
 
-    func fetchSong(_ song: Song) async {
+    public func fetchSong(_ song: Song) async {
         return
     }
     
-    func evictSong(_ song: Song) async {
+    public func evictSong(_ song: Song) async {
         return
     }
 }
