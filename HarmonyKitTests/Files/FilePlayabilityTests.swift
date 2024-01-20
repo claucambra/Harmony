@@ -8,7 +8,7 @@
 import XCTest
 @testable import HarmonyKit
 
-class AudioFileTests: XCTestCase {
+class FilePlayabilityTests: XCTestCase {
     func testPlayableFileExtensionsNotEmpty() {
         let extensions = playableFileExtensions()
         XCTAssertFalse(extensions.isEmpty,

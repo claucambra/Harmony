@@ -1,8 +1,8 @@
 //
-//  AudioFile.swift
-//  Harmony
+//  FilePlayability.swift
+//  HarmonyKit
 //
-//  Created by Claudio Cambra on 17/1/24.
+//  Created by Claudio Cambra on 20/1/24.
 //
 
 import AVFoundation
@@ -26,6 +26,8 @@ func fileHasPlayableExtension(fileURL: URL) -> Bool {
 }
 
 public func filePlayability(fileURL: URL) -> FilePlayable {
+    // TODO: Check remote files
+    // TODO: Check file validity (i.e. is corrupted?)
     guard fileHasPlayableExtension(fileURL: fileURL) else { return .fileNotPlayable }
     do {
         let fileAttributes = try fileURL.resourceValues(forKeys:[.isRegularFileKey])
@@ -36,27 +38,4 @@ public func filePlayability(fileURL: URL) -> FilePlayable {
         print("Error reading file attributes for \(fileURL): \(error).")
     }
     return .fileMaybePlayable
-}
-
-func calculateMD5Checksum(forFileAtURL url: URL) -> String? {
-    do {
-        let fileData = try Data(contentsOf: url)
-        let checksum = Insecure.MD5.hash(data: fileData)
-        let checksumString = checksum.map { String(format: "%02hhx", $0) }.joined()
-        return checksumString
-    } catch {
-        print("Error reading file or calculating MD5 checksum: \(error)")
-        return nil
-    }
-}
-
-func songsFromLocalUrls(_ urls:[URL]) async -> [Song] {
-    var songs: [Song] = []
-    for url in urls {
-        let asset = AVAsset(url: url)
-        guard let csum = calculateMD5Checksum(forFileAtURL: url) else { continue }
-        guard let song = await Song.init(fromAsset: asset, withIdentifier: csum) else { continue }
-        songs.append(song)
-    }
-    return songs
 }

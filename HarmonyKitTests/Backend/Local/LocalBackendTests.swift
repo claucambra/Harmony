@@ -105,24 +105,4 @@ class LocalBackendTests: XCTestCase {
             semaphore.wait()
         }
     }
-
-    func testMD5ChecksumCalc() {
-        let testBundle = Bundle(for: type(of: self))
-        let testAudioURL = testBundle.url(
-            forResource: "Free_Test_Data_1MB_MP3",
-            withExtension: "mp3"
-        )!
-        let checksum = LocalBackend.calculateMD5Checksum(forFileAtURL: testAudioURL)
-        XCTAssertNotNil(checksum, "Checksum should not be nil!")
-    }
-
-    func testSongsFromLocalUrls() async {
-        let testBundle = Bundle(for: type(of: self))
-        let testAudioURL = testBundle.url(
-            forResource: "Free_Test_Data_1MB_MP3",
-            withExtension: "mp3"
-        )!
-        let songs = await LocalBackend.songsFromLocalUrls([testAudioURL])
-        XCTAssertEqual(songs.count, 1, "Should acquire 1 song from local URL!")
-    }
 }

@@ -12,12 +12,12 @@
 		5350533F2B5955C900D7EAF2 /* HarmonyKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 535053292B5955C800D7EAF2 /* HarmonyKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		535053502B5955F900D7EAF2 /* HarmonyKit.docc in Sources */ = {isa = PBXBuildFile; fileRef = 535053472B5955F900D7EAF2 /* HarmonyKit.docc */; };
 		535053512B5955F900D7EAF2 /* Song.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535053492B5955F900D7EAF2 /* Song.swift */; };
-		535053522B5955F900D7EAF2 /* AudioFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5350534A2B5955F900D7EAF2 /* AudioFile.swift */; };
+		535053522B5955F900D7EAF2 /* LocalFileUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5350534A2B5955F900D7EAF2 /* LocalFileUtils.swift */; };
 		535053532B5955F900D7EAF2 /* HarmonyKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 5350534B2B5955F900D7EAF2 /* HarmonyKit.h */; };
 		535053542B5955F900D7EAF2 /* Backend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5350534D2B5955F900D7EAF2 /* Backend.swift */; };
 		535053552B5955F900D7EAF2 /* LocalBackend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5350534F2B5955F900D7EAF2 /* LocalBackend.swift */; };
 		5350535B2B59565400D7EAF2 /* LocalBackendTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535053582B59565400D7EAF2 /* LocalBackendTests.swift */; };
-		5350535C2B59565400D7EAF2 /* AudioFileTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5350535A2B59565400D7EAF2 /* AudioFileTest.swift */; };
+		5350535C2B59565400D7EAF2 /* FilePlayabilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5350535A2B59565400D7EAF2 /* FilePlayabilityTests.swift */; };
 		535053602B59581600D7EAF2 /* SongsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5350535F2B59581600D7EAF2 /* SongsModel.swift */; };
 		535053622B5975A100D7EAF2 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535053612B5975A100D7EAF2 /* Logger.swift */; };
 		535053642B5A416900D7EAF2 /* SongTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535053632B5A416900D7EAF2 /* SongTest.swift */; };
@@ -30,6 +30,8 @@
 		535053832B5BC28E00D7EAF2 /* BackendsSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535053822B5BC28E00D7EAF2 /* BackendsSettingsView.swift */; };
 		535053862B5BC98B00D7EAF2 /* BackendChoiceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535053852B5BC98B00D7EAF2 /* BackendChoiceView.swift */; };
 		535053882B5BCD0200D7EAF2 /* BackendDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535053872B5BCD0200D7EAF2 /* BackendDescription.swift */; };
+		5350538D2B5BD1A700D7EAF2 /* FilePlayability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5350538C2B5BD1A700D7EAF2 /* FilePlayability.swift */; };
+		535053902B5BD32200D7EAF2 /* LocalFileUtilsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5350538F2B5BD32200D7EAF2 /* LocalFileUtilsTests.swift */; };
 		535F1BD12B4A8F1400C78D98 /* HarmonyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535F1BD02B4A8F1400C78D98 /* HarmonyApp.swift */; };
 		535F1BD32B4A8F1400C78D98 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535F1BD22B4A8F1400C78D98 /* ContentView.swift */; };
 		535F1BD52B4A8F1600C78D98 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 535F1BD42B4A8F1600C78D98 /* Assets.xcassets */; };
@@ -96,12 +98,12 @@
 		535053322B5955C800D7EAF2 /* HarmonyKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HarmonyKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		535053472B5955F900D7EAF2 /* HarmonyKit.docc */ = {isa = PBXFileReference; lastKnownFileType = folder.documentationcatalog; path = HarmonyKit.docc; sourceTree = "<group>"; };
 		535053492B5955F900D7EAF2 /* Song.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Song.swift; sourceTree = "<group>"; };
-		5350534A2B5955F900D7EAF2 /* AudioFile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioFile.swift; sourceTree = "<group>"; };
+		5350534A2B5955F900D7EAF2 /* LocalFileUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalFileUtils.swift; sourceTree = "<group>"; };
 		5350534B2B5955F900D7EAF2 /* HarmonyKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HarmonyKit.h; sourceTree = "<group>"; };
 		5350534D2B5955F900D7EAF2 /* Backend.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Backend.swift; sourceTree = "<group>"; };
 		5350534F2B5955F900D7EAF2 /* LocalBackend.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalBackend.swift; sourceTree = "<group>"; };
 		535053582B59565400D7EAF2 /* LocalBackendTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalBackendTests.swift; sourceTree = "<group>"; };
-		5350535A2B59565400D7EAF2 /* AudioFileTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioFileTest.swift; sourceTree = "<group>"; };
+		5350535A2B59565400D7EAF2 /* FilePlayabilityTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilePlayabilityTests.swift; sourceTree = "<group>"; };
 		5350535D2B59573900D7EAF2 /* HarmonyKit.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = HarmonyKit.xctestplan; sourceTree = "<group>"; };
 		5350535F2B59581600D7EAF2 /* SongsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongsModel.swift; sourceTree = "<group>"; };
 		535053612B5975A100D7EAF2 /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
@@ -116,6 +118,8 @@
 		535053822B5BC28E00D7EAF2 /* BackendsSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendsSettingsView.swift; sourceTree = "<group>"; };
 		535053852B5BC98B00D7EAF2 /* BackendChoiceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendChoiceView.swift; sourceTree = "<group>"; };
 		535053872B5BCD0200D7EAF2 /* BackendDescription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendDescription.swift; sourceTree = "<group>"; };
+		5350538C2B5BD1A700D7EAF2 /* FilePlayability.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilePlayability.swift; sourceTree = "<group>"; };
+		5350538F2B5BD32200D7EAF2 /* LocalFileUtilsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalFileUtilsTests.swift; sourceTree = "<group>"; };
 		535F1BCD2B4A8F1400C78D98 /* Harmony.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Harmony.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		535F1BD02B4A8F1400C78D98 /* HarmonyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HarmonyApp.swift; sourceTree = "<group>"; };
 		535F1BD22B4A8F1400C78D98 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -175,6 +179,7 @@
 			children = (
 				5350534C2B5955F900D7EAF2 /* Backend */,
 				535053482B5955F900D7EAF2 /* Common */,
+				5350538B2B5BD18B00D7EAF2 /* Files */,
 				535053762B5AB22F00D7EAF2 /* Extensions */,
 				5350535E2B59580400D7EAF2 /* Models */,
 				535053472B5955F900D7EAF2 /* HarmonyKit.docc */,
@@ -189,6 +194,7 @@
 				5350535D2B59573900D7EAF2 /* HarmonyKit.xctestplan */,
 				535053562B59565400D7EAF2 /* Backend */,
 				535053592B59565400D7EAF2 /* Common */,
+				5350538E2B5BD28E00D7EAF2 /* Files */,
 				5350536A2B5A930A00D7EAF2 /* Test Data */,
 			);
 			path = HarmonyKitTests;
@@ -197,7 +203,6 @@
 		535053482B5955F900D7EAF2 /* Common */ = {
 			isa = PBXGroup;
 			children = (
-				5350534A2B5955F900D7EAF2 /* AudioFile.swift */,
 				535053612B5975A100D7EAF2 /* Logger.swift */,
 				535053492B5955F900D7EAF2 /* Song.swift */,
 			);
@@ -241,7 +246,6 @@
 		535053592B59565400D7EAF2 /* Common */ = {
 			isa = PBXGroup;
 			children = (
-				5350535A2B59565400D7EAF2 /* AudioFileTest.swift */,
 				535053632B5A416900D7EAF2 /* SongTest.swift */,
 			);
 			path = Common;
@@ -296,6 +300,24 @@
 				535053802B5BBDC000D7EAF2 /* SettingsView.swift */,
 			);
 			path = Settings;
+			sourceTree = "<group>";
+		};
+		5350538B2B5BD18B00D7EAF2 /* Files */ = {
+			isa = PBXGroup;
+			children = (
+				5350538C2B5BD1A700D7EAF2 /* FilePlayability.swift */,
+				5350534A2B5955F900D7EAF2 /* LocalFileUtils.swift */,
+			);
+			path = Files;
+			sourceTree = "<group>";
+		};
+		5350538E2B5BD28E00D7EAF2 /* Files */ = {
+			isa = PBXGroup;
+			children = (
+				5350535A2B59565400D7EAF2 /* FilePlayabilityTests.swift */,
+				5350538F2B5BD32200D7EAF2 /* LocalFileUtilsTests.swift */,
+			);
+			path = Files;
 			sourceTree = "<group>";
 		};
 		535F1BC42B4A8F1400C78D98 = {
@@ -573,8 +595,9 @@
 			files = (
 				535053602B59581600D7EAF2 /* SongsModel.swift in Sources */,
 				535053782B5AB24500D7EAF2 /* AVAsset+Extension.swift in Sources */,
-				535053522B5955F900D7EAF2 /* AudioFile.swift in Sources */,
+				535053522B5955F900D7EAF2 /* LocalFileUtils.swift in Sources */,
 				535053882B5BCD0200D7EAF2 /* BackendDescription.swift in Sources */,
+				5350538D2B5BD1A700D7EAF2 /* FilePlayability.swift in Sources */,
 				535053512B5955F900D7EAF2 /* Song.swift in Sources */,
 				535053552B5955F900D7EAF2 /* LocalBackend.swift in Sources */,
 				535053622B5975A100D7EAF2 /* Logger.swift in Sources */,
@@ -589,7 +612,8 @@
 			files = (
 				535053642B5A416900D7EAF2 /* SongTest.swift in Sources */,
 				5350535B2B59565400D7EAF2 /* LocalBackendTests.swift in Sources */,
-				5350535C2B59565400D7EAF2 /* AudioFileTest.swift in Sources */,
+				5350535C2B59565400D7EAF2 /* FilePlayabilityTests.swift in Sources */,
+				535053902B5BD32200D7EAF2 /* LocalFileUtilsTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
