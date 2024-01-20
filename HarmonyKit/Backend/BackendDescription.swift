@@ -7,6 +7,6 @@
 
 import Foundation
 
-public struct BackendDescription {
-    let name: String
+public struct BackendDescription: Hashable {
+    public let name: String
 }
