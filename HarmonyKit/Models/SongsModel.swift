@@ -9,6 +9,7 @@ import AVFoundation
 import Combine
 import SwiftUI
 
+@MainActor
 public class SongsModel: ObservableObject {
     @Published public var songs: [Song] = []
 
