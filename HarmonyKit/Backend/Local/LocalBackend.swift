@@ -14,6 +14,7 @@ extension Logger {
 }
 
 public class LocalBackend : NSObject, Backend {
+    public static let definition = BackendDescription(name: "Local Backend")
     public let path: URL
 
     public init(path: URL) {
