@@ -24,3 +24,21 @@ struct Sidebar: View {
         }
     }
 }
+
+struct Sidebar_Previews: PreviewProvider {
+    struct Preview: View {
+        @State private var selection: Panel? = Panel.songs
+        var body: some View {
+            Sidebar(selection: $selection)
+        }
+    }
+
+    static var previews: some View {
+        NavigationSplitView {
+            Preview()
+        } detail: {
+           Text("Detail!")
+        }
+    }
+}
+
