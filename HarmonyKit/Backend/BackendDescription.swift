@@ -7,7 +7,8 @@
 
 import Foundation
 
-public struct BackendDescription: Hashable {
+public struct BackendDescription: Hashable, Identifiable {
+    public let id = UUID()
     public let name: String
     public let description: String
     public let systemImageName: String
