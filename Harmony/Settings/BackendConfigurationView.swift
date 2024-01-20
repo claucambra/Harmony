@@ -23,6 +23,27 @@ struct BackendConfigurationView: View {
                     TextField(fieldDescription.title, text: binding(for: fieldDescription.id, fallbackValue: "0"))
                 } else if fieldDescription.valueType == .string {
                     TextField(fieldDescription.title, text: binding(for: fieldDescription.id, fallbackValue: ""))
+                } else if fieldDescription.valueType == .localUrl {
+                    HStack {
+                        TextField(fieldDescription.title, text: binding(for: fieldDescription.id, fallbackValue: ""))
+                        Button(action: {
+                            #if os(macOS)
+                            let dialog = NSOpenPanel()
+                            dialog.canChooseFiles = false
+                            dialog.canChooseDirectories = true
+
+                            if (dialog.runModal() ==  NSApplication.ModalResponse.OK) {
+                                let result = dialog.url
+                                if (result != nil) {
+                                    let path: String = result!.path
+                                    configValues[fieldDescription.id] = path
+                                }
+                            }
+                            #endif
+                        }) {
+                            Label("Add folder…", systemImage: "plus.circle")
+                        }
+                    }
                 }
             }
         }
