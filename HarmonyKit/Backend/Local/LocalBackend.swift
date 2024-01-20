@@ -17,7 +17,17 @@ public class LocalBackend : NSObject, Backend {
     public static let backendDescription = BackendDescription(
         name: "Local Backend",
         description: "Provides music stored locally on your computer.",
-        systemImageName: "internaldrive"
+        systemImageName: "internaldrive",
+        configDescription: [
+            BackendConfigurationField(
+                id: "path-field",
+                title: "Path",
+                description: "Location of files. Can be multiple locations.",
+                valueType: .string,
+                isArray: false,
+                optional: false
+            )
+        ]
     )
     public let path: URL
 
