@@ -38,6 +38,7 @@ struct BackendsSettingsView: View {
 
     var emptyListView: some View {
         Text("No configured backends.")
+            .font(.largeTitle)
     }
 
     var objectsListView: some View {
