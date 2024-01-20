@@ -5,17 +5,21 @@
 //  Created by Claudio Cambra on 7/1/24.
 //
 
+import HarmonyKit
 import SwiftUI
 
 struct ContentView: View {
+    @State private var selection: Panel? = Panel.songs
+    @State private var path = NavigationPath()
+
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        NavigationSplitView {
+            Sidebar(selection: $selection)
+        } detail: {
+            NavigationStack(path: $path) {
+                DetailColumn(selection: $selection)
+            }
         }
-        .padding()
     }
 }
 
