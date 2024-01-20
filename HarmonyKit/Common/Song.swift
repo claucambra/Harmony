@@ -8,17 +8,17 @@
 import AVFoundation
 import OSLog
 
-public class Song {
-    var identifier: String
-    var title: String?
-    var artist: String?
-    var album: String?
-    var genre: String?
-    var creator: String?
-    var subject: String?
-    var contributor: String?
-    var type: String?
-    var duration: CMTime?
+public class Song: Identifiable {
+    public var identifier: String
+    public var title: String = ""
+    public var artist: String = ""
+    public var album: String = ""
+    public var genre: String = ""
+    public var creator: String = ""
+    public var subject: String = ""
+    public var contributor: String = ""
+    public var type: String = ""
+    public var duration: CMTime?
 
     public init?(fromAsset asset: AVAsset, withIdentifier id: String) async {
         guard let metadata = try? await asset.load(.commonMetadata) else {
