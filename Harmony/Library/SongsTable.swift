@@ -25,3 +25,22 @@ struct SongsTable: View {
         }
     }
 }
+
+struct SongsTable_Previews: PreviewProvider {
+    struct Preview: View {
+        @StateObject private var model = SongsModel(withBackends: [
+            LocalBackend(path: URL(fileURLWithPath: "/Users/claucambra/Nextcloud/Music/")) // TODO
+        ])
+
+        var body: some View {
+            SongsTable(
+                model: model,
+                selection: .constant([])
+            )
+        }
+    }
+
+    static var previews: some View {
+        Preview()
+    }
+}
