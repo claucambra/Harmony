@@ -26,6 +26,7 @@
 		535053782B5AB24500D7EAF2 /* AVAsset+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535053772B5AB24500D7EAF2 /* AVAsset+Extension.swift */; };
 		5350537C2B5BB1FE00D7EAF2 /* Sidebar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5350537B2B5BB1FE00D7EAF2 /* Sidebar.swift */; };
 		5350537E2B5BB39000D7EAF2 /* DetailColumn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5350537D2B5BB39000D7EAF2 /* DetailColumn.swift */; };
+		535053812B5BBDC000D7EAF2 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535053802B5BBDC000D7EAF2 /* SettingsView.swift */; };
 		535053832B5BC28E00D7EAF2 /* BackendsSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535053822B5BC28E00D7EAF2 /* BackendsSettingsView.swift */; };
 		535F1BD12B4A8F1400C78D98 /* HarmonyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535F1BD02B4A8F1400C78D98 /* HarmonyApp.swift */; };
 		535F1BD32B4A8F1400C78D98 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535F1BD22B4A8F1400C78D98 /* ContentView.swift */; };
@@ -109,6 +110,7 @@
 		535053792B5BA65F00D7EAF2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		5350537B2B5BB1FE00D7EAF2 /* Sidebar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sidebar.swift; sourceTree = "<group>"; };
 		5350537D2B5BB39000D7EAF2 /* DetailColumn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailColumn.swift; sourceTree = "<group>"; };
+		535053802B5BBDC000D7EAF2 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		535053822B5BC28E00D7EAF2 /* BackendsSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendsSettingsView.swift; sourceTree = "<group>"; };
 		535F1BCD2B4A8F1400C78D98 /* Harmony.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Harmony.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		535F1BD02B4A8F1400C78D98 /* HarmonyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HarmonyApp.swift; sourceTree = "<group>"; };
@@ -285,6 +287,7 @@
 			isa = PBXGroup;
 			children = (
 				535053822B5BC28E00D7EAF2 /* BackendsSettingsView.swift */,
+				535053802B5BBDC000D7EAF2 /* SettingsView.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -590,6 +593,7 @@
 				535F1BD32B4A8F1400C78D98 /* ContentView.swift in Sources */,
 				535053732B5AA61A00D7EAF2 /* SongsTable.swift in Sources */,
 				5350537C2B5BB1FE00D7EAF2 /* Sidebar.swift in Sources */,
+				535053812B5BBDC000D7EAF2 /* SettingsView.swift in Sources */,
 				535053832B5BC28E00D7EAF2 /* BackendsSettingsView.swift in Sources */,
 				535F1BD12B4A8F1400C78D98 /* HarmonyApp.swift in Sources */,
 				5350537E2B5BB39000D7EAF2 /* DetailColumn.swift in Sources */,
