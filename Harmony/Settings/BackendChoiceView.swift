@@ -15,11 +15,16 @@ struct BackendChoiceView: View {
     var body: some View {
         NavigationStack {
             List(availableBackends, id: \.self, selection: $selection) { backendDescription in
-                BackendChoiceListItemView(
-                    backendDescription: backendDescription,
-                    selection: $selection
-                )
+                NavigationLink {
+                    BackendConfigurationView(backendDescription: backendDescription)
+                } label: {
+                    BackendChoiceListItemView(
+                        backendDescription: backendDescription,
+                        selection: $selection
+                    )
+                }
             }
+            .navigationTitle("Available backends")
         }
     }
 }
