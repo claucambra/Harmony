@@ -14,18 +14,18 @@ struct BackendConfigurationView: View {
 
     var body: some View {
         Form {
-            ForEach(backendDescription.configDescription) { fieldDescription in
-                if fieldDescription.valueType == .bool {
-                    Toggle(fieldDescription.title, isOn: binding(for: fieldDescription.id, fallbackValue: false))
-                } else if fieldDescription.valueType == .float {
-                    TextField(fieldDescription.title, text: binding(for: fieldDescription.id, fallbackValue: "0.0"))
-                } else if fieldDescription.valueType == .int {
-                    TextField(fieldDescription.title, text: binding(for: fieldDescription.id, fallbackValue: "0"))
-                } else if fieldDescription.valueType == .string {
-                    TextField(fieldDescription.title, text: binding(for: fieldDescription.id, fallbackValue: ""))
-                } else if fieldDescription.valueType == .localUrl {
+            ForEach(backendDescription.configDescription) { field in
+                if field.valueType == .bool {
+                    Toggle(field.title, isOn: binding(for: field.id, fallback: false))
+                } else if field.valueType == .float {
+                    TextField(field.title, text: binding(for: field.id, fallback: "0.0"))
+                } else if field.valueType == .int {
+                    TextField(field.title, text: binding(for: field.id, fallback: "0"))
+                } else if field.valueType == .string {
+                    TextField(field.title, text: binding(for: field.id, fallback: ""))
+                } else if field.valueType == .localUrl {
                     HStack {
-                        TextField(fieldDescription.title, text: binding(for: fieldDescription.id, fallbackValue: ""))
+                        TextField(field.title, text: binding(for: field.id, fallback: ""))
                         Button(action: {
                             #if os(macOS)
                             let dialog = NSOpenPanel()
@@ -36,7 +36,7 @@ struct BackendConfigurationView: View {
                                 let result = dialog.url
                                 if (result != nil) {
                                     let path: String = result!.path
-                                    configValues[fieldDescription.id] = path
+                                    configValues[field.id] = path
                                 }
                             }
                             #endif
@@ -49,9 +49,9 @@ struct BackendConfigurationView: View {
         }
     }
 
-    func binding<T>(for key: String, fallbackValue: T) -> Binding<T> {
+    func binding<T>(for key: String, fallback: T) -> Binding<T> {
         return Binding(get: {
-            return self.configValues[key] as? T ?? fallbackValue
+            return self.configValues[key] as? T ?? fallback
         }, set: {
             self.configValues[key] = $0
         })
