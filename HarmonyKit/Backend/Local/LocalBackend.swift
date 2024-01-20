@@ -7,6 +7,11 @@
 
 import AVFoundation
 import CryptoKit
+import OSLog
+
+extension Logger {
+    static let localBackend = Logger(subsystem: subsystem, category: "localBackend")
+}
 
 public class LocalBackend : NSObject, Backend {
     public let path: URL
@@ -40,11 +45,14 @@ public class LocalBackend : NSObject, Backend {
     }
 
     public func scan() async -> [Song] {
+        Logger.localBackend.info("Starting full scan of \(self.path)")
         let urls = await recursiveScan(path: path)
         return await LocalBackend.songsFromLocalUrls(urls)
     }
 
     func recursiveScan(path: URL) async -> [URL] {
+        Logger.localBackend.info("Scanning \(path)")
+
         let fileManager = FileManager.default
         var audioFiles: [URL] = []
 
@@ -72,7 +80,7 @@ public class LocalBackend : NSObject, Backend {
                 }
             }
         } catch {
-            print("Error scanning directory \(path): \(error).")
+            Logger.localBackend.error("Error scanning directory \(path): \(error).")
         }
 
         return audioFiles

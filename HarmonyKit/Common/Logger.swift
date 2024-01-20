@@ -8,7 +8,6 @@
 import OSLog
 
 extension Logger {
-    private static var subsystem = Bundle.main.bundleIdentifier!
-
+    static var subsystem = Bundle.main.bundleIdentifier!
     static let defaultLog = Logger(subsystem: subsystem, category: "defaultLog")
 }
