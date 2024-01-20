@@ -8,7 +8,7 @@
 import Foundation
 
 public enum BackendConfigurationValueType {
-    case bool, int, float, string
+    case bool, int, float, string, localUrl
 }
 
 public struct BackendConfigurationField: Hashable, Identifiable {

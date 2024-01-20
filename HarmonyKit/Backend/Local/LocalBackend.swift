@@ -23,8 +23,8 @@ public class LocalBackend : NSObject, Backend {
                 id: "path-field",
                 title: "Path",
                 description: "Location of files. Can be multiple locations.",
-                valueType: .string,
-                isArray: false,
+                valueType: .localUrl,
+                isArray: true,
                 optional: false
             )
         ]
