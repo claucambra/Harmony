@@ -17,6 +17,9 @@ struct HarmonyApp: App {
         Settings {
             SettingsView()
         }
+        Window("Add a new backend", id: "backend-creator") {
+            BackendChoiceView()
+        }
         #endif
     }
 }

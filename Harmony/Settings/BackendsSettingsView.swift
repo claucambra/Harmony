@@ -15,12 +15,13 @@ struct BackendConfig: Hashable {
 
 struct BackendsSettingsView: View {
     private var configuredBackends: [BackendConfig] = []
+    @Environment(\.openWindow) var openWindow
 
     var body: some View {
         VStack {
             listView.padding(10)
             Button(action: {
-
+                openWindow(id: "backend-creator")
             }) {
                 Label("Configure new backend...", systemImage: "plus.circle")
             }
