@@ -11,10 +11,16 @@ import SwiftUI
 struct BackendConfigurationView: View {
     let backendDescription: BackendDescription
     @State var configValues: [String: Any] = [:]
+    var dismiss: DismissAction
 
     var body: some View {
         platformSpecificView
         .navigationTitle("New " + backendDescription.name)
+        .toolbar {
+            Button("Save") {
+                dismiss()
+            }
+        }
     }
 
     @ViewBuilder var platformSpecificView: some View {

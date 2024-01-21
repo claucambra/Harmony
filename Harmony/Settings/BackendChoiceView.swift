@@ -11,12 +11,16 @@ import SwiftUI
 struct BackendChoiceView: View {
     let availableBackends = HarmonyKit.availableBackends
     @State private var selection: BackendDescription? = nil
+    @Environment(\.dismiss) var dismiss
 
     var body: some View {
         NavigationStack {
             List(availableBackends, id: \.self, selection: $selection) { backendDescription in
                 NavigationLink {
-                    BackendConfigurationView(backendDescription: backendDescription)
+                    BackendConfigurationView(
+                        backendDescription: backendDescription,
+                        dismiss: dismiss
+                    )
                 } label: {
                     BackendChoiceListItemView(
                         backendDescription: backendDescription,
