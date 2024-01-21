@@ -18,6 +18,7 @@ struct BackendConfigurationView: View {
         .navigationTitle("New " + backendDescription.name)
         .toolbar {
             Button("Save") {
+                saveConfig(configValues, forBackend: backendDescription)
                 dismiss()
             }
         }
