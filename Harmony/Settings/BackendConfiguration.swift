@@ -8,7 +8,9 @@
 import Foundation
 import HarmonyKit
 
-func saveConfig(_ configValues: [String: Any], forBackend backend: BackendDescription) {
+typealias BackendConfiguration = [String: Any]
+
+func saveConfig(_ configValues: BackendConfiguration, forBackend backend: BackendDescription) {
     let defaults = UserDefaults.standard
     var backendConfigs: [Any]
 

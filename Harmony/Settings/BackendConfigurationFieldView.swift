@@ -10,7 +10,7 @@ import SwiftUI
 
 struct BackendConfigurationFieldView: View {
     let field: BackendConfigurationField
-    @Binding var configValues: [String: Any]
+    @Binding var configValues: BackendConfiguration
 
     var body: some View {
         if field.valueType == .bool {
