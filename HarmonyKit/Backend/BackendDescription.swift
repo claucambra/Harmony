@@ -23,7 +23,7 @@ public struct BackendConfigurationField: Hashable, Identifiable {
 public typealias BackendConfigurationDescription = [BackendConfigurationField]
 
 public struct BackendDescription: Hashable, Identifiable {
-    public let id = UUID()
+    public let id: String
     public let name: String
     public let description: String
     public let systemImageName: String
