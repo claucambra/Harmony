@@ -8,6 +8,8 @@
 import Foundation
 
 public protocol Backend {
+    static var description: BackendDescription { get }
+
     func scan() async -> [Song]
     func fetchSong(_ song: Song) async
     func evictSong(_ song: Song) async

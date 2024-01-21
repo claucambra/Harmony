@@ -14,7 +14,7 @@ extension Logger {
 }
 
 public class LocalBackend : NSObject, Backend {
-    public static let backendDescription = BackendDescription(
+    public static let description = BackendDescription(
         id: "local-backend",
         name: "Local Backend",
         description: "Provides music stored locally on your computer.",
