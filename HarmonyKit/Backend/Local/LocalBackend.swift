@@ -26,7 +26,10 @@ public class LocalBackend : NSObject, Backend {
                 description: "Location of files. Can be multiple locations.",
                 valueType: .localUrl,
                 isArray: true,
-                optional: false
+                optional: false,
+                defaultValue: FileManager.default.urls(
+                    for: .musicDirectory, in: .userDomainMask
+                ).first?.path ?? ""
             )
         ]
     )

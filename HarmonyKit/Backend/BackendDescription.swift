@@ -12,12 +12,21 @@ public enum BackendConfigurationValueType {
 }
 
 public struct BackendConfigurationField: Hashable, Identifiable {
+    public static func == (lhs: BackendConfigurationField, rhs: BackendConfigurationField) -> Bool {
+        return lhs.id == rhs.id
+    }
+    
     public let id: String
     public let title: String
     public let description: String
     public let valueType: BackendConfigurationValueType
     public let isArray: Bool
     public let optional: Bool
+    public let defaultValue: Any
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
 }
 
 public typealias BackendConfigurationDescription = [BackendConfigurationField]
