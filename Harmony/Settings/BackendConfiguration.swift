@@ -18,6 +18,13 @@ func saveConfig(_ configValues: [String: Any], forBackend backend: BackendDescri
         backendConfigs = []
     }
 
-    backendConfigs.append(configValues)
+    var fullConfig = configValues
+    for field in backend.configDescription {
+        if fullConfig[field.id] == nil {
+            fullConfig[field.id] = field.defaultValue
+        }
+    }
+
+    backendConfigs.append(fullConfig)
     defaults.set(backendConfigs, forKey: backend.id)
 }
