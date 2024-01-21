@@ -23,6 +23,7 @@ struct BackendConfigurationView: View {
             }
             Spacer()
         }
+        .navigationTitle("New " + backendDescription.name)
         #else
         Form {
             Section("Backend configuration") {
@@ -31,6 +32,7 @@ struct BackendConfigurationView: View {
                 }
             }
         }
+        .navigationTitle("New " + backendDescription.name)
         #endif
     }
 }
