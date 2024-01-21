@@ -13,7 +13,19 @@ struct BackendConfigurationView: View {
     @State var configValues: [String: Any] = [:]
 
     var body: some View {
+        platformSpecificView
+        .navigationTitle("New " + backendDescription.name)
+    }
+
+    @ViewBuilder var platformSpecificView: some View {
         #if os(macOS)
+        macOSView
+        #else
+        defaultView
+        #endif
+    }
+
+    var macOSView: some View {
         HStack {
             Spacer()
             Form {
@@ -23,8 +35,9 @@ struct BackendConfigurationView: View {
             }
             Spacer()
         }
-        .navigationTitle("New " + backendDescription.name)
-        #else
+    }
+
+    var defaultView: some View {
         Form {
             Section("Backend configuration") {
                 ForEach(backendDescription.configDescription) { field in
@@ -32,7 +45,5 @@ struct BackendConfigurationView: View {
                 }
             }
         }
-        .navigationTitle("New " + backendDescription.name)
-        #endif
     }
 }
