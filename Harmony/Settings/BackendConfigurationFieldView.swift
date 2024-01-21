@@ -14,18 +14,20 @@ struct BackendConfigurationFieldView: View {
 
     var body: some View {
         if field.valueType == .bool {
-            Toggle(field.title, isOn: binding(for: field.id, fallback: false))
+            Toggle(field.title,
+                   isOn: binding(for: field.id, fallback: field.defaultValue as? Bool ?? false))
         } else if field.valueType == .float {
-            TextField(field.title, text: binding(for: field.id, fallback: "0.0"))
+            TextField(field.title, 
+                      text: binding(for: field.id, fallback: field.defaultValue as? String ?? "0"))
         } else if field.valueType == .int {
-            TextField(field.title, text: binding(for: field.id, fallback: "0"))
+            TextField(field.title, 
+                      text: binding(for: field.id, fallback: field.defaultValue as? String ?? "0"))
         } else if field.valueType == .string {
-            TextField(field.title, text: binding(for: field.id, fallback: ""))
+            TextField(field.title, 
+                      text: binding(for: field.id, fallback: field.defaultValue as? String ?? ""))
         } else if field.valueType == .localUrl {
-            let dirFallback: String = FileManager.default.urls(
-                for: .musicDirectory, in: .userDomainMask
-            ).first?.path ?? ""
-            TextField(field.title, text: binding(for: field.id, fallback: dirFallback))
+            TextField(field.title, 
+                      text: binding(for: field.id, fallback: field.defaultValue as? String ?? ""))
             Button(action: {
                 if let localUrl = chooseLocalURL(eligible: .onlyDirectories) {
                     configValues[field.id] = localUrl.path
