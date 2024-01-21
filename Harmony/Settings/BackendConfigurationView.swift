@@ -13,10 +13,24 @@ struct BackendConfigurationView: View {
     @State var configValues: [String: Any] = [:]
 
     var body: some View {
+        #if os(macOS)
+        HStack {
+            Spacer()
+            Form {
+                ForEach(backendDescription.configDescription) { field in
+                    BackendConfigurationFieldView(field: field, configValues: $configValues)
+                }
+            }
+            Spacer()
+        }
+        #else
         Form {
-            ForEach(backendDescription.configDescription) { field in
-                BackendConfigurationFieldView(field: field, configValues: $configValues)
+            Section("Backend configuration") {
+                ForEach(backendDescription.configDescription) { field in
+                    BackendConfigurationFieldView(field: field, configValues: $configValues)
+                }
             }
         }
+        #endif
     }
 }
