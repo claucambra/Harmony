@@ -7,6 +7,8 @@
 
 import Foundation
 
+public typealias BackendConfiguration = [String: Any]
+
 public enum BackendConfigurationValueType {
     case bool, int, float, string, localUrl
 }

@@ -14,6 +14,8 @@ extension Logger {
 }
 
 public class LocalBackend : NSObject, Backend {
+    private static let pathConfigId = "path-field"
+
     public static let description = BackendDescription(
         id: "local-backend",
         name: "Local Backend",
@@ -21,7 +23,7 @@ public class LocalBackend : NSObject, Backend {
         systemImageName: "internaldrive",
         configDescription: [
             BackendConfigurationField(
-                id: "path-field",
+                id: LocalBackend.pathConfigId,
                 title: "Path",
                 description: "Location of files. Can be multiple locations.",
                 valueType: .localUrl,
@@ -34,6 +36,10 @@ public class LocalBackend : NSObject, Backend {
         ]
     )
     public let path: URL
+
+    required public init(config: BackendConfiguration) {
+        self.path = URL(fileURLWithPath: config[LocalBackend.pathConfigId] as? String ?? "")
+    }
 
     public init(path: URL) {
         self.path = path
