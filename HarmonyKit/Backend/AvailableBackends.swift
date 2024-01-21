@@ -8,5 +8,5 @@
 import Foundation
 
 public let availableBackends = [
-    LocalBackend.backendDescription
+    LocalBackend.description
 ]
