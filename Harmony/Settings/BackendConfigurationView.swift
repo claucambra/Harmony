@@ -25,7 +25,10 @@ struct BackendConfigurationView: View {
                     TextField(field.title, text: binding(for: field.id, fallback: ""))
                 } else if field.valueType == .localUrl {
                     HStack {
-                        TextField(field.title, text: binding(for: field.id, fallback: ""))
+                        let dirFallback: String = FileManager.default.urls(
+                            for: .musicDirectory, in: .userDomainMask
+                        ).first?.path ?? ""
+                        TextField(field.title, text: binding(for: field.id, fallback: dirFallback))
                         Button(action: {
                             if let localUrl = chooseLocalURL(eligible: .onlyDirectories) {
                                 configValues[field.id] = localUrl.path
