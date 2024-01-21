@@ -27,19 +27,9 @@ struct BackendConfigurationView: View {
                     HStack {
                         TextField(field.title, text: binding(for: field.id, fallback: ""))
                         Button(action: {
-                            #if os(macOS)
-                            let dialog = NSOpenPanel()
-                            dialog.canChooseFiles = false
-                            dialog.canChooseDirectories = true
-
-                            if (dialog.runModal() ==  NSApplication.ModalResponse.OK) {
-                                let result = dialog.url
-                                if (result != nil) {
-                                    let path: String = result!.path
-                                    configValues[field.id] = path
-                                }
+                            if let localUrl = chooseLocalURL(eligible: .onlyDirectories) {
+                                configValues[field.id] = localUrl.path
                             }
-                            #endif
                         }) {
                             Label("Add folder…", systemImage: "plus.circle")
                         }

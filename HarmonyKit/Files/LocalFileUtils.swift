@@ -8,6 +8,14 @@
 import AVFoundation
 import CryptoKit
 
+#if os(macOS)
+import AppKit
+#endif
+
+public enum LocalURLChoiceEligibility {
+    case onlyFiles, onlyDirectories, filesOrDirectories
+}
+
 func calculateMD5Checksum(forFileAtLocalURL url: URL) -> String? {
     do {
         let fileData = try Data(contentsOf: url)
@@ -29,4 +37,18 @@ func songsFromLocalUrls(_ urls:[URL]) async -> [Song] {
         songs.append(song)
     }
     return songs
+}
+
+public func chooseLocalURL(eligible: LocalURLChoiceEligibility, multiple: Bool = false) -> URL? {
+#if os(macOS)
+    let dialog = NSOpenPanel()
+    dialog.canChooseFiles = eligible == .onlyFiles || eligible == .filesOrDirectories
+    dialog.canChooseDirectories = eligible == .onlyDirectories || eligible == .filesOrDirectories
+    dialog.allowsMultipleSelection = multiple
+
+    if (dialog.runModal() ==  NSApplication.ModalResponse.OK) {
+        return dialog.url
+    }
+#endif
+    return nil
 }
