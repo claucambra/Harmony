@@ -30,3 +30,25 @@ func saveConfig(_ configValues: BackendConfiguration, forBackend backend: Backen
     backendConfigs.append(fullConfig)
     defaults.set(backendConfigs, forKey: backend.id)
 }
+
+func existingConfigsForBackend(_ backend: BackendDescription) -> [BackendConfiguration] {
+    guard let existingConfigs = UserDefaults.standard.array(forKey: backend.id) else {
+        return []
+    }
+
+    var configs: [BackendConfiguration] = []
+    for existingConfig in existingConfigs {
+        guard let config = existingConfig as? BackendConfiguration else { continue }
+        configs.append(config)
+    }
+    return configs
+}
+
+func existingConfigs() -> [BackendConfiguration] {
+    var configs: [BackendConfiguration] = []
+    for backend in availableBackends {
+        let backendConfigs = existingConfigsForBackend(backend)
+        configs.append(contentsOf: backendConfigs)
+    }
+    return configs
+}
