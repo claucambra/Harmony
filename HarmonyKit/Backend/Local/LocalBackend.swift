@@ -15,7 +15,6 @@ extension Logger {
 
 public class LocalBackend : NSObject, Backend {
     private static let pathConfigId = "path-field"
-
     public static let description = BackendDescription(
         id: "local-backend",
         name: "Local Backend",
@@ -36,9 +35,12 @@ public class LocalBackend : NSObject, Backend {
         ]
     )
     public let path: URL
+    public let id: String = UUID().uuidString
+    public let primaryDisplayString = LocalBackend.description.name
+    public let secondaryDisplayString = LocalBackend.description.description
 
     required public init(config: BackendConfiguration) {
-        self.path = URL(fileURLWithPath: config[LocalBackend.pathConfigId] as? String ?? "")
+        path = URL(fileURLWithPath: config[LocalBackend.pathConfigId] as? String ?? "")
     }
 
     public init(path: URL) {
