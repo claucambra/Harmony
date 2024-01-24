@@ -13,9 +13,9 @@ import SwiftUI
 public class SongsModel: ObservableObject {
     @Published public var songs: [Song] = []
 
-    private var backends: [Backend] = []
+    private var backends: [any Backend] = []
 
-    public init(withBackends inBackends: [Backend]) {
+    public init(withBackends inBackends: [any Backend]) {
         backends = inBackends
         Task {
             await refresh()

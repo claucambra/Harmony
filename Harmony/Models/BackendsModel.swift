@@ -11,7 +11,7 @@ import HarmonyKit
 class BackendsModel: ObservableObject {
     static let shared = BackendsModel()
     @Published var configurations = existingConfigs()
-    @Published var backends: [Backend] = []
+    @Published var backends: [any Backend] = []
 
     private init() {
         updateBackends()
