@@ -6,15 +6,11 @@
 //
 
 import SwiftUI
-
-struct BackendConfig: Hashable {
-    let name: String
-    let detailString: String
-    let state: String
-}
+import HarmonyKit
 
 struct BackendsSettingsView: View {
-    private var configuredBackends: [BackendConfig] = []
+    let backendsModel = BackendsModel.shared
+
     #if os(macOS)
     @Environment(\.openWindow) var openWindow
     #endif
@@ -34,7 +30,7 @@ struct BackendsSettingsView: View {
 
     @ViewBuilder
     var listView: some View {
-        if configuredBackends.isEmpty {
+        if backendsModel.configurations.isEmpty {
             emptyListView
         } else {
             objectsListView
@@ -47,8 +43,8 @@ struct BackendsSettingsView: View {
     }
 
     var objectsListView: some View {
-        List(configuredBackends, id: \.self) { backend in
-            Text(backend.name)
+        List(backendsModel.backends, id: \.id) { backend in
+            Text(backend.primaryDisplayString)
         }
     }
 }
