@@ -15,13 +15,7 @@ struct DetailColumn: View {
         switch selection ?? .songs {
         case .songs:
             SongsTable(
-                model: SongsModel(
-                    withBackends: [
-                        LocalBackend(
-                            path: URL(fileURLWithPath: "/Users/claucambra/Downloads/TestMP3s")
-                        ) // TODO
-                    ]
-                ),
+                model: SongsModel(withBackends: BackendsModel.shared.backends),
                 selection: .constant([])
             )
         }

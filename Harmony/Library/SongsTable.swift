@@ -28,9 +28,7 @@ struct SongsTable: View {
 
 struct SongsTable_Previews: PreviewProvider {
     struct Preview: View {
-        @StateObject private var model = SongsModel(withBackends: [
-            LocalBackend(path: URL(fileURLWithPath: "/Users/claucambra/Nextcloud/Music/")) // TODO
-        ])
+        @StateObject private var model = SongsModel(withBackends: BackendsModel.shared.backends)
 
         var body: some View {
             SongsTable(
