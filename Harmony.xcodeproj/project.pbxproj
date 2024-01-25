@@ -39,6 +39,7 @@
 		5350539B2B5D026F00D7EAF2 /* BackendConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5350539A2B5D026F00D7EAF2 /* BackendConfiguration.swift */; };
 		535053A02B5D1CC700D7EAF2 /* BackendsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5350539F2B5D1CC700D7EAF2 /* BackendsModel.swift */; };
 		535053F02B62186F00D7EAF2 /* SettingsSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535053EF2B62186F00D7EAF2 /* SettingsSheet.swift */; };
+		535053F42B6239AC00D7EAF2 /* FilePickerRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535053F32B6239AC00D7EAF2 /* FilePickerRepresentable.swift */; };
 		535F1BD12B4A8F1400C78D98 /* HarmonyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535F1BD02B4A8F1400C78D98 /* HarmonyApp.swift */; };
 		535F1BD32B4A8F1400C78D98 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535F1BD22B4A8F1400C78D98 /* ContentView.swift */; };
 		535F1BD52B4A8F1600C78D98 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 535F1BD42B4A8F1600C78D98 /* Assets.xcassets */; };
@@ -134,6 +135,7 @@
 		5350539A2B5D026F00D7EAF2 /* BackendConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendConfiguration.swift; sourceTree = "<group>"; };
 		5350539F2B5D1CC700D7EAF2 /* BackendsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendsModel.swift; sourceTree = "<group>"; };
 		535053EF2B62186F00D7EAF2 /* SettingsSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsSheet.swift; sourceTree = "<group>"; };
+		535053F32B6239AC00D7EAF2 /* FilePickerRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilePickerRepresentable.swift; sourceTree = "<group>"; };
 		535F1BCD2B4A8F1400C78D98 /* Harmony.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Harmony.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		535F1BD02B4A8F1400C78D98 /* HarmonyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HarmonyApp.swift; sourceTree = "<group>"; };
 		535F1BD22B4A8F1400C78D98 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -325,6 +327,7 @@
 		5350538B2B5BD18B00D7EAF2 /* Files */ = {
 			isa = PBXGroup;
 			children = (
+				535053F32B6239AC00D7EAF2 /* FilePickerRepresentable.swift */,
 				5350538C2B5BD1A700D7EAF2 /* FilePlayability.swift */,
 				5350534A2B5955F900D7EAF2 /* LocalFileUtils.swift */,
 			);
@@ -622,6 +625,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				535053F42B6239AC00D7EAF2 /* FilePickerRepresentable.swift in Sources */,
 				535053602B59581600D7EAF2 /* SongsModel.swift in Sources */,
 				535053782B5AB24500D7EAF2 /* AVAsset+Extension.swift in Sources */,
 				535053522B5955F900D7EAF2 /* LocalFileUtils.swift in Sources */,
