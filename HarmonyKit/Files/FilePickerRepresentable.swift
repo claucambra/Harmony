@@ -28,7 +28,7 @@ public struct FilePickerRepresentable: UIViewControllerRepresentable {
     }
 
     public func makeUIViewController(context: Context) -> UIDocumentPickerViewController {
-        let picker = UIDocumentPickerViewController(forOpeningContentTypes: types, asCopy: true)
+        let picker = UIDocumentPickerViewController(forOpeningContentTypes: types)
         picker.delegate = context.coordinator
         picker.allowsMultipleSelection = allowMultiple
         return picker
