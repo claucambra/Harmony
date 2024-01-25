@@ -10,6 +10,7 @@ import Foundation
 import HarmonyKit
 
 fileprivate let AVPlayerTimeControlStatusKeyPath = "timeControlStatus"
+fileprivate let hundredMsTime = CMTime(seconds: 0.1, preferredTimescale: CMTimeScale(MSEC_PER_SEC))
 
 class PlayerController: NSObject, ObservableObject  {
     static let shared = PlayerController()
@@ -30,7 +31,7 @@ class PlayerController: NSObject, ObservableObject  {
                 options: [.old, .new],
                 context: &playerContext
             )
-            let hundredMsTime = CMTime(seconds: 0.1, preferredTimescale: CMTimeScale(MSEC_PER_SEC))
+            songDuration = avPlayer.currentItem?.duration.seconds ?? 0
             periodicTimeObserver = avPlayer.addPeriodicTimeObserver(
                 forInterval: hundredMsTime, queue: .main
             ) { [weak self] time in
@@ -51,8 +52,9 @@ class PlayerController: NSObject, ObservableObject  {
     @Published private(set) var currentTime: CMTime? {
         didSet { currentSeconds = currentTime?.seconds ?? 0 }
     }
-    @Published var currentSeconds: TimeInterval = 0
     @Published private(set) var timeControlStatus: AVPlayer.TimeControlStatus = .paused
+    @Published var currentSeconds: TimeInterval = 0
+    @Published var songDuration: TimeInterval = 0
     private var playerContext = 0
     private var periodicTimeObserver: Any?
 
