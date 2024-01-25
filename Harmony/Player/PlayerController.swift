@@ -77,6 +77,7 @@ class PlayerController: NSObject, ObservableObject  {
     @Published private(set) var timeControlStatus: AVPlayer.TimeControlStatus = .paused
     @Published var currentSeconds: TimeInterval = 0
     @Published var songDuration: TimeInterval = 0
+    @Published var queue = PlayerQueue()
     private var playerContext = 0
     private var periodicTimeObserver: Any?
 
@@ -85,8 +86,17 @@ class PlayerController: NSObject, ObservableObject  {
         super.init()
     }
 
-    func playSong(_ song: Song) {
+    @MainActor func playSong(_ song: Song, withinSongs songs: [Song]) {
+        assert(songs.contains(song))
+        
         currentSong = song
+
+        var futureSongs: [Song] = []
+        if let futureSongsIdx = songs.firstIndex(of: song) {
+            futureSongs = Array(songs.dropFirst(futureSongsIdx + 1))
+        }
+        queue.addCurrentSong(song, withFutureSongs: futureSongs)
+
         avPlayer?.play()
     }
 

@@ -31,7 +31,7 @@ struct SongsTable: View {
                 guard let song = model.songs.first(where: { song in
                     return song.id == item
                 }) else { continue }
-                PlayerController.shared.playSong(song)
+                PlayerController.shared.playSong(song, withinSongs: model.songs)
             }
         }
     }

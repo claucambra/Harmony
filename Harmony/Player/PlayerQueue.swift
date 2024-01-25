@@ -12,6 +12,10 @@ class PlayerQueue: NSObject {
     var songs: [Song] = []
     private var currentSongIndex: Int = 0
 
+    override public init() {
+        super.init()
+    }
+
     public init(songs: [Song], containingCurrentSong currentSong: Song? = nil) {
         self.songs = songs
         if let currentSong = currentSong {
