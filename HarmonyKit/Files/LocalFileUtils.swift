@@ -39,8 +39,8 @@ func songsFromLocalUrls(_ urls:[URL]) async -> [Song] {
     return songs
 }
 
-public func chooseLocalURL(eligible: LocalURLChoiceEligibility, multiple: Bool = false) -> URL? {
 #if os(macOS)
+public func chooseLocalURL(eligible: LocalURLChoiceEligibility, multiple: Bool = false) -> URL? {
     let dialog = NSOpenPanel()
     dialog.canChooseFiles = eligible == .onlyFiles || eligible == .filesOrDirectories
     dialog.canChooseDirectories = eligible == .onlyDirectories || eligible == .filesOrDirectories
@@ -49,6 +49,6 @@ public func chooseLocalURL(eligible: LocalURLChoiceEligibility, multiple: Bool =
     if (dialog.runModal() ==  NSApplication.ModalResponse.OK) {
         return dialog.url
     }
-#endif
     return nil
 }
+#endif
