@@ -42,11 +42,16 @@ struct BackendConfigurationFieldView: View {
             }) {
                 Label("Choose folder…", systemImage: "folder.fill")
             }
+            #if !os(macOS)
             .sheet(isPresented: $filePickerVisible) {
-                FilePickerRepresentable(types: [.directory], allowMultiple: true, onPicked: { us in
-                    configValues[field.id] = us.first
+                FilePickerRepresentable(
+                    types: [.directory, .folder], allowMultiple: true, onPicked: { urls in
+                        if let localUrl = urls.first {
+                            configValues[field.id] = localUrl.path
+                        }
                 })
             }
+            #endif
         }
     }
 
