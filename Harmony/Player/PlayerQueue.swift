@@ -31,4 +31,24 @@ class PlayerQueue: NSObject {
         currentSongIndex += 1
         return songs[currentSongIndex]
     }
+
+    func addCurrentSong(_ song: Song, withFutureSongs futureSongs: [Song]) {
+        let atSongsEnd = currentSongIndex == songs.count - 1
+        let gotNewCurrentSong = songs.count == 0 || songs[currentSongIndex] != song
+        if atSongsEnd {
+            if gotNewCurrentSong {
+                songs.append(song)
+            }
+            songs.append(contentsOf: futureSongs)
+        } else {
+            let firstIndexToDrop = currentSongIndex + 1
+            let itemsToDrop = max(songs.count - firstIndexToDrop, 0)
+            songs = songs.dropLast(itemsToDrop)
+
+            if gotNewCurrentSong {
+                songs.append(song)
+            }
+            songs.append(contentsOf: futureSongs)
+        }
+    }
 }
