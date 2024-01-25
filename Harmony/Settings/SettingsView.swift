@@ -16,11 +16,21 @@ struct SettingsView: View {
         TabView {
             BackendsSettingsView()
                 .tabItem {
-                    Label("Backends", systemImage: "arrow.triangle.2.circlepath.circle")
+                    labelForTab(.backends)
                 }
                 .tag(Tabs.backends)
         }
         .padding(20)
         .frame(width: 375, height: 150)
+
+    private func labelForTab(_ tab: Tabs) -> some View {
+        switch (tab) {
+        case .general:
+            Label("General", systemImage: "gear")
+        case .appearance:
+            Label("Appearance", systemImage: "paintbrush.pointed.fill")
+        case .backends:
+            Label("Backends", systemImage: "arrow.triangle.2.circlepath.circle")
+        }
     }
 }
