@@ -13,6 +13,8 @@ fileprivate let AVPlayerTimeControlStatusKeyPath = "timeControlStatus"
 fileprivate let hundredMsTime = CMTime(seconds: 0.1, preferredTimescale: CMTimeScale(MSEC_PER_SEC))
 
 class PlayerController: NSObject, ObservableObject  {
+    enum ScrubState { case inactive, started, finished }
+
     static let shared = PlayerController()
     @Published var avPlayer: AVPlayer? {
         willSet {
@@ -35,7 +37,15 @@ class PlayerController: NSObject, ObservableObject  {
             periodicTimeObserver = avPlayer.addPeriodicTimeObserver(
                 forInterval: hundredMsTime, queue: .main
             ) { [weak self] time in
-                self?.currentTime = time
+                switch self?.scrubState {
+                case .inactive:
+                    self?.currentTime = time
+                case .started, nil:
+                    return
+                case .finished:
+                    self?.scrubState = .inactive
+                    self?.currentTime = time
+                }
             }
         }
     }
@@ -47,6 +57,16 @@ class PlayerController: NSObject, ObservableObject  {
             }
             let playerItem = AVPlayerItem(asset: currentSong.asset)
             avPlayer = AVPlayer(playerItem: playerItem)
+        }
+    }
+    @Published var scrubState: ScrubState = .inactive {
+        didSet {
+            switch scrubState {
+            case .inactive, .started:
+                return
+            case .finished:
+                avPlayer?.seek(to: CMTime(seconds: currentSeconds, preferredTimescale: 1))
+            }
         }
     }
     @Published private(set) var currentTime: CMTime? {
