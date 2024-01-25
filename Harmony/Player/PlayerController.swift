@@ -115,6 +115,18 @@ class PlayerController: NSObject, ObservableObject  {
         }
     }
 
+    func playNextSong() {
+        guard let nextSong = queue.forward() else { return }
+        currentSong = nextSong
+        avPlayer?.play()
+    }
+
+    func playPreviousSong() {
+        guard let previousSong = queue.backward() else { return }
+        currentSong = previousSong
+        avPlayer?.play()
+    }
+
     override func observeValue(
         forKeyPath keyPath: String?,
         of object: Any?,
