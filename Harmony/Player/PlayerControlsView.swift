@@ -19,7 +19,7 @@ struct PlayerControlsView: View {
                 Label("Shuffle", systemImage: "shuffle")
             }
             Button {
-                // TODO
+                controller.playPreviousSong()
             } label: {
                 Label("Previous", systemImage: "backward.fill")
             }
@@ -43,7 +43,7 @@ struct PlayerControlsView: View {
                 }
             }
             Button {
-                // TODO
+                controller.playNextSong()
             } label: {
                 Label("Next", systemImage: "forward.fill")
             }
