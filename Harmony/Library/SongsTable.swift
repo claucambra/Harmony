@@ -25,13 +25,13 @@ struct SongsTable: View {
             }
         }
         .contextMenu(forSelectionType: Song.ID.self) { items in
-            // ...
+            // TODO
         } primaryAction: { items in
             for item in items {
                 guard let song = model.songs.first(where: { song in
                     return song.id == item
                 }) else { continue }
-                PlayerController.shared.playAsset(song.asset)
+                PlayerController.shared.playSong(song)
             }
         }
     }

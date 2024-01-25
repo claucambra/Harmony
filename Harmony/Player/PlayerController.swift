@@ -29,7 +29,8 @@ class PlayerController: NSObject, ObservableObject  {
                 avPlayer = nil
                 return
             }
-            avPlayer = AVPlayer(playerItem: AVPlayerItem(asset: currentSong.asset))
+            let playerItem = AVPlayerItem(asset: currentSong.asset)
+            avPlayer = AVPlayer(playerItem: playerItem)
         }
     }
     private var playerContext = 0
@@ -37,6 +38,11 @@ class PlayerController: NSObject, ObservableObject  {
     private init(avPlayer: AVPlayer? = nil) {
         self.avPlayer = avPlayer
         super.init()
+    }
+
+    func playSong(_ song: Song) {
+        currentSong = song
+        avPlayer?.play()
     }
 
     func playAsset(_ asset: AVAsset) {
