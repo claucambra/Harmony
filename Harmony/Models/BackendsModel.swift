@@ -17,7 +17,7 @@ class BackendsModel: ObservableObject {
         updateBackends()
     }
 
-    private func updateBackends() {
+    func updateBackends() {
         for backend in availableBackends {
             for config in configurations {
                 guard let configuredBackend = backendFromId(backend.id, withConfig: config) else {

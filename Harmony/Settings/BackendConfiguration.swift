@@ -28,6 +28,7 @@ func saveConfig(_ configValues: BackendConfiguration, forBackend backend: Backen
 
     backendConfigs.append(fullConfig)
     defaults.set(backendConfigs, forKey: backend.id)
+    BackendsModel.shared.updateBackends()
 }
 
 func existingConfigsForBackend(_ backend: BackendDescription) -> [BackendConfiguration] {
