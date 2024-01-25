@@ -32,6 +32,17 @@ struct ContentView: View {
             NavigationStack(path: $path) {
                 DetailColumn(selection: $selection)
             }
+            .toolbar {
+                #if os(macOS)
+                ToolbarItemGroup {
+                    PlayerControlsView()
+                }
+                #else
+                ToolbarItemGroup(placement: .bottomBar) {
+                    PlayerControlsView()
+                }
+                #endif
+            }
         }
     }
 }
