@@ -8,7 +8,11 @@
 import AVFoundation
 import OSLog
 
-public class Song: Identifiable {
+public class Song: Identifiable, Hashable {
+    public static func == (lhs: Song, rhs: Song) -> Bool {
+        lhs.identifier == rhs.identifier
+    }
+
     public var identifier: String
     public var title: String = ""
     public var artist: String = ""
@@ -18,9 +22,11 @@ public class Song: Identifiable {
     public var subject: String = ""
     public var contributor: String = ""
     public var type: String = ""
-    public var duration: CMTime?
+    public var duration: CMTime
+    public var asset: AVAsset
 
     public init?(fromAsset asset: AVAsset, withIdentifier id: String) async {
+        self.asset = asset
         guard let metadata = try? await asset.load(.commonMetadata) else {
             Logger.defaultLog.log("Could not get metadata for asset \(asset)")
             return nil
@@ -57,6 +63,14 @@ public class Song: Identifiable {
         }
 
         identifier = id
-        duration = try? await asset.load(.duration)
+        do {
+            duration = try await asset.load(.duration)
+        } catch {
+            duration = CMTime(seconds: 0, preferredTimescale: 44100)
+        }
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(identifier)
     }
 }

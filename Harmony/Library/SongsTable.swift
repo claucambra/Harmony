@@ -15,12 +15,23 @@ struct SongsTable: View {
 
     var body: some View {
         Table(selection: $selection, sortOrder: $sortOrder) {
-            TableColumn("Song", value: \.title)
+            TableColumn("Title", value: \.title)
+            TableColumn("Album", value: \.album)
+            TableColumn("Artist", value: \.artist)
+            TableColumn("Genre", value: \.genre)
         } rows: {
-            Section {
-                ForEach(model.songs) { song in
-                    TableRow(song)
-                }
+            ForEach(model.songs) { song in
+                TableRow(song)
+            }
+        }
+        .contextMenu(forSelectionType: Song.ID.self) { items in
+            // ...
+        } primaryAction: { items in
+            for item in items {
+                guard let song = model.songs.first(where: { song in
+                    return song.id == item
+                }) else { continue }
+                PlayerController.shared.playAsset(song.asset)
             }
         }
     }
