@@ -8,6 +8,9 @@
 import SwiftUI
 
 struct PlayerControlsView: View {
+    @ObservedObject var controller = PlayerController.shared
+    @State var playButtonImg: String = "play.fill"
+
     var body: some View {
         HStack {
             Button {
@@ -21,9 +24,23 @@ struct PlayerControlsView: View {
                 Label("Previous", systemImage: "backward.fill")
             }
             Button {
-                
+                controller.togglePlayPause()
             } label: {
-                Label("Play", systemImage: "play.fill")
+                Label("Play", systemImage: playButtonImg)
+            }
+            .onChange(of: controller.timeControlStatus) {
+                print(controller.timeControlStatus)
+                switch (controller.timeControlStatus) {
+                case .paused:
+                    playButtonImg = "play.fill"
+                    break
+                case .waitingToPlayAtSpecifiedRate, .playing:
+                    playButtonImg = "pause.fill"
+                    break
+                default:
+                    playButtonImg = "play.slash.fill"
+                    break
+                }
             }
             Button {
                 // TODO
