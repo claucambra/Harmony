@@ -13,6 +13,7 @@ struct SettingsView: View {
     }
 
     var body: some View {
+        #if os(macOS)
         TabView {
             BackendsSettingsView()
                 .tabItem {
@@ -22,6 +23,17 @@ struct SettingsView: View {
         }
         .padding(20)
         .frame(width: 375, height: 150)
+        #else
+        List {
+            NavigationLink {
+                BackendsSettingsView()
+            } label: {
+                labelForTab(.backends)
+            }
+        }
+        .navigationTitle("Settings")
+        #endif
+    }
 
     private func labelForTab(_ tab: Tabs) -> some View {
         switch (tab) {
