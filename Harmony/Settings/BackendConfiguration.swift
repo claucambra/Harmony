@@ -8,15 +8,15 @@
 import Foundation
 import HarmonyKit
 
-func saveConfig(_ configValues: BackendConfiguration, forBackend backend: BackendDescription) {
-    let defaults = UserDefaults.standard
-    var backendConfigs: [Any]
+let BackendConfigurationIdFieldKey = "config-id"
 
-    if let existingConfigs = defaults.array(forKey: backend.id) {
-        backendConfigs = existingConfigs
-    } else {
-        backendConfigs = []
-    }
+func saveConfig(_ configValues: BackendConfiguration, forBackend backend: BackendDescription) {
+    assert(backend.id != "")
+
+    let defaults = UserDefaults.standard
+    let existingConfigs = defaults.array(forKey: backend.id)
+    let existingConfigsCount = existingConfigs?.count ?? 0
+    var backendConfigs: [Any] = existingConfigs ?? []
 
     var fullConfig = configValues
     for field in backend.configDescription {
@@ -24,6 +24,7 @@ func saveConfig(_ configValues: BackendConfiguration, forBackend backend: Backen
             fullConfig[field.id] = field.defaultValue
         }
     }
+    fullConfig[BackendConfigurationIdFieldKey] = backend.id + String(existingConfigsCount)
 
     backendConfigs.append(fullConfig)
     defaults.set(backendConfigs, forKey: backend.id)
