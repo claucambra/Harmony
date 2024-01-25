@@ -9,10 +9,12 @@ import AVFoundation
 import Foundation
 import HarmonyKit
 
+fileprivate let AVPlayerTimeControlStatusKeyPath = "timeControlStatus"
+
 class PlayerController: NSObject, ObservableObject  {
     static let shared = PlayerController()
     @Published var avPlayer: AVPlayer? {
-        willSet { avPlayer?.removeObserver(self, forKeyPath: "timeControlStatus") }
+        willSet { avPlayer?.removeObserver(self, forKeyPath: AVPlayerTimeControlStatusKeyPath) }
         didSet {
             avPlayer?.addObserver(
                 self,
@@ -71,6 +73,9 @@ class PlayerController: NSObject, ObservableObject  {
             return
         }
 
-        timeControlStatus = avPlayer?.timeControlStatus ?? .paused
+        guard let keyPath = keyPath else { return }
+        if keyPath == AVPlayerTimeControlStatusKeyPath {
+            timeControlStatus = avPlayer?.timeControlStatus ?? .paused
+        }
     }
 }
