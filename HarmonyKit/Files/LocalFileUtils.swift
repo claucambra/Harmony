@@ -33,7 +33,7 @@ func songsFromLocalUrls(_ urls:[URL]) async -> [Song] {
     for url in urls {
         let asset = AVAsset(url: url)
         guard let csum = calculateMD5Checksum(forFileAtLocalURL: url) else { continue }
-        guard let song = await Song.init(fromAsset: asset, withIdentifier: csum) else { continue }
+        guard let song = await Song(fromAsset: asset, withIdentifier: csum) else { continue }
         songs.append(song)
     }
     return songs
