@@ -14,17 +14,30 @@ fileprivate let AVPlayerTimeControlStatusKeyPath = "timeControlStatus"
 class PlayerController: NSObject, ObservableObject  {
     static let shared = PlayerController()
     @Published var avPlayer: AVPlayer? {
-        willSet { avPlayer?.removeObserver(self, forKeyPath: AVPlayerTimeControlStatusKeyPath) }
+        willSet {
+            avPlayer?.removeObserver(self, forKeyPath: AVPlayerTimeControlStatusKeyPath)
+            currentTime = nil
+            if periodicTimeObserver != nil {
+                avPlayer?.removeTimeObserver(periodicTimeObserver!)
+                periodicTimeObserver = nil
+            }
+        }
         didSet {
-            avPlayer?.addObserver(
+            guard let avPlayer = avPlayer else { return }
+            avPlayer.addObserver(
                 self,
                 forKeyPath: "timeControlStatus",
                 options: [.old, .new],
                 context: &playerContext
             )
+            let hundredMsTime = CMTime(seconds: 0.1, preferredTimescale: CMTimeScale(MSEC_PER_SEC))
+            periodicTimeObserver = avPlayer.addPeriodicTimeObserver(
+                forInterval: hundredMsTime, queue: .main
+            ) { [weak self] time in
+                self?.currentTime = time
+            }
         }
     }
-    @Published var timeControlStatus: AVPlayer.TimeControlStatus = .paused
     @Published var currentSong: Song? {
         didSet {
             guard let currentSong = currentSong else {
@@ -35,7 +48,13 @@ class PlayerController: NSObject, ObservableObject  {
             avPlayer = AVPlayer(playerItem: playerItem)
         }
     }
+    @Published private(set) var currentTime: CMTime? {
+        didSet { currentSeconds = currentTime?.seconds ?? 0 }
+    }
+    @Published var currentSeconds: TimeInterval = 0
+    @Published private(set) var timeControlStatus: AVPlayer.TimeControlStatus = .paused
     private var playerContext = 0
+    private var periodicTimeObserver: Any?
 
     private init(avPlayer: AVPlayer? = nil) {
         self.avPlayer = avPlayer
