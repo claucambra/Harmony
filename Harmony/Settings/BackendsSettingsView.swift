@@ -17,8 +17,8 @@ struct BackendsSettingsView: View {
 
     var body: some View {
         VStack {
+            listView.frame(maxWidth: .infinity, maxHeight: .infinity)
             #if os(macOS)
-            listView.padding(10)
             Button(action: {
                 openWindow(id: "backend-creator")
             }) {
