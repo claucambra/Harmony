@@ -17,14 +17,20 @@ struct BackendsSettingsView: View {
 
     var body: some View {
         VStack {
+            #if os(macOS)
             listView.padding(10)
             Button(action: {
-                #if os(macOS)
                 openWindow(id: "backend-creator")
-                #endif
             }) {
                 Label("Configure new backend...", systemImage: "plus.circle")
             }
+            #else
+            NavigationLink {
+                BackendChoiceView()
+            } label: {
+                Label("Configure new backend...", systemImage: "plus.circle")
+            }
+            #endif
         }
     }
 
@@ -43,8 +49,12 @@ struct BackendsSettingsView: View {
     }
 
     var objectsListView: some View {
-        List(backendsModel.backends, id: \.id) { backend in
-            Text(backend.primaryDisplayString)
+        List {
+            ForEach(backendsModel.backends, id: \.id) { backend in
+                Text(backend.primaryDisplayString)
+            }.onDelete(perform: { indexSet in
+                // meep
+            })
         }
     }
 }
