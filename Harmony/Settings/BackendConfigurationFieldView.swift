@@ -11,6 +11,9 @@ import SwiftUI
 struct BackendConfigurationFieldView: View {
     let field: BackendConfigurationField
     @Binding var configValues: BackendConfiguration
+    #if !os(macOS)
+    @State private var filePickerVisible = false
+    #endif
 
     var body: some View {
         if field.valueType == .bool {
@@ -29,11 +32,20 @@ struct BackendConfigurationFieldView: View {
             TextField(field.title, 
                       text: binding(for: field.id, fallback: field.defaultValue as? String ?? ""))
             Button(action: {
+                #if os(macOS)
                 if let localUrl = chooseLocalURL(eligible: .onlyDirectories) {
                     configValues[field.id] = localUrl.path
                 }
+                #else
+                filePickerVisible = true
+                #endif
             }) {
                 Label("Choose folder…", systemImage: "folder.fill")
+            }
+            .sheet(isPresented: $filePickerVisible) {
+                FilePickerRepresentable(types: [.directory], allowMultiple: true, onPicked: { us in
+                    configValues[field.id] = us.first
+                })
             }
         }
     }
