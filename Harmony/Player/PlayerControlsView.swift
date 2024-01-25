@@ -52,6 +52,10 @@ struct PlayerControlsView: View {
             } label: {
                 Label("Repeat", systemImage: "repeat")
             }
+            Slider(value: $controller.currentSeconds, in:(0...controller.songDuration)) { editing in
+                controller.scrubState = editing ? .started : .finished
+            }
+            .frame(minWidth: 300, maxWidth: .infinity)
         }
     }
 }
