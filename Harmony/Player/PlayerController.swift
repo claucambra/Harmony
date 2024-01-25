@@ -23,6 +23,15 @@ class PlayerController: NSObject, ObservableObject  {
         }
     }
     @Published var timeControlStatus: AVPlayer.TimeControlStatus = .paused
+    @Published var currentSong: Song? {
+        didSet {
+            guard let currentSong = currentSong else {
+                avPlayer = nil
+                return
+            }
+            avPlayer = AVPlayer(playerItem: AVPlayerItem(asset: currentSong.asset))
+        }
+    }
     private var playerContext = 0
 
     private init(avPlayer: AVPlayer? = nil) {
