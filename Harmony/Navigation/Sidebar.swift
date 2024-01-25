@@ -22,6 +22,7 @@ struct Sidebar: View {
                 }
             }
         }
+        .navigationTitle("Library")
     }
 }
 
