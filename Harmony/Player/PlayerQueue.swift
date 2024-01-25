@@ -31,7 +31,7 @@ class PlayerQueue: NSObject {
     }
 
     func forward() -> Song? {
-        guard currentSongIndex < songs.count else { return nil }
+        guard currentSongIndex < songs.count - 1 else { return nil }
         currentSongIndex += 1
         return songs[currentSongIndex]
     }
