@@ -51,7 +51,7 @@ struct BackendsSettingsView: View {
     var objectsListView: some View {
         List {
             ForEach(backendsModel.backends, id: \.id) { backend in
-                Text(backend.primaryDisplayString)
+                Text(backend.presentation.primary)
             }.onDelete(perform: { indexSet in
                 // meep
             })

@@ -15,7 +15,8 @@ public class BackendPresentable: ObservableObject {
     @Published public var config: String = "Not configured"
     @Published public var state: String = "Idle"
 
-    public init(primary: String, secondary: String) {
+    public init(systemImage: String, primary: String, secondary: String) {
+        self.systemImage = systemImage
         self.primary = primary
         self.secondary = secondary
     }

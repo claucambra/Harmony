@@ -7,11 +7,10 @@
 
 import Foundation
 
-public protocol Backend: Identifiable, Hashable {
+public protocol Backend: Identifiable, Hashable, ObservableObject {
     static var description: BackendDescription { get }
     var id: String { get }
-    var primaryDisplayString: String { get }
-    var secondaryDisplayString: String { get }
+    var presentation: BackendPresentable { get }
 
     func scan() async -> [Song]
     func fetchSong(_ song: Song) async

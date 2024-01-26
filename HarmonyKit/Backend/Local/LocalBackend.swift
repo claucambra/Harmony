@@ -34,10 +34,15 @@ public class LocalBackend : NSObject, Backend {
             )
         ]
     )
-    public let path: URL
     public let id: String = UUID().uuidString
-    public let primaryDisplayString = LocalBackend.description.name
-    public let secondaryDisplayString = LocalBackend.description.description
+    @Published public var presentation = BackendPresentable(
+        systemImage: LocalBackend.description.systemImageName,
+        primary: LocalBackend.description.name,
+        secondary: LocalBackend.description.description
+    )
+    @Published public private(set) var path: URL {
+        didSet { DispatchQueue.main.async { self.presentation.config = self.path.path } }
+    }
 
     required public init(config: BackendConfiguration) {
         #if os(macOS)
@@ -51,21 +56,35 @@ public class LocalBackend : NSObject, Backend {
         #else
         path = URL(fileURLWithPath: config[LocalBackend.pathConfigId] as? String ?? "")
         #endif
+        super.init()
+        presentation.config = "Path: " + path.path
     }
 
     public init(path: URL) {
         self.path = path
         super.init()
+        presentation.config = "Path: " + path.path
     }
 
     public func scan() async -> [Song] {
         Logger.localBackend.info("Starting full scan of \(self.path)")
+        DispatchQueue.main.async {
+            self.presentation.state = "Starting full scan..."
+        }
         let urls = await recursiveScan(path: path)
-        return await songsFromLocalUrls(urls)
+        let songs = await songsFromLocalUrls(urls)
+        DispatchQueue.main.async {
+            self.presentation.state = "Finished full scan at " + Date().formatted()
+        }
+        return songs
     }
 
     func recursiveScan(path: URL) async -> [URL] {
         Logger.localBackend.info("Scanning \(path)")
+
+        DispatchQueue.main.async {
+            self.presentation.state = "Scanning " + path.path + "…"
+        }
 
         let audioFiles = await withTaskGroup(of: [URL].self, returning: [URL].self) { group in
             do {
