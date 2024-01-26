@@ -12,7 +12,7 @@ import OSLog
 import RealmSwift
 
 class DatabaseSong: Object {
-    @Persisted var identifier: String  // Unique identifier provided by backend
+    @Persisted(primaryKey: true) var identifier: String  // Unique identifier provided by backend
     @Persisted var backendId: String
     @Persisted var url: String
     @Persisted var title: String = ""
