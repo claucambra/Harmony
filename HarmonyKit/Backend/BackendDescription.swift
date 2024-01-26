@@ -40,3 +40,5 @@ public struct BackendDescription: Hashable, Identifiable {
     public let systemImageName: String
     public let configDescription: BackendConfigurationDescription
 }
+
+public let BackendConfigurationLocalURLAccessibleURLFieldKeySuffix = "__accessible-url"
