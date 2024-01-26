@@ -12,6 +12,11 @@ struct ContentView: View {
     @State private var selection: Panel? = Panel.songs
     @State private var path = NavigationPath()
     @State private var settingsSheetVisible = false
+    #if os(macOS)
+    let controlsToolbarPlacement = ToolbarItemPlacement.principal
+    #else
+    let controlsToolbarPlacement = ToolbarItemPlacement.bottomBar
+    #endif
 
     var body: some View {
         NavigationSplitView {
@@ -33,15 +38,19 @@ struct ContentView: View {
                 DetailColumn(selection: $selection)
             }
             .toolbar {
-                #if os(macOS)
-                ToolbarItemGroup {
-                    PlayerControlsView()
+                ToolbarItemGroup(placement: controlsToolbarPlacement) {
+                    ShuffleButton()
+                    ChangeSongButton(buttonChangeType: .previous)
+                    PlayButton()
+                    ChangeSongButton(buttonChangeType: .next)
+                    RepeatButton()
                 }
-                #else
-                ToolbarItemGroup(placement: .bottomBar) {
-                    PlayerControlsView()
+                ToolbarItemGroup(placement: controlsToolbarPlacement) {
+                    PlayerScrubberView()
                 }
-                #endif
+                ToolbarItem(placement: .automatic) {
+                    QueueButton()
+                }
             }
         }
     }
