@@ -23,11 +23,18 @@ public class SongsModel: ObservableObject {
     }
 
     public func refresh() async {
-        var allScannedSongs: [Song] = []
-        for backend in backends {
-            let scanSongs = await backend.scan()
-            allScannedSongs.append(contentsOf: scanSongs)
+        songs = await withTaskGroup(of: [Song].self, returning: [Song].self) { group in
+            for backend in backends {
+                group.addTask {
+                    return await backend.scan()
+                }
+            }
+
+            var allScannedSongs: [Song] = []
+            for await result in group {
+                allScannedSongs.append(contentsOf: result)
+            }
+            return allScannedSongs
         }
-        songs = allScannedSongs
     }
 }
