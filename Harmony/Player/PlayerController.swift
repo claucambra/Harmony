@@ -8,6 +8,7 @@
 import AVFoundation
 import Foundation
 import HarmonyKit
+import OSLog
 
 fileprivate let AVPlayerTimeControlStatusKeyPath = "timeControlStatus"
 fileprivate let hundredMsTime = CMTime(seconds: 0.1, preferredTimescale: CMTimeScale(MSEC_PER_SEC))
@@ -59,6 +60,7 @@ class PlayerController: NSObject, ObservableObject  {
             }
             let playerItem = AVPlayerItem(asset: currentSong.asset)
             avPlayer = AVPlayer(playerItem: playerItem)
+            Logger.player.info("Set current song: \(currentSong.title)")
         }
     }
     @Published var scrubState: ScrubState = .inactive {
