@@ -40,6 +40,7 @@ public class LocalBackend : NSObject, Backend {
     public let secondaryDisplayString = LocalBackend.description.description
 
     required public init(config: BackendConfiguration) {
+        #if os(macOS)
         let accessibleUrlPathFieldId =
             LocalBackend.pathConfigId + BackendConfigurationLocalURLAccessibleURLFieldKeySuffix
         if let accessibleUrl = config[accessibleUrlPathFieldId] as? URL {
@@ -47,6 +48,9 @@ public class LocalBackend : NSObject, Backend {
         } else {
             path = URL(fileURLWithPath: config[LocalBackend.pathConfigId] as? String ?? "")
         }
+        #else
+        path = URL(fileURLWithPath: config[LocalBackend.pathConfigId] as? String ?? "")
+        #endif
     }
 
     public init(path: URL) {

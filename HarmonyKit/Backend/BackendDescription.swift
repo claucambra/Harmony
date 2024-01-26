@@ -41,4 +41,6 @@ public struct BackendDescription: Hashable, Identifiable {
     public let configDescription: BackendConfigurationDescription
 }
 
+#if os(macOS)
 public let BackendConfigurationLocalURLAccessibleURLFieldKeySuffix = "__accessible-url"
+#endif

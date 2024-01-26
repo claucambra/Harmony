@@ -10,7 +10,9 @@ import HarmonyKit
 import OSLog
 
 let BackendConfigurationIdFieldKey = "config-id"
+#if os(macOS)
 let BackendConfigurationLocalURLBookmarkDataFieldKeySuffix = "__bookmark-data"
+#endif
 
 func saveConfig(_ configValues: BackendConfiguration, forBackend backend: BackendDescription) {
     assert(backend.id != "")
@@ -27,6 +29,7 @@ func saveConfig(_ configValues: BackendConfiguration, forBackend backend: Backen
             continue
         }
 
+        #if os(macOS)
         if field.valueType == .localUrl {
             // TODO: Handle errors better here
             guard let stringFieldValue = fieldValue as? String else { continue }
@@ -36,6 +39,7 @@ func saveConfig(_ configValues: BackendConfiguration, forBackend backend: Backen
             fullConfig[dataFieldId] = data
             Logger.config.debug("Stored local url bookmark data under key \(dataFieldId)")
         }
+        #endif
     }
     fullConfig[BackendConfigurationIdFieldKey] = backend.id + String(existingConfigsCount)
 
@@ -52,6 +56,7 @@ func existingConfigsForBackend(_ backend: BackendDescription) -> [BackendConfigu
     var configs: [BackendConfiguration] = []
     for existingConfig in existingConfigs {
         guard let config = existingConfig as? BackendConfiguration else { continue }
+        #if os(macOS)
         let bookmarkDatas = Array(
             config.keys
                 .filter { $0.contains(BackendConfigurationLocalURLBookmarkDataFieldKeySuffix) }
@@ -73,6 +78,7 @@ func existingConfigsForBackend(_ backend: BackendDescription) -> [BackendConfigu
                 continue
             }
         }
+        #endif
         configs.append(config)
     }
     return configs
