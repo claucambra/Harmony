@@ -25,25 +25,7 @@ struct PlayerButtonStackView: View {
                 Label("Previous", systemImage: "backward.fill")
             }
             .labelStyle(.iconOnly)
-            Button {
-                controller.togglePlayPause()
-            } label: {
-                Label("Play", systemImage: playButtonImg)
-            }
-            .labelStyle(.iconOnly)
-            .onChange(of: controller.timeControlStatus) {
-                switch (controller.timeControlStatus) {
-                case .paused:
-                    playButtonImg = "play.fill"
-                    break
-                case .waitingToPlayAtSpecifiedRate, .playing:
-                    playButtonImg = "pause.fill"
-                    break
-                default:
-                    playButtonImg = "play.slash.fill"
-                    break
-                }
-            }
+            PlayButton()
             Button {
                 controller.playNextSong()
             } label: {
