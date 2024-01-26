@@ -32,6 +32,8 @@ class DatabaseSong: Object {
     convenience init(fromSong song: Song) {
         self.init()
         identifier = song.identifier
+        backendId = song.backendId
+        url = song.url.absoluteString
         title = song.title
         artist = song.artist
         album = song.album
