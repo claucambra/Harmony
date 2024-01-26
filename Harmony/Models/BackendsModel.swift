@@ -27,4 +27,13 @@ class BackendsModel: ObservableObject {
             }
         }
     }
+
+    func backend(id: String) -> (any Backend)? {
+        for backend in backends {
+            if backend.id == id {
+                return backend
+            }
+        }
+        return nil
+    }
 }
