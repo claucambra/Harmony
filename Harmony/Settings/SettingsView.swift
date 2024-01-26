@@ -22,7 +22,7 @@ struct SettingsView: View {
                 .tag(Tabs.backends)
         }
         .padding(20)
-        .frame(width: 375, height: 150)
+        .frame(minWidth: 480, minHeight: 240)
         #else
         List {
             NavigationLink {
