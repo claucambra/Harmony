@@ -13,6 +13,7 @@ struct HarmonyApp: App {
         WindowGroup {
             ContentView()
         }
+        .windowToolbarStyle(.unified(showsTitle: false))
         #if os(macOS)
         Settings {
             SettingsView()
