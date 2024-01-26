@@ -46,8 +46,10 @@ class PlayerQueue: NSObject, ObservableObject {
             }
             songs.append(contentsOf: futureSongs)
         } else {
-            let firstIndexToDrop = currentSongIndex + 1
-            songs.remove(atOffsets: IndexSet(firstIndexToDrop...songs.count - 1))
+            if (songs.count > 0) {
+                let firstIndexToDrop = currentSongIndex + 1
+                songs.remove(atOffsets: IndexSet(firstIndexToDrop...songs.count - 1))
+            }
 
             if gotNewCurrentSong {
                 appendNewCurrentSong(song: song)
