@@ -47,6 +47,7 @@
 		535054042B6356EF00D7EAF2 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535054032B6356EF00D7EAF2 /* Logger.swift */; };
 		535054062B6357DC00D7EAF2 /* PlayerButtonStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535054052B6357DC00D7EAF2 /* PlayerButtonStackView.swift */; };
 		535054082B635A0B00D7EAF2 /* PlayerScrubberView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535054072B635A0B00D7EAF2 /* PlayerScrubberView.swift */; };
+		5350540A2B63939C00D7EAF2 /* PlayerQueueView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535054092B63939C00D7EAF2 /* PlayerQueueView.swift */; };
 		535F1BD12B4A8F1400C78D98 /* HarmonyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535F1BD02B4A8F1400C78D98 /* HarmonyApp.swift */; };
 		535F1BD32B4A8F1400C78D98 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535F1BD22B4A8F1400C78D98 /* ContentView.swift */; };
 		535F1BD52B4A8F1600C78D98 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 535F1BD42B4A8F1600C78D98 /* Assets.xcassets */; };
@@ -150,6 +151,7 @@
 		535054032B6356EF00D7EAF2 /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		535054052B6357DC00D7EAF2 /* PlayerButtonStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerButtonStackView.swift; sourceTree = "<group>"; };
 		535054072B635A0B00D7EAF2 /* PlayerScrubberView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerScrubberView.swift; sourceTree = "<group>"; };
+		535054092B63939C00D7EAF2 /* PlayerQueueView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerQueueView.swift; sourceTree = "<group>"; };
 		535F1BCD2B4A8F1400C78D98 /* Harmony.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Harmony.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		535F1BD02B4A8F1400C78D98 /* HarmonyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HarmonyApp.swift; sourceTree = "<group>"; };
 		535F1BD22B4A8F1400C78D98 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -373,6 +375,7 @@
 				535053F62B625AB100D7EAF2 /* PlayerController.swift */,
 				535053FC2B62822F00D7EAF2 /* PlayerControlsView.swift */,
 				535054002B62D98200D7EAF2 /* PlayerQueue.swift */,
+				535054092B63939C00D7EAF2 /* PlayerQueueView.swift */,
 				535054072B635A0B00D7EAF2 /* PlayerScrubberView.swift */,
 			);
 			path = Player;
@@ -707,6 +710,7 @@
 				535F1BD12B4A8F1400C78D98 /* HarmonyApp.swift in Sources */,
 				535053982B5CF4C900D7EAF2 /* BackendConfigurationFieldView.swift in Sources */,
 				535053F02B62186F00D7EAF2 /* SettingsSheet.swift in Sources */,
+				5350540A2B63939C00D7EAF2 /* PlayerQueueView.swift in Sources */,
 				535054042B6356EF00D7EAF2 /* Logger.swift in Sources */,
 				535054082B635A0B00D7EAF2 /* PlayerScrubberView.swift in Sources */,
 				535054012B62D98200D7EAF2 /* PlayerQueue.swift in Sources */,
