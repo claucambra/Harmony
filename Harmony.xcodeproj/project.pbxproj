@@ -18,7 +18,6 @@
 		535053552B5955F900D7EAF2 /* LocalBackend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5350534F2B5955F900D7EAF2 /* LocalBackend.swift */; };
 		5350535B2B59565400D7EAF2 /* LocalBackendTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535053582B59565400D7EAF2 /* LocalBackendTests.swift */; };
 		5350535C2B59565400D7EAF2 /* FilePlayabilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5350535A2B59565400D7EAF2 /* FilePlayabilityTests.swift */; };
-		535053602B59581600D7EAF2 /* SongsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5350535F2B59581600D7EAF2 /* SongsModel.swift */; };
 		535053622B5975A100D7EAF2 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535053612B5975A100D7EAF2 /* Logger.swift */; };
 		535053642B5A416900D7EAF2 /* SongTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535053632B5A416900D7EAF2 /* SongTest.swift */; };
 		535053712B5A9A7500D7EAF2 /* Free_Test_Data_1MB_MP3.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 535053702B5A9A7500D7EAF2 /* Free_Test_Data_1MB_MP3.mp3 */; };
@@ -60,6 +59,7 @@
 		535054262B64180C00D7EAF2 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 535054252B64180C00D7EAF2 /* RealmSwift */; };
 		535054282B641A8900D7EAF2 /* DatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535054272B641A8900D7EAF2 /* DatabaseManager.swift */; };
 		5350542A2B641FAB00D7EAF2 /* DatabaseSong.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535054292B641FAA00D7EAF2 /* DatabaseSong.swift */; };
+		5350542B2B64293600D7EAF2 /* SongsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5350535F2B59581600D7EAF2 /* SongsModel.swift */; };
 		535F1BD12B4A8F1400C78D98 /* HarmonyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535F1BD02B4A8F1400C78D98 /* HarmonyApp.swift */; };
 		535F1BD32B4A8F1400C78D98 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535F1BD22B4A8F1400C78D98 /* ContentView.swift */; };
 		535F1BD52B4A8F1600C78D98 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 535F1BD42B4A8F1600C78D98 /* Assets.xcassets */; };
@@ -237,7 +237,6 @@
 				535053482B5955F900D7EAF2 /* Common */,
 				5350538B2B5BD18B00D7EAF2 /* Files */,
 				535053762B5AB22F00D7EAF2 /* Extensions */,
-				5350535E2B59580400D7EAF2 /* Models */,
 				535053472B5955F900D7EAF2 /* HarmonyKit.docc */,
 				5350534B2B5955F900D7EAF2 /* HarmonyKit.h */,
 			);
@@ -307,14 +306,6 @@
 				535053632B5A416900D7EAF2 /* SongTest.swift */,
 			);
 			path = Common;
-			sourceTree = "<group>";
-		};
-		5350535E2B59580400D7EAF2 /* Models */ = {
-			isa = PBXGroup;
-			children = (
-				5350535F2B59581600D7EAF2 /* SongsModel.swift */,
-			);
-			path = Models;
 			sourceTree = "<group>";
 		};
 		5350536A2B5A930A00D7EAF2 /* Test Data */ = {
@@ -390,6 +381,7 @@
 			isa = PBXGroup;
 			children = (
 				5350539F2B5D1CC700D7EAF2 /* BackendsModel.swift */,
+				5350535F2B59581600D7EAF2 /* SongsModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -721,7 +713,6 @@
 			files = (
 				5350541D2B63C71400D7EAF2 /* BackendPresentable.swift in Sources */,
 				535053F42B6239AC00D7EAF2 /* FilePickerRepresentable.swift in Sources */,
-				535053602B59581600D7EAF2 /* SongsModel.swift in Sources */,
 				535053782B5AB24500D7EAF2 /* AVAsset+Extension.swift in Sources */,
 				535053522B5955F900D7EAF2 /* LocalFileUtils.swift in Sources */,
 				535053882B5BCD0200D7EAF2 /* BackendDescription.swift in Sources */,
