@@ -5,6 +5,7 @@
 //  Created by Claudio Cambra on 21/1/24.
 //
 
+import AVFoundation
 import Foundation
 import HarmonyKit
 
@@ -35,5 +36,10 @@ class BackendsModel: ObservableObject {
             }
         }
         return nil
+    }
+
+    func assetForSong(atURL url: URL, backendId: String) -> AVAsset? {
+        guard let backend = backend(id: backendId) else { return nil }
+        return backend.assetForSong(atURL: url)
     }
 }
