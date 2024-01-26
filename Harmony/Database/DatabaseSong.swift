@@ -11,6 +11,7 @@ import HarmonyKit
 import OSLog
 import RealmSwift
 
+@MainActor
 class DatabaseSong: Object {
     @Persisted(primaryKey: true) var identifier: String  // Unique identifier provided by backend
     @Persisted var backendId: String
