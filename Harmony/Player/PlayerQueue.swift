@@ -8,9 +8,9 @@
 import Foundation
 import HarmonyKit
 
-class PlayerQueue: NSObject {
-    var songs: [Song] = []
-    private var currentSongIndex: Int = 0
+class PlayerQueue: NSObject, ObservableObject {
+    @Published var songs: [Song] = []
+    private(set) var currentSongIndex: Int = 0
 
     override public init() {
         super.init()
