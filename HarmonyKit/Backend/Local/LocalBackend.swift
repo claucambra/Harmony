@@ -34,7 +34,7 @@ public class LocalBackend : NSObject, Backend {
             )
         ]
     )
-    public let id: String = UUID().uuidString
+    public let id: String
     @Published public var presentation = BackendPresentable(
         systemImage: LocalBackend.description.systemImageName,
         primary: LocalBackend.description.name,
@@ -56,12 +56,14 @@ public class LocalBackend : NSObject, Backend {
         #else
         path = URL(fileURLWithPath: config[LocalBackend.pathConfigId] as? String ?? "")
         #endif
+        id = config[BackendConfigurationIdFieldKey] as! String
         super.init()
         presentation.config = "Path: " + path.path
     }
 
-    public init(path: URL) {
+    public init(path: URL, id: String) {
         self.path = path
+        self.id = id
         super.init()
         presentation.config = "Path: " + path.path
     }
@@ -72,7 +74,7 @@ public class LocalBackend : NSObject, Backend {
             let asset = AVAsset(url: url)
             guard let csum = calculateMD5Checksum(forFileAtLocalURL: url) else { continue }
             guard let song = await Song(
-                url: url, asset: asset, identifier: csum, backendId: LocalBackend.description.id
+                url: url, asset: asset, identifier: csum, backendId: id
             ) else { continue }
             songs.append(song)
         }

@@ -9,7 +9,6 @@ import Foundation
 import HarmonyKit
 import OSLog
 
-let BackendConfigurationIdFieldKey = "config-id"
 #if os(macOS)
 let BackendConfigurationLocalURLBookmarkDataFieldKeySuffix = "__bookmark-data"
 #endif
