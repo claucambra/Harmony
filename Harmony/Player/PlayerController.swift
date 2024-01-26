@@ -73,12 +73,24 @@ class PlayerController: NSObject, ObservableObject  {
             }
         }
     }
-    @Published private(set) var currentTime: CMTime? {
+    @Published var songDuration: TimeInterval = 0 {
+        didSet {
+            let durationDuration = Duration.seconds(songDuration)
+            displayedSongDuration = durationDuration.formatted(.time(pattern: .minuteSecond))
+        }
+    }
+    @Published var currentSeconds: TimeInterval = 0 { // Manipulable by scrubber
+        didSet {
+            let currentDuration = Duration.seconds(currentSeconds)
+            displayedCurrentTime = currentDuration.formatted(.time(pattern: .minuteSecond))
+        }
+    }
+    @Published private(set) var currentTime: CMTime? { // Always indicates actual current time
         didSet { currentSeconds = currentTime?.seconds ?? 0 }
     }
+    @Published private(set) var displayedCurrentTime: String = "0:00"
+    @Published private(set) var displayedSongDuration: String = "0:00"
     @Published private(set) var timeControlStatus: AVPlayer.TimeControlStatus = .paused
-    @Published var currentSeconds: TimeInterval = 0
-    @Published var songDuration: TimeInterval = 0
     @Published var queue = PlayerQueue()
     private var playerContext = 0
     private var periodicTimeObserver: Any?
