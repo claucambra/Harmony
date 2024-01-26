@@ -9,7 +9,6 @@ import SwiftUI
 
 struct PlayerButtonStackView: View {
     @ObservedObject var controller = PlayerController.shared
-    @State var playButtonImg: String = "play.fill"
 
     var body: some View {
         HStack {
@@ -19,19 +18,9 @@ struct PlayerButtonStackView: View {
                 Label("Shuffle", systemImage: "shuffle")
             }
             .labelStyle(.iconOnly)
-            Button {
-                controller.playPreviousSong()
-            } label: {
-                Label("Previous", systemImage: "backward.fill")
-            }
-            .labelStyle(.iconOnly)
+            ChangeSongButton(buttonChangeType: .previous)
             PlayButton()
-            Button {
-                controller.playNextSong()
-            } label: {
-                Label("Next", systemImage: "forward.fill")
-            }
-            .labelStyle(.iconOnly)
+            ChangeSongButton(buttonChangeType: .next)
             Button {
                 // TODO
             } label: {
