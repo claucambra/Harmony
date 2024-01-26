@@ -18,16 +18,19 @@ struct PlayerButtonStackView: View {
             } label: {
                 Label("Shuffle", systemImage: "shuffle")
             }
+            .labelStyle(.iconOnly)
             Button {
                 controller.playPreviousSong()
             } label: {
                 Label("Previous", systemImage: "backward.fill")
             }
+            .labelStyle(.iconOnly)
             Button {
                 controller.togglePlayPause()
             } label: {
                 Label("Play", systemImage: playButtonImg)
             }
+            .labelStyle(.iconOnly)
             .onChange(of: controller.timeControlStatus) {
                 switch (controller.timeControlStatus) {
                 case .paused:
@@ -46,11 +49,17 @@ struct PlayerButtonStackView: View {
             } label: {
                 Label("Next", systemImage: "forward.fill")
             }
+            .labelStyle(.iconOnly)
             Button {
                 // TODO
             } label: {
                 Label("Repeat", systemImage: "repeat")
             }
+            .labelStyle(.iconOnly)
         }
     }
+}
+
+#Preview {
+    PlayerButtonStackView()
 }
