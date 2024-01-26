@@ -56,6 +56,9 @@
 		5350541B2B63BBC500D7EAF2 /* ConfiguredBackendListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5350541A2B63BBC500D7EAF2 /* ConfiguredBackendListItemView.swift */; };
 		5350541D2B63C71400D7EAF2 /* BackendPresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5350541C2B63C71400D7EAF2 /* BackendPresentable.swift */; };
 		535054212B64142200D7EAF2 /* DequeModule in Frameworks */ = {isa = PBXBuildFile; productRef = 535054202B64142200D7EAF2 /* DequeModule */; };
+		535054242B64180C00D7EAF2 /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = 535054232B64180C00D7EAF2 /* Realm */; };
+		535054262B64180C00D7EAF2 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 535054252B64180C00D7EAF2 /* RealmSwift */; };
+		535054282B641A8900D7EAF2 /* DatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535054272B641A8900D7EAF2 /* DatabaseManager.swift */; };
 		535F1BD12B4A8F1400C78D98 /* HarmonyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535F1BD02B4A8F1400C78D98 /* HarmonyApp.swift */; };
 		535F1BD32B4A8F1400C78D98 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535F1BD22B4A8F1400C78D98 /* ContentView.swift */; };
 		535F1BD52B4A8F1600C78D98 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 535F1BD42B4A8F1600C78D98 /* Assets.xcassets */; };
@@ -167,6 +170,7 @@
 		535054182B63A4AA00D7EAF2 /* QueueButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueueButton.swift; sourceTree = "<group>"; };
 		5350541A2B63BBC500D7EAF2 /* ConfiguredBackendListItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfiguredBackendListItemView.swift; sourceTree = "<group>"; };
 		5350541C2B63C71400D7EAF2 /* BackendPresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendPresentable.swift; sourceTree = "<group>"; };
+		535054272B641A8900D7EAF2 /* DatabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseManager.swift; sourceTree = "<group>"; };
 		535F1BCD2B4A8F1400C78D98 /* Harmony.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Harmony.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		535F1BD02B4A8F1400C78D98 /* HarmonyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HarmonyApp.swift; sourceTree = "<group>"; };
 		535F1BD22B4A8F1400C78D98 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -200,6 +204,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				535054262B64180C00D7EAF2 /* RealmSwift in Frameworks */,
+				535054242B64180C00D7EAF2 /* Realm in Frameworks */,
 				5350533E2B5955C900D7EAF2 /* HarmonyKit.framework in Frameworks */,
 				535054212B64142200D7EAF2 /* DequeModule in Frameworks */,
 			);
@@ -420,6 +426,14 @@
 			path = Buttons;
 			sourceTree = "<group>";
 		};
+		5350541E2B640F0D00D7EAF2 /* Database */ = {
+			isa = PBXGroup;
+			children = (
+				535054272B641A8900D7EAF2 /* DatabaseManager.swift */,
+			);
+			path = Database;
+			sourceTree = "<group>";
+		};
 		535F1BC42B4A8F1400C78D98 = {
 			isa = PBXGroup;
 			children = (
@@ -447,6 +461,7 @@
 		535F1BCF2B4A8F1400C78D98 /* Harmony */ = {
 			isa = PBXGroup;
 			children = (
+				5350541E2B640F0D00D7EAF2 /* Database */,
 				535054022B6356E400D7EAF2 /* Extensions */,
 				535053742B5AA63500D7EAF2 /* Library */,
 				5350537A2B5BB1E200D7EAF2 /* Navigation */,
@@ -556,6 +571,8 @@
 			name = Harmony;
 			packageProductDependencies = (
 				535054202B64142200D7EAF2 /* DequeModule */,
+				535054232B64180C00D7EAF2 /* Realm */,
+				535054252B64180C00D7EAF2 /* RealmSwift */,
 			);
 			productName = Harmony;
 			productReference = 535F1BCD2B4A8F1400C78D98 /* Harmony.app */;
@@ -638,6 +655,7 @@
 			mainGroup = 535F1BC42B4A8F1400C78D98;
 			packageReferences = (
 				5350541F2B64142200D7EAF2 /* XCRemoteSwiftPackageReference "swift-collections" */,
+				535054222B64180C00D7EAF2 /* XCRemoteSwiftPackageReference "realm-swift" */,
 			);
 			productRefGroup = 535F1BCE2B4A8F1400C78D98 /* Products */;
 			projectDirPath = "";
@@ -738,6 +756,7 @@
 				535053942B5BDA7500D7EAF2 /* BackendChoiceListItemView.swift in Sources */,
 				535053732B5AA61A00D7EAF2 /* SongsTable.swift in Sources */,
 				535054062B6357DC00D7EAF2 /* PlayerButtonStackView.swift in Sources */,
+				535054282B641A8900D7EAF2 /* DatabaseManager.swift in Sources */,
 				5350537C2B5BB1FE00D7EAF2 /* Sidebar.swift in Sources */,
 				535054192B63A4AA00D7EAF2 /* QueueButton.swift in Sources */,
 				535053812B5BBDC000D7EAF2 /* SettingsView.swift in Sources */,
@@ -1292,6 +1311,14 @@
 				minimumVersion = 1.0.6;
 			};
 		};
+		535054222B64180C00D7EAF2 /* XCRemoteSwiftPackageReference "realm-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/realm/realm-swift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 10.46.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -1299,6 +1326,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 5350541F2B64142200D7EAF2 /* XCRemoteSwiftPackageReference "swift-collections" */;
 			productName = DequeModule;
+		};
+		535054232B64180C00D7EAF2 /* Realm */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 535054222B64180C00D7EAF2 /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = Realm;
+		};
+		535054252B64180C00D7EAF2 /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 535054222B64180C00D7EAF2 /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = RealmSwift;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
