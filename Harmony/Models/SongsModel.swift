@@ -19,12 +19,13 @@ public class SongsModel: ObservableObject {
     public init(withBackends inBackends: [any Backend]) {
         backends = inBackends
         Task {
+            songs = await DatabaseManager.shared.songs()
             await refresh()
         }
     }
 
     public func refresh() async {
-        songs = await withTaskGroup(of: [Song].self, returning: [Song].self) { group in
+        let refreshedSongs = await withTaskGroup(of: [Song].self, returning: [Song].self) { group in
             for backend in backends {
                 group.addTask {
                     return await backend.scan()
@@ -37,5 +38,7 @@ public class SongsModel: ObservableObject {
             }
             return allScannedSongs
         }
+        DatabaseManager.shared.writeSongs(refreshedSongs)
+        songs = refreshedSongs
     }
 }
