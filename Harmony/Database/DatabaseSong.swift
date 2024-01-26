@@ -29,7 +29,8 @@ class DatabaseSong: Object {
         songs.map { DatabaseSong(fromSong: $0) }
     }
 
-    init(fromSong song: Song) {
+    convenience init(fromSong song: Song) {
+        self.init()
         identifier = song.identifier
         title = song.title
         artist = song.artist
