@@ -9,25 +9,26 @@ import SwiftUI
 
 struct PlayButton: View {
     @ObservedObject var controller = PlayerController.shared
-    @State var playButtonImg: String = "play.fill"
+    @State var buttonImage: String = "play.fill"
+    @State var buttonText: String = "Play"
 
     var body: some View {
         Button {
             controller.togglePlayPause()
         } label: {
-            Label("Play", systemImage: playButtonImg)
+            Label(buttonText, systemImage: buttonImage)
         }
         .labelStyle(.iconOnly)
         .onChange(of: controller.timeControlStatus) {
             switch (controller.timeControlStatus) {
             case .paused:
-                playButtonImg = "play.fill"
+                buttonImage = "play.fill"
                 break
             case .waitingToPlayAtSpecifiedRate, .playing:
-                playButtonImg = "pause.fill"
+                buttonImage = "pause.fill"
                 break
             default:
-                playButtonImg = "play.slash.fill"
+                buttonImage = "play.slash.fill"
                 break
             }
         }
