@@ -25,6 +25,10 @@ class DatabaseSong: Object {
     @Persisted var type: String = ""
     @Persisted var duration: TimeInterval = 0  // Seconds
 
+    static func fromSongs(_ songs: [Song]) -> [DatabaseSong] {
+        songs.map { DatabaseSong(fromSong: $0) }
+    }
+
     init(fromSong song: Song) {
         identifier = song.identifier
         title = song.title
