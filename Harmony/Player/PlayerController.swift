@@ -20,6 +20,11 @@ class PlayerController: NSObject, ObservableObject  {
     @Published var avPlayer: AVPlayer? {
         willSet {
             avPlayer?.removeObserver(self, forKeyPath: AVPlayerTimeControlStatusKeyPath)
+            NotificationCenter.default.removeObserver(
+                self,
+                name: .AVPlayerItemDidPlayToEndTime,
+                object: avPlayer?.currentItem
+            )
             currentTime = nil
             if periodicTimeObserver != nil {
                 avPlayer?.removeTimeObserver(periodicTimeObserver!)
@@ -33,6 +38,12 @@ class PlayerController: NSObject, ObservableObject  {
                 forKeyPath: "timeControlStatus",
                 options: [.old, .new],
                 context: &playerContext
+            )
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(playerDidFinishPlayingItemToEnd),
+                name: .AVPlayerItemDidPlayToEndTime,
+                object: avPlayer.currentItem
             )
             songDuration = avPlayer.currentItem?.duration.seconds ?? 0
             periodicTimeObserver = avPlayer.addPeriodicTimeObserver(
@@ -139,6 +150,10 @@ class PlayerController: NSObject, ObservableObject  {
         guard let previousSong = queue.backward() else { return }
         currentSong = previousSong
         avPlayer?.play()
+    }
+
+    @objc func playerDidFinishPlayingItemToEnd(notification: Notification) {
+        playNextSong()
     }
 
     override func observeValue(
