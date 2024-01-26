@@ -55,6 +55,7 @@
 		535054192B63A4AA00D7EAF2 /* QueueButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535054182B63A4AA00D7EAF2 /* QueueButton.swift */; };
 		5350541B2B63BBC500D7EAF2 /* ConfiguredBackendListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5350541A2B63BBC500D7EAF2 /* ConfiguredBackendListItemView.swift */; };
 		5350541D2B63C71400D7EAF2 /* BackendPresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5350541C2B63C71400D7EAF2 /* BackendPresentable.swift */; };
+		535054212B64142200D7EAF2 /* DequeModule in Frameworks */ = {isa = PBXBuildFile; productRef = 535054202B64142200D7EAF2 /* DequeModule */; };
 		535F1BD12B4A8F1400C78D98 /* HarmonyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535F1BD02B4A8F1400C78D98 /* HarmonyApp.swift */; };
 		535F1BD32B4A8F1400C78D98 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535F1BD22B4A8F1400C78D98 /* ContentView.swift */; };
 		535F1BD52B4A8F1600C78D98 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 535F1BD42B4A8F1600C78D98 /* Assets.xcassets */; };
@@ -200,6 +201,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5350533E2B5955C900D7EAF2 /* HarmonyKit.framework in Frameworks */,
+				535054212B64142200D7EAF2 /* DequeModule in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -553,6 +555,7 @@
 			);
 			name = Harmony;
 			packageProductDependencies = (
+				535054202B64142200D7EAF2 /* DequeModule */,
 			);
 			productName = Harmony;
 			productReference = 535F1BCD2B4A8F1400C78D98 /* Harmony.app */;
@@ -634,6 +637,7 @@
 			);
 			mainGroup = 535F1BC42B4A8F1400C78D98;
 			packageReferences = (
+				5350541F2B64142200D7EAF2 /* XCRemoteSwiftPackageReference "swift-collections" */,
 			);
 			productRefGroup = 535F1BCE2B4A8F1400C78D98 /* Products */;
 			projectDirPath = "";
@@ -1278,6 +1282,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		5350541F2B64142200D7EAF2 /* XCRemoteSwiftPackageReference "swift-collections" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-collections.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.6;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		535054202B64142200D7EAF2 /* DequeModule */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5350541F2B64142200D7EAF2 /* XCRemoteSwiftPackageReference "swift-collections" */;
+			productName = DequeModule;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 535F1BC52B4A8F1400C78D98 /* Project object */;
 }

@@ -5,11 +5,12 @@
 //  Created by Claudio Cambra on 26/1/24.
 //
 
+import DequeModule
 import Foundation
 import HarmonyKit
 
 class PlayerQueue: NSObject, ObservableObject {
-    @Published var songs: [Song] = []
+    @Published var songs: Deque<Song> = Deque()
     private(set) var currentSongIndex: Int = 0
 
     override public init() {
@@ -17,7 +18,7 @@ class PlayerQueue: NSObject, ObservableObject {
     }
 
     public init(songs: [Song], containingCurrentSong currentSong: Song? = nil) {
-        self.songs = songs
+        self.songs = Deque(songs)
         if let currentSong = currentSong {
             currentSongIndex = songs.firstIndex(of: currentSong) ?? 0
         }
@@ -46,8 +47,7 @@ class PlayerQueue: NSObject, ObservableObject {
             songs.append(contentsOf: futureSongs)
         } else {
             let firstIndexToDrop = currentSongIndex + 1
-            let itemsToDrop = max(songs.count - firstIndexToDrop, 0)
-            songs = songs.dropLast(itemsToDrop)
+            songs.remove(atOffsets: IndexSet(firstIndexToDrop...songs.count - 1))
 
             if gotNewCurrentSong {
                 appendNewCurrentSong(song: song)
