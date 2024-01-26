@@ -63,34 +63,44 @@ public class LocalBackend : NSObject, Backend {
     func recursiveScan(path: URL) async -> [URL] {
         Logger.localBackend.info("Scanning \(path)")
 
-        let fileManager = FileManager.default
-        var audioFiles: [URL] = []
+        let audioFiles = await withTaskGroup(of: [URL].self, returning: [URL].self) { group in
+            do {
+                let contents = try FileManager.default.contentsOfDirectory(
+                    at: path,
+                    includingPropertiesForKeys: [.isDirectoryKey],
+                    options: [.skipsHiddenFiles]
+                )
 
-        do {
-            let contents = try fileManager.contentsOfDirectory(
-                at: path,
-                includingPropertiesForKeys: [.isDirectoryKey],
-                options: [.skipsHiddenFiles]
-            )
-
-            for item in contents {
-                Logger.localBackend.debug("Found \(item) in \(contents)")
-                var isDirectory: ObjCBool = false
-                if fileManager.fileExists(atPath: item.path, isDirectory: &isDirectory) {
-                    if isDirectory.boolValue {
-                        // If it's a directory, recursively scan it asynchronously
-                        let subdirectoryAudioFiles = await recursiveScan(path: item)
-                        audioFiles.append(contentsOf: subdirectoryAudioFiles)
-                    } else {
-                        // If it's a file, check if it's playable
-                        if filePlayability(fileURL: item) == .filePlayable {
-                            audioFiles.append(item)
+                for item in contents {
+                    group.addTask {
+                        Logger.localBackend.debug("Found \(item) in \(contents)")
+                        var isDirectory: ObjCBool = false
+                        if FileManager.default.fileExists(
+                            atPath: item.path, isDirectory: &isDirectory
+                        ) {
+                            if isDirectory.boolValue {
+                                // If it's a directory, recursively scan it asynchronously
+                                return await self.recursiveScan(path: item)
+                            } else {
+                                // If it's a file, check if it's playable
+                                if filePlayability(fileURL: item) == .filePlayable {
+                                    return [item]
+                                }
+                            }
                         }
+                        return []
                     }
                 }
+
+                var scannedUrls: [URL] = []
+                for await result in group {
+                    scannedUrls.append(contentsOf: result)
+                }
+                return scannedUrls
+            } catch {
+                Logger.localBackend.error("Error scanning directory \(path): \(error).")
+                return []
             }
-        } catch {
-            Logger.localBackend.error("Error scanning directory \(path): \(error).")
         }
 
         return audioFiles
