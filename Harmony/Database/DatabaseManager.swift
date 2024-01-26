@@ -20,4 +20,10 @@ class DatabaseManager {
             return db
         }
     }
+
+    private init() {
+        let db = realm
+        let dbPath = db.configuration.fileURL?.path ?? "unknown"
+        Logger.database.info("Started database manager with db: \(dbPath)")
+    }
 }
