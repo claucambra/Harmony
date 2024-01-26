@@ -12,21 +12,11 @@ struct PlayerButtonStackView: View {
 
     var body: some View {
         HStack {
-            Button {
-                // TODO
-            } label: {
-                Label("Shuffle", systemImage: "shuffle")
-            }
-            .labelStyle(.iconOnly)
+            ShuffleButton()
             ChangeSongButton(buttonChangeType: .previous)
             PlayButton()
             ChangeSongButton(buttonChangeType: .next)
-            Button {
-                // TODO
-            } label: {
-                Label("Repeat", systemImage: "repeat")
-            }
-            .labelStyle(.iconOnly)
+            RepeatButton()
         }
     }
 }
