@@ -13,10 +13,11 @@ struct PlayerControlsView: View {
     var body: some View {
         HStack {
             PlayerButtonStackView()
-            Slider(value: $controller.currentSeconds, in:(0...controller.songDuration)) { editing in
-                controller.scrubState = editing ? .started : .finished
-            }
-            .frame(minWidth: 300, maxWidth: .infinity)
+            PlayerScrubberView()
         }
     }
+}
+
+#Preview {
+    PlayerControlsView()
 }
