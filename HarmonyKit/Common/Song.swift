@@ -14,6 +14,8 @@ public class Song: Identifiable, Hashable {
     }
 
     public var identifier: String
+    public var backendId: String
+    public var url: URL
     public var title: String = ""
     public var artist: String = ""
     public var album: String = ""
@@ -25,8 +27,12 @@ public class Song: Identifiable, Hashable {
     public var duration: CMTime
     public var asset: AVAsset
 
-    public init?(fromAsset asset: AVAsset, withIdentifier id: String) async {
+    public init?(url: URL, asset: AVAsset, identifier: String, backendId: String) async {
+        self.url = url
         self.asset = asset
+        self.identifier = identifier
+        self.backendId = backendId
+
         guard let metadata = try? await asset.load(.commonMetadata) else {
             Logger.defaultLog.log("Could not get metadata for asset \(asset)")
             return nil
@@ -62,7 +68,6 @@ public class Song: Identifiable, Hashable {
             }
         }
 
-        identifier = id
         do {
             duration = try await asset.load(.duration)
         } catch {

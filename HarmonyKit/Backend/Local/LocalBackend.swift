@@ -66,6 +66,19 @@ public class LocalBackend : NSObject, Backend {
         presentation.config = "Path: " + path.path
     }
 
+    func songsFromLocalUrls(_ urls:[URL]) async -> [Song] {
+        var songs: [Song] = []
+        for url in urls {
+            let asset = AVAsset(url: url)
+            guard let csum = calculateMD5Checksum(forFileAtLocalURL: url) else { continue }
+            guard let song = await Song(
+                url: url, asset: asset, identifier: csum, backendId: LocalBackend.description.id
+            ) else { continue }
+            songs.append(song)
+        }
+        return songs
+    }
+
     public func scan() async -> [Song] {
         Logger.localBackend.info("Starting full scan of \(self.path)")
         DispatchQueue.main.async {
