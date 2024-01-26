@@ -27,6 +27,24 @@ class DatabaseManager {
         Logger.database.info("Started database manager with db: \(dbPath)")
     }
 
+    func songs() async -> [Song] {
+        let objects = realm.objects(DatabaseSong.self)
+        return await withTaskGroup(of: Song?.self, returning: [Song].self) { group in
+            for object in objects {
+                group.addTask {
+                    return await object.toSong()
+                }
+            }
+
+            var songs: [Song] = []
+            for await result in group {
+                guard let song = result else { continue }
+                songs.append(song)
+            }
+            return songs
+        }
+    }
+
     func writeSong(_ song: Song) {
         let dbSong = DatabaseSong(fromSong: song)
         do {
