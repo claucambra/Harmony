@@ -8,11 +8,12 @@
 import AVFoundation
 import Foundation
 import HarmonyKit
+import OrderedCollections
 
 class BackendsModel: ObservableObject {
     static let shared = BackendsModel()
     @Published var configurations = existingConfigs()
-    @Published var backends: [any Backend] = []
+    @Published var backends: OrderedDictionary<String, any Backend> = [:]
 
     private init() {
         updateBackends()
@@ -24,22 +25,13 @@ class BackendsModel: ObservableObject {
                 guard let configuredBackend = backendFromId(backend.id, withConfig: config) else {
                     continue
                 }
-                backends.append(configuredBackend)
+                backends[configuredBackend.id] = configuredBackend
             }
         }
-    }
-
-    func backend(id: String) -> (any Backend)? {
-        for backend in backends {
-            if backend.id == id {
-                return backend
-            }
-        }
-        return nil
     }
 
     func assetForSong(atURL url: URL, backendId: String) -> AVAsset? {
-        guard let backend = backend(id: backendId) else { return nil }
+        guard let backend = backends[backendId] else { return nil }
         return backend.assetForSong(atURL: url)
     }
 }

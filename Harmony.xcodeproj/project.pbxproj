@@ -60,6 +60,7 @@
 		535054282B641A8900D7EAF2 /* DatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535054272B641A8900D7EAF2 /* DatabaseManager.swift */; };
 		5350542A2B641FAB00D7EAF2 /* DatabaseSong.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535054292B641FAA00D7EAF2 /* DatabaseSong.swift */; };
 		5350542B2B64293600D7EAF2 /* SongsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5350535F2B59581600D7EAF2 /* SongsModel.swift */; };
+		5350542F2B64E48600D7EAF2 /* OrderedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = 5350542E2B64E48600D7EAF2 /* OrderedCollections */; };
 		535F1BD12B4A8F1400C78D98 /* HarmonyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535F1BD02B4A8F1400C78D98 /* HarmonyApp.swift */; };
 		535F1BD32B4A8F1400C78D98 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535F1BD22B4A8F1400C78D98 /* ContentView.swift */; };
 		535F1BD52B4A8F1600C78D98 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 535F1BD42B4A8F1600C78D98 /* Assets.xcassets */; };
@@ -206,6 +207,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5350542F2B64E48600D7EAF2 /* OrderedCollections in Frameworks */,
 				535054262B64180C00D7EAF2 /* RealmSwift in Frameworks */,
 				535054242B64180C00D7EAF2 /* Realm in Frameworks */,
 				5350533E2B5955C900D7EAF2 /* HarmonyKit.framework in Frameworks */,
@@ -429,6 +431,13 @@
 			path = Database;
 			sourceTree = "<group>";
 		};
+		5350542D2B64E48600D7EAF2 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		535F1BC42B4A8F1400C78D98 = {
 			isa = PBXGroup;
 			children = (
@@ -438,6 +447,7 @@
 				5350532A2B5955C800D7EAF2 /* HarmonyKit */,
 				535053382B5955C900D7EAF2 /* HarmonyKitTests */,
 				535F1BCE2B4A8F1400C78D98 /* Products */,
+				5350542D2B64E48600D7EAF2 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -568,6 +578,7 @@
 				535054202B64142200D7EAF2 /* DequeModule */,
 				535054232B64180C00D7EAF2 /* Realm */,
 				535054252B64180C00D7EAF2 /* RealmSwift */,
+				5350542E2B64E48600D7EAF2 /* OrderedCollections */,
 			);
 			productName = Harmony;
 			productReference = 535F1BCD2B4A8F1400C78D98 /* Harmony.app */;
@@ -1332,6 +1343,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 535054222B64180C00D7EAF2 /* XCRemoteSwiftPackageReference "realm-swift" */;
 			productName = RealmSwift;
+		};
+		5350542E2B64E48600D7EAF2 /* OrderedCollections */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5350541F2B64142200D7EAF2 /* XCRemoteSwiftPackageReference "swift-collections" */;
+			productName = OrderedCollections;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
