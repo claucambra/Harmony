@@ -6,12 +6,14 @@
 //
 
 import HarmonyKit
+import RealmSwift
 import SwiftUI
 
 struct SongsTable: View {
     @ObservedObject var model: SongsModel
-    @State private var sortOrder = [KeyPathComparator(\Song.title, order: .reverse)]
-    @Binding var selection: Set<Song.ID>
+    @ObservedResults(DatabaseSong.self) var songs
+    @State private var sortOrder = [KeyPathComparator(\DatabaseSong.title, order: .reverse)]
+    @Binding var selection: Set<DatabaseSong.ID>
 
     var body: some View {
         Table(selection: $selection, sortOrder: $sortOrder) {
@@ -20,7 +22,7 @@ struct SongsTable: View {
             TableColumn("Artist", value: \.artist)
             TableColumn("Genre", value: \.genre)
         } rows: {
-            ForEach(model.songs) { song in
+            ForEach(songs) { song in
                 TableRow(song)
             }
         }
