@@ -11,7 +11,10 @@ import RealmSwift
 import SwiftUI
 
 struct SongsTable: View {
-    @ObservedResults(DatabaseSong.self) var songs
+    @ObservedResults(
+        DatabaseSong.self,
+        sortDescriptor: SortDescriptor(keyPath: \DatabaseSong.title)
+    ) var songs
     @State private var sortOrder = [KeyPathComparator(\DatabaseSong.title, order: .reverse)]
     @Binding var selection: Set<DatabaseSong.ID>
 
@@ -26,6 +29,12 @@ struct SongsTable: View {
                 TableRow(song)
             }
         }
+        .onChange(of: sortOrder, { oldValue, newValue in
+            guard let sortDescriptor = newValue.first else { return }
+            let keyPath = sortDescriptor.keyPath
+            let ascending = sortDescriptor.order == .reverse
+            $songs.sortDescriptor = SortDescriptor(keyPath: keyPath, ascending: ascending)
+        })
         .contextMenu(forSelectionType: DatabaseSong.ID.self) { items in
             // TODO
         } primaryAction: { ids in
@@ -35,7 +44,7 @@ struct SongsTable: View {
                         Logger.songsTable.error("Could not find song with id: \(id)")
                         return
                     }
-                    guard let song = await dbObject.toSong() else {
+                    guard let song = dbObject.toSong() else {
                         Logger.songsTable.error("Could not convert dbsong with id: \(id)")
                         return
                     }
@@ -48,7 +57,7 @@ struct SongsTable: View {
                     var futureSongs: [Song] = []
                     for i in (nextIdx...songs.count - 1) {
                         let futureDbObject = songs[i]
-                        guard let futureSong = await futureDbObject.toSong() else {
+                        guard let futureSong = futureDbObject.toSong() else {
                             Logger.songsTable.error("Could not convert future song of id: \(id)")
                             continue
                         }
