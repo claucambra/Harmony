@@ -46,6 +46,11 @@ class PlayerController: NSObject, ObservableObject  {
                 object: avPlayer.currentItem
             )
             songDuration = avPlayer.currentItem?.duration.seconds ?? 0
+            if songDuration.isNaN {
+                Logger.player.warning("AVPlayer current item duration seconds isNaN.")
+                Logger.player.warning("Trying to use controller's current song's duration secs.")
+                songDuration = currentSong?.duration.seconds ?? 0
+            }
             periodicTimeObserver = avPlayer.addPeriodicTimeObserver(
                 forInterval: hundredMsTime, queue: .main
             ) { [weak self] time in
@@ -86,6 +91,10 @@ class PlayerController: NSObject, ObservableObject  {
     }
     @Published var songDuration: TimeInterval = 0 {
         didSet {
+            guard !songDuration.isNaN else {
+                Logger.player.error("Song duration isNaN. Cannot set displayed song duration")
+                return
+            }
             let durationDuration = Duration.seconds(songDuration)
             displayedSongDuration = durationDuration.formatted(.time(pattern: .minuteSecond))
         }
