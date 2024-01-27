@@ -8,6 +8,8 @@
 import AVFoundation
 import OSLog
 
+public typealias SongAssetProviderClosure = (Song) -> AVAsset
+
 public class Song: Identifiable, Hashable {
     public static func == (lhs: Song, rhs: Song) -> Bool {
         lhs.identifier == rhs.identifier
@@ -25,11 +27,20 @@ public class Song: Identifiable, Hashable {
     public var contributor: String = ""
     public var type: String = ""
     public var duration: CMTime
-    public var asset: AVAsset
+    public var asset: AVAsset {
+        get {
+            if internalAsset == nil {
+                internalAsset = assetProviderClosure!(self)
+            }
+            return internalAsset!
+        }
+    }
+    private var internalAsset: AVAsset?
+    private var assetProviderClosure: SongAssetProviderClosure?
 
     public init?(url: URL, asset: AVAsset, identifier: String, backendId: String) async {
         self.url = url
-        self.asset = asset
+        self.internalAsset = asset
         self.identifier = identifier
         self.backendId = backendId
 
@@ -73,6 +84,36 @@ public class Song: Identifiable, Hashable {
         } catch {
             duration = CMTime(seconds: 0, preferredTimescale: 44100)
         }
+    }
+
+    public init(
+        identifier: String,
+        backendId: String,
+        url: URL,
+        title: String = "",
+        artist: String = "",
+        album: String = "",
+        genre: String = "",
+        creator: String = "",
+        subject: String = "",
+        contributor: String = "",
+        type: String = "",
+        duration: CMTime,
+        assetProviderClosure: @escaping SongAssetProviderClosure
+    ) {
+        self.identifier = identifier
+        self.backendId = backendId
+        self.url = url
+        self.title = title
+        self.artist = artist
+        self.album = album
+        self.genre = genre
+        self.creator = creator
+        self.subject = subject
+        self.contributor = contributor
+        self.type = type
+        self.duration = duration
+        self.assetProviderClosure = assetProviderClosure
     }
 
     public func hash(into hasher: inout Hasher) {
