@@ -62,47 +62,31 @@ public class Song: Identifiable, Hashable {
         await setupArtwork()
 
         guard !url.lastPathComponent.contains(".flac") else {
-            // TODO: What do when these are remote?
-            Logger.defaultLog.debug("Custom handling for flac: \(url)")
-            let flacMetadataTask = Task {
-                var fileId: AudioFileID? = nil
-                var status: OSStatus = AudioFileOpenURL(
-                    url as CFURL, .readPermission, kAudioFileFLACType, &fileId
-                )
-                guard let audioFile = fileId else { return }
-
-                var dict: CFDictionary? = nil
-                var dataSize = UInt32(MemoryLayout<CFDictionary?>.size(ofValue: dict))
-
-                status = AudioFileGetProperty(audioFile, kAudioFilePropertyInfoDictionary, &dataSize, &dict)
-                guard status == noErr else { return }
-
-                AudioFileClose(audioFile)
-
-                guard let cfDict = dict else { return }
-                let tagsDict = NSDictionary(dictionary: cfDict)
-                for (key, value) in tagsDict {
-                    let key = key as? String ?? ""
-                    let value = value as? String
-                    if key == AVMetadataKey.commonKeyTitle.rawValue {
-                        title = value ?? ""
-                    } else if key == AVMetadataKey.commonKeyAlbumName.rawValue || key == "album" {
-                        album = value ?? ""
-                    } else if key == AVMetadataKey.commonKeyArtist.rawValue {
-                        artist = value ?? ""
-                    } else if key == AVMetadataKey.commonKeyCreator.rawValue {
-                        creator = value ?? ""
-                    } else if key == AVMetadataKey.commonKeySubject.rawValue {
-                        subject = value ?? ""
-                    } else if key == AVMetadataKey.commonKeyContributor.rawValue {
-                        contributor = value ?? ""
-                    } else if key == AVMetadataKey.commonKeyType.rawValue {
-                        type = value ?? ""
-                    }
+            let tagsDict = audioFileMetadata()
+            for (key, value) in tagsDict {
+                let key = key as? String ?? ""
+                if key == AVMetadataKey.commonKeyArtwork.rawValue {
+                    artwork = value as? Data ?? Data()
+                    continue
                 }
-                return
+
+                let value = value as? String
+                if key == AVMetadataKey.commonKeyTitle.rawValue {
+                    title = value ?? ""
+                } else if key == AVMetadataKey.commonKeyAlbumName.rawValue || key == "album" {
+                    album = value ?? ""
+                } else if key == AVMetadataKey.commonKeyArtist.rawValue {
+                    artist = value ?? ""
+                } else if key == AVMetadataKey.commonKeyCreator.rawValue {
+                    creator = value ?? ""
+                } else if key == AVMetadataKey.commonKeySubject.rawValue {
+                    subject = value ?? ""
+                } else if key == AVMetadataKey.commonKeyContributor.rawValue {
+                    contributor = value ?? ""
+                } else if key == AVMetadataKey.commonKeyType.rawValue {
+                    type = value ?? ""
+                }
             }
-            _ = await flacMetadataTask.result
             return
         }
 
@@ -210,5 +194,25 @@ public class Song: Identifiable, Hashable {
             artwork = data
         }
         #endif
+    }
+
+    func audioFileMetadata() -> NSDictionary {
+        // TODO: What do when url is remote?
+        var fileId: AudioFileID? = nil
+        var status: OSStatus = AudioFileOpenURL(
+            url as CFURL, .readPermission, kAudioFileFLACType, &fileId
+        )
+        guard let audioFile = fileId else { return NSDictionary() }
+
+        var dict: CFDictionary? = nil
+        var dataSize = UInt32(MemoryLayout<CFDictionary?>.size(ofValue: dict))
+
+        status = AudioFileGetProperty(audioFile, kAudioFilePropertyInfoDictionary, &dataSize, &dict)
+        guard status == noErr else { return NSDictionary() }
+
+        AudioFileClose(audioFile)
+
+        guard let cfDict = dict else { return NSDictionary() }
+        return NSDictionary(dictionary: cfDict)
     }
 }
