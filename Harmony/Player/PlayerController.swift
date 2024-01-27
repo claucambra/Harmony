@@ -62,7 +62,8 @@ class PlayerController: NSObject, ObservableObject  {
                 case .finished:
                     // Prevent jumping of the scrubber
                     let seconds = self?.currentSeconds ?? 0
-                    self?.currentTime = CMTime(seconds: seconds, preferredTimescale: 1)
+                    let timeScale = self?.currentTime?.timescale ?? 1
+                    self?.currentTime = CMTime(seconds: seconds, preferredTimescale: timeScale)
                     self?.scrubState = .inactive
                 }
             }
