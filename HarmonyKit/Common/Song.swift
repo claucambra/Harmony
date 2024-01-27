@@ -50,32 +50,21 @@ public class Song: Identifiable, Hashable {
         }
 
         for item in metadata {
-            if let value = try? await item.load(.value) as? String {
-                switch item.commonKey?.rawValue {
-                case "title":
-                    title = value
-                    break
-                case "albumName":
-                    album = value
-                    break
-                case "artist":
-                    artist = value
-                    break
-                case "creator":
-                    creator = value
-                    break
-                case "subject":
-                    subject = value
-                    break
-                case "contributor":
-                    contributor = value
-                    break
-                case "type":
-                    type = value
-                    break
-                default:
-                    break
-                }
+            let value = try? await item.load(.stringValue)
+            if item.commonKey == .commonKeyTitle {
+                title = value ?? ""
+            } else if item.commonKey == .commonKeyAlbumName {
+                album = value ?? ""
+            } else if item.commonKey == .commonKeyArtist {
+                artist = value ?? ""
+            } else if item.commonKey == .commonKeyCreator {
+                creator = value ?? ""
+            } else if item.commonKey == .commonKeySubject {
+                subject = value ?? ""
+            } else if item.commonKey == .commonKeyContributor {
+                contributor = value ?? ""
+            } else if item.commonKey == .commonKeyType {
+                type = value ?? ""
             }
         }
 
