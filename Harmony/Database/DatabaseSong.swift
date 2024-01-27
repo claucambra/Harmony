@@ -25,6 +25,7 @@ class DatabaseSong: Object, ObjectKeyIdentifiable {
     @Persisted var contributor: String = ""
     @Persisted var type: String = ""
     @Persisted var duration: TimeInterval = 0  // Seconds
+    @Persisted var timeScale: Int32
 
     static func fromSongs(_ songs: [Song]) -> [DatabaseSong] {
         songs.map { DatabaseSong(fromSong: $0) }
@@ -44,6 +45,7 @@ class DatabaseSong: Object, ObjectKeyIdentifiable {
         contributor = song.contributor
         type = song.type
         duration = song.duration.seconds
+        timeScale = song.duration.timescale
     }
 
     func toSong() async -> Song? {
