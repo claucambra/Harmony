@@ -6,11 +6,11 @@
 //
 
 import HarmonyKit
+import OSLog
 import RealmSwift
 import SwiftUI
 
 struct SongsTable: View {
-    @ObservedObject var model: SongsModel
     @ObservedResults(DatabaseSong.self) var songs
     @State private var sortOrder = [KeyPathComparator(\DatabaseSong.title, order: .reverse)]
     @Binding var selection: Set<DatabaseSong.ID>
@@ -26,14 +26,36 @@ struct SongsTable: View {
                 TableRow(song)
             }
         }
-        .contextMenu(forSelectionType: Song.ID.self) { items in
+        .contextMenu(forSelectionType: DatabaseSong.ID.self) { items in
             // TODO
-        } primaryAction: { items in
-            for item in items {
-                guard let song = model.songs.first(where: { song in
-                    return song.id == item
-                }) else { continue }
-                PlayerController.shared.playSong(song, withinSongs: model.songs)
+        } primaryAction: { ids in
+            for id in ids {
+                Task { @MainActor in
+                    guard let dbObject = songs.filter({ $0.id == id }).first else {
+                        Logger.songsTable.error("Could not find song with id: \(id)")
+                        return
+                    }
+                    guard let song = await dbObject.toSong() else {
+                        Logger.songsTable.error("Could not convert dbsong with id: \(id)")
+                        return
+                    }
+                    guard let songIdx = songs.firstIndex(of: dbObject) else {
+                        Logger.songsTable.error("Could not find index of song with id: \(id)")
+                        return
+                    }
+                    let nextIdx = songs.index(after: songIdx)
+
+                    var futureSongs: [Song] = []
+                    for i in (nextIdx...songs.count - 1) {
+                        let futureDbObject = songs[i]
+                        guard let futureSong = await futureDbObject.toSong() else {
+                            Logger.songsTable.error("Could not convert future song of id: \(id)")
+                            continue
+                        }
+                        futureSongs.append(futureSong)
+                    }
+                    PlayerController.shared.playSong(song, withFutureSongs: futureSongs)
+                }
             }
         }
     }
@@ -41,13 +63,8 @@ struct SongsTable: View {
 
 struct SongsTable_Previews: PreviewProvider {
     struct Preview: View {
-        @StateObject private var model = SongsModel(withBackends: BackendsModel.shared.backends)
-
         var body: some View {
-            SongsTable(
-                model: model,
-                selection: .constant([])
-            )
+            SongsTable(selection: .constant([]))
         }
     }
 

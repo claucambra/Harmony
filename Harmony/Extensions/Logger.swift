@@ -12,4 +12,5 @@ extension Logger {
     static let config = Logger(subsystem: subsystem, category: "config")
     static let database = Logger(subsystem: subsystem, category: "database")
     static let player = Logger(subsystem: subsystem, category: "player")
+    static let songsTable = Logger(subsystem: subsystem, category: "songsTable")
 }

@@ -14,10 +14,7 @@ struct DetailColumn: View {
     var body: some View {
         switch selection ?? .songs {
         case .songs:
-            SongsTable(
-                model: SongsModel(withBackends: BackendsModel.shared.backends),
-                selection: .constant([])
-            )
+            SongsTable(selection: .constant([]))
         }
     }
 }

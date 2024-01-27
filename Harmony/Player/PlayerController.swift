@@ -111,17 +111,9 @@ class PlayerController: NSObject, ObservableObject  {
         super.init()
     }
 
-    @MainActor func playSong(_ song: Song, withinSongs songs: [Song]) {
-        assert(songs.contains(song))
-        
+    @MainActor func playSong(_ song: Song, withFutureSongs futureSongs: [Song]) {
         currentSong = song
-
-        var futureSongs: [Song] = []
-        if let futureSongsIdx = songs.firstIndex(of: song) {
-            futureSongs = Array(songs.dropFirst(futureSongsIdx + 1))
-        }
         queue.addCurrentSong(song, withFutureSongs: futureSongs)
-
         avPlayer?.play()
     }
 
