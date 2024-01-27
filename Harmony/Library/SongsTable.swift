@@ -39,32 +39,11 @@ struct SongsTable: View {
             // TODO
         } primaryAction: { ids in
             for id in ids {
-                Task { @MainActor in
-                    guard let dbObject = songs.filter({ $0.id == id }).first else {
-                        Logger.songsTable.error("Could not find song with id: \(id)")
-                        return
-                    }
-                    guard let song = dbObject.toSong() else {
-                        Logger.songsTable.error("Could not convert dbsong with id: \(id)")
-                        return
-                    }
-                    guard let songIdx = songs.firstIndex(of: dbObject) else {
-                        Logger.songsTable.error("Could not find index of song with id: \(id)")
-                        return
-                    }
-                    let nextIdx = songs.index(after: songIdx)
-
-                    var futureSongs: [Song] = []
-                    for i in (nextIdx...songs.count - 1) {
-                        let futureDbObject = songs[i]
-                        guard let futureSong = futureDbObject.toSong() else {
-                            Logger.songsTable.error("Could not convert future song of id: \(id)")
-                            continue
-                        }
-                        futureSongs.append(futureSong)
-                    }
-                    PlayerController.shared.playSong(song, withFutureSongs: futureSongs)
+                guard let dbObject = songs.filter({ $0.id == id }).first else {
+                    Logger.songsTable.error("Could not find song with id: \(id)")
+                    return
                 }
+                PlayerController.shared.playSong(dbObject, withinSongs: songs)
             }
         }
     }

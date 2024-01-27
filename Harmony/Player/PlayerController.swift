@@ -9,10 +9,12 @@ import AVFoundation
 import Foundation
 import HarmonyKit
 import OSLog
+import RealmSwift
 
 fileprivate let AVPlayerTimeControlStatusKeyPath = "timeControlStatus"
 fileprivate let hundredMsTime = CMTime(seconds: 0.1, preferredTimescale: CMTimeScale(MSEC_PER_SEC))
 
+@MainActor
 class PlayerController: NSObject, ObservableObject  {
     enum ScrubState { case inactive, started, finished }
 
@@ -121,9 +123,15 @@ class PlayerController: NSObject, ObservableObject  {
         super.init()
     }
 
-    @MainActor func playSong(_ song: Song, withFutureSongs futureSongs: [Song]) {
+    @MainActor func playSong(_ dbSong: DatabaseSong, withinSongs songs: Results<DatabaseSong>) {
+        let id = dbSong.identifier
+        guard let song = dbSong.toSong() else {
+            Logger.player.error("Could not convert dbsong with id: \(id)")
+            return
+        }
+
         currentSong = song
-        queue.addCurrentSong(song, withFutureSongs: futureSongs)
+        queue.addCurrentSong(song, dbSong: dbSong, parentResults: songs)
         avPlayer?.play()
     }
 

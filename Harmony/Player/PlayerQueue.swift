@@ -8,20 +8,16 @@
 import DequeModule
 import Foundation
 import HarmonyKit
+import RealmSwift
 
+@MainActor
 class PlayerQueue: NSObject, ObservableObject {
+    @Published var results: Results<DatabaseSong>?
     @Published var songs: Deque<Song> = Deque()
-    private(set) var currentSongIndex: Int = 0
+    private(set) var currentSongIndex: Int = -1
+    private let pageSize = 20
 
     override public init() {
-        super.init()
-    }
-
-    public init(songs: [Song], containingCurrentSong currentSong: Song? = nil) {
-        self.songs = Deque(songs)
-        if let currentSong = currentSong {
-            currentSongIndex = songs.firstIndex(of: currentSong) ?? 0
-        }
         super.init()
     }
 
@@ -32,30 +28,52 @@ class PlayerQueue: NSObject, ObservableObject {
     }
 
     func forward() -> Song? {
+        if currentSongIndex >= (songs.count - 2) - pageSize {
+            loadNextPage(nextPageSize: 1)
+        }
+
+        return moveForward()
+    }
+
+    private func moveForward() -> Song? {
         guard currentSongIndex < songs.count - 1 else { return nil }
         currentSongIndex += 1
         return songs[currentSongIndex]
     }
 
-    func addCurrentSong(_ song: Song, withFutureSongs futureSongs: [Song]) {
-        let atSongsEnd = currentSongIndex == songs.count - 1
-        let gotNewCurrentSong = songs.count == 0 || songs[currentSongIndex] != song
-        if atSongsEnd {
-            if gotNewCurrentSong {
-                appendNewCurrentSong(song: song)
-            }
-            songs.append(contentsOf: futureSongs)
-        } else {
-            if (songs.count > 0) {
-                let firstIndexToDrop = currentSongIndex + 1
-                songs.remove(atOffsets: IndexSet(firstIndexToDrop...songs.count - 1))
-            }
+    private func loadNextPage(nextPageSize: Int) {
+        guard nextPageSize > 0 else { return }
+        guard let results = results else { return }
+        guard let lastQueueSongIdx = results.firstIndex(
+            where: { $0.identifier == songs.last?.identifier }
+        ) else { return }
+        let nextSongIdx = results.index(after: lastQueueSongIdx)
+        let finalSongIdx = results.count - 1
+        guard nextSongIdx < finalSongIdx else { return }
+        let firstSongIdx = min(nextSongIdx, finalSongIdx)
+        let lastSongIdx = min(nextSongIdx + nextPageSize - 1, finalSongIdx)  // Since we start at +1
 
-            if gotNewCurrentSong {
-                appendNewCurrentSong(song: song)
-            }
-            songs.append(contentsOf: futureSongs)
+        for i in (firstSongIdx...lastSongIdx) {
+            guard let song = results[i].toSong() else { continue }
+            songs.append(song)
         }
+    }
+
+    func addCurrentSong(_ song: Song, dbSong: DatabaseSong, parentResults: Results<DatabaseSong>) {
+        results = parentResults
+
+        if (songs.count > 0) {
+            let firstIndexToDrop = currentSongIndex + 1
+            songs.remove(atOffsets: IndexSet(firstIndexToDrop...songs.count - 1))
+        }
+
+        let songId = song.identifier
+        let gotNewCurrentSong = songs.count == 0 || songs[currentSongIndex].identifier != songId
+        if gotNewCurrentSong {
+            appendNewCurrentSong(song: song)
+        }
+
+        loadNextPage(nextPageSize: pageSize)
     }
 
     private func appendNewCurrentSong(song: Song) {
