@@ -99,3 +99,19 @@ func existingConfigs() -> [BackendConfiguration] {
     }
     return configs
 }
+
+func deleteConfig(id: String, withBackendDescriptionId descriptionId: String) {
+    let defaults = UserDefaults.standard
+    var backendConfigs = existingConfigsForBackend(descriptionId: descriptionId)
+    guard let configIdx = backendConfigs.firstIndex(where: { config in
+        config[BackendConfigurationIdFieldKey] as? String == id
+    }) else {
+        Logger.config.info("Config with id: \(id) does not exist. Can't delete.")
+        return
+    }
+
+    backendConfigs.remove(at: configIdx)
+    defaults.set(backendConfigs, forKey: descriptionId)
+    Logger.config.info("Deleted config with id: \(id)")
+    BackendsModel.shared.updateBackends()
+}

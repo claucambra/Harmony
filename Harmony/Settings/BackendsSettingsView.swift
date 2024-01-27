@@ -9,7 +9,7 @@ import SwiftUI
 import HarmonyKit
 
 struct BackendsSettingsView: View {
-    let backendsModel = BackendsModel.shared
+    @ObservedObject var backendsModel = BackendsModel.shared
 
     #if os(macOS)
     @Environment(\.openWindow) var openWindow
@@ -53,7 +53,10 @@ struct BackendsSettingsView: View {
             ForEach(backendsModel.backends.values, id: \.id) { backend in
                 ConfiguredBackendListItemView(backendPresentation: backend.presentation)
             }.onDelete(perform: { indexSet in
-                // meep
+                for index in indexSet {
+                    let backend = backendsModel.backends.values[index]
+                    backendsModel.deleteBackend(backend)
+                }
             })
         }
     }

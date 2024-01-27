@@ -41,6 +41,9 @@ class BackendsModel: ObservableObject {
             backends.removeValue(forKey: remainingBackend)
         }
     }
+
+    func deleteBackend(_ backend: any Backend) {
+        deleteConfig(id: backend.id, withBackendDescriptionId: backend.typeDescription.id)
     }
 
     func assetForSong(atURL url: URL, backendId: String) -> AVAsset? {
