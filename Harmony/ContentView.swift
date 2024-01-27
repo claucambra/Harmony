@@ -56,6 +56,7 @@ struct ContentView: View {
                     RepeatButton()
                 }
                 ToolbarItemGroup(placement: controlsToolbarPlacement) {
+                    PlayerCurrentSongView()
                     PlayerScrubberView()
                 }
                 ToolbarItem(placement: .automatic) {

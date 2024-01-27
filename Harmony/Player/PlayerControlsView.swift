@@ -11,6 +11,7 @@ struct PlayerControlsView: View {
     var body: some View {
         HStack {
             PlayerButtonStackView()
+            PlayerCurrentSongView()
             PlayerScrubberView()
             QueueButton()
         }
