@@ -44,6 +44,8 @@ public class Song: Identifiable, Hashable {
         self.identifier = identifier
         self.backendId = backendId
 
+        title = url.lastPathComponent
+
         guard let metadata = try? await asset.load(.commonMetadata) else {
             Logger.defaultLog.log("Could not get metadata for asset \(asset)")
             return nil
