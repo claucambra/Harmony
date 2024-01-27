@@ -48,17 +48,29 @@ class DatabaseSong: Object, ObjectKeyIdentifiable {
         timeScale = song.duration.timescale
     }
 
-    func toSong() async -> Song? {
+    func toSong() -> Song? {
         guard let actualUrl = URL(string: url) else {
             Logger.database.error("Could not create URL from stored url \(self.url)")
             return nil
         }
-        guard let asset = BackendsModel.shared.assetForSong(
-            atURL: actualUrl, backendId: backendId
-        ) else {
-            Logger.database.error("Could not get asset for song at \(self.url)")
-            return nil
-        }
-        return await Song(url: actualUrl, asset: asset, identifier: identifier, backendId: backendId)
+        return Song(
+            identifier: identifier,
+            backendId: backendId,
+            url: actualUrl,
+            title: title,
+            artist: artist,
+            album: album,
+            genre: genre,
+            creator: creator,
+            subject: subject,
+            contributor: contributor,
+            type: type,
+            duration: CMTime(seconds: duration, preferredTimescale: timeScale),
+            assetProviderClosure: { _ in
+                return BackendsModel.shared.assetForSong(
+                    atURL: actualUrl, backendId: self.backendId
+                ) ?? AVAsset(url: actualUrl)
+            }
+        )
     }
 }
