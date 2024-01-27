@@ -13,16 +13,20 @@ import OSLog
 let BackendConfigurationLocalURLBookmarkDataFieldKeySuffix = "__bookmark-data"
 #endif
 
-func saveConfig(_ configValues: BackendConfiguration, forBackend backend: BackendDescription) {
-    assert(backend.id != "")
+func saveConfig(
+    _ configValues: BackendConfiguration,
+    forBackendDescription backendDescription: BackendDescription
+) {
+    let descriptionId = backendDescription.id
+    assert(descriptionId != "")
 
     let defaults = UserDefaults.standard
-    let existingConfigs = defaults.array(forKey: backend.id)
+    let existingConfigs = defaults.array(forKey: descriptionId)
     let existingConfigsCount = existingConfigs?.count ?? 0
     var backendConfigs: [Any] = existingConfigs ?? []
 
     var fullConfig = configValues
-    for field in backend.configDescription {
+    for field in backendDescription.configDescription {
         guard let fieldValue = fullConfig[field.id] else {
             fullConfig[field.id] = field.defaultValue
             continue
@@ -40,15 +44,19 @@ func saveConfig(_ configValues: BackendConfiguration, forBackend backend: Backen
         }
         #endif
     }
-    fullConfig[BackendConfigurationIdFieldKey] = backend.id + String(existingConfigsCount)
+    fullConfig[BackendConfigurationIdFieldKey] = descriptionId + String(existingConfigsCount)
 
     backendConfigs.append(fullConfig)
-    defaults.set(backendConfigs, forKey: backend.id)
+    defaults.set(backendConfigs, forKey: descriptionId)
     BackendsModel.shared.updateBackends()
 }
 
-func existingConfigsForBackend(_ backend: BackendDescription) -> [BackendConfiguration] {
-    guard let existingConfigs = UserDefaults.standard.array(forKey: backend.id) else {
+func existingConfigsForBackend(_ backendDescription: BackendDescription) -> [BackendConfiguration] {
+    return existingConfigsForBackend(descriptionId: backendDescription.id)
+}
+
+func existingConfigsForBackend(descriptionId: String) -> [BackendConfiguration] {
+    guard let existingConfigs = UserDefaults.standard.array(forKey: descriptionId) else {
         return []
     }
 
@@ -85,8 +93,8 @@ func existingConfigsForBackend(_ backend: BackendDescription) -> [BackendConfigu
 
 func existingConfigs() -> [BackendConfiguration] {
     var configs: [BackendConfiguration] = []
-    for backend in availableBackends {
-        let backendConfigs = existingConfigsForBackend(backend)
+    for backendDescription in availableBackends {
+        let backendConfigs = existingConfigsForBackend(descriptionId: backendDescription.id)
         configs.append(contentsOf: backendConfigs)
     }
     return configs
