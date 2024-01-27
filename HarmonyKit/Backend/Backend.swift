@@ -9,7 +9,7 @@ import AVFoundation
 import Foundation
 
 public protocol Backend: Identifiable, Hashable, ObservableObject {
-    static var description: BackendDescription { get }
+    var typeDescription: BackendDescription { get }
     var id: String { get }
     var presentation: BackendPresentable { get }
 

@@ -13,32 +13,34 @@ extension Logger {
     static let localBackend = Logger(subsystem: subsystem, category: "localBackend")
 }
 
+let localBackendTypeDescription = BackendDescription(
+    id: "local-backend",
+    name: "Local Backend",
+    description: "Provides music stored locally on your computer.",
+    systemImageName: "internaldrive",
+    configDescription: [
+        BackendConfigurationField(
+            id: LocalBackend.pathConfigId,
+            title: "Path",
+            description: "Location of files. Can be multiple locations.",
+            valueType: .localUrl,
+            isArray: true,
+            optional: false,
+            defaultValue: FileManager.default.urls(
+                for: .musicDirectory, in: .userDomainMask
+            ).first?.path ?? ""
+        )
+    ]
+)
+
 public class LocalBackend : NSObject, Backend {
-    private static let pathConfigId = "path-field"
-    public static let description = BackendDescription(
-        id: "local-backend",
-        name: "Local Backend",
-        description: "Provides music stored locally on your computer.",
-        systemImageName: "internaldrive",
-        configDescription: [
-            BackendConfigurationField(
-                id: LocalBackend.pathConfigId,
-                title: "Path",
-                description: "Location of files. Can be multiple locations.",
-                valueType: .localUrl,
-                isArray: true,
-                optional: false,
-                defaultValue: FileManager.default.urls(
-                    for: .musicDirectory, in: .userDomainMask
-                ).first?.path ?? ""
-            )
-        ]
-    )
+    fileprivate static let pathConfigId = "path-field"
+    public let typeDescription = localBackendTypeDescription
     public let id: String
     @Published public var presentation = BackendPresentable(
-        systemImage: LocalBackend.description.systemImageName,
-        primary: LocalBackend.description.name,
-        secondary: LocalBackend.description.description
+        systemImage: localBackendTypeDescription.systemImageName,
+        primary: localBackendTypeDescription.name,
+        secondary: localBackendTypeDescription.description
     )
     @Published public private(set) var path: URL {
         didSet { DispatchQueue.main.async { self.presentation.config = self.path.path } }

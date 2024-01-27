@@ -8,12 +8,14 @@
 import Foundation
 
 public let availableBackends = [
-    LocalBackend.description
+    localBackendTypeDescription
 ]
 
-public func backendFromId(_ id: String, withConfig config: BackendConfiguration) -> (any Backend)? {
+public func backendFromDescriptionId(
+    _ id: String, withConfig config: BackendConfiguration
+) -> (any Backend)? {
     switch id {
-    case LocalBackend.description.id:
+    case localBackendTypeDescription.id:
         return LocalBackend(config: config)
     default:
         return nil
