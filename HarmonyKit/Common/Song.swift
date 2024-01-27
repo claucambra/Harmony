@@ -46,6 +46,57 @@ public class Song: Identifiable, Hashable {
 
         title = url.lastPathComponent
 
+        do {
+            duration = try await asset.load(.duration)
+        } catch {
+            duration = CMTime(seconds: 0, preferredTimescale: 44100)
+        }
+
+        guard !url.lastPathComponent.contains(".flac") else {
+            // TODO: What do when these are remote?
+            Logger.defaultLog.debug("Custom handling for flac: \(url)")
+            let flacMetadataTask =  Task {
+                var fileId: AudioFileID? = nil
+                var status: OSStatus = AudioFileOpenURL(
+                    url as CFURL, .readPermission, kAudioFileFLACType, &fileId
+                )
+                guard let audioFile = fileId else { return }
+
+                var dict: CFDictionary? = nil
+                var dataSize = UInt32(MemoryLayout<CFDictionary?>.size(ofValue: dict))
+
+                status = AudioFileGetProperty(audioFile, kAudioFilePropertyInfoDictionary, &dataSize, &dict)
+                guard status == noErr else { return }
+
+                AudioFileClose(audioFile)
+
+                guard let cfDict = dict else { return }
+                let tagsDict = NSDictionary(dictionary: cfDict)
+                for (key, value) in tagsDict {
+                    let key = key as? String ?? ""
+                    let value = value as? String
+                    if key == AVMetadataKey.commonKeyTitle.rawValue {
+                        title = value ?? ""
+                    } else if key == AVMetadataKey.commonKeyAlbumName.rawValue || key == "album" {
+                        album = value ?? ""
+                    } else if key == AVMetadataKey.commonKeyArtist.rawValue {
+                        artist = value ?? ""
+                    } else if key == AVMetadataKey.commonKeyCreator.rawValue {
+                        creator = value ?? ""
+                    } else if key == AVMetadataKey.commonKeySubject.rawValue {
+                        subject = value ?? ""
+                    } else if key == AVMetadataKey.commonKeyContributor.rawValue {
+                        contributor = value ?? ""
+                    } else if key == AVMetadataKey.commonKeyType.rawValue {
+                        type = value ?? ""
+                    }
+                }
+                return
+            }
+            _ = await flacMetadataTask.result
+            return
+        }
+
         guard let metadata = try? await asset.load(.commonMetadata) else {
             Logger.defaultLog.log("Could not get metadata for asset \(asset)")
             return nil
@@ -68,12 +119,6 @@ public class Song: Identifiable, Hashable {
             } else if item.commonKey == .commonKeyType {
                 type = value ?? ""
             }
-        }
-
-        do {
-            duration = try await asset.load(.duration)
-        } catch {
-            duration = CMTime(seconds: 0, preferredTimescale: 44100)
         }
     }
 
