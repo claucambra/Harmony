@@ -20,14 +20,27 @@ class BackendsModel: ObservableObject {
     }
 
     func updateBackends() {
-        for backend in availableBackends {
+        // TODO: Handle mid-sync backends here
+        configurations = existingConfigs()
+
+        var currentBackends = backends.keys
+        for backendDescription in availableBackends {
             for config in configurations {
-                guard let configuredBackend = backendFromId(backend.id, withConfig: config) else {
+                guard let configuredBackend = backendFromDescriptionId(
+                    backendDescription.id, withConfig: config
+                ) else {
                     continue
                 }
-                backends[configuredBackend.id] = configuredBackend
+                let configId = configuredBackend.id
+                backends[configId] = configuredBackend
+                currentBackends.remove(configId)
             }
         }
+
+        for remainingBackend in currentBackends {
+            backends.removeValue(forKey: remainingBackend)
+        }
+    }
     }
 
     func assetForSong(atURL url: URL, backendId: String) -> AVAsset? {
