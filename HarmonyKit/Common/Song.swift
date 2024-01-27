@@ -26,6 +26,7 @@ public class Song: Identifiable, Hashable {
     public var subject: String = ""
     public var contributor: String = ""
     public var type: String = ""
+    public var artwork: Data = Data()
     public var duration: CMTime
     public var asset: AVAsset {
         get {
@@ -52,10 +53,12 @@ public class Song: Identifiable, Hashable {
             duration = CMTime(seconds: 0, preferredTimescale: 44100)
         }
 
+        await setupArtwork()
+
         guard !url.lastPathComponent.contains(".flac") else {
             // TODO: What do when these are remote?
             Logger.defaultLog.debug("Custom handling for flac: \(url)")
-            let flacMetadataTask =  Task {
+            let flacMetadataTask = Task {
                 var fileId: AudioFileID? = nil
                 var status: OSStatus = AudioFileOpenURL(
                     url as CFURL, .readPermission, kAudioFileFLACType, &fileId
@@ -150,9 +153,33 @@ public class Song: Identifiable, Hashable {
         self.type = type
         self.duration = duration
         self.assetProviderClosure = assetProviderClosure
+
+        let semaphore = DispatchSemaphore(value: 0)
+        Task {
+            await setupArtwork()
+            semaphore.signal()
+        }
+        semaphore.wait()
     }
 
     public func hash(into hasher: inout Hasher) {
         hasher.combine(identifier)
+    }
+
+    func setupArtwork() async {
+        guard let metadata = try? await asset.load(.metadata) else {
+            return
+        }
+        guard let artworkItem = AVMetadataItem.metadataItems(
+            from: metadata,
+            filteredByIdentifier: .commonIdentifierArtwork
+        ).first else {
+            return
+        }
+        guard let artworkData = try? await artworkItem.load(.value) as? Data else {
+            return
+        }
+
+        artwork = artworkData
     }
 }
