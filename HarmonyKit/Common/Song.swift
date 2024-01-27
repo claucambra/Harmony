@@ -8,6 +8,12 @@
 import AVFoundation
 import OSLog
 
+#if os(macOS)
+import AppKit
+#else
+import UIKit
+#endif
+
 public typealias SongAssetProviderClosure = (Song) -> AVAsset
 
 public class Song: Identifiable, Hashable {
@@ -168,18 +174,41 @@ public class Song: Identifiable, Hashable {
 
     func setupArtwork() async {
         guard let metadata = try? await asset.load(.metadata) else {
+            setupFallbackArtwork()
             return
         }
         guard let artworkItem = AVMetadataItem.metadataItems(
             from: metadata,
             filteredByIdentifier: .commonIdentifierArtwork
         ).first else {
+            setupFallbackArtwork()
             return
         }
         guard let artworkData = try? await artworkItem.load(.value) as? Data else {
+            setupFallbackArtwork()
             return
         }
 
         artwork = artworkData
+    }
+
+    func setupFallbackArtwork() {
+        let fallbackImageName = "music.note"
+        #if os(macOS)
+        let image = NSImage(
+            systemSymbolName: fallbackImageName, accessibilityDescription: "Placeholder artwork"
+        )
+        if let tiffData = image?.tiffRepresentation {
+            let bitmapImageRep = NSBitmapImageRep(data: tiffData)
+            if let pngData = bitmapImageRep?.representation(using: .png, properties: [:]) {
+                artwork = pngData
+            }
+        }
+        #else
+        let image = UIImage(systemName: fallbackImageName)
+        if let data = image?.pngData() {
+            artwork = data
+        }
+        #endif
     }
 }
