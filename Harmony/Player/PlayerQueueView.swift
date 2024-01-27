@@ -14,6 +14,9 @@ struct PlayerQueueView: View {
         List {
             ForEach(queue.songs) { song in
                 Text(song.title)
+                    .onAppear {
+                        queue.loadNextPageIfNeeded(song: song)
+                    }
             }
         }
     }

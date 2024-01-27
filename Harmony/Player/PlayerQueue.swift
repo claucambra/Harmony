@@ -12,10 +12,11 @@ import RealmSwift
 
 @MainActor
 class PlayerQueue: NSObject, ObservableObject {
+    static let defaultPageSize = 20
+    static let viewLoadTriggeringIndex = 10
     @Published var results: Results<DatabaseSong>?
     @Published var songs: Deque<Song> = Deque()
     private(set) var currentSongIndex: Int = -1
-    private let pageSize = 20
 
     override public init() {
         super.init()
@@ -28,7 +29,7 @@ class PlayerQueue: NSObject, ObservableObject {
     }
 
     func forward() -> Song? {
-        if currentSongIndex >= (songs.count - 2) - pageSize {
+        if currentSongIndex >= (songs.count - 2) - PlayerQueue.defaultPageSize {
             loadNextPage(nextPageSize: 1)
         }
 
@@ -41,7 +42,7 @@ class PlayerQueue: NSObject, ObservableObject {
         return songs[currentSongIndex]
     }
 
-    private func loadNextPage(nextPageSize: Int) {
+    private func loadNextPage(nextPageSize: Int = PlayerQueue.defaultPageSize) {
         guard nextPageSize > 0 else { return }
         guard let results = results else { return }
         guard let lastQueueSongIdx = results.firstIndex(
@@ -59,6 +60,12 @@ class PlayerQueue: NSObject, ObservableObject {
         }
     }
 
+    func loadNextPageIfNeeded(song: Song) {
+        guard let songIdx = songs.lastIndex(of: song),
+              (songs.count - 1) - songIdx <= PlayerQueue.viewLoadTriggeringIndex else { return }
+        loadNextPage()
+    }
+
     func addCurrentSong(_ song: Song, dbSong: DatabaseSong, parentResults: Results<DatabaseSong>) {
         results = parentResults
 
@@ -73,7 +80,7 @@ class PlayerQueue: NSObject, ObservableObject {
             appendNewCurrentSong(song: song)
         }
 
-        loadNextPage(nextPageSize: pageSize)
+        loadNextPage()
     }
 
     private func appendNewCurrentSong(song: Song) {
