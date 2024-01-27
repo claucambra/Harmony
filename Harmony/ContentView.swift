@@ -12,6 +12,7 @@ struct ContentView: View {
     @State private var selection: Panel? = Panel.songs
     @State private var path = NavigationPath()
     @State private var settingsSheetVisible = false
+    @State var syncController = SyncController(poll: true)
     #if os(macOS)
     let controlsToolbarPlacement = ToolbarItemPlacement.principal
     #else
@@ -22,16 +23,25 @@ struct ContentView: View {
         NavigationSplitView {
             Sidebar(selection: $selection)
                 .toolbar {
-                    #if !os(macOS)
-                    Button(action: {
-                        settingsSheetVisible.toggle()
-                    }) {
-                        Label("Settings", systemImage: "gear")
+                    ToolbarItemGroup {
+                        Button(action: {
+                            Task {
+                                await syncController.sync()
+                            }
+                        }) {
+                            Label("Sync", systemImage: "arrow.triangle.2.circlepath.circle")
+                        }
+                        #if !os(macOS)
+                        Button(action: {
+                            settingsSheetVisible.toggle()
+                        }) {
+                            Label("Settings", systemImage: "gear")
+                        }
+                        .sheet(isPresented: $settingsSheetVisible) {
+                            SettingsSheet()
+                        }
+                        #endif
                     }
-                    .sheet(isPresented: $settingsSheetVisible) {
-                        SettingsSheet()
-                    }
-                    #endif
                 }
         } detail: {
             NavigationStack(path: $path) {
