@@ -31,6 +31,8 @@ public class SyncController: ObservableObject {
         let refreshedSongs = await withTaskGroup(of: [Song].self, returning: [Song].self) { group in
             for backend in backends {
                 let backendId = backend.id
+                guard !currentlySyncing.contains(backendId) else { continue }
+                
                 group.addTask {
                     self.currentlySyncing.insert(backendId)
                     let songs = await backend.scan()
