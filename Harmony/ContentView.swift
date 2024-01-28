@@ -59,13 +59,15 @@ struct ContentView: View {
                     PlayerCurrentSongView()
                     PlayerScrubberView()
                 }
-                ToolbarItem(placement: .automatic) {
-                    QueueButton(queueVisible: $queueVisible)
-                }
             }
         }
         .inspector(isPresented: $queueVisible) {
             PlayerQueueView()
+                .toolbar {
+                    ToolbarItem(placement: .automatic) {
+                        QueueButton(queueVisible: $queueVisible)
+                    }
+                }
         }
     }
 }
