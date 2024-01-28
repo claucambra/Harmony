@@ -16,20 +16,24 @@ struct ToolbarCurrentSongView: View {
         HStack {
             CurrentSongArtworkView()
                 .frame(maxHeight: .infinity)
+                .clipShape(.rect(topLeadingRadius: 5, bottomLeadingRadius: 5))
             VStack {
                 HStack {
                     Text(controller.currentSong?.title ?? "")
+                        .bold()
                         .frame(maxWidth: .infinity, alignment: .leading)
                     Text(controller.currentSong?.artist ?? "")
-                        .frame(minWidth: 60, alignment: .trailing)
+                        .frame(minWidth: 30, alignment: .trailing)
                 }
                 HStack {
                     Text(controller.displayedCurrentTime)
+                        .font(.system(size: 10))
+                        .foregroundStyle(.secondary)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .font(.system(size: 8))
                     Text(controller.displayedSongDuration)
+                        .font(.system(size: 10))
+                        .foregroundStyle(.secondary)
                         .frame(maxWidth: .infinity, alignment: .trailing)
-                        .font(.system(size: 8))
                 }
                 Slider(value: $controller.currentSeconds, in:(0...controller.songDuration)) { editing in
                     controller.scrubState = editing ? .started : .finished
@@ -37,8 +41,10 @@ struct ToolbarCurrentSongView: View {
                 .frame(maxWidth: .infinity)
                 .controlSize(.mini)
             }
+            .padding(.trailing, 5)
         }
-        .frame(width: 300)
+        .frame(width: 320)
+        .background(.bar, in: .rect(cornerSize: .init(width: 5, height: 5)))
     }
 }
 
