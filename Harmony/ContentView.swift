@@ -14,9 +14,13 @@ struct ContentView: View {
     @State private var settingsSheetVisible = false
     @State private var queueVisible = false
     #if os(macOS)
-    let controlsToolbarPlacement = ToolbarItemPlacement.principal
+    let buttonStackInToolbar = true
+    let buttonStackPlacement = ToolbarItemPlacement.navigation
+    let currentSongPlacement = ToolbarItemPlacement.principal
     #else
-    let controlsToolbarPlacement = ToolbarItemPlacement.bottomBar
+    let buttonStackInToolbar = UIDevice.current.userInterfaceIdiom != .phone
+    let buttonStackPlacement = ToolbarItemPlacement.topBarLeading
+    let currentSongPlacement = ToolbarItemPlacement.bottomBar
     #endif
 
     var body: some View {
@@ -48,14 +52,16 @@ struct ContentView: View {
                 DetailColumn(selection: $selection)
             }
             .toolbar {
-                ToolbarItemGroup(placement: controlsToolbarPlacement) {
-                    ShuffleButton()
-                    ChangeSongButton(buttonChangeType: .previous)
-                    PlayButton()
-                    ChangeSongButton(buttonChangeType: .next)
-                    RepeatButton()
+                if buttonStackInToolbar {
+                    ToolbarItemGroup(placement: buttonStackPlacement) {
+                        ShuffleButton()
+                        ChangeSongButton(buttonChangeType: .previous)
+                        PlayButton()
+                        ChangeSongButton(buttonChangeType: .next)
+                        RepeatButton()
+                    }
                 }
-                ToolbarItemGroup(placement: controlsToolbarPlacement) {
+                ToolbarItemGroup(placement: currentSongPlacement) {
                     PlayerScrubberView()
                 }
             }
