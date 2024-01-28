@@ -48,6 +48,13 @@ public class SyncController: ObservableObject {
         currentlySyncingFully = false
     }
 
+    func syncBackend(_ backend: any Backend) async {
+        let refreshedSongs = await runSyncForBackend(backend)
+        Task { @MainActor in
+            DatabaseManager.shared.writeSongs(refreshedSongs)
+        }
+    }
+
     private func runSyncForBackend(_ backend: any Backend) async -> [Song] {
         let backendId = backend.id
         guard !currentlySyncing.contains(backendId) else { return [] }
