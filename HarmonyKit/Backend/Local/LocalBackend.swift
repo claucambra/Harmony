@@ -37,37 +37,49 @@ public class LocalBackend : NSObject, Backend {
     fileprivate static let pathConfigId = "path-field"
     public let typeDescription = localBackendTypeDescription
     public let id: String
-    @Published public var presentation = BackendPresentable(
-        systemImage: localBackendTypeDescription.systemImageName,
-        primary: localBackendTypeDescription.name,
-        secondary: localBackendTypeDescription.description
-    )
+    @Published public var presentation: BackendPresentable
     @Published public private(set) var path: URL {
         didSet { DispatchQueue.main.async { self.presentation.config = self.path.path } }
     }
 
-    required public init(config: BackendConfiguration) {
+    static func getPathFromConfig(_ config: BackendConfiguration) -> URL {
         #if os(macOS)
         let accessibleUrlPathFieldId =
             LocalBackend.pathConfigId + BackendConfigurationLocalURLAccessibleURLFieldKeySuffix
         if let accessibleUrl = config[accessibleUrlPathFieldId] as? URL {
-            path = accessibleUrl
-        } else {
-            path = URL(fileURLWithPath: config[LocalBackend.pathConfigId] as? String ?? "")
+            return accessibleUrl
         }
-        #else
-        path = URL(fileURLWithPath: config[LocalBackend.pathConfigId] as? String ?? "")
         #endif
+        return URL(fileURLWithPath: config[LocalBackend.pathConfigId] as? String ?? "")
+    }
+
+    required public init(config: BackendConfiguration) {
+        let localPath = LocalBackend.getPathFromConfig(config)
+        path = localPath
         id = config[BackendConfigurationIdFieldKey] as! String
+        presentation = BackendPresentable(
+            backendId: id,
+            typeId: localBackendTypeDescription.id,
+            systemImage: localBackendTypeDescription.systemImageName,
+            primary: localBackendTypeDescription.name,
+            secondary: localBackendTypeDescription.description,
+            config: "Path: " + localPath.path
+        )
         super.init()
-        presentation.config = "Path: " + path.path
     }
 
     public init(path: URL, id: String) {
         self.path = path
         self.id = id
+        presentation = BackendPresentable(
+            backendId: id,
+            typeId: localBackendTypeDescription.id,
+            systemImage: localBackendTypeDescription.systemImageName,
+            primary: localBackendTypeDescription.name,
+            secondary: localBackendTypeDescription.description,
+            config: "Path: " + path.path
+        )
         super.init()
-        presentation.config = "Path: " + path.path
     }
 
     func songsFromLocalUrls(_ urls:[URL]) async -> [Song] {
