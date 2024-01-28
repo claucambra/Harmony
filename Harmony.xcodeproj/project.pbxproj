@@ -45,7 +45,7 @@
 		535054012B62D98200D7EAF2 /* PlayerQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535054002B62D98200D7EAF2 /* PlayerQueue.swift */; };
 		535054042B6356EF00D7EAF2 /* Logger+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535054032B6356EF00D7EAF2 /* Logger+Extension.swift */; };
 		535054062B6357DC00D7EAF2 /* PlayerButtonStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535054052B6357DC00D7EAF2 /* PlayerButtonStackView.swift */; };
-		535054082B635A0B00D7EAF2 /* PlayerScrubberView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535054072B635A0B00D7EAF2 /* PlayerScrubberView.swift */; };
+		535054082B635A0B00D7EAF2 /* ToolbarCurrentSongView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535054072B635A0B00D7EAF2 /* ToolbarCurrentSongView.swift */; };
 		5350540A2B63939C00D7EAF2 /* PlayerQueueView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535054092B63939C00D7EAF2 /* PlayerQueueView.swift */; };
 		5350540C2B63972C00D7EAF2 /* PlayerCurrentSongView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5350540B2B63972C00D7EAF2 /* PlayerCurrentSongView.swift */; };
 		5350540F2B63A12800D7EAF2 /* PlayButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5350540E2B63A12800D7EAF2 /* PlayButton.swift */; };
@@ -166,7 +166,7 @@
 		535054002B62D98200D7EAF2 /* PlayerQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerQueue.swift; sourceTree = "<group>"; };
 		535054032B6356EF00D7EAF2 /* Logger+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Logger+Extension.swift"; sourceTree = "<group>"; };
 		535054052B6357DC00D7EAF2 /* PlayerButtonStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerButtonStackView.swift; sourceTree = "<group>"; };
-		535054072B635A0B00D7EAF2 /* PlayerScrubberView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerScrubberView.swift; sourceTree = "<group>"; };
+		535054072B635A0B00D7EAF2 /* ToolbarCurrentSongView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolbarCurrentSongView.swift; sourceTree = "<group>"; };
 		535054092B63939C00D7EAF2 /* PlayerQueueView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerQueueView.swift; sourceTree = "<group>"; };
 		5350540B2B63972C00D7EAF2 /* PlayerCurrentSongView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerCurrentSongView.swift; sourceTree = "<group>"; };
 		5350540E2B63A12800D7EAF2 /* PlayButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayButton.swift; sourceTree = "<group>"; };
@@ -405,7 +405,7 @@
 				5350540B2B63972C00D7EAF2 /* PlayerCurrentSongView.swift */,
 				535054002B62D98200D7EAF2 /* PlayerQueue.swift */,
 				535054092B63939C00D7EAF2 /* PlayerQueueView.swift */,
-				535054072B635A0B00D7EAF2 /* PlayerScrubberView.swift */,
+				535054072B635A0B00D7EAF2 /* ToolbarCurrentSongView.swift */,
 			);
 			path = Player;
 			sourceTree = "<group>";
@@ -797,7 +797,7 @@
 				5350540A2B63939C00D7EAF2 /* PlayerQueueView.swift in Sources */,
 				5350542B2B64293600D7EAF2 /* SyncController.swift in Sources */,
 				535054042B6356EF00D7EAF2 /* Logger+Extension.swift in Sources */,
-				535054082B635A0B00D7EAF2 /* PlayerScrubberView.swift in Sources */,
+				535054082B635A0B00D7EAF2 /* ToolbarCurrentSongView.swift in Sources */,
 				535054012B62D98200D7EAF2 /* PlayerQueue.swift in Sources */,
 				535053F72B625AB100D7EAF2 /* PlayerController.swift in Sources */,
 				5350537E2B5BB39000D7EAF2 /* DetailColumn.swift in Sources */,

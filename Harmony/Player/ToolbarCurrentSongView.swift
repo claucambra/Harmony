@@ -9,7 +9,7 @@ import Foundation
 
 import SwiftUI
 
-struct PlayerScrubberView: View {
+struct ToolbarCurrentSongView: View {
     @ObservedObject var controller = PlayerController.shared
 
     var body: some View {
@@ -43,5 +43,5 @@ struct PlayerScrubberView: View {
 }
 
 #Preview {
-    PlayerScrubberView()
+    ToolbarCurrentSongView()
 }

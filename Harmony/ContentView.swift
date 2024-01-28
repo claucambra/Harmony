@@ -61,8 +61,8 @@ struct ContentView: View {
                         RepeatButton()
                     }
                 }
-                ToolbarItemGroup(placement: currentSongPlacement) {
-                    PlayerScrubberView()
+                ToolbarItem(placement: currentSongPlacement) {
+                    ToolbarCurrentSongView()
                 }
             }
         }

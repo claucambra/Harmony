@@ -12,7 +12,6 @@ struct PlayerControlsView: View {
         HStack {
             PlayerButtonStackView()
             PlayerCurrentSongView()
-            PlayerScrubberView()
         }
     }
 }
