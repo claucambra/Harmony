@@ -35,10 +35,12 @@ let localBackendTypeDescription = BackendDescription(
 
 public class LocalBackend : NSObject, Backend {
     fileprivate static let pathConfigId = "path-field"
+
     public let typeDescription = localBackendTypeDescription
     public let id: String
-    @Published public var presentation: BackendPresentable
-    @Published public private(set) var path: URL {
+    
+    public private(set) var presentation: BackendPresentable
+    public private(set) var path: URL {
         didSet { DispatchQueue.main.async { self.presentation.config = self.path.path } }
     }
 
