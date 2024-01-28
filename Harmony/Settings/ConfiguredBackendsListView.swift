@@ -41,6 +41,7 @@ struct ConfiguredBackendsListView: View {
         }
     }
 
+    #if os(macOS)
     func openConfigWindowForBackend(_ backend: any Backend) {
         let window = NSPanel(
             contentRect: NSRect(x: 0, y: 0, width: 320, height: 240),
@@ -53,6 +54,7 @@ struct ConfiguredBackendsListView: View {
         ).padding(20))
         window.makeKeyAndOrderFront(nil)
     }
+    #endif
 
     @ViewBuilder
     private func listItemView(presentable: BackendPresentable) -> some View {
