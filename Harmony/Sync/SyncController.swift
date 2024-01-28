@@ -30,14 +30,8 @@ public class SyncController: ObservableObject {
         let backends = BackendsModel.shared.backends.values
         let refreshedSongs = await withTaskGroup(of: [Song].self, returning: [Song].self) { group in
             for backend in backends {
-                let backendId = backend.id
-                guard !currentlySyncing.contains(backendId) else { continue }
-                
                 group.addTask {
-                    self.currentlySyncing.insert(backendId)
-                    let songs = await backend.scan()
-                    self.currentlySyncing.remove(backendId)
-                    return songs
+                    return await self.runSyncForBackend(backend)
                 }
             }
 
@@ -52,5 +46,14 @@ public class SyncController: ObservableObject {
         }
 
         currentlySyncingFully = false
+    }
+
+    private func runSyncForBackend(_ backend: any Backend) async -> [Song] {
+        let backendId = backend.id
+        guard !currentlySyncing.contains(backendId) else { return [] }
+        self.currentlySyncing.insert(backendId)
+        let songs = await backend.scan()
+        self.currentlySyncing.remove(backendId)
+        return songs
     }
 }
