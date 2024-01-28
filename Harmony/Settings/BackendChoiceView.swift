@@ -19,6 +19,7 @@ struct BackendChoiceView: View {
                 NavigationLink {
                     BackendConfigurationView(
                         backendDescription: backendDescription,
+                        configValues: [:],
                         dismiss: dismiss
                     )
                 } label: {

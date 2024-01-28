@@ -10,7 +10,7 @@ import SwiftUI
 
 struct BackendConfigurationView: View {
     let backendDescription: BackendDescription
-    @State var configValues: BackendConfiguration = [:]
+    @State var configValues: BackendConfiguration
     @State var dismiss: DismissAction?
     @Environment(\.dismiss) var defaultDismiss
 
