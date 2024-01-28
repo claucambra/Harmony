@@ -9,11 +9,12 @@ import Foundation
 import HarmonyKit
 
 public class SyncController: ObservableObject {
+    static let shared = SyncController()
     @Published var currentlySyncing: Set<String> = Set()
     @Published var currentlySyncingFully: Bool = false
     private var pollTimer: Timer? = nil
 
-    public init(poll: Bool = true) {
+    private init(poll: Bool = true) {
         if poll {
             let interval = TimeInterval(15 * 60)
             pollTimer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true) { _ in
