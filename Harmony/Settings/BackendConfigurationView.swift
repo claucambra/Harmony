@@ -11,7 +11,8 @@ import SwiftUI
 struct BackendConfigurationView: View {
     let backendDescription: BackendDescription
     @State var configValues: BackendConfiguration = [:]
-    var dismiss: DismissAction
+    @State var dismiss: DismissAction?
+    @Environment(\.dismiss) var defaultDismiss
 
     var body: some View {
         platformSpecificView
@@ -19,7 +20,11 @@ struct BackendConfigurationView: View {
         .toolbar {
             Button("Save") {
                 saveBackendConfig(configValues, forBackendDescription: backendDescription)
-                dismiss()
+                if let dismiss = dismiss {
+                    dismiss()
+                } else {
+                    defaultDismiss()
+                }
             }
         }
     }
