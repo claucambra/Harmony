@@ -14,7 +14,7 @@ import RealmSwift
 class PlayerQueue: NSObject, ObservableObject {
     static let defaultPageSize = 20
     static let viewLoadTriggeringIndex = 10
-    @Published var results: Results<DatabaseSong>?
+    @Published var results: Results<DatabaseSong>? // TODO: Listen to changes to this and upd. songs
     @Published var songs: Deque<Song> = Deque()
     private(set) var currentSongIndex: Int = -1
 
@@ -69,22 +69,17 @@ class PlayerQueue: NSObject, ObservableObject {
     func addCurrentSong(_ song: Song, dbSong: DatabaseSong, parentResults: Results<DatabaseSong>) {
         results = parentResults
 
-        if (songs.count > 0) {
+        let songId = song.identifier
+        if songs.count == 0 || songs[currentSongIndex].identifier != songId {
+            currentSongIndex += 1
+            songs.insert(song, at: currentSongIndex)
+        }
+
+        if (songs.count > 1) {
             let firstIndexToDrop = currentSongIndex + 1
             songs.remove(atOffsets: IndexSet(firstIndexToDrop...songs.count - 1))
         }
 
-        let songId = song.identifier
-        let gotNewCurrentSong = songs.count == 0 || songs[currentSongIndex].identifier != songId
-        if gotNewCurrentSong {
-            appendNewCurrentSong(song: song)
-        }
-
         loadNextPage()
-    }
-
-    private func appendNewCurrentSong(song: Song) {
-        currentSongIndex = max(songs.count - 1, 0)
-        songs.append(song)
     }
 }
