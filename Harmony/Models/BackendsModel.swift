@@ -12,7 +12,7 @@ import OrderedCollections
 
 class BackendsModel: ObservableObject {
     static let shared = BackendsModel()
-    @Published var configurations = existingConfigs()
+    @Published var configurations = existingBackendConfigs()
     @Published var backends: OrderedDictionary<String, any Backend> = [:]
 
     private init() {
@@ -21,7 +21,7 @@ class BackendsModel: ObservableObject {
 
     func updateBackends() {
         // TODO: Handle mid-sync backends here
-        configurations = existingConfigs()
+        configurations = existingBackendConfigs()
 
         var currentBackends = backends.keys
         for backendDescription in availableBackends {

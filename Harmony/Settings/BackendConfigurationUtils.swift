@@ -1,5 +1,5 @@
 //
-//  BackendConfiguration.swift
+//  BackendConfigurationUtils.swift
 //  Harmony
 //
 //  Created by Claudio Cambra on 21/1/24.
@@ -13,7 +13,7 @@ import OSLog
 let BackendConfigurationLocalURLBookmarkDataFieldKeySuffix = "__bookmark-data"
 #endif
 
-func saveConfig(
+func saveBackendConfig(
     _ configValues: BackendConfiguration,
     forBackendDescription backendDescription: BackendDescription
 ) {
@@ -91,7 +91,7 @@ func existingConfigsForBackend(descriptionId: String) -> [BackendConfiguration] 
     return configs
 }
 
-func existingConfigs() -> [BackendConfiguration] {
+func existingBackendConfigs() -> [BackendConfiguration] {
     var configs: [BackendConfiguration] = []
     for backendDescription in availableBackends {
         let backendConfigs = existingConfigsForBackend(descriptionId: backendDescription.id)
@@ -100,7 +100,7 @@ func existingConfigs() -> [BackendConfiguration] {
     return configs
 }
 
-func deleteConfig(id: String, withBackendDescriptionId descriptionId: String) {
+func deleteBackendConfig(id: String, withBackendDescriptionId descriptionId: String) {
     let defaults = UserDefaults.standard
     var backendConfigs = existingConfigsForBackend(descriptionId: descriptionId)
     guard let configIdx = backendConfigs.firstIndex(where: { config in

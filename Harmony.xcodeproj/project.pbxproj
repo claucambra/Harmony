@@ -35,7 +35,7 @@
 		535053942B5BDA7500D7EAF2 /* BackendChoiceListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535053932B5BDA7500D7EAF2 /* BackendChoiceListItemView.swift */; };
 		535053962B5BE96800D7EAF2 /* BackendConfigurationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535053952B5BE96800D7EAF2 /* BackendConfigurationView.swift */; };
 		535053982B5CF4C900D7EAF2 /* BackendConfigurationFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535053972B5CF4C900D7EAF2 /* BackendConfigurationFieldView.swift */; };
-		5350539B2B5D026F00D7EAF2 /* BackendConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5350539A2B5D026F00D7EAF2 /* BackendConfiguration.swift */; };
+		5350539B2B5D026F00D7EAF2 /* BackendConfigurationUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5350539A2B5D026F00D7EAF2 /* BackendConfigurationUtils.swift */; };
 		535053A02B5D1CC700D7EAF2 /* BackendsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5350539F2B5D1CC700D7EAF2 /* BackendsModel.swift */; };
 		535053F02B62186F00D7EAF2 /* SettingsSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535053EF2B62186F00D7EAF2 /* SettingsSheet.swift */; };
 		535053F42B6239AC00D7EAF2 /* FilePickerRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535053F32B6239AC00D7EAF2 /* FilePickerRepresentable.swift */; };
@@ -154,7 +154,7 @@
 		535053932B5BDA7500D7EAF2 /* BackendChoiceListItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendChoiceListItemView.swift; sourceTree = "<group>"; };
 		535053952B5BE96800D7EAF2 /* BackendConfigurationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendConfigurationView.swift; sourceTree = "<group>"; };
 		535053972B5CF4C900D7EAF2 /* BackendConfigurationFieldView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendConfigurationFieldView.swift; sourceTree = "<group>"; };
-		5350539A2B5D026F00D7EAF2 /* BackendConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendConfiguration.swift; sourceTree = "<group>"; };
+		5350539A2B5D026F00D7EAF2 /* BackendConfigurationUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendConfigurationUtils.swift; sourceTree = "<group>"; };
 		5350539F2B5D1CC700D7EAF2 /* BackendsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendsModel.swift; sourceTree = "<group>"; };
 		535053EF2B62186F00D7EAF2 /* SettingsSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsSheet.swift; sourceTree = "<group>"; };
 		535053F32B6239AC00D7EAF2 /* FilePickerRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilePickerRepresentable.swift; sourceTree = "<group>"; };
@@ -349,7 +349,7 @@
 		5350537F2B5BBB5F00D7EAF2 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
-				5350539A2B5D026F00D7EAF2 /* BackendConfiguration.swift */,
+				5350539A2B5D026F00D7EAF2 /* BackendConfigurationUtils.swift */,
 				535053932B5BDA7500D7EAF2 /* BackendChoiceListItemView.swift */,
 				535053852B5BC98B00D7EAF2 /* BackendChoiceView.swift */,
 				535053972B5CF4C900D7EAF2 /* BackendConfigurationFieldView.swift */,
@@ -777,7 +777,7 @@
 				5350537C2B5BB1FE00D7EAF2 /* Sidebar.swift in Sources */,
 				535054192B63A4AA00D7EAF2 /* QueueButton.swift in Sources */,
 				535053812B5BBDC000D7EAF2 /* SettingsView.swift in Sources */,
-				5350539B2B5D026F00D7EAF2 /* BackendConfiguration.swift in Sources */,
+				5350539B2B5D026F00D7EAF2 /* BackendConfigurationUtils.swift in Sources */,
 				5350540C2B63972C00D7EAF2 /* PlayerCurrentSongView.swift in Sources */,
 				535053862B5BC98B00D7EAF2 /* BackendChoiceView.swift in Sources */,
 				535053832B5BC28E00D7EAF2 /* BackendsSettingsView.swift in Sources */,
