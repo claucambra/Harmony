@@ -13,7 +13,6 @@ struct PlayerControlsView: View {
             PlayerButtonStackView()
             PlayerCurrentSongView()
             PlayerScrubberView()
-            QueueButton()
         }
     }
 }

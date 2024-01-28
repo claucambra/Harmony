@@ -9,8 +9,7 @@ import SwiftUI
 
 // TODO
 struct QueueButton: View {
-    @ObservedObject var controller = PlayerController.shared
-    @State var queueVisible = false
+    @Binding var queueVisible: Bool
 
     var body: some View {
         Button {
@@ -18,10 +17,6 @@ struct QueueButton: View {
         } label: {
             Label("Open queue", systemImage: "list.triangle")
         }
-        .sheet(isPresented: $queueVisible) {
-            PlayerQueueView()
-        }
-        .labelStyle(.iconOnly)
     }
 }
 

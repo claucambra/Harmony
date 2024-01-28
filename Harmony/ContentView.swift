@@ -12,6 +12,7 @@ struct ContentView: View {
     @State private var selection: Panel? = Panel.songs
     @State private var path = NavigationPath()
     @State private var settingsSheetVisible = false
+    @State private var queueVisible = false
     #if os(macOS)
     let controlsToolbarPlacement = ToolbarItemPlacement.principal
     #else
@@ -59,9 +60,12 @@ struct ContentView: View {
                     PlayerScrubberView()
                 }
                 ToolbarItem(placement: .automatic) {
-                    QueueButton()
+                    QueueButton(queueVisible: $queueVisible)
                 }
             }
+        }
+        .inspector(isPresented: $queueVisible) {
+            PlayerQueueView()
         }
     }
 }
