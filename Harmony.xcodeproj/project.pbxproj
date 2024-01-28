@@ -351,10 +351,10 @@
 		5350537F2B5BBB5F00D7EAF2 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
-				5350539A2B5D026F00D7EAF2 /* BackendConfigurationUtils.swift */,
 				535053932B5BDA7500D7EAF2 /* BackendChoiceListItemView.swift */,
 				535053852B5BC98B00D7EAF2 /* BackendChoiceView.swift */,
 				535053972B5CF4C900D7EAF2 /* BackendConfigurationFieldView.swift */,
+				5350539A2B5D026F00D7EAF2 /* BackendConfigurationUtils.swift */,
 				535053952B5BE96800D7EAF2 /* BackendConfigurationView.swift */,
 				535053822B5BC28E00D7EAF2 /* BackendsSettingsView.swift */,
 				5350541A2B63BBC500D7EAF2 /* ConfiguredBackendsListItemView.swift */,

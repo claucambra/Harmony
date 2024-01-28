@@ -25,7 +25,23 @@ func saveBackendConfig(
     let existingConfigsCount = existingConfigs?.count ?? 0
     var backendConfigs: [Any] = existingConfigs ?? []
 
+    // Make sure to keep old config values if they are pre-existing
+    var preexistingConfigIndex: Int?
     var fullConfig = configValues
+    if let configId = configValues[BackendConfigurationIdFieldKey] as? String,
+        let configIndex = existingConfigs?.firstIndex(where: { config in
+            let config = config as! BackendConfiguration
+            return config[BackendConfigurationIdFieldKey] as? String == configId
+        }) {
+        preexistingConfigIndex = configIndex
+        if let existingConfig = existingConfigs?[configIndex] as? BackendConfiguration {
+            // Keep the values already in fullConfig, which are the received new ones
+            fullConfig.merge(existingConfig) { current, _ in current }
+        }
+    } else {
+        fullConfig[BackendConfigurationIdFieldKey] = descriptionId + String(existingConfigsCount)
+    }
+
     for field in backendDescription.configDescription {
         guard let fieldValue = fullConfig[field.id] else {
             fullConfig[field.id] = field.defaultValue
@@ -44,9 +60,12 @@ func saveBackendConfig(
         }
         #endif
     }
-    fullConfig[BackendConfigurationIdFieldKey] = descriptionId + String(existingConfigsCount)
 
-    backendConfigs.append(fullConfig)
+    if let preexistingConfigIndex = preexistingConfigIndex {
+        backendConfigs[preexistingConfigIndex] = fullConfig
+    } else {
+        backendConfigs.append(fullConfig)
+    }
     defaults.set(backendConfigs, forKey: descriptionId)
     BackendsModel.shared.updateBackends()
 }
