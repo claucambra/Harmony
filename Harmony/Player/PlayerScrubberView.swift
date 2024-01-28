@@ -14,15 +14,31 @@ struct PlayerScrubberView: View {
 
     var body: some View {
         HStack {
-            Text(controller.displayedCurrentTime)
-                .frame(width: 50)
-            Slider(value: $controller.currentSeconds, in:(0...controller.songDuration)) { editing in
-                controller.scrubState = editing ? .started : .finished
+            CurrentSongArtworkView()
+                .frame(maxHeight: .infinity)
+            VStack {
+                HStack {
+                    Text(controller.currentSong?.title ?? "")
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    Text(controller.currentSong?.artist ?? "")
+                        .frame(minWidth: 60, alignment: .trailing)
+                }
+                HStack {
+                    Text(controller.displayedCurrentTime)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .font(.system(size: 8))
+                    Text(controller.displayedSongDuration)
+                        .frame(maxWidth: .infinity, alignment: .trailing)
+                        .font(.system(size: 8))
+                }
+                Slider(value: $controller.currentSeconds, in:(0...controller.songDuration)) { editing in
+                    controller.scrubState = editing ? .started : .finished
+                }
+                .frame(maxWidth: .infinity)
+                .controlSize(.mini)
             }
-            .frame(minWidth: 300, maxWidth: .infinity)
-            Text(controller.displayedSongDuration)
-                .frame(width: 50)
         }
+        .frame(width: 300)
     }
 }
 
