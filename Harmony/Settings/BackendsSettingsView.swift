@@ -52,7 +52,17 @@ struct BackendsSettingsView: View {
         List {
             ForEach(backendsModel.backends.values, id: \.id) { backend in
                 ConfiguredBackendListItemView(backendPresentation: backend.presentation)
-            }.onDelete(perform: { indexSet in
+                    .swipeActions(edge: .leading) {
+                        Button {
+                            Task {
+                                await SyncController.shared.syncBackend(backend)
+                            }
+                        } label: {
+                            Label("Sync", systemImage: "arrow.triangle.2.circlepath")
+                        }
+                    }
+            }
+            .onDelete(perform: { indexSet in
                 for index in indexSet {
                     let backend = backendsModel.backends.values[index]
                     deleteBackendConfig(
