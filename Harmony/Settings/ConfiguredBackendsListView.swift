@@ -10,25 +10,34 @@ import HarmonyKit
 
 struct ConfiguredBackendsListView: View {
     @ObservedObject var backendsModel = BackendsModel.shared
+    @State private var selection = Set<BackendPresentable.ID>()
 
     var body: some View {
-        List {
-            ForEach($backendsModel.backendPresentables, id: \.id) { backendPresentation in
-                let presentation = backendPresentation.wrappedValue
-                ConfiguredBackendsListItemView(backendPresentation: presentation)
-                    .swipeActions(edge: .leading) {
-                        Button {
-                            Task {
-                                guard let backend = 
-                                        backendsModel.backends[presentation.backendId] else {
-                                    return
-                                }
-                                await SyncController.shared.syncBackend(backend)
-                            }
-                        } label: {
-                            Label("Sync", systemImage: "arrow.triangle.2.circlepath")
-                        }
+        List(selection: $selection) {
+            ForEach($backendsModel.backendPresentables) { backendPresentable in
+                let presentable = backendPresentable.wrappedValue
+                NavigationLink {
+                    if let backend = backendsModel.backends[presentable.id] {
+                        BackendConfigurationView(
+                            backendDescription: backend.typeDescription,
+                            configValues: backend.configValues
+                        )
                     }
+                } label: {
+                    ConfiguredBackendsListItemView(backendPresentation: presentable)
+                }
+                .swipeActions(edge: .leading) {
+                    Button {
+                        Task {
+                            guard let backend = backendsModel.backends[presentable.id] else {
+                                return
+                            }
+                            await SyncController.shared.syncBackend(backend)
+                        }
+                    } label: {
+                        Label("Sync", systemImage: "arrow.triangle.2.circlepath")
+                    }
+                }
             }
             .onDelete(perform: { indexSet in
                 for index in indexSet {

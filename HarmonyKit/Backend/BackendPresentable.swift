@@ -9,7 +9,7 @@ import Combine
 import Foundation
 
 public class BackendPresentable: ObservableObject, Hashable, Identifiable {
-    @Published public var backendId: String
+    @Published public var id: String // The backend's id
     @Published public var typeId: String
     @Published public var systemImage: String
     @Published public var primary: String
@@ -18,7 +18,7 @@ public class BackendPresentable: ObservableObject, Hashable, Identifiable {
     @Published public var state: String
 
     public static func == (lhs: BackendPresentable, rhs: BackendPresentable) -> Bool {
-        lhs.backendId == rhs.backendId
+        lhs.id == rhs.id
     }
 
     public init(
@@ -30,7 +30,7 @@ public class BackendPresentable: ObservableObject, Hashable, Identifiable {
         config: String = "Not configured",
         state: String = "Idle"
     ) {
-        self.backendId = backendId
+        id = backendId
         self.typeId = typeId
         self.systemImage = systemImage
         self.primary = primary
@@ -40,7 +40,7 @@ public class BackendPresentable: ObservableObject, Hashable, Identifiable {
     }
 
     public func hash(into hasher: inout Hasher) {
-        hasher.combine(backendId)
+        hasher.combine(id)
         hasher.combine(typeId)
         hasher.combine(systemImage)
         hasher.combine(primary)
