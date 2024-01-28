@@ -6,17 +6,23 @@
 //
 
 import SwiftUI
+import HarmonyKit
 
 struct ConfiguredBackendsListView: View {
     @ObservedObject var backendsModel = BackendsModel.shared
 
     var body: some View {
         List {
-            ForEach(backendsModel.backends.values, id: \.id) { backend in
-                ConfiguredBackendsListItemView(backendPresentation: backend.presentation)
+            ForEach($backendsModel.backendPresentables, id: \.id) { backendPresentation in
+                let presentation = backendPresentation.wrappedValue
+                ConfiguredBackendsListItemView(backendPresentation: presentation)
                     .swipeActions(edge: .leading) {
                         Button {
                             Task {
+                                guard let backend = 
+                                        backendsModel.backends[presentation.backendId] else {
+                                    return
+                                }
                                 await SyncController.shared.syncBackend(backend)
                             }
                         } label: {

@@ -8,7 +8,7 @@
 import Combine
 import Foundation
 
-public class BackendPresentable: ObservableObject, Hashable {
+public class BackendPresentable: ObservableObject, Hashable, Identifiable {
     @Published public var backendId: String
     @Published public var typeId: String
     @Published public var systemImage: String

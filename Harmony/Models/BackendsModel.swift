@@ -13,7 +13,10 @@ import OrderedCollections
 class BackendsModel: ObservableObject {
     static let shared = BackendsModel()
     @Published var configurations = existingBackendConfigs()
-    @Published var backends: OrderedDictionary<String, any Backend> = [:]
+    @Published var backends: OrderedDictionary<String, any Backend> = [:] {
+        didSet { backendPresentables = backends.values.map { $0.presentation } }
+    }
+    @Published var backendPresentables: [BackendPresentable] = []
 
     private init() {
         updateBackends()
