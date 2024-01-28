@@ -39,37 +39,12 @@ struct BackendsSettingsView: View {
         if backendsModel.configurations.isEmpty {
             emptyListView
         } else {
-            objectsListView
+            ConfiguredBackendsListView()
         }
     }
 
     var emptyListView: some View {
         Text("No configured backends.")
             .font(.largeTitle)
-    }
-
-    var objectsListView: some View {
-        List {
-            ForEach(backendsModel.backends.values, id: \.id) { backend in
-                ConfiguredBackendListItemView(backendPresentation: backend.presentation)
-                    .swipeActions(edge: .leading) {
-                        Button {
-                            Task {
-                                await SyncController.shared.syncBackend(backend)
-                            }
-                        } label: {
-                            Label("Sync", systemImage: "arrow.triangle.2.circlepath")
-                        }
-                    }
-            }
-            .onDelete(perform: { indexSet in
-                for index in indexSet {
-                    let backend = backendsModel.backends.values[index]
-                    deleteBackendConfig(
-                        id: backend.id, withBackendDescriptionId: backend.typeDescription.id
-                    )
-                }
-            })
-        }
     }
 }

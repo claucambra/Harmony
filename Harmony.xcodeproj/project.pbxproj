@@ -53,7 +53,7 @@
 		535054152B63A3AD00D7EAF2 /* ShuffleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535054142B63A3AD00D7EAF2 /* ShuffleButton.swift */; };
 		535054172B63A3F500D7EAF2 /* RepeatButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535054162B63A3F500D7EAF2 /* RepeatButton.swift */; };
 		535054192B63A4AA00D7EAF2 /* QueueButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535054182B63A4AA00D7EAF2 /* QueueButton.swift */; };
-		5350541B2B63BBC500D7EAF2 /* ConfiguredBackendListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5350541A2B63BBC500D7EAF2 /* ConfiguredBackendListItemView.swift */; };
+		5350541B2B63BBC500D7EAF2 /* ConfiguredBackendsListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5350541A2B63BBC500D7EAF2 /* ConfiguredBackendsListItemView.swift */; };
 		5350541D2B63C71400D7EAF2 /* BackendPresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5350541C2B63C71400D7EAF2 /* BackendPresentable.swift */; };
 		535054212B64142200D7EAF2 /* DequeModule in Frameworks */ = {isa = PBXBuildFile; productRef = 535054202B64142200D7EAF2 /* DequeModule */; };
 		535054242B64180C00D7EAF2 /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = 535054232B64180C00D7EAF2 /* Realm */; };
@@ -62,6 +62,7 @@
 		5350542A2B641FAB00D7EAF2 /* DatabaseSong.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535054292B641FAA00D7EAF2 /* DatabaseSong.swift */; };
 		5350542B2B64293600D7EAF2 /* SyncController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5350535F2B59581600D7EAF2 /* SyncController.swift */; };
 		5350542F2B64E48600D7EAF2 /* OrderedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = 5350542E2B64E48600D7EAF2 /* OrderedCollections */; };
+		535054322B66248C00D7EAF2 /* ConfiguredBackendsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535054312B66248C00D7EAF2 /* ConfiguredBackendsListView.swift */; };
 		535F1BD12B4A8F1400C78D98 /* HarmonyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535F1BD02B4A8F1400C78D98 /* HarmonyApp.swift */; };
 		535F1BD32B4A8F1400C78D98 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535F1BD22B4A8F1400C78D98 /* ContentView.swift */; };
 		535F1BD52B4A8F1600C78D98 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 535F1BD42B4A8F1600C78D98 /* Assets.xcassets */; };
@@ -172,10 +173,11 @@
 		535054142B63A3AD00D7EAF2 /* ShuffleButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShuffleButton.swift; sourceTree = "<group>"; };
 		535054162B63A3F500D7EAF2 /* RepeatButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepeatButton.swift; sourceTree = "<group>"; };
 		535054182B63A4AA00D7EAF2 /* QueueButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueueButton.swift; sourceTree = "<group>"; };
-		5350541A2B63BBC500D7EAF2 /* ConfiguredBackendListItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfiguredBackendListItemView.swift; sourceTree = "<group>"; };
+		5350541A2B63BBC500D7EAF2 /* ConfiguredBackendsListItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfiguredBackendsListItemView.swift; sourceTree = "<group>"; };
 		5350541C2B63C71400D7EAF2 /* BackendPresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendPresentable.swift; sourceTree = "<group>"; };
 		535054272B641A8900D7EAF2 /* DatabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseManager.swift; sourceTree = "<group>"; };
 		535054292B641FAA00D7EAF2 /* DatabaseSong.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseSong.swift; sourceTree = "<group>"; };
+		535054312B66248C00D7EAF2 /* ConfiguredBackendsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfiguredBackendsListView.swift; sourceTree = "<group>"; };
 		535F1BCD2B4A8F1400C78D98 /* Harmony.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Harmony.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		535F1BD02B4A8F1400C78D98 /* HarmonyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HarmonyApp.swift; sourceTree = "<group>"; };
 		535F1BD22B4A8F1400C78D98 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -355,7 +357,8 @@
 				535053972B5CF4C900D7EAF2 /* BackendConfigurationFieldView.swift */,
 				535053952B5BE96800D7EAF2 /* BackendConfigurationView.swift */,
 				535053822B5BC28E00D7EAF2 /* BackendsSettingsView.swift */,
-				5350541A2B63BBC500D7EAF2 /* ConfiguredBackendListItemView.swift */,
+				5350541A2B63BBC500D7EAF2 /* ConfiguredBackendsListItemView.swift */,
+				535054312B66248C00D7EAF2 /* ConfiguredBackendsListView.swift */,
 				535053EF2B62186F00D7EAF2 /* SettingsSheet.swift */,
 				535053802B5BBDC000D7EAF2 /* SettingsView.swift */,
 			);
@@ -770,6 +773,7 @@
 				535054152B63A3AD00D7EAF2 /* ShuffleButton.swift in Sources */,
 				535054112B63A1EB00D7EAF2 /* ChangeSongButton.swift in Sources */,
 				535053942B5BDA7500D7EAF2 /* BackendChoiceListItemView.swift in Sources */,
+				535054322B66248C00D7EAF2 /* ConfiguredBackendsListView.swift in Sources */,
 				535053732B5AA61A00D7EAF2 /* SongsTable.swift in Sources */,
 				535054062B6357DC00D7EAF2 /* PlayerButtonStackView.swift in Sources */,
 				535054282B641A8900D7EAF2 /* DatabaseManager.swift in Sources */,
@@ -793,7 +797,7 @@
 				535054012B62D98200D7EAF2 /* PlayerQueue.swift in Sources */,
 				535053F72B625AB100D7EAF2 /* PlayerController.swift in Sources */,
 				5350537E2B5BB39000D7EAF2 /* DetailColumn.swift in Sources */,
-				5350541B2B63BBC500D7EAF2 /* ConfiguredBackendListItemView.swift in Sources */,
+				5350541B2B63BBC500D7EAF2 /* ConfiguredBackendsListItemView.swift in Sources */,
 				535053FD2B62822F00D7EAF2 /* PlayerControlsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -1,5 +1,5 @@
 //
-//  ConfiguredBackendListItemView.swift
+//  ConfiguredBackendsListItemView.swift
 //  Harmony
 //
 //  Created by Claudio Cambra on 26/1/24.
@@ -8,7 +8,7 @@
 import HarmonyKit
 import SwiftUI
 
-struct ConfiguredBackendListItemView: View {
+struct ConfiguredBackendsListItemView: View {
     @ObservedObject var backendPresentation: BackendPresentable
 
     var body: some View {
