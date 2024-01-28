@@ -9,7 +9,9 @@ import Foundation
 import HarmonyKit
 
 public class SyncController: ObservableObject {
-    var pollTimer: Timer? = nil
+    @Published var currentlySyncing: Set<String> = Set()
+    @Published var currentlySyncingFully: Bool = false
+    private var pollTimer: Timer? = nil
 
     public init(poll: Bool = true) {
         if poll {
@@ -23,11 +25,17 @@ public class SyncController: ObservableObject {
     }
 
     public func sync() async {
+        currentlySyncingFully = true
+
         let backends = BackendsModel.shared.backends.values
         let refreshedSongs = await withTaskGroup(of: [Song].self, returning: [Song].self) { group in
             for backend in backends {
+                let backendId = backend.id
                 group.addTask {
-                    return await backend.scan()
+                    self.currentlySyncing.insert(backendId)
+                    let songs = await backend.scan()
+                    self.currentlySyncing.remove(backendId)
+                    return songs
                 }
             }
 
@@ -40,5 +48,7 @@ public class SyncController: ObservableObject {
         Task { @MainActor in
             DatabaseManager.shared.writeSongs(refreshedSongs)
         }
+
+        currentlySyncingFully = false
     }
 }
