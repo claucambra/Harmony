@@ -55,7 +55,7 @@ struct BackendsSettingsView: View {
             }.onDelete(perform: { indexSet in
                 for index in indexSet {
                     let backend = backendsModel.backends.values[index]
-                    backendsModel.deleteBackend(backend)
+                    deleteConfig(id: backend.id, withBackendDescriptionId: backend.typeDescription.id)
                 }
             })
         }

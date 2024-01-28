@@ -42,10 +42,6 @@ class BackendsModel: ObservableObject {
         }
     }
 
-    func deleteBackend(_ backend: any Backend) {
-        deleteConfig(id: backend.id, withBackendDescriptionId: backend.typeDescription.id)
-    }
-
     func assetForSong(atURL url: URL, backendId: String) -> AVAsset? {
         guard let backend = backends[backendId] else { return nil }
         return backend.assetForSong(atURL: url)
