@@ -70,6 +70,7 @@
 		535F1BE32B4A8F1600C78D98 /* HarmonyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535F1BE22B4A8F1600C78D98 /* HarmonyTests.swift */; };
 		535F1BED2B4A8F1600C78D98 /* HarmonyUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535F1BEC2B4A8F1600C78D98 /* HarmonyUITests.swift */; };
 		535F1BEF2B4A8F1600C78D98 /* HarmonyUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535F1BEE2B4A8F1600C78D98 /* HarmonyUITestsLaunchTests.swift */; };
+		53802A3C2B66C49F0066208D /* CurrentSongArtworkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53802A3B2B66C49F0066208D /* CurrentSongArtworkView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -189,6 +190,7 @@
 		535F1BE82B4A8F1600C78D98 /* HarmonyUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HarmonyUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		535F1BEC2B4A8F1600C78D98 /* HarmonyUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HarmonyUITests.swift; sourceTree = "<group>"; };
 		535F1BEE2B4A8F1600C78D98 /* HarmonyUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HarmonyUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		53802A3B2B66C49F0066208D /* CurrentSongArtworkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentSongArtworkView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -396,6 +398,7 @@
 			isa = PBXGroup;
 			children = (
 				5350540D2B63A10B00D7EAF2 /* Buttons */,
+				53802A3B2B66C49F0066208D /* CurrentSongArtworkView.swift */,
 				535054052B6357DC00D7EAF2 /* PlayerButtonStackView.swift */,
 				535053F62B625AB100D7EAF2 /* PlayerController.swift */,
 				535053FC2B62822F00D7EAF2 /* PlayerControlsView.swift */,
@@ -780,6 +783,7 @@
 				5350542A2B641FAB00D7EAF2 /* DatabaseSong.swift in Sources */,
 				5350537C2B5BB1FE00D7EAF2 /* Sidebar.swift in Sources */,
 				535054192B63A4AA00D7EAF2 /* QueueButton.swift in Sources */,
+				53802A3C2B66C49F0066208D /* CurrentSongArtworkView.swift in Sources */,
 				535053812B5BBDC000D7EAF2 /* SettingsView.swift in Sources */,
 				5350539B2B5D026F00D7EAF2 /* BackendConfigurationUtils.swift in Sources */,
 				5350540C2B63972C00D7EAF2 /* PlayerCurrentSongView.swift in Sources */,
