@@ -14,17 +14,11 @@ struct CurrentSongArtworkView: View {
         if let imageData = controller.currentSong?.artwork {
             #if os(macOS)
             if let image = NSImage(data: imageData) {
-                Image(nsImage: image)
-                    .resizable()
-                    .scaledToFit()
-                    .aspectRatio(CGSize(width: 1, height: 1), contentMode: .fit)
+                adjustedImage(Image(nsImage: image))
             }
             #else
             if let image = UIImage(data: imageData) {
-                Image(uiImage: image)
-                    .resizable()
-                    .scaledToFit()
-                    .aspectRatio(CGSize(width: 1, height: 1), contentMode: .fit)
+                adjustedImage(Image(uiImage: image))
             }
             #endif
         } else {
@@ -32,13 +26,19 @@ struct CurrentSongArtworkView: View {
                 Rectangle()
                     .foregroundStyle(.clear)
                     .aspectRatio(CGSize(width: 1, height: 1), contentMode: .fit)
-                Image(systemName: "music.note")
-                    .resizable()
-                    .scaledToFit()
-                    .aspectRatio(CGSize(width: 1, height: 1), contentMode: .fit)
+                adjustedImage(Image(systemName: "music.note"))
                     .padding(5.0)
             }
         }
+    }
+
+    @ViewBuilder
+    func adjustedImage(_ image: Image) -> some View {
+        image
+            .interpolation(.high)
+            .resizable()
+            .scaledToFit()
+            .aspectRatio(CGSize(width: 1, height: 1), contentMode: .fit)
     }
 }
 
