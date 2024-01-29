@@ -114,7 +114,7 @@ class PlayerController: NSObject, ObservableObject  {
     @Published private(set) var displayedCurrentTime: String = "0:00"
     @Published private(set) var displayedSongDuration: String = "0:00"
     @Published private(set) var timeControlStatus: AVPlayer.TimeControlStatus = .paused
-    @Published var queue = PlayerQueue()
+    @Published private(set) var queue = PlayerQueue()
     private var playerContext = 0
     private var periodicTimeObserver: Any?
 
