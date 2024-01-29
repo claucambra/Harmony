@@ -32,7 +32,7 @@ public class Song: Identifiable, Hashable {
     public var subject: String = ""
     public var contributor: String = ""
     public var type: String = ""
-    public var artwork: Data = Data()
+    public var artwork: Data?
     public var duration: CMTime
     public var asset: AVAsset {
         get {
@@ -157,43 +157,14 @@ public class Song: Identifiable, Hashable {
     }
 
     func setupArtwork() async {
-        guard let metadata = try? await asset.load(.metadata) else {
-            setupFallbackArtwork()
-            return
-        }
+        guard let metadata = try? await asset.load(.metadata) else { return }
         guard let artworkItem = AVMetadataItem.metadataItems(
             from: metadata,
             filteredByIdentifier: .commonIdentifierArtwork
-        ).first else {
-            setupFallbackArtwork()
-            return
-        }
-        guard let artworkData = try? await artworkItem.load(.value) as? Data else {
-            setupFallbackArtwork()
-            return
-        }
+        ).first else { return }
+        guard let artworkData = try? await artworkItem.load(.value) as? Data else { return }
 
         artwork = artworkData
-    }
-
-    func setupFallbackArtwork() {
-        let fallbackImageName = "music.note"
-        #if os(macOS)
-        let image = NSImage(
-            systemSymbolName: fallbackImageName, accessibilityDescription: "Placeholder artwork"
-        )
-        if let tiffData = image?.tiffRepresentation {
-            let bitmapImageRep = NSBitmapImageRep(data: tiffData)
-            if let pngData = bitmapImageRep?.representation(using: .png, properties: [:]) {
-                artwork = pngData
-            }
-        }
-        #else
-        let image = UIImage(systemName: fallbackImageName)
-        if let data = image?.pngData() {
-            artwork = data
-        }
-        #endif
     }
 
     func audioFileMetadata() -> NSDictionary {
