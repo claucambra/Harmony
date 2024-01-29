@@ -17,10 +17,12 @@ struct ContentView: View {
     let buttonStackInToolbar = true
     let buttonStackPlacement = ToolbarItemPlacement.navigation
     let currentSongPlacement = ToolbarItemPlacement.principal
+    let volumeSliderPlacement = ToolbarItemPlacement.destructiveAction
     #else
     let buttonStackInToolbar = UIDevice.current.userInterfaceIdiom != .phone
     let buttonStackPlacement = ToolbarItemPlacement.topBarLeading
     let currentSongPlacement = ToolbarItemPlacement.bottomBar
+    let volumeSliderPlacement = ToolbarItemPlacement.topBarTrailing
     #endif
 
     var body: some View {
@@ -64,12 +66,16 @@ struct ContentView: View {
                 ToolbarItem(placement: currentSongPlacement) {
                     ToolbarCurrentSongView()
                 }
+                ToolbarItemGroup(placement: volumeSliderPlacement) {
+                    Spacer()
+                    ToolbarVolumeSliderView()
+                }
             }
         }
         .inspector(isPresented: $queueVisible) {
             PlayerQueueView()
                 .toolbar {
-                    ToolbarItem(placement: .automatic) {
+                    ToolbarItem {
                         QueueButton(queueVisible: $queueVisible)
                     }
                 }
