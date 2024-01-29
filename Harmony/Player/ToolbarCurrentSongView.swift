@@ -11,13 +11,17 @@ import SwiftUI
 
 struct ToolbarCurrentSongView: View {
     @ObservedObject var controller = PlayerController.shared
+    let horizontalSpacing = 5.0
+    let borderRadius = 2.5
+    let borderWidth = 1.0
 
     var body: some View {
-        HStack {
+        HStack(spacing: horizontalSpacing) {
             CurrentSongArtworkView()
                 .frame(maxHeight: .infinity)
-                .clipShape(.rect(topLeadingRadius: 5, bottomLeadingRadius: 5))
-            VStack {
+                .clipShape(.rect(topLeadingRadius: borderRadius, bottomLeadingRadius: borderRadius))
+                .padding([.top, .bottom, .leading], borderWidth)
+            VStack(spacing: 0) {
                 HStack {
                     Text(controller.currentSong?.title ?? "")
                         .bold()
@@ -38,13 +42,18 @@ struct ToolbarCurrentSongView: View {
                 Slider(value: $controller.currentSeconds, in:(0...controller.songDuration)) { editing in
                     controller.scrubState = editing ? .started : .finished
                 }
-                .frame(maxWidth: .infinity)
                 .controlSize(.mini)
+                .frame(maxWidth: .infinity)
+                .padding(.bottom, 2)
             }
-            .padding(.trailing, 5)
+            .padding(.trailing, horizontalSpacing)
         }
         .frame(width: 320)
-        .background(.bar, in: .rect(cornerSize: .init(width: 5, height: 5)))
+        .background(.bar, in: .rect(cornerSize: .init(width: borderRadius, height: borderRadius)))
+        .overlay(
+            RoundedRectangle(cornerRadius: borderRadius)
+                .stroke(.separator, lineWidth: borderWidth)
+        )
     }
 }
 
