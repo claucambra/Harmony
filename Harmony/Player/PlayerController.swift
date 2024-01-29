@@ -47,6 +47,7 @@ class PlayerController: NSObject, ObservableObject  {
                 name: .AVPlayerItemDidPlayToEndTime,
                 object: avPlayer.currentItem
             )
+            avPlayer.volume = volume
             songDuration = avPlayer.currentItem?.duration.seconds ?? 0
             if songDuration.isNaN {
                 Logger.player.warning("AVPlayer current item duration seconds isNaN.")
@@ -81,6 +82,9 @@ class PlayerController: NSObject, ObservableObject  {
             avPlayer = AVPlayer(playerItem: playerItem)
             Logger.player.info("Set current song: \(currentSong.title)")
         }
+    }
+    @Published var volume: Float = 1.0 {
+        didSet { avPlayer?.volume = volume }
     }
     @Published var scrubState: ScrubState = .inactive {
         didSet {
