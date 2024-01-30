@@ -173,12 +173,6 @@ class PlayerController: NSObject, ObservableObject  {
         play()
     }
 
-    func playAsset(_ asset: AVAsset) {
-        let playerItem = AVPlayerItem(asset: asset)
-        avPlayer = AVPlayer(playerItem: playerItem)
-        play()
-    }
-
     func togglePlayPause() {
         guard let avPlayer = avPlayer else { return }
         if timeControlStatus != .paused {
