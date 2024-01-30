@@ -146,7 +146,7 @@ class PlayerController: NSObject, ObservableObject  {
             Logger.player.error("Failed to deactivate audio session: \(error)")
         }
         #endif
-        avPlayer.pause()
+        avPlayer.play()
     }
 
     func pause() {
@@ -158,7 +158,7 @@ class PlayerController: NSObject, ObservableObject  {
             Logger.player.error("Failed to activate audio session: \(error)")
         }
         #endif
-        avPlayer.play()
+        avPlayer.pause()
     }
 
     @MainActor func playSong(_ dbSong: DatabaseSong, withinSongs songs: Results<DatabaseSong>) {
@@ -174,7 +174,6 @@ class PlayerController: NSObject, ObservableObject  {
     }
 
     func togglePlayPause() {
-        guard let avPlayer = avPlayer else { return }
         if timeControlStatus != .paused {
             pause()
         } else {
