@@ -19,6 +19,9 @@ class PlayerController: NSObject, ObservableObject  {
     enum ScrubState { case inactive, started, finished }
 
     static let shared = PlayerController()
+    #if !os(macOS)
+    let audioSession = AVAudioSession.sharedInstance()
+    #endif
     @Published var avPlayer: AVPlayer? {
         willSet {
             avPlayer?.removeObserver(self, forKeyPath: AVPlayerTimeControlStatusKeyPath)
@@ -123,9 +126,39 @@ class PlayerController: NSObject, ObservableObject  {
     private var playerContext = 0
     private var periodicTimeObserver: Any?
 
-    private init(avPlayer: AVPlayer? = nil) {
-        self.avPlayer = avPlayer
+    override init() {
+        #if !os(macOS)
+        do {
+            try audioSession.setCategory(.playback)
+        } catch let error {
+            Logger.player.error("Failed to set the audio session configuration: \(error)")
+        }
+        #endif
         super.init()
+    }
+
+    func play() {
+        guard let avPlayer = avPlayer else { return }
+        #if !os(macOS)
+        do {
+            try audioSession.setActive(false)
+        } catch let error {
+            Logger.player.error("Failed to deactivate audio session: \(error)")
+        }
+        #endif
+        avPlayer.pause()
+    }
+
+    func pause() {
+        guard let avPlayer = avPlayer else { return }
+        #if !os(macOS)
+        do {
+            try audioSession.setActive(true)
+        } catch let error {
+            Logger.player.error("Failed to activate audio session: \(error)")
+        }
+        #endif
+        avPlayer.play()
     }
 
     @MainActor func playSong(_ dbSong: DatabaseSong, withinSongs songs: Results<DatabaseSong>) {
@@ -137,28 +170,28 @@ class PlayerController: NSObject, ObservableObject  {
 
         currentSong = song
         queue.addCurrentSong(song, dbSong: dbSong, parentResults: songs)
-        avPlayer?.play()
+        play()
     }
 
     func playAsset(_ asset: AVAsset) {
         let playerItem = AVPlayerItem(asset: asset)
         avPlayer = AVPlayer(playerItem: playerItem)
-        avPlayer?.play()
+        play()
     }
 
     func togglePlayPause() {
         guard let avPlayer = avPlayer else { return }
         if timeControlStatus != .paused {
-            avPlayer.pause()
+            pause()
         } else {
-            avPlayer.play()
+            play()
         }
     }
 
     func playNextSong() {
         guard let nextSong = queue.forward() else { return }
         currentSong = nextSong
-        avPlayer?.play()
+        play()
     }
 
     func playPreviousSong() {
@@ -175,7 +208,7 @@ class PlayerController: NSObject, ObservableObject  {
         }
 
         currentSong = previousSong
-        avPlayer?.play()
+        play()
     }
 
     @objc func playerDidFinishPlayingItemToEnd(notification: Notification) {
