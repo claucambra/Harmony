@@ -112,6 +112,7 @@ class PlayerController: NSObject, ObservableObject  {
             displayedCurrentTime = currentDuration.formatted(.time(pattern: .minuteSecond))
         }
     }
+    @Published var backToStartThreshold: TimeInterval = 3.0
     @Published private(set) var currentTime: CMTime? { // Always indicates actual current time
         didSet { currentSeconds = currentTime?.seconds ?? 0 }
     }
@@ -161,7 +162,18 @@ class PlayerController: NSObject, ObservableObject  {
     }
 
     func playPreviousSong() {
-        guard let previousSong = queue.backward() else { return }
+        if let currentTime = currentTime, currentTime.seconds > backToStartThreshold {
+            avPlayer?.seek(to: CMTime(seconds: 0, preferredTimescale: currentTime.timescale))
+            return
+        }
+
+        guard let previousSong = queue.backward() else {
+            if let currentTime = currentTime {
+                avPlayer?.seek(to: CMTime(seconds: 0, preferredTimescale: currentTime.timescale))
+            }
+            return
+        }
+
         currentSong = previousSong
         avPlayer?.play()
     }
