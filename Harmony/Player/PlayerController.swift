@@ -162,6 +162,15 @@ class PlayerController: NSObject, ObservableObject  {
             }
             return self.seek(to: event.positionTime)
         }
+        remoteCommandCenter.seekForwardCommand.addTarget { event in
+            guard let event = event as? MPSeekCommandEvent else { return .commandFailed }
+            return self.seekForwards(event: event)
+        }
+        remoteCommandCenter.seekBackwardCommand.addTarget { event in
+            guard let event = event as? MPSeekCommandEvent else { return .commandFailed }
+            return self.seekBackwards(event: event)
+        }
+        // TODO: skipForward, skipBackward, changePlaybackRate
     }
 
     func updateNowPlayingMetadataInfo() {
@@ -274,6 +283,25 @@ class PlayerController: NSObject, ObservableObject  {
         avPlayer.seek(to: CMTime(seconds: position, preferredTimescale: timescale))
         return .success
     }
+
+    private func setRate(_ rate: Float) -> MPRemoteCommandHandlerStatus {
+        guard let avPlayer = avPlayer else { return .noActionableNowPlayingItem }
+        avPlayer.rate = rate
+        return .success
+    }
+
+    @discardableResult func seekForwards(
+        event: MPSeekCommandEvent
+    ) -> MPRemoteCommandHandlerStatus {
+        return setRate(event.type == .beginSeeking ? 3.0 : 1.0)
+    }
+
+    @discardableResult func seekBackwards(
+        event: MPSeekCommandEvent
+    ) -> MPRemoteCommandHandlerStatus {
+        return setRate(event.type == .beginSeeking ? -3.0 : 1.0)
+    }
+
 
     @objc func playerDidFinishPlayingItemToEnd(notification: Notification) {
         playNextSong()
