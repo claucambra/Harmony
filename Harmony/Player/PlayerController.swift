@@ -145,11 +145,17 @@ class PlayerController: NSObject, ObservableObject  {
 
         super.init()
         
-        remoteCommandCenter.playCommand.addTarget { _ in return self.play() }
-        remoteCommandCenter.pauseCommand.addTarget { _ in return self.pause() }
-        remoteCommandCenter.togglePlayPauseCommand.addTarget { _ in return self.togglePlayPause() }
-        remoteCommandCenter.nextTrackCommand.addTarget { _ in return self.playNextSong() }
-        remoteCommandCenter.previousTrackCommand.addTarget { _ in return self.playPreviousSong() }
+        remoteCommandCenter.playCommand.addTarget { _ in self.play() }
+        remoteCommandCenter.pauseCommand.addTarget { _ in self.pause() }
+        remoteCommandCenter.togglePlayPauseCommand.addTarget { _ in self.togglePlayPause() }
+        remoteCommandCenter.nextTrackCommand.addTarget { _ in self.playNextSong() }
+        remoteCommandCenter.previousTrackCommand.addTarget { _ in self.playPreviousSong() }
+        remoteCommandCenter.changePlaybackPositionCommand.addTarget { event in
+            guard let event = event as? MPChangePlaybackPositionCommandEvent else {
+                return .commandFailed
+            }
+            return self.seek(to: event.positionTime)
+        }
     }
 
     func updateNowPlayingMetadataInfo() {
