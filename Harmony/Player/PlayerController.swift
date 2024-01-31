@@ -8,6 +8,7 @@
 import AVFoundation
 import Foundation
 import HarmonyKit
+import MediaPlayer
 import OSLog
 import RealmSwift
 
@@ -22,6 +23,7 @@ class PlayerController: NSObject, ObservableObject  {
     #if !os(macOS)
     let audioSession = AVAudioSession.sharedInstance()
     #endif
+    let nowPlayingInfoCenter = MPNowPlayingInfoCenter.default()
     @Published var avPlayer: AVPlayer? {
         willSet {
             avPlayer?.removeObserver(self, forKeyPath: AVPlayerTimeControlStatusKeyPath)
@@ -146,6 +148,7 @@ class PlayerController: NSObject, ObservableObject  {
             Logger.player.error("Failed to deactivate audio session: \(error)")
         }
         #endif
+        nowPlayingInfoCenter.playbackState = .playing
         avPlayer.play()
     }
 
@@ -158,6 +161,7 @@ class PlayerController: NSObject, ObservableObject  {
             Logger.player.error("Failed to activate audio session: \(error)")
         }
         #endif
+        nowPlayingInfoCenter.playbackState = .paused
         avPlayer.pause()
     }
 
