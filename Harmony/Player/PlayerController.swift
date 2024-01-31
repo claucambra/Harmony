@@ -175,8 +175,8 @@ class PlayerController: NSObject, ObservableObject  {
         nowPlayingInfoCenter.nowPlayingInfo?.merge(playbackInfo) { current, new in new }
     }
 
-    func play() {
-        guard let avPlayer = avPlayer else { return }
+    @discardableResult func play() -> MPRemoteCommandHandlerStatus {
+        guard let avPlayer = avPlayer else { return .noActionableNowPlayingItem }
         #if !os(macOS)
         do {
             try audioSession.setActive(false)
@@ -186,10 +186,11 @@ class PlayerController: NSObject, ObservableObject  {
         #endif
         nowPlayingInfoCenter.playbackState = .playing
         avPlayer.play()
+        return .success
     }
 
-    func pause() {
-        guard let avPlayer = avPlayer else { return }
+    @discardableResult func pause() -> MPRemoteCommandHandlerStatus {
+        guard let avPlayer = avPlayer else { return .noActionableNowPlayingItem }
         #if !os(macOS)
         do {
             try audioSession.setActive(true)
@@ -199,6 +200,7 @@ class PlayerController: NSObject, ObservableObject  {
         #endif
         nowPlayingInfoCenter.playbackState = .paused
         avPlayer.pause()
+        return .success
     }
 
     @MainActor func playSong(_ dbSong: DatabaseSong, withinSongs songs: Results<DatabaseSong>) {
@@ -213,35 +215,38 @@ class PlayerController: NSObject, ObservableObject  {
         play()
     }
 
-    func togglePlayPause() {
+    @discardableResult func togglePlayPause() -> MPRemoteCommandHandlerStatus {
         if timeControlStatus != .paused {
-            pause()
+            return pause()
         } else {
-            play()
+            return play()
         }
     }
 
-    func playNextSong() {
-        guard let nextSong = queue.forward() else { return }
+    @discardableResult func playNextSong() -> MPRemoteCommandHandlerStatus {
+        guard let nextSong = queue.forward() else { return .noActionableNowPlayingItem }
         currentSong = nextSong
-        play()
+        return play()
     }
 
-    func playPreviousSong() {
+    @discardableResult func playPreviousSong() -> MPRemoteCommandHandlerStatus {
         if let currentTime = currentTime, currentTime.seconds > backToStartThreshold {
-            avPlayer?.seek(to: CMTime(seconds: 0, preferredTimescale: currentTime.timescale))
-            return
+            resetSongToStart()
+            return .success
+        } else if let previousSong = queue.backward() {
+            currentSong = previousSong
+            return play()
+        } else if let currentTime = currentTime {
+            resetSongToStart()
+            return .success
+        } else {
+            return .noActionableNowPlayingItem
         }
+    }
 
-        guard let previousSong = queue.backward() else {
-            if let currentTime = currentTime {
-                avPlayer?.seek(to: CMTime(seconds: 0, preferredTimescale: currentTime.timescale))
-            }
-            return
-        }
-
-        currentSong = previousSong
-        play()
+    private func resetSongToStart() {
+        guard let currentTime = currentTime else { return }
+        avPlayer?.seek(to: CMTime(seconds: 0, preferredTimescale: currentTime.timescale))
     }
 
     @objc func playerDidFinishPlayingItemToEnd(notification: Notification) {
