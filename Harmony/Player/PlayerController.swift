@@ -81,10 +81,12 @@ class PlayerController: NSObject, ObservableObject  {
         didSet {
             guard let currentSong = currentSong else {
                 avPlayer = nil
+                nowPlayingInfoCenter.nowPlayingInfo = nil
                 return
             }
             let playerItem = AVPlayerItem(asset: currentSong.asset)
             avPlayer = AVPlayer(playerItem: playerItem)
+            updateNowPlayingMetadataInfo()
             Logger.player.info("Set current song: \(currentSong.title)")
         }
     }
@@ -119,7 +121,10 @@ class PlayerController: NSObject, ObservableObject  {
     }
     @Published var backToStartThreshold: TimeInterval = 3.0
     @Published private(set) var currentTime: CMTime? { // Always indicates actual current time
-        didSet { currentSeconds = currentTime?.seconds ?? 0 }
+        didSet {
+            currentSeconds = currentTime?.seconds ?? 0
+            updateNowPlayingPlaybackInfo()
+        }
     }
     @Published private(set) var displayedCurrentTime: String = "0:00"
     @Published private(set) var displayedSongDuration: String = "0:00"
@@ -137,6 +142,37 @@ class PlayerController: NSObject, ObservableObject  {
         }
         #endif
         super.init()
+
+    func updateNowPlayingMetadataInfo() {
+        guard let currentSong = currentSong else {
+            return
+        }
+
+        nowPlayingInfoCenter.nowPlayingInfo = [
+            MPNowPlayingInfoPropertyAssetURL: currentSong.url,
+            MPNowPlayingInfoPropertyMediaType: MPMediaType.music.rawValue,
+            //TODO: MPNowPlayingInfoPropertyIsLiveStream
+            MPMediaItemPropertyTitle: currentSong.title,
+            MPMediaItemPropertyAlbumTitle: currentSong.album,
+            MPMediaItemPropertyArtist: currentSong.artist,
+            // TODO: MPMediaItemPropertyArtwork <- This one needs a custom type
+            // TODO: MPMediaItemPropertyAlbumTitle
+            // TODO: MPMediaItemPropertyAlbumArtist
+        ]
+    }
+
+    func updateNowPlayingPlaybackInfo() {
+        guard let currentTime = currentTime,
+              let avPlayer = avPlayer else {
+            return
+        }
+
+        let playbackInfo: [String: Any] = [
+            MPNowPlayingInfoPropertyPlaybackRate: avPlayer.rate,
+            MPNowPlayingInfoPropertyElapsedPlaybackTime: currentTime.seconds,
+            MPMediaItemPropertyPlaybackDuration: songDuration
+        ]
+        nowPlayingInfoCenter.nowPlayingInfo?.merge(playbackInfo) { current, new in new }
     }
 
     func play() {
