@@ -100,7 +100,7 @@ class PlayerController: NSObject, ObservableObject  {
             case .inactive, .started:
                 return
             case .finished:
-                avPlayer?.seek(to: CMTime(seconds: currentSeconds, preferredTimescale: 1))
+                seek(to: currentSeconds)
             }
         }
     }
@@ -240,22 +240,20 @@ class PlayerController: NSObject, ObservableObject  {
 
     @discardableResult func playPreviousSong() -> MPRemoteCommandHandlerStatus {
         if let currentTime = currentTime, currentTime.seconds > backToStartThreshold {
-            resetSongToStart()
-            return .success
+            return seek(to: 0)
         } else if let previousSong = queue.backward() {
             currentSong = previousSong
             return play()
-        } else if let currentTime = currentTime {
-            resetSongToStart()
-            return .success
         } else {
-            return .noActionableNowPlayingItem
+            return seek(to: 0) // Returns .noActionableNowPlayingItem if no item
         }
     }
 
-    private func resetSongToStart() {
-        guard let currentTime = currentTime else { return }
-        avPlayer?.seek(to: CMTime(seconds: 0, preferredTimescale: currentTime.timescale))
+    @discardableResult func seek(to position: TimeInterval) -> MPRemoteCommandHandlerStatus {
+        guard let avPlayer = avPlayer else { return .noActionableNowPlayingItem }
+        let timescale = currentTime?.timescale ?? 1
+        avPlayer.seek(to: CMTime(seconds: position, preferredTimescale: timescale))
+        return .success
     }
 
     @objc func playerDidFinishPlayingItemToEnd(notification: Notification) {
