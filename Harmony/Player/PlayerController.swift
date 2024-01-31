@@ -12,6 +12,12 @@ import MediaPlayer
 import OSLog
 import RealmSwift
 
+#if os(macOS)
+import AppKit
+#else
+import UIKit
+#endif
+
 fileprivate let AVPlayerTimeControlStatusKeyPath = "timeControlStatus"
 fileprivate let hundredMsTime = CMTime(seconds: 0.1, preferredTimescale: CMTimeScale(MSEC_PER_SEC))
 
@@ -170,10 +176,17 @@ class PlayerController: NSObject, ObservableObject  {
             MPMediaItemPropertyTitle: currentSong.title,
             MPMediaItemPropertyAlbumTitle: currentSong.album,
             MPMediaItemPropertyArtist: currentSong.artist,
-            // TODO: MPMediaItemPropertyArtwork <- This one needs a custom type
-            // TODO: MPMediaItemPropertyAlbumTitle
             // TODO: MPMediaItemPropertyAlbumArtist
         ]
+
+        guard let artworkData = currentSong.artwork else { return }
+        #if os(macOS)
+        guard let image = NSImage(data: artworkData) else { return }
+        #else
+        guard let image = UIImage(data: artworkData) else { return }
+        #endif
+        let mpArtwork = MPMediaItemArtwork(boundsSize: image.size) { _ in image }
+        nowPlayingInfoCenter.nowPlayingInfo?[MPMediaItemPropertyArtwork] = mpArtwork
     }
 
     func updateNowPlayingPlaybackInfo() {
