@@ -24,7 +24,21 @@ class PlayerController: NSObject, ObservableObject  {
     let audioSession = AVAudioSession.sharedInstance()
     #endif
     let nowPlayingInfoCenter = MPNowPlayingInfoCenter.default()
-    @Published var avPlayer: AVPlayer? {
+    let remoteCommandCenter = MPRemoteCommandCenter.shared()
+    @Published var currentSong: Song? {
+        didSet {
+            guard let currentSong = currentSong else {
+                avPlayer = nil
+                nowPlayingInfoCenter.nowPlayingInfo = nil
+                return
+            }
+            let playerItem = AVPlayerItem(asset: currentSong.asset)
+            avPlayer = AVPlayer(playerItem: playerItem)
+            updateNowPlayingMetadataInfo()
+            Logger.player.info("Set current song: \(currentSong.title)")
+        }
+    }
+    @Published private (set) var avPlayer: AVPlayer? {
         willSet {
             avPlayer?.removeObserver(self, forKeyPath: AVPlayerTimeControlStatusKeyPath)
             NotificationCenter.default.removeObserver(
@@ -75,19 +89,6 @@ class PlayerController: NSObject, ObservableObject  {
                     self?.scrubState = .inactive
                 }
             }
-        }
-    }
-    @Published var currentSong: Song? {
-        didSet {
-            guard let currentSong = currentSong else {
-                avPlayer = nil
-                nowPlayingInfoCenter.nowPlayingInfo = nil
-                return
-            }
-            let playerItem = AVPlayerItem(asset: currentSong.asset)
-            avPlayer = AVPlayer(playerItem: playerItem)
-            updateNowPlayingMetadataInfo()
-            Logger.player.info("Set current song: \(currentSong.title)")
         }
     }
     @Published var volume: Float = 1.0 {
@@ -141,7 +142,15 @@ class PlayerController: NSObject, ObservableObject  {
             Logger.player.error("Failed to set the audio session configuration: \(error)")
         }
         #endif
+
         super.init()
+        
+        remoteCommandCenter.playCommand.addTarget { _ in return self.play() }
+        remoteCommandCenter.pauseCommand.addTarget { _ in return self.pause() }
+        remoteCommandCenter.togglePlayPauseCommand.addTarget { _ in return self.togglePlayPause() }
+        remoteCommandCenter.nextTrackCommand.addTarget { _ in return self.playNextSong() }
+        remoteCommandCenter.previousTrackCommand.addTarget { _ in return self.playPreviousSong() }
+    }
 
     func updateNowPlayingMetadataInfo() {
         guard let currentSong = currentSong else {
