@@ -42,7 +42,7 @@ struct BackendConfigurationFieldView: View {
             }) {
                 Label("Choose folder…", systemImage: "folder.fill")
             }
-            #if !os(macOS)
+            #if os(iOS)
             .sheet(isPresented: $filePickerVisible) {
                 FilePickerRepresentable(
                     types: [.directory, .folder], allowMultiple: true, onPicked: { urls in
