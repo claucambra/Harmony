@@ -15,7 +15,7 @@ struct PlayerQueueView: View {
         List {
             ForEach(queue.songs) { song in
                 Text(song.title)
-                    .bold(playerController.currentSong?.identifier == song.identifier)
+                    .bold(playerController.currentSong?.instanceId == song.instanceId)
                     .onAppear {
                         queue.loadNextPageIfNeeded(song: song)
                     }

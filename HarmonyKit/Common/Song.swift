@@ -21,6 +21,7 @@ public class Song: Identifiable, Hashable {
         lhs.identifier == rhs.identifier
     }
 
+    public let instanceId: UUID = UUID()
     public var identifier: String
     public var backendId: String
     public var url: URL
