@@ -22,19 +22,19 @@ public class Song: Identifiable, Hashable {
     }
 
     public let instanceId: UUID = UUID()
-    public var identifier: String
-    public var backendId: String
-    public var url: URL
-    public var title: String = ""
-    public var artist: String = ""
-    public var album: String = ""
-    public var genre: String = ""
-    public var creator: String = ""
-    public var subject: String = ""
-    public var contributor: String = ""
-    public var type: String = ""
-    public var artwork: Data?
-    public var duration: CMTime
+    public let identifier: String
+    public let backendId: String
+    public let url: URL
+    public private(set) var title: String = ""
+    public private(set) var artist: String = ""
+    public private(set) var album: String = ""
+    public private(set) var genre: String = ""
+    public private(set) var creator: String = ""
+    public private(set) var subject: String = ""
+    public private(set) var contributor: String = ""
+    public private(set) var type: String = ""
+    public private(set) var duration: CMTime = CMTime(seconds: 0, preferredTimescale: 44100)
+    public private(set) var artwork: Data?
     public var asset: AVAsset {
         get {
             if internalAsset == nil {
@@ -56,8 +56,8 @@ public class Song: Identifiable, Hashable {
 
         do {
             duration = try await asset.load(.duration)
-        } catch {
-            duration = CMTime(seconds: 0, preferredTimescale: 44100)
+        } catch let error {
+            Logger.defaultLog.error("Could not get duration for song \(url): \(error)")
         }
 
         await setupArtwork()
