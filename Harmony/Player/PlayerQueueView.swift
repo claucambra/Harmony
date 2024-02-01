@@ -14,18 +14,27 @@ struct PlayerQueueView: View {
     @State private var selection: Set<Song.ID> = []
 
     var body: some View {
-        List(selection: $selection) {
-            ForEach(queue.songs) { song in
-                PlayerQueueListViewItem(song: song)
-                    .onAppear {
-                        queue.loadNextPageIfNeeded(song: song)
-                    }
+        ScrollViewReader { proxy in
+            List(selection: $selection) {
+                ForEach(queue.songs) { song in
+                    PlayerQueueListViewItem(song: song)
+                        .onAppear {
+                            queue.loadNextPageIfNeeded(song: song)
+                        }
+                        .onChange(of: playerController.currentSong) {
+                            guard playerController.currentSong?.id == song.id else { return }
+                            withAnimation {
+                                proxy.scrollTo(song.id, anchor: .top)
+                            }
+                        }
+                }
             }
-        }
-        .contextMenu(forSelectionType: Song.ID.self) { ids in
-        } primaryAction: { ids in
-            for id in ids {
-                PlayerController.shared.playSongFromQueue(instanceId: id)
+            .contextMenu(forSelectionType: Song.ID.self) { ids in
+                // TODO
+            } primaryAction: { ids in
+                for id in ids {
+                    PlayerController.shared.playSongFromQueue(instanceId: id)
+                }
             }
         }
     }
