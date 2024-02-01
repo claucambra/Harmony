@@ -13,7 +13,7 @@ struct PlayerCurrentSongView: View {
     var body: some View {
         HStack {
             HStack {
-                CurrentSongArtworkView()
+                SongArtworkView(song: controller.currentSong)
                     .frame(maxHeight: .infinity)
                 VStack {
                     Text(controller.currentSong?.title ?? "")

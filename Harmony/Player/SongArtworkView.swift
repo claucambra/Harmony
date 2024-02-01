@@ -1,17 +1,18 @@
 //
-//  CurrentSongArtworkView.swift
+//  SongArtworkView.swift
 //  Harmony
 //
 //  Created by Claudio Cambra on 29/1/24.
 //
 
+import HarmonyKit
 import SwiftUI
 
-struct CurrentSongArtworkView: View {
-    @ObservedObject var controller = PlayerController.shared
+struct SongArtworkView: View {
+    let song: Song?
 
     var body: some View {
-        if let imageData = controller.currentSong?.artwork {
+        if let imageData = song?.artwork {
             #if os(macOS)
             if let image = NSImage(data: imageData) {
                 adjustedImage(Image(nsImage: image))
@@ -40,8 +41,4 @@ struct CurrentSongArtworkView: View {
             .scaledToFit()
             .aspectRatio(CGSize(width: 1, height: 1), contentMode: .fit)
     }
-}
-
-#Preview {
-    PlayerCurrentSongView()
 }

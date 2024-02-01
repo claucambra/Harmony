@@ -17,7 +17,7 @@ struct ToolbarCurrentSongView: View {
 
     var body: some View {
         HStack(spacing: horizontalSpacing) {
-            CurrentSongArtworkView()
+            SongArtworkView(song: controller.currentSong)
                 .frame(maxHeight: .infinity)
                 .clipShape(.rect(topLeadingRadius: borderRadius, bottomLeadingRadius: borderRadius))
                 .padding([.top, .bottom, .leading], borderWidth)
