@@ -72,6 +72,7 @@
 		535F1BEF2B4A8F1600C78D98 /* HarmonyUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535F1BEE2B4A8F1600C78D98 /* HarmonyUITestsLaunchTests.swift */; };
 		53802A3C2B66C49F0066208D /* CurrentSongArtworkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53802A3B2B66C49F0066208D /* CurrentSongArtworkView.swift */; };
 		53802A3E2B6790330066208D /* ToolbarVolumeSliderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53802A3D2B6790330066208D /* ToolbarVolumeSliderView.swift */; };
+		53D6664D2B6B7E3E0042C03D /* PlayerQueueListViewItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D6664C2B6B7E3E0042C03D /* PlayerQueueListViewItem.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -193,6 +194,7 @@
 		535F1BEE2B4A8F1600C78D98 /* HarmonyUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HarmonyUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		53802A3B2B66C49F0066208D /* CurrentSongArtworkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentSongArtworkView.swift; sourceTree = "<group>"; };
 		53802A3D2B6790330066208D /* ToolbarVolumeSliderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolbarVolumeSliderView.swift; sourceTree = "<group>"; };
+		53D6664C2B6B7E3E0042C03D /* PlayerQueueListViewItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerQueueListViewItem.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -406,6 +408,7 @@
 				535053FC2B62822F00D7EAF2 /* PlayerControlsView.swift */,
 				5350540B2B63972C00D7EAF2 /* PlayerCurrentSongView.swift */,
 				535054002B62D98200D7EAF2 /* PlayerQueue.swift */,
+				53D6664C2B6B7E3E0042C03D /* PlayerQueueListViewItem.swift */,
 				535054092B63939C00D7EAF2 /* PlayerQueueView.swift */,
 				535054072B635A0B00D7EAF2 /* ToolbarCurrentSongView.swift */,
 				53802A3D2B6790330066208D /* ToolbarVolumeSliderView.swift */,
@@ -796,6 +799,7 @@
 				535F1BD12B4A8F1400C78D98 /* HarmonyApp.swift in Sources */,
 				535054172B63A3F500D7EAF2 /* RepeatButton.swift in Sources */,
 				535053982B5CF4C900D7EAF2 /* BackendConfigurationFieldView.swift in Sources */,
+				53D6664D2B6B7E3E0042C03D /* PlayerQueueListViewItem.swift in Sources */,
 				535053F02B62186F00D7EAF2 /* SettingsSheet.swift in Sources */,
 				5350540A2B63939C00D7EAF2 /* PlayerQueueView.swift in Sources */,
 				5350542B2B64293600D7EAF2 /* SyncController.swift in Sources */,
