@@ -258,6 +258,7 @@ class PlayerController: NSObject, ObservableObject  {
             return
         }
         currentSong = song
+        play()
     }
 
     @discardableResult func togglePlayPause() -> MPRemoteCommandHandlerStatus {
