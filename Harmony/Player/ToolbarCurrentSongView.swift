@@ -23,7 +23,7 @@ struct ToolbarCurrentSongView: View {
                 .padding([.top, .bottom, .leading], borderWidth)
             VStack(spacing: 0) {
                 HStack {
-                    Text(controller.currentSong?.title ?? "")
+                    Text(controller.currentSong?.title ?? "Harmony")
                         .bold()
                         .frame(maxWidth: .infinity, alignment: .leading)
                     Text(controller.currentSong?.artist ?? "")
