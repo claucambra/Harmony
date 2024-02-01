@@ -27,10 +27,10 @@ struct PlayerQueueListViewItem: View {
             VStack(alignment: .leading) {
                 Text(song.title)
                     .lineLimit(1)
-                    .bold(playerController.currentSong?.instanceId == song.instanceId)
+                    .bold(playerController.currentSong?.id == song.id)
                 Text(song.artist + " • " + song.album)
                     .lineLimit(1)
-                    .bold(playerController.currentSong?.instanceId == song.instanceId)
+                    .bold(playerController.currentSong?.id == song.id)
                     .foregroundStyle(.secondary)
             }
         }
