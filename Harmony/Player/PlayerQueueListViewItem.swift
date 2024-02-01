@@ -13,7 +13,20 @@ struct PlayerQueueListViewItem: View {
     let song: Song
 
     var body: some View {
-        Text(song.title)
-            .bold(playerController.currentSong?.instanceId == song.instanceId)
+        HStack {
+            SongArtworkView(song: song)
+                .frame(height: 40)
+                .clipShape(.rect(cornerRadius: 5.0))
+            VStack(alignment: .leading) {
+                Text(song.title)
+                    .lineLimit(1)
+                    .bold(playerController.currentSong?.instanceId == song.instanceId)
+                Text(song.artist + " • " + song.album)
+                    .lineLimit(1)
+                    .bold(playerController.currentSong?.instanceId == song.instanceId)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .fixedSize(horizontal: false, vertical: true)
     }
 }
