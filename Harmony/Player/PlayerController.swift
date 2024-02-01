@@ -252,6 +252,14 @@ class PlayerController: NSObject, ObservableObject  {
         play()
     }
 
+    func playSongFromQueue(instanceId: ObjectIdentifier) {
+        guard let song = queue.moveToSong(instanceId: instanceId) else {
+            Logger.player.error("No song with instance id \(instanceId.debugDescription) in queue")
+            return
+        }
+        currentSong = song
+    }
+
     @discardableResult func togglePlayPause() -> MPRemoteCommandHandlerStatus {
         if timeControlStatus != .paused {
             return pause()
