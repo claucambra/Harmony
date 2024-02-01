@@ -82,4 +82,12 @@ class PlayerQueue: NSObject, ObservableObject {
 
         loadNextPage()
     }
+
+    func moveToSong(instanceId: ObjectIdentifier) -> Song? {
+        guard let songIdx = songs.firstIndex(where: { song in song.id == instanceId }) else {
+            return nil
+        }
+        currentSongIndex = songIdx
+        return songs[songIdx]
+    }
 }
