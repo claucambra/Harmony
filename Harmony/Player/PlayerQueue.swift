@@ -12,8 +12,8 @@ import RealmSwift
 
 @MainActor
 class PlayerQueue: ObservableObject {
-    static let defaultPageSize = 20
-    static let viewLoadTriggeringIndex = 10
+    static let defaultPageSize = 10
+    static let viewLoadTriggeringIndex = 5
     @Published var results: Results<DatabaseSong>? // TODO: Listen to changes to this and upd. songs
     @Published var songs: Deque<Song> = Deque()
     @Published var repeatEnabled: Bool = false
@@ -78,7 +78,7 @@ class PlayerQueue: ObservableObject {
             let pageEndSongIndex = nextSongIndex + nextPageSize - 1
 
             for unboundedIndex in nextSongIndex...pageEndSongIndex {
-                var boundedIndex = unboundedIndex.remainderReportingOverflow(
+                let boundedIndex = unboundedIndex.remainderReportingOverflow(
                     dividingBy: endHitIndex
                 ).partialValue
                 let repeatingSong = songs[boundedIndex]
@@ -92,8 +92,7 @@ class PlayerQueue: ObservableObject {
     }
 
     func loadNextPageIfNeeded(song: Song) {
-        guard endHitIndex == nil,
-              let songIdx = songs.lastIndex(of: song),
+        guard let songIdx = songs.lastIndex(where: { $0.id == song.id }),
               (songs.count - 1) - songIdx <= PlayerQueue.viewLoadTriggeringIndex else { return }
         loadNextPage()
     }
