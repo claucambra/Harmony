@@ -13,9 +13,14 @@ struct RepeatButton: View {
 
     var body: some View {
         Button {
-            // TODO
+            controller.repeatEnabled.toggle()
         } label: {
-            Label("Repeat", systemImage: "repeat")
+            if controller.repeatEnabled {
+                Label("Repeat", systemImage: "repeat")
+                    .foregroundStyle(.tint)
+            } else {
+                Label("Repeat", systemImage: "repeat")
+            }
         }
         .labelStyle(.iconOnly)
     }

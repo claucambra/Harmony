@@ -90,4 +90,14 @@ class PlayerQueue: NSObject, ObservableObject {
         currentSongIndex = songIdx
         return songs[songIdx]
     }
+
+    func goToFirst() -> Song? {
+        currentSongIndex = 0
+        return songs[currentSongIndex]
+    }
+
+    func goToLast() -> Song? {
+        currentSongIndex = songs.count - 1
+        return songs[currentSongIndex]
+    }
 }

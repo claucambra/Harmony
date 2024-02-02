@@ -31,6 +31,7 @@ class PlayerController: NSObject, ObservableObject  {
     #endif
     let nowPlayingInfoCenter = MPNowPlayingInfoCenter.default()
     let remoteCommandCenter = MPRemoteCommandCenter.shared()
+    @Published var repeatEnabled = false
     @Published var currentSong: Song? {
         didSet {
             guard let currentSong = currentSong else {
@@ -270,7 +271,11 @@ class PlayerController: NSObject, ObservableObject  {
     }
 
     @discardableResult func playNextSong() -> MPRemoteCommandHandlerStatus {
-        guard let nextSong = queue.forward() else { return .noActionableNowPlayingItem }
+        var nextSong = queue.forward()
+        if nextSong == nil, repeatEnabled {
+            nextSong = queue.goToFirst()
+        }
+        guard let nextSong = nextSong else { return .noActionableNowPlayingItem }
         currentSong = nextSong
         return play()
     }
@@ -279,6 +284,9 @@ class PlayerController: NSObject, ObservableObject  {
         if let currentTime = currentTime, currentTime.seconds > backToStartThreshold {
             return seek(to: 0)
         } else if let previousSong = queue.backward() {
+            currentSong = previousSong
+            return play()
+        } else if repeatEnabled, let previousSong = queue.goToLast() {
             currentSong = previousSong
             return play()
         } else {
