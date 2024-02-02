@@ -17,9 +17,28 @@ class PlayerQueue: NSObject, ObservableObject {
     @Published var results: Results<DatabaseSong>? // TODO: Listen to changes to this and upd. songs
     @Published var songs: Deque<Song> = Deque()
     private(set) var currentSongIndex: Int = -1
+    private var endHitIndex: Int?  // When we first start repeating
 
     override public init() {
         super.init()
+    }
+
+    private func songIndexIsWithinLoadTriggerBounds(_ index: Int) -> Bool {
+        return index >= (songs.count - 1) - PlayerQueue.defaultPageSize
+    }
+
+    private func currentIndexIsAtLoadTriggerBounds() -> Bool {
+        return songIndexIsWithinLoadTriggerBounds(currentSongIndex)
+    }
+
+    private func nextRepeatingSongIndex() -> Int? {
+        guard songs.count > 0 else { return nil }
+        if endHitIndex == nil {
+            endHitIndex = max(songs.count - 1, 2)
+        }
+        return (currentSongIndex + 1).remainderReportingOverflow(
+            dividingBy: endHitIndex!
+        ).partialValue
     }
 
     func backward() -> Song? {
@@ -28,9 +47,22 @@ class PlayerQueue: NSObject, ObservableObject {
         return songs[currentSongIndex]
     }
 
-    func forward() -> Song? {
-        if currentSongIndex >= (songs.count - 2) - PlayerQueue.defaultPageSize {
+    func forward(repeatEnabled: Bool = false) -> Song? {
+        if currentIndexIsAtLoadTriggerBounds(), endHitIndex == nil {
             loadNextPage(nextPageSize: 1)
+        }
+
+        if repeatEnabled, 
+            currentSongIndex >= songs.count - 1,
+            let nextSongIdx = nextRepeatingSongIndex() {
+            // We are still at the load trigger index, which means we have loaded all available
+            // results from the database. Therefore, start repeating songs in the history
+            let repeatingSong = songs[nextSongIdx]
+            if let dbRepeatingSong = results?.first(where: {
+                $0.identifier == repeatingSong.identifier
+            }), let newRepeatingSongInstance = dbRepeatingSong.toSong() {
+                songs.append(newRepeatingSongInstance)
+            }
         }
 
         return moveForward()
@@ -57,11 +89,13 @@ class PlayerQueue: NSObject, ObservableObject {
         for i in (firstSongIdx...lastSongIdx) {
             guard let song = results[i].toSong() else { continue }
             songs.append(song)
+            endHitIndex = nil  // We have added new songs so impossible to be at end index now
         }
     }
 
     func loadNextPageIfNeeded(song: Song) {
-        guard let songIdx = songs.lastIndex(of: song),
+        guard endHitIndex == nil,
+              let songIdx = songs.lastIndex(of: song),
               (songs.count - 1) - songIdx <= PlayerQueue.viewLoadTriggeringIndex else { return }
         loadNextPage()
     }
@@ -73,6 +107,7 @@ class PlayerQueue: NSObject, ObservableObject {
         if songs.count == 0 || songs[currentSongIndex].identifier != songId {
             currentSongIndex += 1
             songs.insert(song, at: currentSongIndex)
+            endHitIndex = nil
         }
 
         if (songs.count > 1) {

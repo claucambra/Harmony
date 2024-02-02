@@ -271,11 +271,9 @@ class PlayerController: NSObject, ObservableObject  {
     }
 
     @discardableResult func playNextSong() -> MPRemoteCommandHandlerStatus {
-        var nextSong = queue.forward()
-        if nextSong == nil, repeatEnabled {
-            nextSong = queue.goToFirst()
+        guard let nextSong = queue.forward(repeatEnabled: repeatEnabled) else {
+            return .noActionableNowPlayingItem
         }
-        guard let nextSong = nextSong else { return .noActionableNowPlayingItem }
         currentSong = nextSong
         return play()
     }
