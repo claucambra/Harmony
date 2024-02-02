@@ -9,13 +9,13 @@ import SwiftUI
 
 // TODO
 struct RepeatButton: View {
-    @ObservedObject var controller = PlayerController.shared
+    @ObservedObject var queue = PlayerController.shared.queue
 
     var body: some View {
         Button {
-            controller.repeatEnabled.toggle()
+            queue.repeatEnabled.toggle()
         } label: {
-            if controller.repeatEnabled {
+            if queue.repeatEnabled {
                 Label("Repeat", systemImage: "repeat")
                     .foregroundStyle(.tint)
             } else {
