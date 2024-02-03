@@ -137,6 +137,9 @@ class PlayerQueue: ObservableObject {
             return nil
         }
         currentSongIndex = songIdx
+        if currentSongIndex == songs.count - 1 {
+            loadNextPage()
+        }
         return songs[songIdx]
     }
 
