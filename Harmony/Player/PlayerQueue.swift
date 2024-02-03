@@ -121,9 +121,8 @@ class PlayerQueue: ObservableObject {
             endHitIndex = nil
         }
 
-        if (songs.count > 1) {
-            let firstIndexToDrop = min(currentSongIndex + 1, songs.count - 1)
-            songs.remove(atOffsets: IndexSet(firstIndexToDrop...songs.count - 1))
+        if songs.count > 1, currentSongIndex < songs.count - 1 {
+            songs.remove(atOffsets: IndexSet(currentSongIndex + 1...songs.count - 1))
         }
 
         if parentResults.last?.identifier == song.identifier {
