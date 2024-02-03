@@ -14,26 +14,32 @@ struct PlayerQueueListViewItem: View {
     // TODO: Standardise measurements below
     let borderRadius = 5.0
     let borderWidth = 1.0
+    let shadowRadius = 4.0
 
     var body: some View {
+        let isCurrentSong = playerController.currentSong?.id == song.id
         HStack {
             SongArtworkView(song: song)
-                .frame(height: 40)
+                .frame(height: isCurrentSong ? 60 : 40)
                 .clipShape(.rect(cornerRadius: borderRadius))
+                .shadow(radius: isCurrentSong ? shadowRadius : 0)
                 .overlay(
                     RoundedRectangle(cornerRadius: borderRadius)
                         .stroke(.separator, lineWidth: borderWidth)
                 )
+                .padding(isCurrentSong ? shadowRadius : 0)
             VStack(alignment: .leading) {
+                if isCurrentSong {
+                    Label("Currently playing", systemImage: "speaker.wave.3.fill")
+                        .font(.headline)
+                }
                 Text(song.title)
                     .lineLimit(1)
-                    .bold(playerController.currentSong?.id == song.id)
                 Text(song.artist + " • " + song.album)
                     .lineLimit(1)
-                    .bold(playerController.currentSong?.id == song.id)
                     .foregroundStyle(.secondary)
             }
+            .fixedSize(horizontal: false, vertical: true)
         }
-        .fixedSize(horizontal: false, vertical: true)
     }
 }
