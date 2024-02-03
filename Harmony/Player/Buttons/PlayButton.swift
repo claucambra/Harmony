@@ -20,16 +20,13 @@ struct PlayButton: View {
         }
         .labelStyle(.iconOnly)
         .onChange(of: controller.timeControlStatus) {
-            switch (controller.timeControlStatus) {
+            switch controller.timeControlStatus {
             case .paused:
                 buttonImage = "play.fill"
-                break
             case .waitingToPlayAtSpecifiedRate, .playing:
                 buttonImage = "pause.fill"
-                break
             default:
                 buttonImage = "play.slash.fill"
-                break
             }
         }
     }

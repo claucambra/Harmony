@@ -36,7 +36,7 @@ struct SettingsView: View {
     }
 
     private func labelForTab(_ tab: Tabs) -> some View {
-        switch (tab) {
+        switch tab {
         case .general:
             Label("General", systemImage: "gear")
         case .appearance:
