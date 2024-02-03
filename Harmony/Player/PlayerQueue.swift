@@ -17,7 +17,9 @@ class PlayerQueue: ObservableObject {
     static let viewLoadTriggeringIndex = 5
     @Published var results: Results<DatabaseSong>? // TODO: Listen to changes to this and upd. songs
     @Published var songs: Deque<Song> = Deque()
-    @Published var repeatState: RepeatState = .disabled
+    @Published var repeatState: RepeatState = .disabled {
+        didSet { reloadNextSongs() }
+    }
     private(set) var currentSongIndex: Int = -1
     private var endHitIndex: Int?  // When we first start repeating
 
@@ -112,6 +114,12 @@ class PlayerQueue: ObservableObject {
         loadNextPage()
     }
 
+    func clear(fromIndex: Int = 0) {
+        assert(fromIndex > 0, "Provided index should be larger than 0")
+        guard fromIndex <= songs.count - 1 else { return }
+        songs.remove(atOffsets: IndexSet(fromIndex...songs.count - 1))
+    }
+
     func addCurrentSong(_ song: Song, dbSong: DatabaseSong, parentResults: Results<DatabaseSong>) {
         results = parentResults
 
@@ -123,13 +131,23 @@ class PlayerQueue: ObservableObject {
         }
 
         if songs.count > 1, currentSongIndex < songs.count - 1 {
-            songs.remove(atOffsets: IndexSet(currentSongIndex + 1...songs.count - 1))
+            clear(fromIndex: currentSongIndex + 1)
         }
 
         if parentResults.last?.identifier == song.identifier {
             endHitIndex = max(songs.count, 2)
         }
 
+        loadNextPage()
+    }
+
+    func reloadNextSongs() {
+        clear(fromIndex: currentSongIndex + 1)
+        if results?.last?.identifier == songs[currentSongIndex].identifier {
+            endHitIndex = max(songs.count, 2)
+        } else {
+            endHitIndex = nil
+        }
         loadNextPage()
     }
 
