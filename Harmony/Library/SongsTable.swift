@@ -18,6 +18,8 @@ struct SongsTable: View {
     @State private var sortOrder = [KeyPathComparator(\DatabaseSong.title, order: .reverse)]
     @Binding var selection: Set<DatabaseSong.ID>
     @State var searchText: String = ""
+    @State var searchTimer: Timer?
+    let searchInterval = 0.5
 
     var body: some View {
         Table(selection: $selection, sortOrder: $sortOrder) {
@@ -49,7 +51,7 @@ struct SongsTable: View {
             }
         }
         .searchable(text: $searchText) {
-            if searchText != "" {
+            if searchText != "", searchTimer == nil {
                 ForEach(songs) { filteredSong in
                     Text(filteredSong.title).searchCompletion(filteredSong.title)
                 }
@@ -57,18 +59,35 @@ struct SongsTable: View {
         }
         .onChange(of: searchText) {
             guard searchText != "" else {
-                $songs.filter = nil
+                killTimer()
+                searchTimer = Timer.scheduledTimer(
+                    withTimeInterval: searchInterval, repeats: false
+                ) { _ in
+                    $songs.filter = nil
+                }
                 return
             }
-            #if DEBUG
-            // Force some type safety here for a reminder in case things change later
-            _ = \DatabaseSong.title
-            #endif
-            // When possible, change this to use the `where` property using the type-safe API
-            // We need to manually filter because we can't pick the case sensitibity or CONTAINS
-            // when using searchable on the collection directly
-            $songs.filter = NSPredicate(format: "title CONTAINS[cd] %@", searchText)
+
+            killTimer()
+            searchTimer = Timer.scheduledTimer(
+                withTimeInterval: searchInterval, repeats: false
+            ) { _ in
+                #if DEBUG
+                // Force some type safety here for a reminder in case things change later
+                _ = \DatabaseSong.title
+                #endif
+                // When possible, change this to use the `where` property using the type-safe API
+                // We need to manually filter because we can't pick the case sensitibity or CONTAINS
+                // when using searchable on the collection directly
+                $songs.filter = NSPredicate(format: "title CONTAINS[cd] %@", searchText)
+                searchTimer = nil
+            }
         }
+    }
+
+    private func killTimer() {
+        searchTimer?.invalidate()
+        searchTimer = nil
     }
 }
 
