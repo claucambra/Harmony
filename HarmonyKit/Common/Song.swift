@@ -161,6 +161,25 @@ public class Song: Identifiable, Hashable {
         semaphore.wait()
     }
 
+    public func clone() -> Song {
+        return Song(
+            identifier: identifier,
+            backendId: backendId,
+            url: url,
+            title: title,
+            artist: artist,
+            album: album,
+            genre: genre,
+            creator: creator,
+            subject: subject,
+            contributor: contributor,
+            type: type,
+            duration: duration,
+            asset: asset,
+            assetProviderClosure: assetProviderClosure
+        )
+    }
+
     public func hash(into hasher: inout Hasher) {
         hasher.combine(identifier)
     }
