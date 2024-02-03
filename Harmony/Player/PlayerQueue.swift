@@ -83,41 +83,47 @@ class PlayerQueue: ObservableObject {
         }
     }
 
-    private func loadNextPageFromResults(nextPageSize: Int) {
+    private func loadNextPageFromResultsShuffled(nextPageSize: Int) {
         guard nextPageSize > 0,
                 let results = results,
                 !results.isEmpty,
                 let lastQueueSongIndex = results.firstIndex(
                     where: { $0.identifier == songs.last?.identifier }
-        ) else { return }
+                ),
+              addedSongResultsIndex + 1 < results.count - 1 else { return }
 
-        guard !shuffleEnabled else {
-            guard addedSongResultsIndex + 1 < results.count - 1 else { return }
-            let eligibleRange = addedSongResultsIndex + 1...results.count - 1
-            let electedIndices: Set<Int> = []
-            let afterAddedSongCount = results.count - (addedSongResultsIndex + 1)
-            var remainingResults = afterAddedSongCount - shuffledIdentifiers.count
-            var insertedCount = 0
+        let eligibleRange = addedSongResultsIndex + 1...results.count - 1
+        let electedIndices: Set<Int> = []
+        let afterAddedSongCount = results.count - (addedSongResultsIndex + 1)
+        var remainingResults = afterAddedSongCount - shuffledIdentifiers.count
+        var insertedCount = 0
 
-            while remainingResults > 0, insertedCount < nextPageSize  {
-                guard let randomIndex = eligibleRange.randomElement(),
-                      !electedIndices.contains(randomIndex) else { continue }
-                let randomDbSong = results[randomIndex]
-                let randomDbSongIdentifier = randomDbSong.identifier
-                guard !shuffledIdentifiers.contains(randomDbSongIdentifier),
-                      let randomSong = randomDbSong.toSong() else { continue }
-                songs.append(randomSong)
-                shuffledIdentifiers.insert(randomDbSongIdentifier)
-                remainingResults -= 1
-                insertedCount += 1
-            }
-
-            if remainingResults == 0 {
-                endHitIndex = proposedCurrentEndHitIndex
-            }
-            return
+        while remainingResults > 0, insertedCount < nextPageSize  {
+            guard let randomIndex = eligibleRange.randomElement(),
+                  !electedIndices.contains(randomIndex) else { continue }
+            let randomDbSong = results[randomIndex]
+            let randomDbSongIdentifier = randomDbSong.identifier
+            guard !shuffledIdentifiers.contains(randomDbSongIdentifier),
+                  let randomSong = randomDbSong.toSong() else { continue }
+            songs.append(randomSong)
+            shuffledIdentifiers.insert(randomDbSongIdentifier)
+            remainingResults -= 1
+            insertedCount += 1
         }
 
+        if remainingResults == 0 {
+            endHitIndex = proposedCurrentEndHitIndex
+        }
+    }
+
+    private func loadNextPageFromResultsOrdered(nextPageSize: Int) {
+        guard nextPageSize > 0,
+                let results = results,
+                !results.isEmpty,
+                let lastQueueSongIndex = results.firstIndex(
+                    where: { $0.identifier == songs.last?.identifier }
+                ) else { return }
+        
         let nextResultIndex = results.index(after: lastQueueSongIndex)
         let finalResultIndex = results.count - 1
         guard nextResultIndex < finalResultIndex else { return }
@@ -133,6 +139,14 @@ class PlayerQueue: ObservableObject {
 
         if lastResultIndex == finalResultIndex {
             endHitIndex = proposedCurrentEndHitIndex
+        }
+    }
+
+    private func loadNextPageFromResults(nextPageSize: Int) {
+        if shuffleEnabled {
+            loadNextPageFromResultsShuffled(nextPageSize: nextPageSize)
+        } else {
+            loadNextPageFromResultsOrdered(nextPageSize: nextPageSize)
         }
     }
 
