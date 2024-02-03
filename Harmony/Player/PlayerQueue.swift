@@ -22,13 +22,15 @@ class PlayerQueue: ObservableObject {
     }
     private(set) var currentSongIndex: Int = -1
     private var endHitIndex: Int?  // When we first start repeating
-
-    private func songIndexIsWithinLoadTriggerBounds(_ index: Int) -> Bool {
-        return index >= (songs.count - 1) - PlayerQueue.defaultPageSize
+    private var lastSongIndex: Int { songs.count - 1 }
+    private var nextSongIndex: Int { currentSongIndex + 1 }
+    private var proposedCurrentEndHitIndex: Int { max(songs.count, 2) }
+    private var currentIndexIsAtLoadTriggerBounds: Bool {
+        songIndexIsWithinLoadTriggerBounds(currentSongIndex)
     }
 
-    private func currentIndexIsAtLoadTriggerBounds() -> Bool {
-        return songIndexIsWithinLoadTriggerBounds(currentSongIndex)
+    private func songIndexIsWithinLoadTriggerBounds(_ index: Int) -> Bool {
+        return index >= lastSongIndex - PlayerQueue.defaultPageSize
     }
 
     func backward() -> Song? {
@@ -38,20 +40,20 @@ class PlayerQueue: ObservableObject {
     }
 
     func forward() -> Song? {
-        if currentIndexIsAtLoadTriggerBounds() {
+        if currentIndexIsAtLoadTriggerBounds {
             loadNextPage(nextPageSize: 1)
         }
         return moveForward()
     }
 
     private func moveForward() -> Song? {
-        guard currentSongIndex < songs.count - 1 else { return nil }
+        guard currentSongIndex < lastSongIndex else { return nil }
         currentSongIndex += 1
         return songs[currentSongIndex]
     }
 
     private func loadNextPageOfRepeatingQueue(nextPageSize: Int) {
-        guard nextPageSize > 0, songs.count > 0, let endHitIndex = endHitIndex else { return }
+        guard nextPageSize > 0, !songs.isEmpty, let endHitIndex = endHitIndex else { return }
 
         let nextSongIndex = songs.count
         let pageEndSongIndex = nextSongIndex + nextPageSize - 1
@@ -66,7 +68,7 @@ class PlayerQueue: ObservableObject {
     }
 
     private func loadNextPageOfRepeatingCurrentSong(nextPageSize: Int) {
-        guard nextPageSize > 0, songs.count > 0 else { return }
+        guard nextPageSize > 0, !songs.isEmpty else { return }
         let currentSong = songs[currentSongIndex]
         for _ in 1...nextPageSize {
             songs.append(currentSong.clone())
@@ -78,21 +80,21 @@ class PlayerQueue: ObservableObject {
             where: { $0.identifier == songs.last?.identifier }
         ) else { return }
 
-        let nextSongIndex = results.index(after: lastQueueSongIndex)
-        let finalSongIndex = results.count - 1
-        guard nextSongIndex < finalSongIndex else { return }
+        let nextResultIndex = results.index(after: lastQueueSongIndex)
+        let finalResultIndex = results.count - 1
+        guard nextResultIndex < finalResultIndex else { return }
 
-        let firstSongIndex = min(nextSongIndex, finalSongIndex)
-        let lastSongIndex = min(nextSongIndex + nextPageSize - 1, finalSongIndex)
+        let firstResultIndex = min(nextResultIndex, finalResultIndex)
+        let lastResultIndex = min(nextResultIndex + nextPageSize - 1, finalResultIndex)
 
-        for i in (firstSongIndex...lastSongIndex) {
+        for i in (firstResultIndex...lastResultIndex) {
             guard let song = results[i].toSong() else { continue }
             songs.append(song)
             endHitIndex = nil  // We have added new songs so impossible to be at end index now
         }
 
-        if lastSongIndex == finalSongIndex {
-            endHitIndex = max(songs.count, 2)
+        if lastResultIndex == finalResultIndex {
+            endHitIndex = proposedCurrentEndHitIndex
         }
     }
 
@@ -115,44 +117,44 @@ class PlayerQueue: ObservableObject {
     }
 
     func loadNextPageIfNeeded(song: Song) {
-        guard let songIdx = songs.lastIndex(where: { $0.id == song.id }),
-              (songs.count - 1) - songIdx <= PlayerQueue.viewLoadTriggeringIndex else { return }
+        guard let songIndex = songs.lastIndex(where: { $0.id == song.id }),
+              lastSongIndex - songIndex <= PlayerQueue.viewLoadTriggeringIndex else { return }
         loadNextPage()
     }
 
     func clear(fromIndex: Int = 0) {
-        guard songs.count > 0 else { return }
+        guard !songs.isEmpty else { return }
         assert(fromIndex > 0, "Provided index should be larger than 0")
-        guard fromIndex <= songs.count - 1 else { return }
-        songs.remove(atOffsets: IndexSet(fromIndex...songs.count - 1))
+        guard fromIndex <= lastSongIndex else { return }
+        songs.remove(atOffsets: IndexSet(fromIndex...lastSongIndex))
     }
 
     func addCurrentSong(_ song: Song, dbSong: DatabaseSong, parentResults: Results<DatabaseSong>) {
         results = parentResults
 
         let songId = song.identifier
-        if songs.count == 0 || songs[currentSongIndex].identifier != songId {
+        if songs.isEmpty || songs[currentSongIndex].identifier != songId {
             currentSongIndex += 1
             songs.insert(song, at: currentSongIndex)
             endHitIndex = nil
         }
 
-        if songs.count > 1, currentSongIndex < songs.count - 1 {
-            clear(fromIndex: currentSongIndex + 1)
+        if songs.count > 1, currentSongIndex < lastSongIndex {
+            clear(fromIndex: nextSongIndex)
         }
 
         if parentResults.last?.identifier == song.identifier {
-            endHitIndex = max(songs.count, 2)
+            endHitIndex = proposedCurrentEndHitIndex
         }
 
         loadNextPage()
     }
 
     func reloadNextSongs() {
-        guard songs.count > 0 else { return }
-        clear(fromIndex: currentSongIndex + 1)
+        guard !songs.isEmpty else { return }
+        clear(fromIndex: nextSongIndex)
         if results?.last?.identifier == songs[currentSongIndex].identifier {
-            endHitIndex = max(songs.count, 2)
+            endHitIndex = proposedCurrentEndHitIndex
         } else {
             endHitIndex = nil
         }
@@ -164,7 +166,7 @@ class PlayerQueue: ObservableObject {
             return nil
         }
         currentSongIndex = songIdx
-        if currentSongIndex == songs.count - 1 {
+        if currentSongIndex == lastSongIndex {
             loadNextPage()
         }
         return songs[songIdx]
