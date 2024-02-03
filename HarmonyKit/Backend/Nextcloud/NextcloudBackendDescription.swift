@@ -7,10 +7,12 @@
 
 import Foundation
 
-let ncBackendServerUrlConfigFieldId = "serverurl-field"
-let ncBackendUsernameConfigFieldId = "username-field"
-let ncBackendPasswordConfigFieldId = "password-field"
-let ncBackendMusicPathConfigFieldId = "musicpath-field"
+enum NextcloudBackendFieldId: String {
+    case serverUrl = "serverurl-field"
+    case username = "username-field"
+    case password = "password-field"
+    case musicPath = "musicpath-field"
+}
 
 let ncBackendTypeDescription = BackendDescription(
     id: "nc-backend",
@@ -19,7 +21,7 @@ let ncBackendTypeDescription = BackendDescription(
     systemImageName: "cloud",
     configDescription: [
         BackendConfigurationField(
-            id: ncBackendServerUrlConfigFieldId,
+            id: NextcloudBackendFieldId.serverUrl.rawValue,
             title: "Server URL",
             description: "Location of server.",
             valueType: .string,
@@ -28,7 +30,7 @@ let ncBackendTypeDescription = BackendDescription(
             defaultValue: ""
         ),
         BackendConfigurationField(
-            id: ncBackendUsernameConfigFieldId,
+            id: NextcloudBackendFieldId.username.rawValue,
             title: "Username",
             description: "Nextcloud user username",
             valueType: .string,
@@ -37,7 +39,7 @@ let ncBackendTypeDescription = BackendDescription(
             defaultValue: ""
         ),
         BackendConfigurationField(
-            id: ncBackendPasswordConfigFieldId,
+            id: NextcloudBackendFieldId.password.rawValue,
             title: "Password",
             description: "Nextcloud user password",
             valueType: .string,
@@ -46,7 +48,7 @@ let ncBackendTypeDescription = BackendDescription(
             defaultValue: ""
         ),
         BackendConfigurationField(
-            id: ncBackendMusicPathConfigFieldId,
+            id: NextcloudBackendFieldId.musicPath.rawValue,
             title: "Music path",
             description: "Path to music folder (relative to user root)",
             valueType: .string,

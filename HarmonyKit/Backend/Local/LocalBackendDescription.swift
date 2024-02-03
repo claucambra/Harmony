@@ -7,7 +7,9 @@
 
 import Foundation
 
-let localBackendPathConfigFieldId = "path-field"
+enum LocalBackendFieldId: String {
+    case pathConfig = "path-field"
+}
 
 let localBackendTypeDescription = BackendDescription(
     id: "local-backend",
@@ -16,7 +18,7 @@ let localBackendTypeDescription = BackendDescription(
     systemImageName: "internaldrive",
     configDescription: [
         BackendConfigurationField(
-            id: localBackendPathConfigFieldId,
+            id: LocalBackendFieldId.pathConfig.rawValue,
             title: "Path",
             description: "Location of files. Can be multiple locations.",
             valueType: .localUrl,
