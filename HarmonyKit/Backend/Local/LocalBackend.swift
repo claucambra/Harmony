@@ -14,13 +14,9 @@ extension Logger {
 }
 
 public class LocalBackend : NSObject, Backend {
-    internal static let pathConfigId = "path-field"
-
     public let typeDescription = localBackendTypeDescription
     public let id: String
-
     public var configValues: BackendConfiguration = [:]
-
     public private(set) var presentation: BackendPresentable
     public private(set) var path: URL {
         didSet { DispatchQueue.main.async { self.presentation.config = self.path.path } }
@@ -29,12 +25,12 @@ public class LocalBackend : NSObject, Backend {
     static func getPathFromConfig(_ config: BackendConfiguration) -> URL {
         #if os(macOS)
         let accessibleUrlPathFieldId =
-            LocalBackend.pathConfigId + BackendConfigurationLocalURLAccessibleURLFieldKeySuffix
+            localBackendPathConfigFieldId + BackendConfigurationLocalURLAccessibleURLFieldKeySuffix
         if let accessibleUrl = config[accessibleUrlPathFieldId] as? URL {
             return accessibleUrl
         }
         #endif
-        return URL(fileURLWithPath: config[LocalBackend.pathConfigId] as? String ?? "")
+        return URL(fileURLWithPath: config[localBackendPathConfigFieldId] as? String ?? "")
     }
 
     required public init(config: BackendConfiguration) {

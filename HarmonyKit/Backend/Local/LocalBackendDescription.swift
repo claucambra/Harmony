@@ -7,6 +7,8 @@
 
 import Foundation
 
+internal let localBackendPathConfigFieldId = "path-field"
+
 let localBackendTypeDescription = BackendDescription(
     id: "local-backend",
     name: "Local Backend",
@@ -14,7 +16,7 @@ let localBackendTypeDescription = BackendDescription(
     systemImageName: "internaldrive",
     configDescription: [
         BackendConfigurationField(
-            id: LocalBackend.pathConfigId,
+            id: localBackendPathConfigFieldId,
             title: "Path",
             description: "Location of files. Can be multiple locations.",
             valueType: .localUrl,
