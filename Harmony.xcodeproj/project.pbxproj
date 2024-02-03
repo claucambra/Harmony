@@ -73,6 +73,7 @@
 		53802A3C2B66C49F0066208D /* SongArtworkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53802A3B2B66C49F0066208D /* SongArtworkView.swift */; };
 		53802A3E2B6790330066208D /* ToolbarVolumeSliderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53802A3D2B6790330066208D /* ToolbarVolumeSliderView.swift */; };
 		53D6664D2B6B7E3E0042C03D /* PlayerQueueListViewItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D6664C2B6B7E3E0042C03D /* PlayerQueueListViewItem.swift */; };
+		53D666532B6E50340042C03D /* EnvironmentValues+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D666522B6E50340042C03D /* EnvironmentValues+Extension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -195,6 +196,7 @@
 		53802A3B2B66C49F0066208D /* SongArtworkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongArtworkView.swift; sourceTree = "<group>"; };
 		53802A3D2B6790330066208D /* ToolbarVolumeSliderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolbarVolumeSliderView.swift; sourceTree = "<group>"; };
 		53D6664C2B6B7E3E0042C03D /* PlayerQueueListViewItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerQueueListViewItem.swift; sourceTree = "<group>"; };
+		53D666522B6E50340042C03D /* EnvironmentValues+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EnvironmentValues+Extension.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -419,6 +421,7 @@
 		535054022B6356E400D7EAF2 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				53D666522B6E50340042C03D /* EnvironmentValues+Extension.swift */,
 				535054032B6356EF00D7EAF2 /* Logger+Extension.swift */,
 			);
 			path = Extensions;
@@ -778,6 +781,7 @@
 			files = (
 				535053962B5BE96800D7EAF2 /* BackendConfigurationView.swift in Sources */,
 				5350540F2B63A12800D7EAF2 /* PlayButton.swift in Sources */,
+				53D666532B6E50340042C03D /* EnvironmentValues+Extension.swift in Sources */,
 				535F1BD32B4A8F1400C78D98 /* ContentView.swift in Sources */,
 				535054152B63A3AD00D7EAF2 /* ShuffleButton.swift in Sources */,
 				535054112B63A1EB00D7EAF2 /* ChangeSongButton.swift in Sources */,

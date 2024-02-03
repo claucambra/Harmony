@@ -15,22 +15,18 @@ struct SongsTable: View {
         DatabaseSong.self,
         sortDescriptor: SortDescriptor(keyPath: \DatabaseSong.title)
     ) var songs
-    @State private var sortOrder = [KeyPathComparator(\DatabaseSong.title, order: .reverse)]
+    @Environment(\.searchText) var searchText
     @Binding var selection: Set<DatabaseSong.ID>
-    @State var searchText: String = ""
-    @State var searchTimer: Timer?
+    @State private var sortOrder = [KeyPathComparator(\DatabaseSong.title, order: .reverse)]
+    @State private var searchTimer: Timer?
     let searchInterval = 0.5
 
     var body: some View {
-        Table(selection: $selection, sortOrder: $sortOrder) {
+        Table(songs, selection: $selection, sortOrder: $sortOrder) {
             TableColumn("Title", value: \.title)
             TableColumn("Album", value: \.album)
             TableColumn("Artist", value: \.artist)
             TableColumn("Genre", value: \.genre)
-        } rows: {
-            ForEach(songs) { song in
-                TableRow(song)
-            }
         }
         .onChange(of: sortOrder, { oldValue, newValue in
             guard let sortDescriptor = newValue.first else { return }
@@ -48,13 +44,6 @@ struct SongsTable: View {
                     return
                 }
                 PlayerController.shared.playSong(dbObject, withinSongs: songs)
-            }
-        }
-        .searchable(text: $searchText) {
-            if searchText != "", searchTimer == nil {
-                ForEach(songs) { filteredSong in
-                    Text(filteredSong.title).searchCompletion(filteredSong.title)
-                }
             }
         }
         .onChange(of: searchText) {

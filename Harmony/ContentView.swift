@@ -13,16 +13,19 @@ struct ContentView: View {
     @State private var path = NavigationPath()
     @State private var settingsSheetVisible = false
     @State private var queueVisible = false
+    @State private var searchText = ""
     #if os(macOS)
     let buttonStackInToolbar = true
     let buttonStackPlacement = ToolbarItemPlacement.navigation
     let currentSongPlacement = ToolbarItemPlacement.principal
     let volumeSliderPlacement = ToolbarItemPlacement.destructiveAction
+    let searchablePlacement = SearchFieldPlacement.sidebar
     #else
     let buttonStackInToolbar = UIDevice.current.userInterfaceIdiom != .phone
     let buttonStackPlacement = ToolbarItemPlacement.topBarLeading
     let currentSongPlacement = ToolbarItemPlacement.bottomBar
     let volumeSliderPlacement = ToolbarItemPlacement.topBarTrailing
+    let searchablePlacement = .automatic
     #endif
 
     var body: some View {
@@ -80,6 +83,8 @@ struct ContentView: View {
                     }
                 }
         }
+        .environment(\.searchText, searchText)
+        .searchable(text: $searchText, placement: searchablePlacement) // TODO: Re-add suggestions
     }
 }
 
