@@ -122,11 +122,19 @@ class PlayerQueue: ObservableObject {
         loadNextPage()
     }
 
-    func clear(fromIndex: Int = 0) {
-        guard !songs.isEmpty else { return }
+    @discardableResult func clear(fromIndex: Int = 0) -> [String]? {
+        guard !songs.isEmpty else { return nil }
         assert(fromIndex > 0, "Provided index should be larger than 0")
-        guard fromIndex <= lastSongIndex else { return }
-        songs.remove(atOffsets: IndexSet(fromIndex...lastSongIndex))
+        guard fromIndex <= lastSongIndex else { return nil }
+
+        let indexRange = fromIndex...lastSongIndex
+        var removedSongsIdentifiers: [String] = []
+        for i in indexRange {
+            let identifier = songs[i].identifier
+            removedSongsIdentifiers.append(identifier)
+        }
+        songs.remove(atOffsets: IndexSet(indexRange))
+        return removedSongsIdentifiers
     }
 
     func addCurrentSong(_ song: Song, dbSong: DatabaseSong, parentResults: Results<DatabaseSong>) {
