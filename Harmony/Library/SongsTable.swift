@@ -16,67 +16,70 @@ struct SongsTable: View {
         sortDescriptor: SortDescriptor(keyPath: \DatabaseSong.title)
     ) var songs
     @Environment(\.searchText) var searchText
+    @Environment(\.isSearching) private var isSearching
     @Binding var selection: Set<DatabaseSong.ID>
     @State private var sortOrder = [KeyPathComparator(\DatabaseSong.title, order: .reverse)]
     @State private var searchTimer: Timer?
     let searchInterval = 0.5
 
     var body: some View {
-        Table(songs, selection: $selection, sortOrder: $sortOrder) {
-            TableColumn("Title", value: \.title)
-            TableColumn("Album", value: \.album)
-            TableColumn("Artist", value: \.artist)
-            TableColumn("Genre", value: \.genre)
-        }
-        .onChange(of: sortOrder, { oldValue, newValue in
-            guard let sortDescriptor = newValue.first else { return }
-            let keyPath = sortDescriptor.keyPath
-            let ascending = sortDescriptor.order == .reverse
-            $songs.sortDescriptor = SortDescriptor(keyPath: keyPath, ascending: ascending)
-        })
-        .contextMenu(forSelectionType: DatabaseSong.ID.self) { items in
-            // TODO
-        } primaryAction: { ids in
-            // TODO: This shouldn't be handled here
-            for id in ids {
-                guard let dbObject = songs.filter({ $0.id == id }).first else {
-                    Logger.songsTable.error("Could not find song with id: \(id)")
-                    return
+        // HACK: For some reason, the table view really likes to re-render every single time a
+        // searchable in the hierarchy is interacted with. With the songs table this obviously
+        // leads to massive slowdowns and brings the UI to its knees.
+        //
+        // In order to work around this behaviour, we remove the table view while search is ongoing.
+        if searchTimer == nil {
+            Table(songs, selection: $selection, sortOrder: $sortOrder) {
+                TableColumn("Title", value: \.title)
+                TableColumn("Album", value: \.album)
+                TableColumn("Artist", value: \.artist)
+                TableColumn("Genre", value: \.genre)
+            }
+            .contextMenu(forSelectionType: DatabaseSong.ID.self) { items in
+                // TODO
+            } primaryAction: { ids in
+                // TODO: This shouldn't be handled here
+                for id in ids {
+                    guard let dbObject = songs.filter({ $0.id == id }).first else {
+                        Logger.songsTable.error("Could not find song with id: \(id)")
+                        return
+                    }
+                    PlayerController.shared.playSong(dbObject, withinSongs: songs)
                 }
-                PlayerController.shared.playSong(dbObject, withinSongs: songs)
             }
-        }
-        .onChange(of: searchText) {
-            guard searchText != "" else {
-                killTimer()
-                searchTimer = Timer.scheduledTimer(
-                    withTimeInterval: searchInterval, repeats: false
-                ) { _ in
-                    $songs.filter = nil
-                }
-                return
-            }
-
-            killTimer()
-            searchTimer = Timer.scheduledTimer(
-                withTimeInterval: searchInterval, repeats: false
-            ) { _ in
-                #if DEBUG
-                // Force some type safety here for a reminder in case things change later
-                _ = \DatabaseSong.title
-                #endif
-                // When possible, change this to use the `where` property using the type-safe API
-                // We need to manually filter because we can't pick the case sensitibity or CONTAINS
-                // when using searchable on the collection directly
-                $songs.filter = NSPredicate(format: "title CONTAINS[cd] %@", searchText)
-                searchTimer = nil
-            }
+            .onChange(of: sortOrder, { oldValue, newValue in
+                guard let sortDescriptor = newValue.first else { return }
+                let keyPath = sortDescriptor.keyPath
+                let ascending = sortDescriptor.order == .reverse
+                $songs.sortDescriptor = SortDescriptor(keyPath: keyPath, ascending: ascending)
+            })
+            .onChange(of: searchText) { startSearchTimer() }
+        } else {
+            Text("Loading...")
+                .onChange(of: searchText) { startSearchTimer() }
         }
     }
 
-    private func killTimer() {
+    private func startSearchTimer() {
         searchTimer?.invalidate()
-        searchTimer = nil
+        searchTimer = Timer.scheduledTimer(
+            withTimeInterval: searchInterval, repeats: false
+        ) { _ in
+            #if DEBUG
+            // Force some type safety here for a reminder in case things change later
+            _ = \DatabaseSong.title
+            #endif
+            guard searchText != "" else {
+                $songs.filter = nil
+                searchTimer = nil
+                return
+            }
+            // When possible, change this to use the `where` property using the type-safe API
+            // We need to manually filter because we can't pick the case sensitibity or CONTAINS
+            // when using searchable on the collection directly
+            $songs.filter = NSPredicate(format: "title CONTAINS[cd] %@", searchText)
+            searchTimer = nil
+        }
     }
 }
 
