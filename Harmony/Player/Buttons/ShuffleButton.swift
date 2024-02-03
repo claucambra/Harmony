@@ -9,13 +9,18 @@ import SwiftUI
 
 // TODO
 struct ShuffleButton: View {
-    @ObservedObject var controller = PlayerController.shared
+    @ObservedObject var queue = PlayerController.shared.queue
 
     var body: some View {
         Button {
-            // TODO
+            queue.shuffleEnabled.toggle()
         } label: {
-            Label("Shuffle", systemImage: "shuffle")
+            if queue.shuffleEnabled {
+                Label("Shuffle", systemImage: "shuffle")
+                    .foregroundStyle(.tint)
+            } else {
+                Label("Shuffle", systemImage: "shuffle")
+            }
         }
         .labelStyle(.iconOnly)
     }

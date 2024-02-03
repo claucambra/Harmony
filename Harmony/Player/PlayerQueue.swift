@@ -15,12 +15,20 @@ class PlayerQueue: ObservableObject {
     enum RepeatState { case disabled, queue, currentSong }
     static let defaultPageSize = 10
     static let viewLoadTriggeringIndex = 5
-    @Published var results: Results<DatabaseSong>? // TODO: Listen to changes to this and upd. songs
+    @Published var results: Results<DatabaseSong>? {
+        // TODO: Listen to changes to this and upd. songs
+        didSet { shuffledIdentifiers = [] } // Shuffle freshly
+    }
     @Published var songs: Deque<Song> = Deque()
+    @Published var shuffleEnabled = false {
+        didSet { reloadNextSongs() }
+    }
     @Published var repeatState: RepeatState = .disabled {
         didSet { reloadNextSongs() }
     }
-    private(set) var currentSongIndex: Int = -1
+    private var currentSongIndex: Int = -1
+    private var shuffledIdentifiers: Set<String> = []
+    private var addedSongResultsIndex: Int = -1
     private var endHitIndex: Int?  // When we first start repeating
     private var lastSongIndex: Int { songs.count - 1 }
     private var nextSongIndex: Int { currentSongIndex + 1 }
@@ -76,9 +84,39 @@ class PlayerQueue: ObservableObject {
     }
 
     private func loadNextPageFromResults(nextPageSize: Int) {
-        guard nextPageSize > 0, let results = results, let lastQueueSongIndex = results.firstIndex(
-            where: { $0.identifier == songs.last?.identifier }
+        guard nextPageSize > 0,
+                let results = results,
+                !results.isEmpty,
+                let lastQueueSongIndex = results.firstIndex(
+                    where: { $0.identifier == songs.last?.identifier }
         ) else { return }
+
+        guard !shuffleEnabled else {
+            guard addedSongResultsIndex + 1 < results.count - 1 else { return }
+            let eligibleRange = addedSongResultsIndex + 1...results.count - 1
+            let electedIndices: Set<Int> = []
+            let afterAddedSongCount = results.count - (addedSongResultsIndex + 1)
+            var remainingResults = afterAddedSongCount - shuffledIdentifiers.count
+            var insertedCount = 0
+
+            while remainingResults > 0, insertedCount < nextPageSize  {
+                guard let randomIndex = eligibleRange.randomElement(),
+                      !electedIndices.contains(randomIndex) else { continue }
+                let randomDbSong = results[randomIndex]
+                let randomDbSongIdentifier = randomDbSong.identifier
+                guard !shuffledIdentifiers.contains(randomDbSongIdentifier),
+                      let randomSong = randomDbSong.toSong() else { continue }
+                songs.append(randomSong)
+                shuffledIdentifiers.insert(randomDbSongIdentifier)
+                remainingResults -= 1
+                insertedCount += 1
+            }
+
+            if remainingResults == 0 {
+                endHitIndex = proposedCurrentEndHitIndex
+            }
+            return
+        }
 
         let nextResultIndex = results.index(after: lastQueueSongIndex)
         let finalResultIndex = results.count - 1
@@ -140,9 +178,9 @@ class PlayerQueue: ObservableObject {
     func addCurrentSong(_ song: Song, dbSong: DatabaseSong, parentResults: Results<DatabaseSong>) {
         results = parentResults
 
-        let songId = song.identifier
-        if songs.isEmpty || songs[currentSongIndex].identifier != songId {
+        if songs.isEmpty || songs[currentSongIndex].identifier != song.identifier {
             currentSongIndex += 1
+            addedSongResultsIndex = parentResults.lastIndex(of: dbSong)!
             songs.insert(song, at: currentSongIndex)
             endHitIndex = nil
         }
@@ -160,12 +198,23 @@ class PlayerQueue: ObservableObject {
 
     func reloadNextSongs() {
         guard !songs.isEmpty else { return }
-        clear(fromIndex: nextSongIndex)
+        let removedSongsIdentifiers = clear(fromIndex: nextSongIndex)
+
         if results?.last?.identifier == songs[currentSongIndex].identifier {
             endHitIndex = proposedCurrentEndHitIndex
         } else {
             endHitIndex = nil
         }
+
+        if let removedSongsIdentifiers = removedSongsIdentifiers,
+           !removedSongsIdentifiers.isEmpty,
+           !shuffledIdentifiers.isEmpty
+        {
+            for songIdentifier in removedSongsIdentifiers {
+                shuffledIdentifiers.remove(songIdentifier)
+            }
+        }
+
         loadNextPage()
     }
 
