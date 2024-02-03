@@ -126,6 +126,10 @@ class PlayerQueue: ObservableObject {
             songs.remove(atOffsets: IndexSet(firstIndexToDrop...songs.count - 1))
         }
 
+        if parentResults.last?.identifier == song.identifier {
+            endHitIndex = max(songs.count, 2)
+        }
+
         loadNextPage()
     }
 
