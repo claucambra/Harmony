@@ -50,52 +50,67 @@ class PlayerQueue: ObservableObject {
         return songs[currentSongIndex]
     }
 
-    private func loadNextPage(nextPageSize: Int = PlayerQueue.defaultPageSize) {
-        guard nextPageSize > 0, let results = results else { return }
+    private func loadNextPageOfRepeatingQueue(nextPageSize: Int) {
+        guard nextPageSize > 0, songs.count > 0, let endHitIndex = endHitIndex else { return }
 
+        let nextSongIndex = songs.count
+        let pageEndSongIndex = nextSongIndex + nextPageSize - 1
+
+        for unboundedIndex in nextSongIndex...pageEndSongIndex {
+            let boundedIndex = unboundedIndex.remainderReportingOverflow(
+                dividingBy: endHitIndex
+            ).partialValue
+            let repeatingSong = songs[boundedIndex]
+            songs.append(repeatingSong.clone())
+        }
+    }
+
+    private func loadNextPageOfRepeatingCurrentSong(nextPageSize: Int) {
+        guard nextPageSize > 0, songs.count > 0 else { return }
+        let currentSong = songs[currentSongIndex]
+        for _ in 1...nextPageSize {
+            songs.append(currentSong.clone())
+        }
+    }
+
+    private func loadNextPageFromResults(nextPageSize: Int) {
+        guard nextPageSize > 0, let results = results, let lastQueueSongIndex = results.firstIndex(
+            where: { $0.identifier == songs.last?.identifier }
+        ) else { return }
+
+        let nextSongIndex = results.index(after: lastQueueSongIndex)
+        let finalSongIndex = results.count - 1
+        guard nextSongIndex < finalSongIndex else { return }
+
+        let firstSongIndex = min(nextSongIndex, finalSongIndex)
+        let lastSongIndex = min(nextSongIndex + nextPageSize - 1, finalSongIndex)
+
+        for i in (firstSongIndex...lastSongIndex) {
+            guard let song = results[i].toSong() else { continue }
+            songs.append(song)
+            endHitIndex = nil  // We have added new songs so impossible to be at end index now
+        }
+
+        if lastSongIndex == finalSongIndex {
+            endHitIndex = max(songs.count, 2)
+        }
+    }
+
+    private func loadNextPage(nextPageSize: Int = PlayerQueue.defaultPageSize) {
+        // Handle current song repetition first
         guard repeatState != .currentSong else {
-            guard songs.count > 0 else { return }
-            let currentSong = songs[currentSongIndex]
-            for _ in 1...nextPageSize {
-                songs.append(currentSong.clone())
-            }
+            loadNextPageOfRepeatingCurrentSong(nextPageSize: nextPageSize)
             return
         }
 
+        // We haven't hit the end of the results yet, load more
         if endHitIndex == nil {
-            guard let lastQueueSongIndex = results.firstIndex(
-                where: { $0.identifier == songs.last?.identifier }
-            ) else { return }
-            let nextSongIndex = results.index(after: lastQueueSongIndex)
-            let finalSongIndex = results.count - 1
-            guard nextSongIndex < finalSongIndex else { return }
-            let firstSongIndex = min(nextSongIndex, finalSongIndex)
-            // Since we start at +1, remove 1
-            let lastSongIndex = min(nextSongIndex + nextPageSize - 1, finalSongIndex)
-
-            for i in (firstSongIndex...lastSongIndex) {
-                guard let song = results[i].toSong() else { continue }
-                songs.append(song)
-                endHitIndex = nil  // We have added new songs so impossible to be at end index now
-            }
-
-            if lastSongIndex == finalSongIndex {
-                endHitIndex = max(songs.count, 2)
-            }
+            loadNextPageFromResults(nextPageSize: nextPageSize)
         }
 
-        if repeatState == .queue {
-            guard songs.count > 0, let endHitIndex = endHitIndex else { return }
-            let nextSongIndex = songs.count
-            let pageEndSongIndex = nextSongIndex + nextPageSize - 1
-
-            for unboundedIndex in nextSongIndex...pageEndSongIndex {
-                let boundedIndex = unboundedIndex.remainderReportingOverflow(
-                    dividingBy: endHitIndex
-                ).partialValue
-                let repeatingSong = songs[boundedIndex]
-                songs.append(repeatingSong.clone())
-            }
+        // We have hit the end of the results, start loading in repeating songs
+        if repeatState == .queue, endHitIndex != nil {
+            loadNextPageOfRepeatingQueue(nextPageSize: nextPageSize)
         }
     }
 
