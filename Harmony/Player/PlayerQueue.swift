@@ -55,14 +55,9 @@ class PlayerQueue: ObservableObject {
 
         guard repeatState != .currentSong else {
             guard songs.count > 0 else { return }
-            let currentSongIdentifier = songs[currentSongIndex].identifier
-            guard let dbCurrentSong = results.first(where: {
-                $0.identifier == currentSongIdentifier
-            }) else { return }
-
+            let currentSong = songs[currentSongIndex]
             for _ in 1...nextPageSize {
-                guard let newCurrentSongInstance = dbCurrentSong.toSong() else { return }
-                songs.append(newCurrentSongInstance)
+                songs.append(currentSong.clone())
             }
             return
         }
@@ -99,11 +94,7 @@ class PlayerQueue: ObservableObject {
                     dividingBy: endHitIndex
                 ).partialValue
                 let repeatingSong = songs[boundedIndex]
-                if let dbRepeatingSong = results.first(where: {
-                    $0.identifier == repeatingSong.identifier
-                }), let newRepeatingSongInstance = dbRepeatingSong.toSong() {
-                    songs.append(newRepeatingSongInstance)
-                }
+                songs.append(repeatingSong.clone())
             }
         }
     }
