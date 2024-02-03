@@ -51,6 +51,20 @@ class PlayerQueue: ObservableObject {
     private func loadNextPage(nextPageSize: Int = PlayerQueue.defaultPageSize) {
         guard nextPageSize > 0, let results = results else { return }
 
+        guard repeatState != .currentSong else {
+            guard songs.count > 0 else { return }
+            let currentSongIdentifier = songs[currentSongIndex].identifier
+            guard let dbCurrentSong = results.first(where: {
+                $0.identifier == currentSongIdentifier
+            }) else { return }
+
+            for _ in 1...nextPageSize {
+                guard let newCurrentSongInstance = dbCurrentSong.toSong() else { return }
+                songs.append(newCurrentSongInstance)
+            }
+            return
+        }
+
         if endHitIndex == nil {
             guard let lastQueueSongIndex = results.firstIndex(
                 where: { $0.identifier == songs.last?.identifier }
@@ -73,11 +87,8 @@ class PlayerQueue: ObservableObject {
             }
         }
 
-        guard songs.count > 0, repeatState != .disabled, let endHitIndex = endHitIndex else {
-            return
-        }
-
         if repeatState == .queue {
+            guard songs.count > 0, let endHitIndex = endHitIndex else { return }
             let nextSongIndex = songs.count
             let pageEndSongIndex = nextSongIndex + nextPageSize - 1
 
@@ -91,16 +102,6 @@ class PlayerQueue: ObservableObject {
                 }), let newRepeatingSongInstance = dbRepeatingSong.toSong() {
                     songs.append(newRepeatingSongInstance)
                 }
-            }
-        } else if repeatState == .currentSong {
-            let currentSongIdentifier = songs[currentSongIndex].identifier
-            guard let dbCurrentSong = results.first(where: {
-                $0.identifier == currentSongIdentifier
-            }) else { return }
-
-            for _ in 1...nextPageSize {
-                guard let newCurrentSongInstance = dbCurrentSong.toSong() else { return }
-                songs.append(newCurrentSongInstance)
             }
         }
     }
