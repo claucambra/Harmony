@@ -119,16 +119,17 @@ public class Song: Identifiable, Hashable {
         identifier: String,
         backendId: String,
         url: URL,
-        title: String = "",
-        artist: String = "",
-        album: String = "",
-        genre: String = "",
-        creator: String = "",
-        subject: String = "",
-        contributor: String = "",
-        type: String = "",
+        title: String,
+        artist: String,
+        album: String,
+        genre: String,
+        creator: String,
+        subject: String,
+        contributor: String,
+        type: String,
         duration: CMTime,
-        assetProviderClosure: @escaping SongAssetProviderClosure
+        asset: AVAsset? = nil,
+        assetProviderClosure: SongAssetProviderClosure? = nil
     ) {
         self.identifier = identifier
         self.backendId = backendId
@@ -142,7 +143,15 @@ public class Song: Identifiable, Hashable {
         self.contributor = contributor
         self.type = type
         self.duration = duration
-        self.assetProviderClosure = assetProviderClosure
+
+        if let asset = asset {
+            internalAsset = asset
+        } else if let assetProviderClosure = assetProviderClosure {
+            self.assetProviderClosure = assetProviderClosure
+        } else {
+            Logger.defaultLog.critical("Song should have an asset or an asset provider closure!")
+            Logger.defaultLog.critical("No asset for \(identifier) (\(url))")
+        }
 
         let semaphore = DispatchSemaphore(value: 0)
         Task {
