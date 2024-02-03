@@ -106,6 +106,7 @@ class PlayerQueue: ObservableObject {
     }
 
     func clear(fromIndex: Int = 0) {
+        guard songs.count > 0 else { return }
         assert(fromIndex > 0, "Provided index should be larger than 0")
         guard fromIndex <= songs.count - 1 else { return }
         songs.remove(atOffsets: IndexSet(fromIndex...songs.count - 1))
@@ -133,6 +134,7 @@ class PlayerQueue: ObservableObject {
     }
 
     func reloadNextSongs() {
+        guard songs.count > 0 else { return }
         clear(fromIndex: currentSongIndex + 1)
         if results?.last?.identifier == songs[currentSongIndex].identifier {
             endHitIndex = max(songs.count, 2)
