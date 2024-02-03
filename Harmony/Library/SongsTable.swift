@@ -17,6 +17,7 @@ struct SongsTable: View {
     ) var songs
     @State private var sortOrder = [KeyPathComparator(\DatabaseSong.title, order: .reverse)]
     @Binding var selection: Set<DatabaseSong.ID>
+    @State var searchText: String = ""
 
     var body: some View {
         Table(selection: $selection, sortOrder: $sortOrder) {
@@ -38,6 +39,7 @@ struct SongsTable: View {
         .contextMenu(forSelectionType: DatabaseSong.ID.self) { items in
             // TODO
         } primaryAction: { ids in
+            // TODO: This shouldn't be handled here
             for id in ids {
                 guard let dbObject = songs.filter({ $0.id == id }).first else {
                     Logger.songsTable.error("Could not find song with id: \(id)")
@@ -45,6 +47,27 @@ struct SongsTable: View {
                 }
                 PlayerController.shared.playSong(dbObject, withinSongs: songs)
             }
+        }
+        .searchable(text: $searchText) {
+            if searchText != "" {
+                ForEach(songs) { filteredSong in
+                    Text(filteredSong.title).searchCompletion(filteredSong.title)
+                }
+            }
+        }
+        .onChange(of: searchText) {
+            guard searchText != "" else {
+                $songs.filter = nil
+                return
+            }
+            #if DEBUG
+            // Force some type safety here for a reminder in case things change later
+            _ = \DatabaseSong.title
+            #endif
+            // When possible, change this to use the `where` property using the type-safe API
+            // We need to manually filter because we can't pick the case sensitibity or CONTAINS
+            // when using searchable on the collection directly
+            $songs.filter = NSPredicate(format: "title CONTAINS[cd] %@", searchText)
         }
     }
 }
