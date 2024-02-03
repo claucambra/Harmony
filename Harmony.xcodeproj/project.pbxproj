@@ -74,6 +74,7 @@
 		53802A3E2B6790330066208D /* ToolbarVolumeSliderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53802A3D2B6790330066208D /* ToolbarVolumeSliderView.swift */; };
 		53D6664D2B6B7E3E0042C03D /* PlayerQueueListViewItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D6664C2B6B7E3E0042C03D /* PlayerQueueListViewItem.swift */; };
 		53D666532B6E50340042C03D /* EnvironmentValues+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D666522B6E50340042C03D /* EnvironmentValues+Extension.swift */; };
+		53D6665B2B6E9DCF0042C03D /* LocalBackendDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D6665A2B6E9DCF0042C03D /* LocalBackendDescription.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -197,6 +198,7 @@
 		53802A3D2B6790330066208D /* ToolbarVolumeSliderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolbarVolumeSliderView.swift; sourceTree = "<group>"; };
 		53D6664C2B6B7E3E0042C03D /* PlayerQueueListViewItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerQueueListViewItem.swift; sourceTree = "<group>"; };
 		53D666522B6E50340042C03D /* EnvironmentValues+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EnvironmentValues+Extension.swift"; sourceTree = "<group>"; };
+		53D6665A2B6E9DCF0042C03D /* LocalBackendDescription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalBackendDescription.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -293,6 +295,7 @@
 			isa = PBXGroup;
 			children = (
 				5350534F2B5955F900D7EAF2 /* LocalBackend.swift */,
+				53D6665A2B6E9DCF0042C03D /* LocalBackendDescription.swift */,
 			);
 			path = Local;
 			sourceTree = "<group>";
@@ -761,6 +764,7 @@
 				535053622B5975A100D7EAF2 /* Logger+Extension.swift in Sources */,
 				535053502B5955F900D7EAF2 /* HarmonyKit.docc in Sources */,
 				535053542B5955F900D7EAF2 /* Backend.swift in Sources */,
+				53D6665B2B6E9DCF0042C03D /* LocalBackendDescription.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

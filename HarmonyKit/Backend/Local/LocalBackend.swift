@@ -13,28 +13,8 @@ extension Logger {
     static let localBackend = Logger(subsystem: subsystem, category: "localBackend")
 }
 
-let localBackendTypeDescription = BackendDescription(
-    id: "local-backend",
-    name: "Local Backend",
-    description: "Provides music stored locally on your computer.",
-    systemImageName: "internaldrive",
-    configDescription: [
-        BackendConfigurationField(
-            id: LocalBackend.pathConfigId,
-            title: "Path",
-            description: "Location of files. Can be multiple locations.",
-            valueType: .localUrl,
-            isArray: true,
-            optional: false,
-            defaultValue: FileManager.default.urls(
-                for: .musicDirectory, in: .userDomainMask
-            ).first?.path ?? ""
-        )
-    ]
-)
-
 public class LocalBackend : NSObject, Backend {
-    fileprivate static let pathConfigId = "path-field"
+    internal static let pathConfigId = "path-field"
 
     public let typeDescription = localBackendTypeDescription
     public let id: String
