@@ -12,11 +12,12 @@ import RealmSwift
 
 @MainActor
 class PlayerQueue: ObservableObject {
+    enum RepeatState { case disabled, queue, currentSong }
     static let defaultPageSize = 10
     static let viewLoadTriggeringIndex = 5
     @Published var results: Results<DatabaseSong>? // TODO: Listen to changes to this and upd. songs
     @Published var songs: Deque<Song> = Deque()
-    @Published var repeatEnabled: Bool = false
+    @Published var repeatState: RepeatState = .disabled
     private(set) var currentSongIndex: Int = -1
     private var endHitIndex: Int?  // When we first start repeating
 
@@ -72,8 +73,11 @@ class PlayerQueue: ObservableObject {
             }
         }
 
-        if let endHitIndex = endHitIndex, repeatEnabled {
-            guard songs.count > 0 else { return }
+        guard songs.count > 0, repeatState != .disabled, let endHitIndex = endHitIndex else {
+            return
+        }
+
+        if repeatState == .queue {
             let nextSongIndex = songs.count
             let pageEndSongIndex = nextSongIndex + nextPageSize - 1
 
@@ -87,6 +91,16 @@ class PlayerQueue: ObservableObject {
                 }), let newRepeatingSongInstance = dbRepeatingSong.toSong() {
                     songs.append(newRepeatingSongInstance)
                 }
+            }
+        } else if repeatState == .currentSong {
+            let currentSongIdentifier = songs[currentSongIndex].identifier
+            guard let dbCurrentSong = results.first(where: {
+                $0.identifier == currentSongIdentifier
+            }) else { return }
+
+            for _ in 1...nextPageSize {
+                guard let newCurrentSongInstance = dbCurrentSong.toSong() else { return }
+                songs.append(newCurrentSongInstance)
             }
         }
     }
@@ -121,5 +135,16 @@ class PlayerQueue: ObservableObject {
         }
         currentSongIndex = songIdx
         return songs[songIdx]
+    }
+
+    func cycleRepeatState() {
+        switch repeatState {
+        case .disabled:
+            repeatState = .queue
+        case .queue:
+            repeatState = .currentSong
+        case .currentSong:
+            repeatState = .disabled
+        }
     }
 }

@@ -13,13 +13,17 @@ struct RepeatButton: View {
 
     var body: some View {
         Button {
-            queue.repeatEnabled.toggle()
+            queue.cycleRepeatState()
         } label: {
-            if queue.repeatEnabled {
+            switch queue.repeatState {
+            case .disabled:
+                Label("Repeat", systemImage: "repeat")
+            case .queue:
                 Label("Repeat", systemImage: "repeat")
                     .foregroundStyle(.tint)
-            } else {
-                Label("Repeat", systemImage: "repeat")
+            case .currentSong:
+                Label("Repeat", systemImage: "repeat.1")
+                    .foregroundStyle(.tint)
             }
         }
         .labelStyle(.iconOnly)
