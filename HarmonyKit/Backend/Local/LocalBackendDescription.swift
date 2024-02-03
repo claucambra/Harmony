@@ -7,7 +7,7 @@
 
 import Foundation
 
-internal let localBackendPathConfigFieldId = "path-field"
+let localBackendPathConfigFieldId = "path-field"
 
 let localBackendTypeDescription = BackendDescription(
     id: "local-backend",

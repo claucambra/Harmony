@@ -7,10 +7,10 @@
 
 import Foundation
 
-internal let ncBackendServerUrlConfigFieldId = "serverurl-field"
-internal let ncBackendUsernameConfigFieldId = "username-field"
-internal let ncBackendPasswordConfigFieldId = "password-field"
-internal let ncBackendMusicPathConfigFieldId = "musicpath-field"
+let ncBackendServerUrlConfigFieldId = "serverurl-field"
+let ncBackendUsernameConfigFieldId = "username-field"
+let ncBackendPasswordConfigFieldId = "password-field"
+let ncBackendMusicPathConfigFieldId = "musicpath-field"
 
 let ncBackendTypeDescription = BackendDescription(
     id: "nc-backend",
