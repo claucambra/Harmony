@@ -27,6 +27,7 @@ class PlayerQueue: ObservableObject {
         didSet { reloadNextSongs() }
     }
     private var currentSongIndex: Int = -1
+    private var playNextSongCount: Int = 0
     private var shuffledIdentifiers: Set<String> = []
     private var addedSongResultsIndex: Int = -1
     private var endHitIndex: Int?  // When we first start repeating
@@ -57,6 +58,7 @@ class PlayerQueue: ObservableObject {
     private func moveForward() -> Song? {
         guard currentSongIndex < lastSongIndex else { return nil }
         currentSongIndex += 1
+        playNextSongCount = max(playNextSongCount - 1, 0)
         return songs[currentSongIndex]
     }
 
@@ -113,6 +115,8 @@ class PlayerQueue: ObservableObject {
 
         if remainingResults == 0 {
             endHitIndex = proposedCurrentEndHitIndex
+        } else {
+            endHitIndex = nil
         }
     }
 
@@ -189,6 +193,11 @@ class PlayerQueue: ObservableObject {
         return removedSongsIdentifiers
     }
 
+    @discardableResult private func clearForReload() -> [String]? {
+        let firstRemoveIndex = nextSongIndex + playNextSongCount
+        return clear(fromIndex: firstRemoveIndex)
+    }
+
     func addCurrentSong(_ song: Song, dbSong: DatabaseSong, parentResults: Results<DatabaseSong>) {
         results = parentResults
 
@@ -200,7 +209,7 @@ class PlayerQueue: ObservableObject {
         }
 
         if songs.count > 1, currentSongIndex < lastSongIndex {
-            clear(fromIndex: nextSongIndex)
+            clearForReload()
         }
 
         if parentResults.last?.identifier == song.identifier {
@@ -212,7 +221,7 @@ class PlayerQueue: ObservableObject {
 
     func reloadNextSongs() {
         guard !songs.isEmpty else { return }
-        let removedSongsIdentifiers = clear(fromIndex: nextSongIndex)
+        let removedSongsIdentifiers = clearForReload()
 
         if results?.last?.identifier == songs[currentSongIndex].identifier {
             endHitIndex = proposedCurrentEndHitIndex
@@ -257,7 +266,7 @@ class PlayerQueue: ObservableObject {
     func insertNextSong(_ dbSong: DatabaseSong) {
         guard let song = dbSong.toSong() else { return }
         songs.insert(song, at: nextSongIndex)
-        endHitIndex = nil
+        playNextSongCount += 1
         loadNextPage(nextPageSize: 1) // See what the current state is after insertion
     }
 }
