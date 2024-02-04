@@ -152,7 +152,9 @@ class PlayerQueue: ObservableObject {
         addedSongResultsIndex = parentResults.firstIndex(of: dbSong)
 
         if currentSong?.identifier != song.identifier {
-            pastSongs.append(currentSong)
+            if let currentSong = currentSong {
+                pastSongs.append(currentSong)
+            }
             currentSong = song
         }
 
