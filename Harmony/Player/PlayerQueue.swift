@@ -8,248 +8,151 @@
 import DequeModule
 import Foundation
 import HarmonyKit
+import OSLog
 import RealmSwift
 
 @MainActor
 class PlayerQueue: ObservableObject {
     enum RepeatState { case disabled, queue, currentSong }
+
     static let defaultPageSize = 10
-    static let viewLoadTriggeringIndex = 5
+    static let viewLoadTriggerCount = 5
     @Published var results: Results<DatabaseSong>? {
         // TODO: Listen to changes to this and upd. songs
         didSet { shuffledIdentifiers = [] } // Shuffle freshly
     }
-    @Published var songs: Deque<Song> = Deque()
+    @Published var currentSong: Song?
+    @Published var pastSongs: Deque<Song> = Deque()
+    @Published var futureSongs: Deque<Song> = Deque()
+    @Published var playNextSongs: Deque<Song> = Deque()
     @Published var shuffleEnabled = false {
-        didSet { reloadNextSongs() }
+        didSet { reloadFutureSongs() }
     }
     @Published var repeatState: RepeatState = .disabled {
-        didSet { reloadNextSongs() }
+        didSet { reloadFutureSongs() }
     }
-    private var currentSongIndex: Int = -1
-    private var playNextSongCount: Int = 0
     private var shuffledIdentifiers: Set<String> = []
-    private var addedSongResultsIndex: Int = -1
-    private var endHitIndex: Int?  // When we first start repeating
-    private var lastSongIndex: Int { songs.count - 1 }
-    private var nextSongIndex: Int { currentSongIndex + 1 }
-    private var proposedCurrentEndHitIndex: Int { max(songs.count, 2) }
-    private var currentIndexIsAtLoadTriggerBounds: Bool {
-        songIndexIsWithinLoadTriggerBounds(currentSongIndex)
-    }
-
-    private func songIndexIsWithinLoadTriggerBounds(_ index: Int) -> Bool {
-        return index >= lastSongIndex - PlayerQueue.defaultPageSize
+    private var pastSongsRepeatStartIndex: Int?
+    private var addedSongResultsIndex: Int?
+    private var loadRequired: Bool { futureSongs.count <= PlayerQueue.viewLoadTriggerCount }
+    private var lastLoadedSong: Song? { futureSongs.last ?? currentSong }
+    private var currentSongCount: Int { currentSong == nil ? 0 : 1 }
+    private var proposedPastSongsRepeatStartIndex: Int {
+        pastSongs.count + currentSongCount + futureSongs.count
     }
 
     func backward() -> Song? {
-        guard currentSongIndex > 0 else { return nil }
-        currentSongIndex -= 1
-        return songs[currentSongIndex]
+        guard let currentSong = currentSong,
+              let previousSong = pastSongs.popLast()
+        else { return nil }
+
+        futureSongs.prepend(currentSong)
+        self.currentSong = previousSong
+
+        if pastSongsRepeatStartIndex != nil, pastSongs.count - 1 <= pastSongsRepeatStartIndex! {
+            pastSongsRepeatStartIndex = nil
+        }
+
+        return previousSong
     }
 
     func forward() -> Song? {
-        if currentIndexIsAtLoadTriggerBounds {
+        guard let currentSong = currentSong else { return nil }
+
+        var nextSong: Song?
+        if playNextSongs.isEmpty {
+            nextSong = futureSongs.popFirst()
+        } else {
+            nextSong = playNextSongs.popFirst()
+        }
+        guard let nextSong = nextSong else { return nil }
+
+        pastSongs.append(currentSong)
+        self.currentSong = nextSong
+
+        if loadRequired {
             loadNextPage(nextPageSize: 1)
         }
-        return moveForward()
+
+        return nextSong
     }
 
-    private func moveForward() -> Song? {
-        guard currentSongIndex < lastSongIndex else { return nil }
-        currentSongIndex += 1
-        playNextSongCount = max(playNextSongCount - 1, 0)
-        return songs[currentSongIndex]
-    }
+    // TODO: This is unnecessary, in the view we know which section each song belongs to, create
+    // TODO: more efficient implementation with independent methods
+    func moveToSong(instanceId: ObjectIdentifier) async {
+        guard let currentSong = currentSong, currentSong.id != instanceId else { return }
 
-    private func loadNextPageOfRepeatingQueue(nextPageSize: Int) {
-        guard nextPageSize > 0, !songs.isEmpty, let endHitIndex = endHitIndex else { return }
+        @Sendable func findAndSetSong(_ songs: Deque<Song>, findHandler: @escaping (Int) -> ()) {
+            guard let songIndex = songs.firstIndex(where: { song in
+                song.id == instanceId
+            }) else { return }
+            let song = songs[songIndex]
 
-        let nextSongIndex = songs.count
-        let pageEndSongIndex = nextSongIndex + nextPageSize - 1
-
-        for unboundedIndex in nextSongIndex...pageEndSongIndex {
-            let boundedIndex = unboundedIndex.remainderReportingOverflow(
-                dividingBy: endHitIndex
-            ).partialValue
-            let repeatingSong = songs[boundedIndex]
-            songs.append(repeatingSong.clone())
-        }
-    }
-
-    private func loadNextPageOfRepeatingCurrentSong(nextPageSize: Int) {
-        guard nextPageSize > 0, !songs.isEmpty else { return }
-        let currentSong = songs[currentSongIndex]
-        for _ in 1...nextPageSize {
-            songs.append(currentSong.clone())
-        }
-    }
-
-    private func loadNextPageFromResultsShuffled(nextPageSize: Int) {
-        guard nextPageSize > 0,
-                let results = results,
-                !results.isEmpty,
-                let lastQueueSongIndex = results.firstIndex(
-                    where: { $0.identifier == songs.last?.identifier }
-                ),
-              addedSongResultsIndex + 1 < results.count - 1 else { return }
-
-        let eligibleRange = addedSongResultsIndex + 1...results.count - 1
-        let electedIndices: Set<Int> = []
-        let afterAddedSongCount = results.count - (addedSongResultsIndex + 1)
-        var remainingResults = afterAddedSongCount - shuffledIdentifiers.count
-        var insertedCount = 0
-
-        while remainingResults > 0, insertedCount < nextPageSize  {
-            guard let randomIndex = eligibleRange.randomElement(),
-                  !electedIndices.contains(randomIndex) else { continue }
-            let randomDbSong = results[randomIndex]
-            let randomDbSongIdentifier = randomDbSong.identifier
-            guard !shuffledIdentifiers.contains(randomDbSongIdentifier),
-                  let randomSong = randomDbSong.toSong() else { continue }
-            songs.append(randomSong)
-            shuffledIdentifiers.insert(randomDbSongIdentifier)
-            remainingResults -= 1
-            insertedCount += 1
+            Task { @MainActor in
+                findHandler(songIndex)
+                self.currentSong = song
+                print(song.title)
+            }
         }
 
-        if remainingResults == 0 {
-            endHitIndex = proposedCurrentEndHitIndex
-        } else {
-            endHitIndex = nil
+        // Explore all queues
+        await withDiscardingTaskGroup { group in
+            group.addTask {
+                await findAndSetSong(self.playNextSongs) { index in
+                    Task { @MainActor in
+                        self.pastSongs.append(currentSong)
+                        self.playNextSongs.remove(at: index)
+                    }
+                }
+            }
+            group.addTask {
+                await findAndSetSong(self.futureSongs) { index in
+                    Task { @MainActor in
+                        self.pastSongs.append(currentSong)
+                        let preSongIndex = index - 1
+                        if preSongIndex >= 0 {
+                            for i in 0...preSongIndex {
+                                let song = self.futureSongs[i]
+                                self.pastSongs.append(song)
+                            }
+                        }
+                        self.futureSongs.removeFirst(index + 1)
+                    }
+                }
+            }
+            group.addTask {
+                await findAndSetSong(self.pastSongs) { index in
+                    Task { @MainActor in
+                        let postSongIndex = index + 1
+                        if postSongIndex < self.pastSongs.count {
+                            for i in (postSongIndex..<self.pastSongs.count).reversed() {
+                                let song = self.pastSongs[i]
+                                self.futureSongs.prepend(song)
+                            }
+                        }
+                        self.pastSongs.removeLast(self.pastSongs.count - index + 1)
+                        self.futureSongs.append(currentSong)
+                    }
+                }
+            }
         }
     }
 
-    private func loadNextPageFromResultsOrdered(nextPageSize: Int) {
-        guard nextPageSize > 0,
-                let results = results,
-                !results.isEmpty,
-                let lastQueueSongIndex = results.firstIndex(
-                    where: { $0.identifier == songs.last?.identifier }
-                ) else { return }
-        
-        let nextResultIndex = results.index(after: lastQueueSongIndex)
-        let finalResultIndex = results.count - 1
-        guard nextResultIndex < finalResultIndex else { return }
-
-        let firstResultIndex = min(nextResultIndex, finalResultIndex)
-        let lastResultIndex = min(nextResultIndex + nextPageSize - 1, finalResultIndex)
-
-        for i in (firstResultIndex...lastResultIndex) {
-            guard let song = results[i].toSong() else { continue }
-            songs.append(song)
-            endHitIndex = nil  // We have added new songs so impossible to be at end index now
-        }
-
-        if lastResultIndex == finalResultIndex {
-            endHitIndex = proposedCurrentEndHitIndex
-        }
-    }
-
-    private func loadNextPageFromResults(nextPageSize: Int) {
-        if shuffleEnabled {
-            loadNextPageFromResultsShuffled(nextPageSize: nextPageSize)
-        } else {
-            loadNextPageFromResultsOrdered(nextPageSize: nextPageSize)
-        }
-    }
-
-    private func loadNextPage(nextPageSize: Int = PlayerQueue.defaultPageSize) {
-        // Handle current song repetition first
-        guard repeatState != .currentSong else {
-            loadNextPageOfRepeatingCurrentSong(nextPageSize: nextPageSize)
-            return
-        }
-
-        // We haven't hit the end of the results yet, load more
-        if endHitIndex == nil {
-            loadNextPageFromResults(nextPageSize: nextPageSize)
-        }
-
-        // We have hit the end of the results, start loading in repeating songs
-        if repeatState == .queue, endHitIndex != nil {
-            loadNextPageOfRepeatingQueue(nextPageSize: nextPageSize)
-        }
-    }
-
-    func loadNextPageIfNeeded(song: Song) {
-        guard let songIndex = songs.lastIndex(where: { $0.id == song.id }),
-              lastSongIndex - songIndex <= PlayerQueue.viewLoadTriggeringIndex else { return }
-        loadNextPage()
-    }
-
-    @discardableResult func clear(fromIndex: Int = 0) -> [String]? {
-        guard !songs.isEmpty else { return nil }
-        assert(fromIndex > 0, "Provided index should be larger than 0")
-        guard fromIndex <= lastSongIndex else { return nil }
-
-        let indexRange = fromIndex...lastSongIndex
-        var removedSongsIdentifiers: [String] = []
-        for i in indexRange {
-            let identifier = songs[i].identifier
-            removedSongsIdentifiers.append(identifier)
-        }
-        songs.remove(atOffsets: IndexSet(indexRange))
-        return removedSongsIdentifiers
-    }
-
-    @discardableResult private func clearForReload() -> [String]? {
-        let firstRemoveIndex = nextSongIndex + playNextSongCount
-        return clear(fromIndex: firstRemoveIndex)
+    func insertNextSong(_ dbSong: DatabaseSong) {
+        guard let song = dbSong.toSong() else { return }
+        playNextSongs.append(song)
     }
 
     func addCurrentSong(_ song: Song, dbSong: DatabaseSong, parentResults: Results<DatabaseSong>) {
         results = parentResults
+        addedSongResultsIndex = parentResults.firstIndex(of: dbSong)
 
-        if songs.isEmpty || songs[currentSongIndex].identifier != song.identifier {
-            currentSongIndex += 1
-            addedSongResultsIndex = parentResults.lastIndex(of: dbSong)!
-            songs.insert(song, at: currentSongIndex)
-            endHitIndex = nil
+        if currentSong?.identifier != song.identifier {
+            currentSong = song
         }
 
-        if songs.count > 1, currentSongIndex < lastSongIndex {
-            clearForReload()
-        }
-
-        if parentResults.last?.identifier == song.identifier {
-            endHitIndex = proposedCurrentEndHitIndex
-        }
-
+        futureSongs.removeAll()
         loadNextPage()
-    }
-
-    func reloadNextSongs() {
-        guard !songs.isEmpty else { return }
-        let removedSongsIdentifiers = clearForReload()
-
-        if results?.last?.identifier == songs[currentSongIndex].identifier {
-            endHitIndex = proposedCurrentEndHitIndex
-        } else {
-            endHitIndex = nil
-        }
-
-        if let removedSongsIdentifiers = removedSongsIdentifiers,
-           !removedSongsIdentifiers.isEmpty,
-           !shuffledIdentifiers.isEmpty
-        {
-            for songIdentifier in removedSongsIdentifiers {
-                shuffledIdentifiers.remove(songIdentifier)
-            }
-        }
-
-        loadNextPage()
-    }
-
-    func moveToSong(instanceId: ObjectIdentifier) -> Song? {
-        guard let songIdx = songs.firstIndex(where: { song in song.id == instanceId }) else {
-            return nil
-        }
-        currentSongIndex = songIdx
-        if currentSongIndex == lastSongIndex {
-            loadNextPage()
-        }
-        return songs[songIdx]
     }
 
     func cycleRepeatState() {
@@ -263,10 +166,181 @@ class PlayerQueue: ObservableObject {
         }
     }
 
-    func insertNextSong(_ dbSong: DatabaseSong) {
-        guard let song = dbSong.toSong() else { return }
-        songs.insert(song, at: nextSongIndex)
-        playNextSongCount += 1
-        loadNextPage(nextPageSize: 1) // See what the current state is after insertion
+    func loadNextPageIfNeeded(song: Song) {
+        guard let songIndex = futureSongs.lastIndex(where: { $0.id == song.id }),
+              futureSongs.count - 1 - songIndex <= PlayerQueue.viewLoadTriggerCount else { return }
+        loadNextPage()
+    }
+
+    private func loadNextPage(nextPageSize: Int = PlayerQueue.defaultPageSize) {
+        // Handle current song repetition first
+        guard repeatState != .currentSong else {
+            loadNextPageOfRepeatingCurrentSong(nextPageSize: nextPageSize)
+            return
+        }
+
+        // We haven't hit the end of the results yet, load more
+        if pastSongsRepeatStartIndex == nil {
+            loadNextPageFromResults(nextPageSize: nextPageSize)
+        }
+
+        // We have hit the end of the results, start loading in repeating songs
+        if repeatState == .queue, pastSongsRepeatStartIndex != nil {
+            loadNextPageOfRepeatingQueue(nextPageSize: nextPageSize)
+        }
+    }
+
+    private func reloadFutureSongs() {
+        let removedIdentifiers = futureSongs.map { $0.identifier }
+        futureSongs.removeAll()
+        removedIdentifiers.forEach { identifier in shuffledIdentifiers.remove(identifier) }
+        pastSongsRepeatStartIndex = nil
+        loadNextPage()
+    }
+
+    private func loadNextPageOfRepeatingCurrentSong(nextPageSize: Int) {
+        guard let currentSong = currentSong else { return }
+        for _ in 1...nextPageSize {
+            futureSongs.append(currentSong.clone())
+        }
+    }
+
+    // When we have exhausted all of our results, we just repeat previously played items
+    private func loadNextPageOfRepeatingQueue(nextPageSize: Int) {
+        guard nextPageSize > 0 else { return }
+
+        if pastSongs.isEmpty, futureSongs.isEmpty {
+            guard currentSong != nil else { return }
+            loadNextPageOfRepeatingCurrentSong(nextPageSize: nextPageSize)
+            return
+        }
+
+        var lastPastSongIndex = futureSongs.lastIndex(where: { song in
+            // Ensure we don't match the last element
+            song.identifier == lastLoadedSong?.identifier && song.id != lastLoadedSong?.id
+        })
+        if lastPastSongIndex == nil {
+            lastPastSongIndex = pastSongs.lastIndex(where: { song in
+                song.identifier == lastLoadedSong?.identifier
+            })
+        }
+
+        // Default to starting from current song if past is empty and couldn't find in future.
+        // This can also happen if the only copy we have of the song in future is the same instance.
+        // The minimum possible index we should be getting here is the size of the total queues, as
+        // this method only gets run once we have run out of available results and have started
+        // repeating; hence the fallback value of totalQueueCount.
+        let totalQueueCount = pastSongs.count + currentSongCount + futureSongs.count
+        let firstIndexToLoad = lastPastSongIndex == nil ? totalQueueCount : lastPastSongIndex! + 1
+
+        var indexBoundary: Int
+
+        if let pastSongsRepeatStartIndex = pastSongsRepeatStartIndex,
+           pastSongsRepeatStartIndex > totalQueueCount - 1
+        {
+            // This is the first repeat, start repeating from beginning of past songs and iterate
+            indexBoundary = pastSongs.count + (currentSong == nil ? 0 : 1) + futureSongs.count
+        } else {
+            indexBoundary = pastSongs.count
+        }
+
+        let lastIndexToLoad = firstIndexToLoad + nextPageSize - 1
+        var currentSongHit = false
+
+        for unboundedIndex in firstIndexToLoad...lastIndexToLoad {
+            let boundedIndex = unboundedIndex.remainderReportingOverflow(
+                dividingBy: indexBoundary
+            ).partialValue
+
+            var repeatingSong: Song?
+            if boundedIndex < pastSongs.count {
+                repeatingSong = pastSongs[boundedIndex]
+            } else if boundedIndex == pastSongs.count, !currentSongHit, currentSong != nil {
+                repeatingSong = currentSong
+                currentSongHit = true
+            } else if boundedIndex == pastSongs.count, currentSongHit {
+                continue
+            } else if boundedIndex < futureSongs.count {
+                repeatingSong = futureSongs[boundedIndex]
+            }
+            guard let newSong = repeatingSong?.clone() else {
+                Logger.queue.error("Acquired repeated song clone should not be nil!")
+                print(boundedIndex, "unknown", firstIndexToLoad, lastIndexToLoad)
+                continue
+            }
+            futureSongs.append(newSong)
+        }
+    }
+
+    private func loadNextPageFromResultsShuffled(nextPageSize: Int) {
+        guard nextPageSize > 0,
+              let addedSongResultsIndex = addedSongResultsIndex,
+              let results = results,
+              !results.isEmpty,
+              let lastLoadedSong = lastLoadedSong,
+              let lastLoadedSongResultsIndex = results.firstIndex(where: {
+                  $0.identifier == lastLoadedSong.identifier
+              }),
+              lastLoadedSongResultsIndex + 1 < results.count
+        else { return }
+
+        let eligibleRange = lastLoadedSongResultsIndex + 1...results.count - 1
+        let electedIndices: Set<Int> = []
+        let afterAddedSongCount = results.count - (addedSongResultsIndex + 1)
+        var remainingResults = afterAddedSongCount - shuffledIdentifiers.count
+        var insertedCount = 0
+
+        while remainingResults > 0, insertedCount < nextPageSize  {
+            guard let randomIndex = eligibleRange.randomElement(),
+                  !electedIndices.contains(randomIndex) else { continue }
+            let randomDbSong = results[randomIndex]
+            let randomDbSongIdentifier = randomDbSong.identifier
+            guard !shuffledIdentifiers.contains(randomDbSongIdentifier),
+                  let randomSong = randomDbSong.toSong() else { continue }
+            futureSongs.append(randomSong)
+            shuffledIdentifiers.insert(randomDbSongIdentifier)
+            remainingResults -= 1
+            insertedCount += 1
+        }
+
+        if remainingResults == 0 {
+            pastSongsRepeatStartIndex = proposedPastSongsRepeatStartIndex
+        } else {
+            pastSongsRepeatStartIndex = nil
+        }
+    }
+
+    private func loadNextPageFromResultsOrdered(nextPageSize: Int) {
+        guard nextPageSize > 0,
+              let results = results,
+              !results.isEmpty,
+              let lastQueueSongIndex = results.firstIndex(where: {
+                  $0.identifier == lastLoadedSong?.identifier
+              }) else { return }
+
+        let nextResultIndex = results.index(after: lastQueueSongIndex)
+        let finalResultIndex = results.count - 1
+        guard nextResultIndex < finalResultIndex else { return }
+
+        let firstResultIndex = min(nextResultIndex, finalResultIndex)
+        let lastResultIndex = min(nextResultIndex + nextPageSize - 1, finalResultIndex)
+
+        for i in firstResultIndex...lastResultIndex {
+            guard let song = results[i].toSong() else { continue }
+            futureSongs.append(song)
+            pastSongsRepeatStartIndex = nil  // We have added new songs, can't to be at end index now
+        }
+
+        if lastResultIndex == finalResultIndex {
+            pastSongsRepeatStartIndex = proposedPastSongsRepeatStartIndex
+        }
+    }
+
+    private func loadNextPageFromResults(nextPageSize: Int) {
+        if shuffleEnabled {
+            loadNextPageFromResultsShuffled(nextPageSize: nextPageSize)
+        } else {
+            loadNextPageFromResultsOrdered(nextPageSize: nextPageSize)
+        }
     }
 }

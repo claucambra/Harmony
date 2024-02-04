@@ -16,17 +16,37 @@ struct PlayerQueueView: View {
     var body: some View {
         ScrollViewReader { proxy in
             List(selection: $selection) {
-                ForEach(queue.songs) { song in
-                    PlayerQueueListViewItem(song: song)
-                        .onAppear {
-                            queue.loadNextPageIfNeeded(song: song)
+                if !queue.pastSongs.isEmpty {
+                    Section("Previously played") {
+                        ForEach(queue.pastSongs) { song in
+                            PlayerQueueListViewItem(song: song)
                         }
-                        .onChange(of: playerController.currentSong) {
-                            guard playerController.currentSong?.id == song.id else { return }
-                            withAnimation {
-                                proxy.scrollTo(song.id, anchor: .top)
-                            }
+                    }
+                }
+                if let currentSong = queue.currentSong {
+                    Section("Currently playing") {
+                        PlayerQueueListViewItem(song: currentSong)
+                    }
+                }
+                if !queue.playNextSongs.isEmpty {
+                    Section("Playing next") {
+                        ForEach(queue.playNextSongs) { song in
+                            PlayerQueueListViewItem(song: song)
+                                .onAppear {
+                                    queue.loadNextPageIfNeeded(song: song)
+                                }
                         }
+                    }
+                }
+                if !queue.futureSongs.isEmpty {
+                    Section("Upcoming songs") {
+                        ForEach(queue.futureSongs) { song in
+                            PlayerQueueListViewItem(song: song)
+                                .onAppear {
+                                    queue.loadNextPageIfNeeded(song: song)
+                                }
+                        }
+                    }
                 }
             }
             .contextMenu(forSelectionType: Song.ID.self) { ids in
