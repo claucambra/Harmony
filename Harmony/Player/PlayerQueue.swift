@@ -316,11 +316,22 @@ class PlayerQueue: ObservableObject {
               !results.isEmpty,
               let lastQueueSongIndex = results.firstIndex(where: {
                   $0.identifier == lastLoadedSong?.identifier
-              }) else { return }
+              }) 
+        else {
+            Logger.queue.error("Could not load next page of ordered results.")
+            return
+        }
 
         let nextResultIndex = results.index(after: lastQueueSongIndex)
         let finalResultIndex = results.count - 1
-        guard nextResultIndex < finalResultIndex else { return }
+        guard nextResultIndex <= finalResultIndex else {
+            Logger.queue.error("""
+                               Received higher next result index \(nextResultIndex)
+                               than final index \(finalResultIndex).
+                               Could not load next page of ordered results.
+                               """)
+            return
+        }
 
         let firstResultIndex = min(nextResultIndex, finalResultIndex)
         let lastResultIndex = min(nextResultIndex + nextPageSize - 1, finalResultIndex)
