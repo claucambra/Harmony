@@ -214,7 +214,11 @@ class PlayerQueue: ObservableObject {
         guard nextPageSize > 0 else { return }
 
         if pastSongs.isEmpty, futureSongs.isEmpty {
-            guard currentSong != nil else { return }
+            guard currentSong != nil else {
+                Logger.queue.error("Past songs, future songs, and current song all empty.")
+                Logger.queue.error("Cannot load next page of repeating queue.")
+                return
+            }
             loadNextPageOfRepeatingCurrentSong(nextPageSize: nextPageSize)
             return
         }
@@ -239,17 +243,18 @@ class PlayerQueue: ObservableObject {
 
         var indexBoundary: Int
 
-        if let pastSongsRepeatStartIndex = pastSongsRepeatStartIndex,
-           pastSongsRepeatStartIndex > totalQueueCount - 1
-        {
+        guard let pastSongsRepeatStartIndex = pastSongsRepeatStartIndex else {
+            Logger.queue.error("pastSongsRepeatStartIndex should be set when repeating!")
+            return
+        }
+        if pastSongsRepeatStartIndex > totalQueueCount - 1 {
             // This is the first repeat, start repeating from beginning of past songs and iterate
-            indexBoundary = pastSongs.count + (currentSong == nil ? 0 : 1) + futureSongs.count
+            indexBoundary = totalQueueCount
         } else {
-            indexBoundary = pastSongs.count
+            indexBoundary = pastSongsRepeatStartIndex
         }
 
         let lastIndexToLoad = firstIndexToLoad + nextPageSize - 1
-        var currentSongHit = false
 
         for unboundedIndex in firstIndexToLoad...lastIndexToLoad {
             let boundedIndex = unboundedIndex.remainderReportingOverflow(
@@ -259,13 +264,10 @@ class PlayerQueue: ObservableObject {
             var repeatingSong: Song?
             if boundedIndex < pastSongs.count {
                 repeatingSong = pastSongs[boundedIndex]
-            } else if boundedIndex == pastSongs.count, !currentSongHit, currentSong != nil {
+            } else if boundedIndex == pastSongs.count, currentSong != nil {
                 repeatingSong = currentSong
-                currentSongHit = true
-            } else if boundedIndex == pastSongs.count, currentSongHit {
-                continue
             } else if boundedIndex < futureSongs.count {
-                repeatingSong = futureSongs[boundedIndex]
+                repeatingSong = futureSongs[boundedIndex - (pastSongs.count + currentSongCount)]
             }
             guard let newSong = repeatingSong?.clone() else {
                 Logger.queue.error("Acquired repeated song clone should not be nil!")
