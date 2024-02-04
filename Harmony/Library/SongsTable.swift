@@ -29,35 +29,38 @@ struct SongsTable: View {
         //
         // In order to work around this behaviour, we remove the table view while search is ongoing.
         if searchTimer == nil {
-            Table(songs, selection: $selection, sortOrder: $sortOrder) {
-                TableColumn("Title", value: \.title)
-                TableColumn("Album", value: \.album)
-                TableColumn("Artist", value: \.artist)
-                TableColumn("Genre", value: \.genre)
-            }
-            .contextMenu(forSelectionType: DatabaseSong.ID.self) { items in
-                // TODO
-            } primaryAction: { ids in
-                // TODO: This shouldn't be handled here
-                for id in ids {
-                    guard let dbObject = songs.filter({ $0.id == id }).first else {
-                        Logger.songsTable.error("Could not find song with id: \(id)")
-                        return
-                    }
-                    PlayerController.shared.playSong(dbObject, withinSongs: songs)
-                }
-            }
-            .onChange(of: sortOrder, { oldValue, newValue in
-                guard let sortDescriptor = newValue.first else { return }
-                let keyPath = sortDescriptor.keyPath
-                let ascending = sortDescriptor.order == .reverse
-                $songs.sortDescriptor = SortDescriptor(keyPath: keyPath, ascending: ascending)
-            })
-            .onChange(of: searchText) { startSearchTimer() }
+            table
         } else {
-            Text("Loading...")
-                .onChange(of: searchText) { startSearchTimer() }
+            loadingView
         }
+    }
+
+    @ViewBuilder
+    private var table: some View {
+        Table(songs, selection: $selection, sortOrder: $sortOrder) {
+            TableColumn("Title", value: \.title)
+            TableColumn("Album", value: \.album)
+            TableColumn("Artist", value: \.artist)
+            TableColumn("Genre", value: \.genre)
+        }
+        .contextMenu(forSelectionType: DatabaseSong.ID.self) { items in
+            // TODO
+        } primaryAction: { ids in
+            playSongsFromIds(ids)
+        }
+        .onChange(of: sortOrder, { oldValue, newValue in
+            guard let sortDescriptor = newValue.first else { return }
+            let keyPath = sortDescriptor.keyPath
+            let ascending = sortDescriptor.order == .reverse
+            $songs.sortDescriptor = SortDescriptor(keyPath: keyPath, ascending: ascending)
+        })
+        .onChange(of: searchText) { startSearchTimer() }
+    }
+
+    @ViewBuilder
+    private var loadingView: some View {
+        Text("Loading...")
+            .onChange(of: searchText) { startSearchTimer() }
     }
 
     private func startSearchTimer() {
@@ -79,6 +82,16 @@ struct SongsTable: View {
             // when using searchable on the collection directly
             $songs.filter = NSPredicate(format: "title CONTAINS[cd] %@", searchText)
             searchTimer = nil
+        }
+    }
+
+    private func playSongsFromIds(_ ids: Set<DatabaseSong.ID>) {
+        for id in ids {
+            guard let dbObject = songs.filter({ $0.id == id }).first else {
+                Logger.songsTable.error("Could not find song with id: \(id)")
+                return
+            }
+            PlayerController.shared.playSong(dbObject, withinSongs: songs)
         }
     }
 }
