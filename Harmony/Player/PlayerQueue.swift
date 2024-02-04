@@ -253,4 +253,11 @@ class PlayerQueue: ObservableObject {
             repeatState = .disabled
         }
     }
+
+    func insertNextSong(_ dbSong: DatabaseSong) {
+        guard let song = dbSong.toSong() else { return }
+        songs.insert(song, at: nextSongIndex)
+        endHitIndex = nil
+        loadNextPage(nextPageSize: 1) // See what the current state is after insertion
+    }
 }
