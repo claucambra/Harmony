@@ -76,6 +76,7 @@
 		53D666532B6E50340042C03D /* EnvironmentValues+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D666522B6E50340042C03D /* EnvironmentValues+Extension.swift */; };
 		53D666582B6E9DB60042C03D /* NextcloudBackendDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D666572B6E9DB60042C03D /* NextcloudBackendDescription.swift */; };
 		53D6665B2B6E9DCF0042C03D /* LocalBackendDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D6665A2B6E9DCF0042C03D /* LocalBackendDescription.swift */; };
+		53D6665D2B6F34CC0042C03D /* SongContextMenuItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D6665C2B6F34CC0042C03D /* SongContextMenuItems.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -201,6 +202,7 @@
 		53D666522B6E50340042C03D /* EnvironmentValues+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EnvironmentValues+Extension.swift"; sourceTree = "<group>"; };
 		53D666572B6E9DB60042C03D /* NextcloudBackendDescription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NextcloudBackendDescription.swift; sourceTree = "<group>"; };
 		53D6665A2B6E9DCF0042C03D /* LocalBackendDescription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalBackendDescription.swift; sourceTree = "<group>"; };
+		53D6665C2B6F34CC0042C03D /* SongContextMenuItems.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongContextMenuItems.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -338,6 +340,7 @@
 		535053742B5AA63500D7EAF2 /* Library */ = {
 			isa = PBXGroup;
 			children = (
+				53D6665C2B6F34CC0042C03D /* SongContextMenuItems.swift */,
 				535053722B5AA61A00D7EAF2 /* SongsTable.swift */,
 			);
 			path = Library;
@@ -826,6 +829,7 @@
 				535054042B6356EF00D7EAF2 /* Logger+Extension.swift in Sources */,
 				535054082B635A0B00D7EAF2 /* ToolbarCurrentSongView.swift in Sources */,
 				535054012B62D98200D7EAF2 /* PlayerQueue.swift in Sources */,
+				53D6665D2B6F34CC0042C03D /* SongContextMenuItems.swift in Sources */,
 				535053F72B625AB100D7EAF2 /* PlayerController.swift in Sources */,
 				5350537E2B5BB39000D7EAF2 /* DetailColumn.swift in Sources */,
 				5350541B2B63BBC500D7EAF2 /* ConfiguredBackendsListItemView.swift in Sources */,
