@@ -19,7 +19,11 @@ class PlayerQueue: ObservableObject {
     static let viewLoadTriggerCount = 5
     @Published var results: Results<DatabaseSong>? {
         // TODO: Listen to changes to this and upd. songs
-        didSet { shuffledIdentifiers = [] } // Shuffle freshly
+        didSet {
+            shuffledIdentifiers = [] // Shuffle freshly
+            pastSongsRepeatStartIndex = nil // Repeat freshly
+            futureSongs.removeAll()
+        }
     }
     @Published var currentSong: Song?
     @Published var pastSongs: Deque<Song> = Deque()
@@ -148,10 +152,10 @@ class PlayerQueue: ObservableObject {
         addedSongResultsIndex = parentResults.firstIndex(of: dbSong)
 
         if currentSong?.identifier != song.identifier {
+            pastSongs.append(currentSong)
             currentSong = song
         }
 
-        futureSongs.removeAll()
         loadNextPage()
     }
 
