@@ -24,6 +24,7 @@ public class Song: Identifiable, Hashable {
     public let identifier: String
     public let backendId: String
     public let url: URL
+    public var isPlayNext = false
     public private(set) var title: String = ""
     public private(set) var artist: String = ""
     public private(set) var album: String = ""

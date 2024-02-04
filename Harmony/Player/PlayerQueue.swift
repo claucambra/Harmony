@@ -144,6 +144,7 @@ class PlayerQueue: ObservableObject {
 
     func insertNextSong(_ dbSong: DatabaseSong) {
         guard let song = dbSong.toSong() else { return }
+        song.isPlayNext = true
         playNextSongs.append(song)
     }
 
@@ -322,11 +323,36 @@ class PlayerQueue: ObservableObject {
         guard nextPageSize > 0,
               let results = results,
               !results.isEmpty,
-              let lastQueueSongIndex = results.firstIndex(where: {
-                  $0.identifier == lastLoadedSong?.identifier
-              }) 
+              let lastLoadedSong = lastLoadedSong
         else {
             Logger.queue.error("Could not load next page of ordered results.")
+            return
+        }
+
+        // If the shuffle/repeat state has changed we want to load items from results based on the
+        // pre-play next items
+        var songToBuildQueueFrom = lastLoadedSong
+        if songToBuildQueueFrom.isPlayNext, !pastSongs.isEmpty {
+            var index = pastSongs.count - 1
+            var candidateSong: Song?
+            while index >= 0 {
+                let song = pastSongs[index]
+                if !song.isPlayNext {
+                    candidateSong = song
+                    break
+                }
+                index -= 1
+            }
+
+            if let candidateSong = candidateSong {
+                songToBuildQueueFrom = candidateSong
+            }
+        }
+
+        guard let lastQueueSongIndex = results.firstIndex(where: {
+            $0.identifier == songToBuildQueueFrom.identifier
+        }) else {
+            Logger.queue.error("Couldn't load next page of ordered results no last queue song idx.")
             return
         }
 
@@ -347,12 +373,14 @@ class PlayerQueue: ObservableObject {
         for i in firstResultIndex...lastResultIndex {
             guard let song = results[i].toSong() else { continue }
             futureSongs.append(song)
-            pastSongsRepeatStartIndex = nil  // We have added new songs, can't to be at end index now
+            pastSongsRepeatStartIndex = nil  // We have added new songs, can't be at end index now
         }
 
         if lastResultIndex == finalResultIndex {
             pastSongsRepeatStartIndex = proposedPastSongsRepeatStartIndex
         }
+
+        Logger.queue.debug("Loaded \((finalResultIndex - firstResultIndex) + 1) ordered results")
     }
 
     private func loadNextPageFromResults(nextPageSize: Int) {
