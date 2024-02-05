@@ -15,6 +15,7 @@ struct DetailColumn: View {
         switch selection ?? .songs {
         case .songs:
             SongsTable(selection: .constant([]))
+                .navigationTitle("Songs")
         }
     }
 }
