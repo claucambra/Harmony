@@ -23,14 +23,15 @@ public class LocalBackend : NSObject, Backend {
     }
 
     static func getPathFromConfig(_ config: BackendConfiguration) -> URL {
+        let pathConfigFieldId = LocalBackendFieldId.pathConfig.rawValue
         #if os(macOS)
         let accessibleUrlPathFieldId =
-            localBackendPathConfigFieldId + BackendConfigurationLocalURLAccessibleURLFieldKeySuffix
+            pathConfigFieldId + BackendConfigurationLocalURLAccessibleURLFieldKeySuffix
         if let accessibleUrl = config[accessibleUrlPathFieldId] as? URL {
             return accessibleUrl
         }
         #endif
-        return URL(fileURLWithPath: config[localBackendPathConfigFieldId] as? String ?? "")
+        return URL(fileURLWithPath: config[pathConfigFieldId] as? String ?? "")
     }
 
     required public init(config: BackendConfiguration) {
