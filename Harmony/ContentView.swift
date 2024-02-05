@@ -79,6 +79,7 @@ struct ContentView: View {
                         QueueButton(queueVisible: $queueVisible)
                     }
                 }
+                .inspectorColumnWidth(320) // Fix visual issues with inspector toggle and search b.
         }
     }
 }
