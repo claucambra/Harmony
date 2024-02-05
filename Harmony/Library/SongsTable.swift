@@ -15,7 +15,6 @@ struct SongsTable: View {
         DatabaseSong.self,
         sortDescriptor: SortDescriptor(keyPath: \DatabaseSong.title)
     ) var songs
-    @Environment(\.searchText) private var receivedSearchText
     @Binding var selection: Set<DatabaseSong.ID>
     @State private var sortOrder = [KeyPathComparator(\DatabaseSong.title, order: .reverse)]
     @State private var searchText = ""
@@ -56,29 +55,6 @@ struct SongsTable: View {
             $songs.sortDescriptor = SortDescriptor(keyPath: keyPath, ascending: ascending)
         })
         .searchable(text: searchQuery)
-    }
-
-    @ViewBuilder
-    private var table: some View {
-        Table(songs, selection: $selection, sortOrder: $sortOrder) {
-            TableColumn("Title", value: \.title)
-            TableColumn("Album", value: \.album)
-            TableColumn("Artist", value: \.artist)
-            TableColumn("Genre", value: \.genre)
-        }
-        .contextMenu(forSelectionType: DatabaseSong.ID.self) { items in
-            if let song = items.first {
-                contextMenuItemsForSong(id: song)
-            }
-        } primaryAction: { ids in
-            playSongsFromIds(ids)
-        }
-        .onChange(of: sortOrder, { oldValue, newValue in
-            guard let sortDescriptor = newValue.first else { return }
-            let keyPath = sortDescriptor.keyPath
-            let ascending = sortDescriptor.order == .reverse
-            $songs.sortDescriptor = SortDescriptor(keyPath: keyPath, ascending: ascending)
-        })
     }
 
     @ViewBuilder
