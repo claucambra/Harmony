@@ -285,23 +285,18 @@ class PlayerQueue: ObservableObject {
         guard nextPageSize > 0,
               let addedSongResultsIndex = addedSongResultsIndex,
               let results = results,
-              !results.isEmpty,
-              let lastLoadedSong = lastLoadedSong,
-              let lastLoadedSongResultsIndex = results.firstIndex(where: {
-                  $0.identifier == lastLoadedSong.identifier
-              }),
-              lastLoadedSongResultsIndex + 1 < results.count
+              !results.isEmpty
         else { return }
 
-        let eligibleRange = lastLoadedSongResultsIndex + 1...results.count - 1
-        let electedIndices: Set<Int> = []
-        let afterAddedSongCount = results.count - (addedSongResultsIndex + 1)
+        let afterAddedSongCount = results.count - (addedSongResultsIndex + 1 + 1)
         var remainingResults = afterAddedSongCount - shuffledIdentifiers.count
+        guard remainingResults > 0 else { return }
+
+        let eligibleRange = addedSongResultsIndex + 1...results.count - 1
         var insertedCount = 0
 
         while remainingResults > 0, insertedCount < nextPageSize  {
-            guard let randomIndex = eligibleRange.randomElement(),
-                  !electedIndices.contains(randomIndex) else { continue }
+            guard let randomIndex = eligibleRange.randomElement() else { continue }
             let randomDbSong = results[randomIndex]
             let randomDbSongIdentifier = randomDbSong.identifier
             guard !shuffledIdentifiers.contains(randomDbSongIdentifier),
