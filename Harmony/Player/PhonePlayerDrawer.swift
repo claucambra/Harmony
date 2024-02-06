@@ -14,12 +14,11 @@ struct PhonePlayerDrawer: View {
     let borderRadius = 5.0
     let borderWidth = 1.0
     let shadowRadius = 4.0
-    let minimumSheetHeight = 120.0
     let mainButtonSymbolFontSize = 32
 
     var body: some View {
         VStack {
-            VStack(spacing: 20) {
+            VStack {
                 SongArtworkView(song: PlayerController.shared.currentSong)
                     .clipShape(.rect(cornerRadius: borderRadius))
                     .shadow(radius: shadowRadius)
@@ -30,34 +29,42 @@ struct PhonePlayerDrawer: View {
                     .frame(height: 200)
                 Text(controller.currentSong?.title ?? "Harmony")
                     .bold()
+                    .font(.title)
                     .lineLimit(1)
                     .frame(maxWidth: .infinity)
-                if controller.currentSong?.artist != "" {
+                if controller.currentSong != nil, controller.currentSong?.artist != "" {
                     Text(controller.currentSong?.artist ?? "")
+                        .font(.title2)
                         .lineLimit(1)
                         .frame(maxWidth: .infinity)
                 }
-                HStack {
-                    ShuffleButton()
-                        .controlSize(.large)
-                        .frame(maxWidth: .infinity)
-                        .font(.system(size: 32))
-                    ChangeSongButton(buttonChangeType: .previous)
-                        .controlSize(.large)
-                        .font(.system(size: 32))
-                        .frame(maxWidth: .infinity)
-                    PlayButton()
-                        .controlSize(.large)
-                        .font(.system(size: 32))
-                        .frame(maxWidth: .infinity)
-                    ChangeSongButton(buttonChangeType: .next)
-                        .controlSize(.large)
-                        .font(.system(size: 32))
-                        .frame(maxWidth: .infinity)
-                    RepeatButton()
-                        .controlSize(.large)
-                        .font(.system(size: 32))
-                        .frame(maxWidth: .infinity)
+                VStack(spacing: 10) {
+                    Slider(value: $controller.currentSeconds, in:(0...controller.songDuration)) { editing in
+                        controller.scrubState = editing ? .started : .finished
+                    }
+                    .frame(maxWidth: .infinity)
+                    HStack {
+                        ShuffleButton()
+                            .controlSize(.large)
+                            .frame(maxWidth: .infinity)
+                            .font(.system(size: 32))
+                        ChangeSongButton(buttonChangeType: .previous)
+                            .controlSize(.large)
+                            .font(.system(size: 32))
+                            .frame(maxWidth: .infinity)
+                        PlayButton()
+                            .controlSize(.large)
+                            .font(.system(size: 32))
+                            .frame(maxWidth: .infinity)
+                        ChangeSongButton(buttonChangeType: .next)
+                            .controlSize(.large)
+                            .font(.system(size: 32))
+                            .frame(maxWidth: .infinity)
+                        RepeatButton()
+                            .controlSize(.large)
+                            .font(.system(size: 32))
+                            .frame(maxWidth: .infinity)
+                    }
                 }
             }
             .padding([.top], 40)
