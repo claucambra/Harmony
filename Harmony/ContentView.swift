@@ -91,10 +91,7 @@ struct ContentView: View {
             rightSidebarQueue
             #else
             if UIDevice.current.userInterfaceIdiom == .phone {
-                VStack {
-                    PlayerQueueView()
-                }
-                .interactiveDismissDisabled()
+                PhonePlayerDrawer()
             } else {
                 rightSidebarQueue.navigationTitle("Queue")
             }
