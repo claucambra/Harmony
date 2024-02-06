@@ -12,19 +12,20 @@ struct ContentView: View {
     @State private var selection: Panel? = Panel.songs
     @State private var path = NavigationPath()
     @State private var settingsSheetVisible = false
-    #if os(macOS)
     @State private var queueVisible = false
+    #if os(macOS)
     let buttonStackInToolbar = true
     let buttonStackPlacement = ToolbarItemPlacement.navigation
     let currentSongPlacement = ToolbarItemPlacement.principal
     let volumeSliderPlacement = ToolbarItemPlacement.destructiveAction
     let displayVolumeSlider = true
+    let floatingBarSafeArea = 0.0
     #else
-    @State private var queueVisible = UIDevice.current.userInterfaceIdiom == .phone
     let buttonStackInToolbar = UIDevice.current.userInterfaceIdiom != .phone
     let buttonStackPlacement = ToolbarItemPlacement.topBarLeading
     let volumeSliderPlacement = ToolbarItemPlacement.topBarTrailing
     let displayVolumeSlider = false
+    let floatingBarSafeArea = UIDevice.current.userInterfaceIdiom == .phone ? 88.0 : 0.0 // TODO
     #endif
 
     var body: some View {
@@ -51,10 +52,12 @@ struct ContentView: View {
                         #endif
                     }
                 }
+                .safeAreaPadding([.bottom], floatingBarSafeArea)
         } detail: {
             NavigationStack(path: $path) {
                 DetailColumn(selection: $selection)
             }
+            .safeAreaPadding([.bottom], floatingBarSafeArea)
             .toolbar {
                 if buttonStackInToolbar {
                     ToolbarItemGroup(placement: buttonStackPlacement) {
@@ -94,6 +97,18 @@ struct ContentView: View {
                 PhonePlayerDrawer()
             } else {
                 rightSidebarQueue.navigationTitle("Queue")
+            }
+            #endif
+        }
+        .overlay(alignment: .bottom) {
+            #if os(iOS)
+            if UIDevice.current.userInterfaceIdiom == .phone {
+                FloatingCurrentSongView()
+                    .safeAreaPadding([.leading, .trailing, .bottom], 10)
+                    .frame(alignment: .bottom)
+                    .onTapGesture {
+                        queueVisible.toggle()
+                    }
             }
             #endif
         }
