@@ -34,17 +34,25 @@ struct SongsTable: View {
         }
     }
 
+    #if os(iOS)
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    private var isCompact: Bool { horizontalSizeClass == .compact }
+    #else
+    private let isCompact = false
+    #endif
+
+
     var body: some View {
         Table(songs, selection: $selection, sortOrder: $sortOrder) {
-            TableColumn("Title", value: \.title)
+            TableColumn("Title", value: \.title) { song in
+                titleItem(song: song)
+            }
             TableColumn("Album", value: \.album)
             TableColumn("Artist", value: \.artist)
             TableColumn("Genre", value: \.genre)
         }
         .contextMenu(forSelectionType: DatabaseSong.ID.self) { items in
-            if let song = items.first {
-                contextMenuItemsForSong(id: song)
-            }
+            contextMenuItemsForSongs(ids: items)
         } primaryAction: { ids in
             playSongsFromIds(ids)
         }
@@ -55,6 +63,22 @@ struct SongsTable: View {
             $songs.sortDescriptor = SortDescriptor(keyPath: keyPath, ascending: ascending)
         })
         .searchable(text: searchQuery)
+    }
+
+    @ViewBuilder
+    private func titleItem(song: DatabaseSong) -> some View {
+        if isCompact {
+            SongListItemView(song: song, isCurrentSong: false)
+        } else {
+            Text(song.title)
+        }
+    }
+
+    @ViewBuilder
+    private func contextMenuItemsForSongs(ids: Set<DatabaseSong.ID>) -> some View {
+        if let songId = ids.first {
+            contextMenuItemsForSong(id: songId)
+        }
     }
 
     @ViewBuilder
