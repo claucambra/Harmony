@@ -214,28 +214,30 @@ class PlayerController: NSObject, ObservableObject  {
 
     @discardableResult func play() -> MPRemoteCommandHandlerStatus {
         guard let avPlayer = avPlayer else { return .noActionableNowPlayingItem }
-        #if !os(macOS)
+        #if os(macOS)
+        nowPlayingInfoCenter.playbackState = .playing
+        #else
         do {
             try audioSession.setActive(false)
         } catch let error {
             Logger.player.error("Failed to deactivate audio session: \(error)")
         }
         #endif
-        nowPlayingInfoCenter.playbackState = .playing
         avPlayer.play()
         return .success
     }
 
     @discardableResult func pause() -> MPRemoteCommandHandlerStatus {
         guard let avPlayer = avPlayer else { return .noActionableNowPlayingItem }
-        #if !os(macOS)
+        #if os(macOS)
+        nowPlayingInfoCenter.playbackState = .paused
+        #else
         do {
             try audioSession.setActive(true)
         } catch let error {
             Logger.player.error("Failed to activate audio session: \(error)")
         }
         #endif
-        nowPlayingInfoCenter.playbackState = .paused
         avPlayer.pause()
         return .success
     }
