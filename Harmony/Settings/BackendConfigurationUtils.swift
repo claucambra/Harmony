@@ -9,9 +9,7 @@ import Foundation
 import HarmonyKit
 import OSLog
 
-#if os(macOS)
 let BackendConfigurationLocalURLBookmarkDataFieldKeySuffix = "__bookmark-data"
-#endif
 
 func saveBackendConfig(
     _ configValues: BackendConfiguration,
@@ -48,17 +46,21 @@ func saveBackendConfig(
             continue
         }
 
-        #if os(macOS)
         if field.valueType == .localUrl {
             // TODO: Handle errors better here
             guard let url = fieldValue as? URL else { continue }
+            guard url.startAccessingSecurityScopedResource() else { continue }
+            #if os(macOS)
             guard let data = try? url.bookmarkData(options: .withSecurityScope) else { continue }
+            #else
+            guard let data = try? url.bookmarkData(options: .minimalBookmark) else { continue }
+            #endif
             let dataFieldId = field.id + BackendConfigurationLocalURLBookmarkDataFieldKeySuffix
             fullConfig[dataFieldId] = data
             Logger.config.debug("Stored local url bookmark data under key \(dataFieldId)")
             fullConfig[field.id] = url.path
+            url.stopAccessingSecurityScopedResource()
         }
-        #endif
     }
 
     if let preexistingConfigIndex = preexistingConfigIndex {
@@ -82,7 +84,7 @@ func existingConfigsForBackend(descriptionId: String) -> [BackendConfiguration] 
     var configs: [BackendConfiguration] = []
     for existingConfig in existingConfigs {
         guard let config = existingConfig as? BackendConfiguration else { continue }
-        #if os(macOS)
+
         let bookmarkDatas = Array(
             config.keys
                 .filter { $0.contains(BackendConfigurationLocalURLBookmarkDataFieldKeySuffix) }
@@ -94,17 +96,27 @@ func existingConfigsForBackend(descriptionId: String) -> [BackendConfiguration] 
                 continue
             }
             var isStale = false
+            #if os(macOS)
             guard let accessibleUrl = try? URL(
                 resolvingBookmarkData: data,
-                options: NSURL.BookmarkResolutionOptions.withSecurityScope, 
+                options: NSURL.BookmarkResolutionOptions.withSecurityScope,
                 relativeTo: nil,
                 bookmarkDataIsStale: &isStale
-            ), !isStale, accessibleUrl.startAccessingSecurityScopedResource() else {
+            ), !isStale else {
                 Logger.config.error("Could not acquire accessible url. isStale: \(isStale)")
                 continue
             }
+            #else
+            guard let accessibleUrl = try? URL(
+                resolvingBookmarkData: data,
+                relativeTo: nil,
+                bookmarkDataIsStale: &isStale
+            ), !isStale else {
+                Logger.config.error("Could not acquire accessible url. isStale: \(isStale)")
+                continue
+            }
+            #endif
         }
-        #endif
         configs.append(config)
     }
     return configs
