@@ -93,47 +93,32 @@ public class LocalBackend : NSObject, Backend {
     func recursiveScan(path: URL) async -> [URL] {
         Logger.localBackend.info("Scanning \(path)")
 
-        DispatchQueue.main.async {
+        Task { @MainActor in
             self.presentation.state = "Scanning " + path.path + "…"
         }
 
-        let audioFiles = await withTaskGroup(of: [URL].self, returning: [URL].self) { group in
-            do {
-                let contents = try FileManager.default.contentsOfDirectory(
-                    at: path,
-                    includingPropertiesForKeys: [.isDirectoryKey],
-                    options: [.skipsHiddenFiles]
-                )
+        // Use file coordination for reading and writing any of the URL’s content.
+        var audioFiles: [URL] = []
+        var error: NSError? = nil
+        NSFileCoordinator().coordinate(readingItemAt: path, error: &error) { url in
+            // Get an enumerator for the directory's content.
+            guard let fileList = FileManager.default.enumerator(
+                at: url, includingPropertiesForKeys: [.isDirectoryKey]
+            ) else {
+                Swift.debugPrint("*** Unable to access the contents of \(url.path) ***\n")
+                return
+            }
 
-                for item in contents {
-                    group.addTask {
-                        Logger.localBackend.debug("Found \(item) in \(contents)")
-                        var isDirectory: ObjCBool = false
-                        if FileManager.default.fileExists(
-                            atPath: item.path, isDirectory: &isDirectory
-                        ) {
-                            if isDirectory.boolValue {
-                                // If it's a directory, recursively scan it asynchronously
-                                return await self.recursiveScan(path: item)
-                            } else {
-                                // If it's a file, check if it's playable
-                                if filePlayability(fileURL: item) == .filePlayable {
-                                    return [item]
-                                }
-                            }
-                        }
-                        return []
-                    }
-                }
+            for case let file as URL in fileList {
+                Logger.localBackend.debug("Found \(file) in \(path)")
 
-                var scannedUrls: [URL] = []
-                for await result in group {
-                    scannedUrls.append(contentsOf: result)
+                var isDirectory: ObjCBool = false
+                if FileManager.default.fileExists(atPath: file.path, isDirectory: &isDirectory),
+                   !isDirectory.boolValue,
+                   filePlayability(fileURL: file) == .filePlayable 
+                {
+                    audioFiles.append(file)
                 }
-                return scannedUrls
-            } catch {
-                Logger.localBackend.error("Error scanning directory \(path): \(error).")
-                return []
             }
         }
 
