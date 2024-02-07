@@ -23,7 +23,7 @@ func calculateMD5Checksum(forFileAtLocalURL url: URL) -> String? {
         let checksumString = checksum.map { String(format: "%02hhx", $0) }.joined()
         return checksumString
     } catch {
-        print("Error reading file or calculating MD5 checksum: \(error)")
+        print("Error reading file before calculating MD5 checksum: \(error)")
         return nil
     }
 }
