@@ -34,7 +34,7 @@ struct BackendConfigurationFieldView: View {
             Button(action: {
                 #if os(macOS)
                 if let localUrl = chooseLocalURL(eligible: .onlyDirectories) {
-                    configValues[field.id] = localUrl.path
+                    configValues[field.id] = localUrl
                 }
                 #else
                 filePickerVisible = true
