@@ -32,9 +32,6 @@ struct PlayerQueueView: View {
                     Section("Playing next") {
                         ForEach(queue.playNextSongs) { song in
                             PlayerQueueListViewItem(song: song)
-                                .onAppear {
-                                    queue.loadNextPageIfNeeded(song: song)
-                                }
                         }
                     }
                 }
