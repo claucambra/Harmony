@@ -19,26 +19,26 @@ struct PlayerQueueView: View {
                 if !queue.pastSongs.isEmpty {
                     Section("Previously played") {
                         ForEach(queue.pastSongs) { song in
-                            PlayerQueueListViewItem(song: song)
+                            PlayerQueueListViewItem(song: song, isCurrentSong: false)
                         }
                     }
                 }
                 if let currentSong = queue.currentSong {
                     Section("Currently playing") {
-                        PlayerQueueListViewItem(song: currentSong)
+                        PlayerQueueListViewItem(song: currentSong, isCurrentSong: true)
                     }
                 }
                 if !queue.playNextSongs.isEmpty {
                     Section("Playing next") {
                         ForEach(queue.playNextSongs) { song in
-                            PlayerQueueListViewItem(song: song)
+                            PlayerQueueListViewItem(song: song, isCurrentSong: false)
                         }
                     }
                 }
                 if !queue.futureSongs.isEmpty {
                     Section("Upcoming songs") {
                         ForEach(queue.futureSongs) { song in
-                            PlayerQueueListViewItem(song: song)
+                            PlayerQueueListViewItem(song: song, isCurrentSong: false)
                                 .onAppear {
                                     queue.loadNextPageIfNeeded(song: song)
                                 }

@@ -11,13 +11,13 @@ import SwiftUI
 struct PlayerQueueListViewItem: View {
     @ObservedObject var playerController = PlayerController.shared
     let song: Song
+    let isCurrentSong: Bool
     // TODO: Standardise measurements below
     let borderRadius = 5.0
     let borderWidth = 1.0
     let shadowRadius = 4.0
 
     var body: some View {
-        let isCurrentSong = playerController.currentSong?.id == song.id
         HStack {
             SongArtworkView(song: song)
                 .frame(height: isCurrentSong ? 60 : 40)
