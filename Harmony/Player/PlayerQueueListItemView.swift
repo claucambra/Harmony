@@ -1,5 +1,5 @@
 //
-//  PlayerQueueListViewItem.swift
+//  PlayerQueueListItemView.swift
 //  Harmony
 //
 //  Created by Claudio Cambra on 1/2/24.
@@ -8,7 +8,7 @@
 import HarmonyKit
 import SwiftUI
 
-struct PlayerQueueListViewItem: View {
+struct PlayerQueueListItemView: View {
     @ObservedObject var playerController = PlayerController.shared
     let song: Song
     let isCurrentSong: Bool
