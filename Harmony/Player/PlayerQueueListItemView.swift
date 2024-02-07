@@ -9,7 +9,6 @@ import HarmonyKit
 import SwiftUI
 
 struct PlayerQueueListItemView: View {
-    @ObservedObject var playerController = PlayerController.shared
     let song: Song
     let isCurrentSong: Bool
     // TODO: Standardise measurements below
