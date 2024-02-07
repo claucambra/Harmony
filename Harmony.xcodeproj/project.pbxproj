@@ -76,6 +76,7 @@
 		53D6665B2B6E9DCF0042C03D /* LocalBackendDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D6665A2B6E9DCF0042C03D /* LocalBackendDescription.swift */; };
 		53D6665D2B6F34CC0042C03D /* SongContextMenuItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D6665C2B6F34CC0042C03D /* SongContextMenuItems.swift */; };
 		53D666632B7285120042C03D /* FloatingCurrentSongView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D666622B7285120042C03D /* FloatingCurrentSongView.swift */; };
+		53D666672B73EAD40042C03D /* SongListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D666662B73EAD40042C03D /* SongListItemView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -201,6 +202,7 @@
 		53D6665A2B6E9DCF0042C03D /* LocalBackendDescription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalBackendDescription.swift; sourceTree = "<group>"; };
 		53D6665C2B6F34CC0042C03D /* SongContextMenuItems.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongContextMenuItems.swift; sourceTree = "<group>"; };
 		53D666622B7285120042C03D /* FloatingCurrentSongView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingCurrentSongView.swift; sourceTree = "<group>"; };
+		53D666662B73EAD40042C03D /* SongListItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongListItemView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -339,6 +341,7 @@
 			isa = PBXGroup;
 			children = (
 				53D6665C2B6F34CC0042C03D /* SongContextMenuItems.swift */,
+				53D666662B73EAD40042C03D /* SongListItemView.swift */,
 				535053722B5AA61A00D7EAF2 /* SongsTable.swift */,
 			);
 			path = Library;
@@ -804,6 +807,7 @@
 				535053942B5BDA7500D7EAF2 /* BackendChoiceListItemView.swift in Sources */,
 				535054322B66248C00D7EAF2 /* ConfiguredBackendsListView.swift in Sources */,
 				535053732B5AA61A00D7EAF2 /* SongsTable.swift in Sources */,
+				53D666672B73EAD40042C03D /* SongListItemView.swift in Sources */,
 				535054282B641A8900D7EAF2 /* DatabaseManager.swift in Sources */,
 				5350542A2B641FAB00D7EAF2 /* DatabaseSong.swift in Sources */,
 				5350537C2B5BB1FE00D7EAF2 /* Sidebar.swift in Sources */,
