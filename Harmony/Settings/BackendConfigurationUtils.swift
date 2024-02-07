@@ -51,12 +51,12 @@ func saveBackendConfig(
         #if os(macOS)
         if field.valueType == .localUrl {
             // TODO: Handle errors better here
-            guard let stringFieldValue = fieldValue as? String else { continue }
-            let url = URL(fileURLWithPath: stringFieldValue)
+            guard let url = fieldValue as? URL else { continue }
             guard let data = try? url.bookmarkData(options: .withSecurityScope) else { continue }
             let dataFieldId = field.id + BackendConfigurationLocalURLBookmarkDataFieldKeySuffix
             fullConfig[dataFieldId] = data
             Logger.config.debug("Stored local url bookmark data under key \(dataFieldId)")
+            fullConfig[field.id] = url.path
         }
         #endif
     }

@@ -47,7 +47,7 @@ struct BackendConfigurationFieldView: View {
                 FilePickerRepresentable(
                     types: [.directory, .folder], allowMultiple: true, onPicked: { urls in
                         if let localUrl = urls.first {
-                            configValues[field.id] = localUrl.path
+                            configValues[field.id] = localUrl
                         }
                 })
             }
