@@ -13,7 +13,7 @@ extension Logger {
     static let localBackend = Logger(subsystem: subsystem, category: "localBackend")
 }
 
-public class LocalBackend : NSObject, Backend {
+public class LocalBackend: NSObject, Backend {
     public let typeDescription = localBackendTypeDescription
     public let id: String
     public var configValues: BackendConfiguration = [:]
@@ -48,6 +48,7 @@ public class LocalBackend : NSObject, Backend {
             config: "Path: " + localPath.path
         )
         super.init()
+        configurePath()
     }
 
     public init(path: URL, id: String) {
@@ -62,6 +63,19 @@ public class LocalBackend : NSObject, Backend {
             config: "Path: " + path.path
         )
         super.init()
+        configurePath()
+    }
+
+    deinit {
+        path.stopAccessingSecurityScopedResource()
+    }
+
+    func configurePath() {
+        guard path.startAccessingSecurityScopedResource() else {
+            let errorString = "could not access security scoped resource."
+            Logger.localBackend.error("Error scanning directory \(self.path): \(errorString)")
+            return
+        }
     }
 
     func songsFromLocalUrls(_ urls:[URL]) async -> [Song] {
