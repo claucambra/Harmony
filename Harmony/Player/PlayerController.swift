@@ -218,9 +218,9 @@ class PlayerController: NSObject, ObservableObject  {
         nowPlayingInfoCenter.playbackState = .playing
         #else
         do {
-            try audioSession.setActive(false)
+            try audioSession.setActive(true)
         } catch let error {
-            Logger.player.error("Failed to deactivate audio session: \(error)")
+            Logger.player.error("Failed to activate audio session: \(error)")
         }
         #endif
         avPlayer.play()
@@ -233,9 +233,9 @@ class PlayerController: NSObject, ObservableObject  {
         nowPlayingInfoCenter.playbackState = .paused
         #else
         do {
-            try audioSession.setActive(true)
+            try audioSession.setActive(false)
         } catch let error {
-            Logger.player.error("Failed to activate audio session: \(error)")
+            Logger.player.error("Failed to deactivate audio session: \(error)")
         }
         #endif
         avPlayer.pause()
