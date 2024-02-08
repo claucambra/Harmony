@@ -29,7 +29,7 @@ struct ToolbarCurrentSongView: View {
                     Text(controller.currentSong?.artist ?? "")
                         .frame(minWidth: 30, alignment: .trailing)
                 }
-                PlayerScrubberView()
+                PlayerScrubberView(size: .small)
                     .frame(maxWidth: .infinity)
                     .padding(.bottom, 2)
             }

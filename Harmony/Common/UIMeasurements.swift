@@ -5,7 +5,11 @@
 //  Created by Claudio Cambra on 8/2/24.
 //
 
-import Foundation
+#if os(macOS)
+import AppKit
+#else
+import UIKit
+#endif
 
 struct UIMeasurements {
     static let smallPadding = 5.0
@@ -29,8 +33,6 @@ struct UIMeasurements {
     static let mediumArtworkHeight = 64.0
     static let largeArtworkHeight = 200.0
 
-    static let smallFontSize = 10.0
-
     static let smallWindowWidth = 320.0
     static let smallWindowHeight = 240.0
 
@@ -38,4 +40,14 @@ struct UIMeasurements {
     static let mediumWindowHeight = 480.0
 
     static let toolbarCurrentSongViewWidth = 320.0
+
+    static var smallFontSize: CGFloat {
+        get {
+            #if os(macOS)
+            NSFont.smallSystemFontSize
+            #else
+            UIFont.smallSystemFontSize
+            #endif
+        }
+    }
 }

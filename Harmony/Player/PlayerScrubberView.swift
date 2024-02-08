@@ -8,17 +8,29 @@
 import SwiftUI
 
 struct PlayerScrubberView: View {
+    enum ScrubberSize { case small, large }
+
     @ObservedObject var controller = PlayerController.shared
+    let size: ScrubberSize
+    let timeLabelFontSize = UIMeasurements.smallFontSize
+    var sliderControlSize: ControlSize {
+        switch size {
+        case .small:
+            return .mini
+        case .large:
+            return .large
+        }
+    }
 
     var body: some View {
         VStack(spacing: 0) {
             HStack {
                 Text(controller.displayedCurrentTime)
-                    .font(.system(size: UIMeasurements.smallFontSize))
+                    .font(.system(size: timeLabelFontSize))
                     .foregroundStyle(.secondary)
                     .frame(maxWidth: .infinity, alignment: .leading)
                 Text(controller.displayedSongDuration)
-                    .font(.system(size: UIMeasurements.smallFontSize))
+                    .font(.system(size: timeLabelFontSize))
                     .foregroundStyle(.secondary)
                     .frame(maxWidth: .infinity, alignment: .trailing)
             }
@@ -28,7 +40,7 @@ struct PlayerScrubberView: View {
             ) { editing in
                 controller.scrubState = editing ? .started : .finished
             }
-            .controlSize(.mini)
+            .controlSize(sliderControlSize)
             .frame(maxWidth: .infinity)
         }
     }
