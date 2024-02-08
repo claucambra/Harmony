@@ -13,13 +13,16 @@ struct PlayerQueueView: View {
     @ObservedObject var queue = PlayerController.shared.queue
     @State private var selection: Set<Song.ID> = []
 
+    #if os(macOS)
     private let currentSongSectionId = "current-song-section"
+    #endif
     private let futureSongsSectionId = "future-songs-section"
     private let playNextSongsSectionId = "play-next-songs-section"
 
     var body: some View {
         ScrollViewReader { proxy in
             List(selection: $selection) {
+                #if os(macOS)
                 if !queue.pastSongs.isEmpty {
                     Section("Previously played") {
                         ForEach(queue.pastSongs) { song in
@@ -33,6 +36,7 @@ struct PlayerQueueView: View {
                     }
                     .id(currentSongSectionId)
                 }
+                #endif
                 if !queue.playNextSongs.isEmpty {
                     Section("Playing next") {
                         ForEach(queue.playNextSongs) { song in
@@ -58,17 +62,20 @@ struct PlayerQueueView: View {
             } primaryAction: { ids in
                 for id in ids {
                     PlayerController.shared.playSongFromQueue(instanceId: id)
+                    #if os(macOS)
+                    proxy.scrollTo(currentSongSectionId, anchor: .top)
+                    #else
+                    if !queue.playNextSongs.isEmpty {
+                        proxy.scrollTo(playNextSongsSectionId, anchor: .top)
+                    } else if !queue.futureSongs.isEmpty {
+                        proxy.scrollTo(futureSongsSectionId, anchor: .top)
+                    }
+                    #endif
                 }
             }
             .onChange(of: queue.currentSong) {
                 #if os(macOS)
                 proxy.scrollTo(currentSongSectionId, anchor: .top)
-                #else
-                if !queue.playNextSongs.isEmpty {
-                    proxy.scrollTo(playNextSongsSectionId, anchor: .top)
-                } else if !queue.futureSongs.isEmpty {
-                    proxy.scrollTo(futureSongsSectionId, anchor: .top)
-                }
                 #endif
             }
         }
