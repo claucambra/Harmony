@@ -10,23 +10,23 @@ import SwiftUI
 #if !os(macOS)
 struct PhonePlayerDrawer: View {
     @ObservedObject var controller = PlayerController.shared
-    // TODO: Standardise measurements below
-    let borderRadius = 5.0
-    let borderWidth = 1.0
-    let shadowRadius = 4.0
-    let mainButtonSymbolFontSize = 32
+
+    let cornerRadius = UIMeasurements.cornerRadius
+    let borderWidth = UIMeasurements.thinBorderWidth
+    let shadowRadius = UIMeasurements.shadowRadius
+    let buttonSymbolFontSize = UIMeasurements.largeButtonSymbolFontSize
 
     var body: some View {
         VStack {
             VStack {
                 SongArtworkView(song: PlayerController.shared.currentSong)
-                    .clipShape(.rect(cornerRadius: borderRadius))
+                    .clipShape(.rect(cornerRadius: cornerRadius))
                     .shadow(radius: shadowRadius)
                     .overlay(
-                        RoundedRectangle(cornerRadius: borderRadius)
+                        RoundedRectangle(cornerRadius: cornerRadius)
                             .stroke(.separator, lineWidth: borderWidth)
                     )
-                    .frame(height: 200)
+                    .frame(height: UIMeasurements.largeArtworkHeight)
                 Text(controller.currentSong?.title ?? "Harmony")
                     .bold()
                     .font(.title)
@@ -38,7 +38,7 @@ struct PhonePlayerDrawer: View {
                         .lineLimit(1)
                         .frame(maxWidth: .infinity)
                 }
-                VStack(spacing: 10) {
+                VStack(spacing: UIMeasurements.mediumPadding) {
                     Slider(value: $controller.currentSeconds, in:(0...controller.songDuration)) { editing in
                         controller.scrubState = editing ? .started : .finished
                     }
@@ -47,28 +47,28 @@ struct PhonePlayerDrawer: View {
                         ShuffleButton()
                             .controlSize(.large)
                             .frame(maxWidth: .infinity)
-                            .font(.system(size: 32))
+                            .font(.system(size: buttonSymbolFontSize))
                         ChangeSongButton(buttonChangeType: .previous)
                             .controlSize(.large)
-                            .font(.system(size: 32))
+                            .font(.system(size: buttonSymbolFontSize))
                             .frame(maxWidth: .infinity)
                         PlayButton()
                             .controlSize(.large)
-                            .font(.system(size: 32))
+                            .font(.system(size: buttonSymbolFontSize))
                             .frame(maxWidth: .infinity)
                         ChangeSongButton(buttonChangeType: .next)
                             .controlSize(.large)
-                            .font(.system(size: 32))
+                            .font(.system(size: buttonSymbolFontSize))
                             .frame(maxWidth: .infinity)
                         RepeatButton()
                             .controlSize(.large)
-                            .font(.system(size: 32))
+                            .font(.system(size: buttonSymbolFontSize))
                             .frame(maxWidth: .infinity)
                     }
                 }
             }
-            .padding([.top], 40)
-            .padding([.leading, .trailing, .bottom], 20)
+            .padding([.top], UIMeasurements.veryLargePadding)
+            .padding([.leading, .trailing, .bottom], UIMeasurements.largePadding)
             PlayerQueueView()
         }
         .presentationDetents([.large])

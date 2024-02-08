@@ -11,18 +11,17 @@ import SwiftUI
 struct SongListItemView: View {
     let song: DatabaseSong
     let isCurrentSong: Bool
-    // TODO: Standardise measurements below
-    let borderRadius = 5.0
-    let borderWidth = 1.0
+    let cornerRadius = UIMeasurements.cornerRadius
+    let borderWidth = UIMeasurements.thinBorderWidth
 
     var body: some View {
         let actualSong = song.toSong() // TODO: Find a better way to get the artwork
         HStack {
             SongArtworkView(song: actualSong)
-                .frame(height: 40)
-                .clipShape(.rect(cornerRadius: borderRadius))
+                .frame(height: UIMeasurements.smallArtworkHeight)
+                .clipShape(.rect(cornerRadius: cornerRadius))
                 .overlay(
-                    RoundedRectangle(cornerRadius: borderRadius)
+                    RoundedRectangle(cornerRadius: cornerRadius)
                         .stroke(.separator, lineWidth: borderWidth)
                 )
             VStack(alignment: .leading) {

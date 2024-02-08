@@ -44,14 +44,19 @@ struct ConfiguredBackendsListView: View {
     #if os(macOS)
     func openConfigWindowForBackend(_ backend: any Backend) {
         let window = NSPanel(
-            contentRect: NSRect(x: 0, y: 0, width: 320, height: 240),
+            contentRect: NSRect(
+                x: 0,
+                y: 0,
+                width: UIMeasurements.smallWindowWidth,
+                height: UIMeasurements.smallWindowHeight
+            ),
             styleMask: [.fullSizeContentView, .closable, .resizable, .titled],
             backing: .buffered, defer: false
         )
         window.contentView = NSHostingView(rootView: BackendConfigurationView(
             backendDescription: backend.typeDescription,
             configValues: backend.configValues
-        ).padding(20))
+        ).padding(UIMeasurements.largePadding))
         window.makeKeyAndOrderFront(nil)
     }
     #endif

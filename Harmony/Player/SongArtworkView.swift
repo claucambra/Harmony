@@ -28,7 +28,7 @@ struct SongArtworkView: View {
                     .foregroundStyle(.clear)
                     .aspectRatio(CGSize(width: 1, height: 1), contentMode: .fit)
                 adjustedImage(Image(systemName: "music.note"))
-                    .padding(5.0)
+                    .padding(UIMeasurements.mediumPadding)
             }
         }
     }

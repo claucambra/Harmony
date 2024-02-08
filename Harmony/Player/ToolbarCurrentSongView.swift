@@ -11,9 +11,9 @@ import SwiftUI
 
 struct ToolbarCurrentSongView: View {
     @ObservedObject var controller = PlayerController.shared
-    let horizontalSpacing = 5.0
-    let borderRadius = 2.5
-    let borderWidth = 1.0
+    let horizontalSpacing = UIMeasurements.smallPadding
+    let borderRadius = UIMeasurements.smallCornerRadius
+    let borderWidth = UIMeasurements.thinBorderWidth
 
     var body: some View {
         HStack(spacing: horizontalSpacing) {
@@ -31,15 +31,18 @@ struct ToolbarCurrentSongView: View {
                 }
                 HStack {
                     Text(controller.displayedCurrentTime)
-                        .font(.system(size: 10))
+                        .font(.system(size: UIMeasurements.smallFontSize))
                         .foregroundStyle(.secondary)
                         .frame(maxWidth: .infinity, alignment: .leading)
                     Text(controller.displayedSongDuration)
-                        .font(.system(size: 10))
+                        .font(.system(size: UIMeasurements.smallFontSize))
                         .foregroundStyle(.secondary)
                         .frame(maxWidth: .infinity, alignment: .trailing)
                 }
-                Slider(value: $controller.currentSeconds, in:(0...controller.songDuration)) { editing in
+                Slider(
+                    value: $controller.currentSeconds,
+                    in:(0...controller.songDuration)
+                ) { editing in
                     controller.scrubState = editing ? .started : .finished
                 }
                 .controlSize(.mini)
@@ -48,7 +51,7 @@ struct ToolbarCurrentSongView: View {
             }
             .padding(.trailing, horizontalSpacing)
         }
-        .frame(width: 320)
+        .frame(width: UIMeasurements.toolbarCurrentSongViewWidth)
         .background(.bar, in: .rect(cornerSize: .init(width: borderRadius, height: borderRadius)))
         .overlay(
             RoundedRectangle(cornerRadius: borderRadius)

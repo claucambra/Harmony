@@ -11,19 +11,19 @@ import SwiftUI
 struct PlayerQueueListItemView: View {
     let song: Song
     let isCurrentSong: Bool
-    // TODO: Standardise measurements below
-    let borderRadius = 5.0
-    let borderWidth = 1.0
-    let shadowRadius = 4.0
+    let cornerRadius = UIMeasurements.cornerRadius
+    let borderWidth = UIMeasurements.thinBorderWidth
+    let shadowRadius = UIMeasurements.shadowRadius
 
     var body: some View {
         HStack {
             SongArtworkView(song: song)
-                .frame(height: isCurrentSong ? 60 : 40)
-                .clipShape(.rect(cornerRadius: borderRadius))
+                .frame(height: isCurrentSong ?
+                       UIMeasurements.mediumArtworkHeight : UIMeasurements.smallArtworkHeight)
+                .clipShape(.rect(cornerRadius: cornerRadius))
                 .shadow(radius: isCurrentSong ? shadowRadius : 0)
                 .overlay(
-                    RoundedRectangle(cornerRadius: borderRadius)
+                    RoundedRectangle(cornerRadius: cornerRadius)
                         .stroke(.separator, lineWidth: borderWidth)
                 )
                 .padding(isCurrentSong ? shadowRadius : 0)

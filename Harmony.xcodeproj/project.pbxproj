@@ -77,6 +77,7 @@
 		53D6665D2B6F34CC0042C03D /* SongContextMenuItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D6665C2B6F34CC0042C03D /* SongContextMenuItems.swift */; };
 		53D666632B7285120042C03D /* FloatingCurrentSongView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D666622B7285120042C03D /* FloatingCurrentSongView.swift */; };
 		53D666672B73EAD40042C03D /* SongListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D666662B73EAD40042C03D /* SongListItemView.swift */; };
+		53D6666A2B74C53F0042C03D /* UIMeasurements.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D666692B74C53F0042C03D /* UIMeasurements.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -203,6 +204,7 @@
 		53D6665C2B6F34CC0042C03D /* SongContextMenuItems.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongContextMenuItems.swift; sourceTree = "<group>"; };
 		53D666622B7285120042C03D /* FloatingCurrentSongView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingCurrentSongView.swift; sourceTree = "<group>"; };
 		53D666662B73EAD40042C03D /* SongListItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongListItemView.swift; sourceTree = "<group>"; };
+		53D666692B74C53F0042C03D /* UIMeasurements.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIMeasurements.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -500,6 +502,7 @@
 		535F1BCF2B4A8F1400C78D98 /* Harmony */ = {
 			isa = PBXGroup;
 			children = (
+				53D666682B74C51B0042C03D /* Common */,
 				5350541E2B640F0D00D7EAF2 /* Database */,
 				535054022B6356E400D7EAF2 /* Extensions */,
 				535053742B5AA63500D7EAF2 /* Library */,
@@ -549,6 +552,14 @@
 				53D666572B6E9DB60042C03D /* NextcloudBackendDescription.swift */,
 			);
 			path = Nextcloud;
+			sourceTree = "<group>";
+		};
+		53D666682B74C51B0042C03D /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				53D666692B74C53F0042C03D /* UIMeasurements.swift */,
+			);
+			path = Common;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -804,6 +815,7 @@
 				535F1BD32B4A8F1400C78D98 /* ContentView.swift in Sources */,
 				535054152B63A3AD00D7EAF2 /* ShuffleButton.swift in Sources */,
 				535054112B63A1EB00D7EAF2 /* ChangeSongButton.swift in Sources */,
+				53D6666A2B74C53F0042C03D /* UIMeasurements.swift in Sources */,
 				535053942B5BDA7500D7EAF2 /* BackendChoiceListItemView.swift in Sources */,
 				535054322B66248C00D7EAF2 /* ConfiguredBackendsListView.swift in Sources */,
 				535053732B5AA61A00D7EAF2 /* SongsTable.swift in Sources */,

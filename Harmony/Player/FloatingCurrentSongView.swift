@@ -11,21 +11,20 @@ import SwiftUI
 struct FloatingCurrentSongView: View {
     @ObservedObject var controller = PlayerController.shared
 
-    // TODO: Standardise measurements below
-    let borderRadius = 5.0
-    let borderWidth = 1.0
-    let shadowRadius = 4.0
-    let mainButtonSymbolFontSize = 24.0
+    let cornerRadius = UIMeasurements.cornerRadius
+    let borderWidth = UIMeasurements.thinBorderWidth
+    let shadowRadius = UIMeasurements.shadowRadius
+    let buttonSymbolFontSize = UIMeasurements.mediumButtonSymbolFontSize
 
     var body: some View {
         HStack {
             SongArtworkView(song: PlayerController.shared.currentSong)
-                .clipShape(.rect(cornerRadius: borderRadius))
+                .clipShape(.rect(cornerRadius: cornerRadius))
                 .overlay(
-                    RoundedRectangle(cornerRadius: borderRadius)
+                    RoundedRectangle(cornerRadius: cornerRadius)
                         .stroke(.separator, lineWidth: borderWidth)
                 )
-                .frame(height: 48)
+                .frame(height: UIMeasurements.smallArtworkHeight)
             VStack(alignment: .trailing) {
                 Text(controller.currentSong?.title ?? "Harmony")
                     .bold()
@@ -40,16 +39,16 @@ struct FloatingCurrentSongView: View {
             Spacer()
             PlayButton()
                 .controlSize(.large)
-                .font(.system(size: mainButtonSymbolFontSize))
-                .frame(width: 40)
+                .font(.system(size: buttonSymbolFontSize))
+                .frame(width: UIMeasurements.mediumButtonSize)
             ChangeSongButton(buttonChangeType: .next)
                 .controlSize(.large)
-                .font(.system(size: mainButtonSymbolFontSize))
-                .frame(width: 40)
+                .font(.system(size: buttonSymbolFontSize))
+                .frame(width: UIMeasurements.mediumButtonSize)
         }
         .padding(10)
         .background {
-            RoundedRectangle(cornerRadius: 10.0, style: .circular)
+            RoundedRectangle(cornerRadius: UIMeasurements.largeCornerRadius, style: .circular)
                 .foregroundStyle(.regularMaterial)
                 .shadow(radius: shadowRadius)
 

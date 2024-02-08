@@ -21,8 +21,8 @@ struct SettingsView: View {
                 }
                 .tag(Tabs.backends)
         }
-        .padding(20)
-        .frame(minWidth: 480, minHeight: 240)
+        .padding(UIMeasurements.largePadding)
+        .frame(minWidth: UIMeasurements.mediumWindowWidth, minHeight: UIMeasurements.mediumWindowHeight)
         #else
         List {
             NavigationLink {
