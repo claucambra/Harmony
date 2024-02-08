@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-// TODO
 struct ShuffleButton: View {
     @ObservedObject var queue = PlayerController.shared.queue
 

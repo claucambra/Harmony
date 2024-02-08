@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-// TODO
 struct QueueButton: View {
     @Binding var queueVisible: Bool
 

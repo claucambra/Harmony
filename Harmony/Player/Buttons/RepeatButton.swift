@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-// TODO
 struct RepeatButton: View {
     @ObservedObject var queue = PlayerController.shared.queue
 
