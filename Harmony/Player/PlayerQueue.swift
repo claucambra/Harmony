@@ -46,9 +46,20 @@ class PlayerQueue: ObservableObject {
     }
 
     func backward() -> Song? {
-        guard let currentSong = currentSong,
-              let previousSong = pastSongs.popLast()
-        else { return nil }
+        guard let currentSong = currentSong else { return nil }
+        var previousSong = pastSongs.popLast()
+
+        if previousSong == nil {
+            guard let currentSongResultsIndex = results?.firstIndex(where: {
+                $0.identifier == currentSong.identifier
+            }) else { return nil }
+            let previousSongResultsIndex = currentSongResultsIndex - 1
+            guard previousSongResultsIndex >= 0 else { return nil }
+            guard let previousResultsSong = results?[previousSongResultsIndex].toSong() else {
+                return nil
+            }
+            previousSong = previousResultsSong
+        }
 
         futureSongs.prepend(currentSong)
         self.currentSong = previousSong
