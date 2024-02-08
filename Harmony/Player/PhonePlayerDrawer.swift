@@ -42,26 +42,11 @@ struct PhonePlayerDrawer: View {
                     PlayerScrubberView(size: .large)
                         .frame(maxWidth: .infinity)
                     HStack {
-                        ShuffleButton()
-                            .controlSize(.large)
-                            .frame(maxWidth: .infinity)
-                            .font(.system(size: buttonSymbolFontSize))
-                        ChangeSongButton(buttonChangeType: .previous)
-                            .controlSize(.large)
-                            .font(.system(size: buttonSymbolFontSize))
-                            .frame(maxWidth: .infinity)
-                        PlayButton()
-                            .controlSize(.large)
-                            .font(.system(size: buttonSymbolFontSize))
-                            .frame(maxWidth: .infinity)
-                        ChangeSongButton(buttonChangeType: .next)
-                            .controlSize(.large)
-                            .font(.system(size: buttonSymbolFontSize))
-                            .frame(maxWidth: .infinity)
-                        RepeatButton()
-                            .controlSize(.large)
-                            .font(.system(size: buttonSymbolFontSize))
-                            .frame(maxWidth: .infinity)
+                        mainButton(ShuffleButton())
+                        mainButton(ChangeSongButton(buttonChangeType: .previous))
+                        mainButton(PlayButton())
+                        mainButton(ChangeSongButton(buttonChangeType: .next))
+                        mainButton(RepeatButton())
                     }
                 }
             }
@@ -71,6 +56,14 @@ struct PhonePlayerDrawer: View {
         }
         .presentationDetents([.large])
         .presentationDragIndicator(.visible)
+    }
+
+    @ViewBuilder
+    func mainButton(_ button: some View) -> some View {
+        button
+            .controlSize(.large)
+            .font(.system(size: buttonSymbolFontSize))
+            .frame(maxWidth: .infinity)
     }
 }
 #endif
