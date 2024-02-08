@@ -29,25 +29,9 @@ struct ToolbarCurrentSongView: View {
                     Text(controller.currentSong?.artist ?? "")
                         .frame(minWidth: 30, alignment: .trailing)
                 }
-                HStack {
-                    Text(controller.displayedCurrentTime)
-                        .font(.system(size: UIMeasurements.smallFontSize))
-                        .foregroundStyle(.secondary)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                    Text(controller.displayedSongDuration)
-                        .font(.system(size: UIMeasurements.smallFontSize))
-                        .foregroundStyle(.secondary)
-                        .frame(maxWidth: .infinity, alignment: .trailing)
-                }
-                Slider(
-                    value: $controller.currentSeconds,
-                    in:(0...controller.songDuration)
-                ) { editing in
-                    controller.scrubState = editing ? .started : .finished
-                }
-                .controlSize(.mini)
-                .frame(maxWidth: .infinity)
-                .padding(.bottom, 2)
+                PlayerScrubberView()
+                    .frame(maxWidth: .infinity)
+                    .padding(.bottom, 2)
             }
             .padding(.trailing, horizontalSpacing)
         }

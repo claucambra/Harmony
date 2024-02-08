@@ -78,6 +78,7 @@
 		53D666632B7285120042C03D /* FloatingCurrentSongView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D666622B7285120042C03D /* FloatingCurrentSongView.swift */; };
 		53D666672B73EAD40042C03D /* SongListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D666662B73EAD40042C03D /* SongListItemView.swift */; };
 		53D6666A2B74C53F0042C03D /* UIMeasurements.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D666692B74C53F0042C03D /* UIMeasurements.swift */; };
+		53D6666C2B74D6C80042C03D /* PlayerScrubberView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D6666B2B74D6C80042C03D /* PlayerScrubberView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -205,6 +206,7 @@
 		53D666622B7285120042C03D /* FloatingCurrentSongView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingCurrentSongView.swift; sourceTree = "<group>"; };
 		53D666662B73EAD40042C03D /* SongListItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongListItemView.swift; sourceTree = "<group>"; };
 		53D666692B74C53F0042C03D /* UIMeasurements.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIMeasurements.swift; sourceTree = "<group>"; };
+		53D6666B2B74D6C80042C03D /* PlayerScrubberView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerScrubberView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -422,6 +424,7 @@
 				535054002B62D98200D7EAF2 /* PlayerQueue.swift */,
 				53D6664C2B6B7E3E0042C03D /* PlayerQueueListItemView.swift */,
 				535054092B63939C00D7EAF2 /* PlayerQueueView.swift */,
+				53D6666B2B74D6C80042C03D /* PlayerScrubberView.swift */,
 				53802A3B2B66C49F0066208D /* SongArtworkView.swift */,
 				535054072B635A0B00D7EAF2 /* ToolbarCurrentSongView.swift */,
 				53802A3D2B6790330066208D /* ToolbarVolumeSliderView.swift */,
@@ -830,6 +833,7 @@
 				5350539B2B5D026F00D7EAF2 /* BackendConfigurationUtils.swift in Sources */,
 				535053862B5BC98B00D7EAF2 /* BackendChoiceView.swift in Sources */,
 				535053832B5BC28E00D7EAF2 /* BackendsSettingsView.swift in Sources */,
+				53D6666C2B74D6C80042C03D /* PlayerScrubberView.swift in Sources */,
 				535053A02B5D1CC700D7EAF2 /* BackendsModel.swift in Sources */,
 				535F1BD12B4A8F1400C78D98 /* HarmonyApp.swift in Sources */,
 				535054172B63A3F500D7EAF2 /* RepeatButton.swift in Sources */,
