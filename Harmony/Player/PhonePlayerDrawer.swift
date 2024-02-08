@@ -10,6 +10,7 @@ import SwiftUI
 #if !os(macOS)
 struct PhonePlayerDrawer: View {
     @ObservedObject var controller = PlayerController.shared
+    @State var queueVisible = false
 
     let cornerRadius = UIMeasurements.cornerRadius
     let borderWidth = UIMeasurements.thinBorderWidth
@@ -19,26 +20,37 @@ struct PhonePlayerDrawer: View {
     var body: some View {
         VStack {
             VStack {
-                SongArtworkView(song: PlayerController.shared.currentSong)
-                    .clipShape(.rect(cornerRadius: cornerRadius))
-                    .shadow(radius: shadowRadius)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: cornerRadius)
-                            .stroke(.separator, lineWidth: borderWidth)
-                    )
-                    .frame(height: UIMeasurements.largeArtworkHeight)
-                Text(controller.currentSong?.title ?? "Harmony")
-                    .bold()
-                    .font(.title)
-                    .lineLimit(1)
-                    .frame(maxWidth: .infinity)
-                if controller.currentSong != nil, controller.currentSong?.artist != "" {
-                    Text(controller.currentSong?.artist ?? "")
-                        .font(.title2)
-                        .lineLimit(1)
-                        .frame(maxWidth: .infinity)
+                if queueVisible {
+                    PlayerQueueView()
+                        .listStyle(.plain)
+                } else {
+                    VStack {
+                        Spacer()
+                        SongArtworkView(song: PlayerController.shared.currentSong)
+                            .clipShape(.rect(cornerRadius: cornerRadius))
+                            .shadow(radius: shadowRadius)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: cornerRadius)
+                                    .stroke(.separator, lineWidth: borderWidth)
+                            )
+                            .frame(height: UIMeasurements.largeArtworkHeight)
+                        Spacer()
+                        Text(controller.currentSong?.title ?? "Harmony")
+                            .bold()
+                            .font(.title)
+                            .lineLimit(1)
+                            .frame(maxWidth: .infinity)
+                        if controller.currentSong != nil, controller.currentSong?.artist != "" {
+                            Text(controller.currentSong?.artist ?? "")
+                                .font(.title2)
+                                .lineLimit(1)
+                                .frame(maxWidth: .infinity)
+                        }
+                        Spacer()
+                    }
+                    .padding([.leading, .trailing], UIMeasurements.largePadding)
                 }
-                VStack(spacing: UIMeasurements.mediumPadding) {
+                VStack(spacing: UIMeasurements.largePadding) {
                     PlayerScrubberView(size: .large)
                         .frame(maxWidth: .infinity)
                     HStack {
@@ -49,10 +61,17 @@ struct PhonePlayerDrawer: View {
                         mainButton(RepeatButton())
                     }
                 }
+                .padding([.leading, .trailing], UIMeasurements.largePadding)
+                .padding([.bottom], UIMeasurements.veryLargePadding)
             }
-            .padding([.top], UIMeasurements.veryLargePadding)
-            .padding([.leading, .trailing, .bottom], UIMeasurements.largePadding)
-            PlayerQueueView()
+        }
+        HStack {
+            Button {
+                queueVisible.toggle()
+            } label: {
+                Label("Toggle queue", systemImage: "list.triangle")
+            }
+            .labelStyle(.iconOnly)
         }
         .presentationDetents([.large])
         .presentationDragIndicator(.visible)
