@@ -19,15 +19,22 @@ struct PlayButton: View {
             Label(buttonText, systemImage: buttonImage)
         }
         .labelStyle(.iconOnly)
+        .onAppear {
+            updateButtonSymbol()
+        }
         .onChange(of: controller.timeControlStatus) {
-            switch controller.timeControlStatus {
-            case .paused:
-                buttonImage = "play.fill"
-            case .waitingToPlayAtSpecifiedRate, .playing:
-                buttonImage = "pause.fill"
-            default:
-                buttonImage = "play.slash.fill"
-            }
+            updateButtonSymbol()
+        }
+    }
+
+    private func updateButtonSymbol() {
+        switch controller.timeControlStatus {
+        case .paused:
+            buttonImage = "play.fill"
+        case .waitingToPlayAtSpecifiedRate, .playing:
+            buttonImage = "pause.fill"
+        default:
+            buttonImage = "play.slash.fill"
         }
     }
 }
