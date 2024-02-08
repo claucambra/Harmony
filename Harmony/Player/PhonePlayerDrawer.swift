@@ -39,10 +39,8 @@ struct PhonePlayerDrawer: View {
                         .frame(maxWidth: .infinity)
                 }
                 VStack(spacing: UIMeasurements.mediumPadding) {
-                    Slider(value: $controller.currentSeconds, in:(0...controller.songDuration)) { editing in
-                        controller.scrubState = editing ? .started : .finished
-                    }
-                    .frame(maxWidth: .infinity)
+                    PlayerScrubberView(size: .large)
+                        .frame(maxWidth: .infinity)
                     HStack {
                         ShuffleButton()
                             .controlSize(.large)
