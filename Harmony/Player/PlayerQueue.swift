@@ -38,6 +38,7 @@ class PlayerQueue: ObservableObject {
     private var shuffledIdentifiers: Set<String> = []
     private var pastSongsRepeatStartIndex: Int?
     private var addedSongResultsIndex: Int?
+    private var lastLoadPreviousSongResultsIndex: Int?
     private var loadRequired: Bool { futureSongs.count <= PlayerQueue.viewLoadTriggerCount }
     private var lastLoadedSong: Song? { futureSongs.last ?? currentSong }
     private var currentSongCount: Int { currentSong == nil ? 0 : 1 }
@@ -50,14 +51,15 @@ class PlayerQueue: ObservableObject {
         var previousSong = pastSongs.popLast()
 
         if previousSong == nil {
-            guard let currentSongResultsIndex = results?.firstIndex(where: {
-                $0.identifier == currentSong.identifier
-            }) else { return nil }
-            let previousSongResultsIndex = currentSongResultsIndex - 1
+            guard let lastLoadPreviousSongResultsIndex = lastLoadPreviousSongResultsIndex else {
+                return nil
+            }
+            let previousSongResultsIndex = lastLoadPreviousSongResultsIndex - 1
             guard previousSongResultsIndex >= 0 else { return nil }
             guard let previousResultsSong = results?[previousSongResultsIndex].toSong() else {
                 return nil
             }
+            self.lastLoadPreviousSongResultsIndex? -= 1
             previousSong = previousResultsSong
         }
 
@@ -162,6 +164,7 @@ class PlayerQueue: ObservableObject {
     func addCurrentSong(_ song: Song, dbSong: DatabaseSong, parentResults: Results<DatabaseSong>) {
         results = parentResults
         addedSongResultsIndex = parentResults.firstIndex(of: dbSong)
+        lastLoadPreviousSongResultsIndex = addedSongResultsIndex
 
         if currentSong?.identifier != song.identifier {
             if let currentSong = currentSong {
