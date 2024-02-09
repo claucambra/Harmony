@@ -24,6 +24,7 @@ class PlayerQueue: ObservableObject {
         didSet {
             shuffledIdentifiers = [] // Shuffle freshly
             pastSongsRepeatStartIndex = nil // Repeat freshly
+            repeatIndex = nil
             futureSongs.removeAll()
         }
     }
@@ -59,6 +60,9 @@ class PlayerQueue: ObservableObject {
     /// starting from index 7, we would load 7->8->9->0->1 as bad index 10 gets
     /// remainderReportingOverflow(dividingBy: ...)
     private var pastSongsRepeatStartIndex: Int?
+    /// Tracks the current point at which repetition is taking place. Relevant for un-shuffled queue
+    /// repeats.
+    private var repeatIndex: Int?
     /// Represents the index in the results of the song the user manually selected to play
     /// (i.e. by tapping or double-clicking it on a list of songs).
     private var addedSongResultsIndex: Int?
@@ -251,6 +255,7 @@ class PlayerQueue: ObservableObject {
         futureSongs.removeAll()
         removedIdentifiers.forEach { identifier in shuffledIdentifiers.remove(identifier) }
         pastSongsRepeatStartIndex = nil
+        repeatIndex = nil
         loadNextPage()
     }
 
@@ -275,24 +280,18 @@ class PlayerQueue: ObservableObject {
             return
         }
 
-        // Find the last possible instance of the last loaded song in past and future songs.
-        var lastPastSongIndex = futureSongs.lastIndex(where: { song in
-            // Ensure we don't match the last element
-            song.identifier == lastLoadedSong?.identifier && song.id != lastLoadedSong?.id
-        })
-        if lastPastSongIndex == nil {
-            lastPastSongIndex = pastSongs.lastIndex(where: { song in
-                song.identifier == lastLoadedSong?.identifier
-            })
-        }
-
         // Default to starting from current song if past is empty and couldn't find in future.
         // This can also happen if the only copy we have of the song in future is the same instance.
         // The minimum possible index we should be getting here is the size of the total queues, as
         // this method only gets run once we have run out of available results and have started
         // repeating; hence the fallback value of totalQueueCount.
         let totalQueueCount = pastSongs.count + currentSongCount + futureSongs.count
-        let firstIndexToLoad = lastPastSongIndex == nil ? totalQueueCount : lastPastSongIndex! + 1
+        if repeatIndex == nil {
+            repeatIndex = totalQueueCount
+        } else {
+            repeatIndex? += 1
+        }
+        guard let repeatIndex = repeatIndex else { return }
 
         var indexBoundary: Int
 
@@ -307,9 +306,9 @@ class PlayerQueue: ObservableObject {
             indexBoundary = pastSongsRepeatStartIndex
         }
 
-        let lastIndexToLoad = firstIndexToLoad + nextPageSize - 1
+        let lastIndexToLoad = repeatIndex + nextPageSize - 1
 
-        for unboundedIndex in firstIndexToLoad...lastIndexToLoad {
+        for unboundedIndex in repeatIndex...lastIndexToLoad {
             let boundedIndex = unboundedIndex.remainderReportingOverflow(
                 dividingBy: indexBoundary
             ).partialValue
@@ -324,7 +323,6 @@ class PlayerQueue: ObservableObject {
             }
             guard let newSong = repeatingSong?.clone() else {
                 Logger.queue.error("Acquired repeated song clone should not be nil!")
-                print(boundedIndex, "unknown", firstIndexToLoad, lastIndexToLoad)
                 continue
             }
             futureSongs.append(newSong)
