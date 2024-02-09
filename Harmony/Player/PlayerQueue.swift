@@ -145,7 +145,7 @@ class PlayerQueue: ObservableObject {
                                 self.futureSongs.prepend(song)
                             }
                         }
-                        self.pastSongs.removeLast(self.pastSongs.count - index + 1)
+                        self.pastSongs.removeLast(self.pastSongs.count - index)
                         self.futureSongs.append(currentSong)
                     }
                 }
