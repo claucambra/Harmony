@@ -64,14 +64,15 @@ struct PhonePlayerDrawer: View {
                 .padding([.leading, .trailing], UIMeasurements.largePadding)
                 .padding([.bottom], UIMeasurements.veryLargePadding)
             }
-        }
-        HStack {
-            Button {
-                queueVisible.toggle()
-            } label: {
-                Label("Toggle queue", systemImage: "list.triangle")
+            HStack {
+                Button {
+                    queueVisible.toggle()
+                } label: {
+                    Label("Toggle queue", systemImage: "list.triangle")
+                }
+                .labelStyle(.iconOnly)
             }
-            .labelStyle(.iconOnly)
+            .padding([.bottom], UIMeasurements.veryLargePadding)
         }
         .presentationDetents([.large])
         .presentationDragIndicator(.visible)
