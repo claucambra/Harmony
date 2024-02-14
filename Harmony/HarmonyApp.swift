@@ -5,6 +5,7 @@
 //  Created by Claudio Cambra on 7/1/24.
 //
 
+import SwiftData
 import SwiftUI
 
 @main
@@ -13,6 +14,7 @@ struct HarmonyApp: App {
         WindowGroup {
             ContentView()
         }
+        .modelContainer(for: DatabaseSong.self)
         #if os(macOS)
         .windowToolbarStyle(.unified(showsTitle: false))
         #endif

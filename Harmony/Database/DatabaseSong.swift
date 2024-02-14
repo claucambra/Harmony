@@ -9,33 +9,41 @@ import AVFoundation
 import Foundation
 import HarmonyKit
 import OSLog
-import RealmSwift
+import SwiftData
 
-@MainActor
-class DatabaseSong: Object, ObjectKeyIdentifiable {
-    @Persisted(primaryKey: true) var identifier: String  // Unique identifier provided by backend
-    @Persisted var backendId: String
-    @Persisted var url: String
-    @Persisted var title: String = ""
-    @Persisted var artist: String = ""
-    @Persisted var album: String = ""
-    @Persisted var genre: String = ""
-    @Persisted var creator: String = ""
-    @Persisted var subject: String = ""
-    @Persisted var contributor: String = ""
-    @Persisted var type: String = ""
-    @Persisted var duration: TimeInterval = 0  // Seconds
-    @Persisted var timeScale: Int32
+@Model
+class DatabaseSong: Identifiable {
+    @Attribute(.unique) var identifier: String  // Unique identifier provided by backend
+    var backendId: String
+    var url: String
+    var title: String = ""
+    var artist: String = ""
+    var album: String = ""
+    var genre: String = ""
+    var creator: String = ""
+    var subject: String = ""
+    var contributor: String = ""
+    var type: String = ""
+    var duration: TimeInterval = 0  // Seconds
+    var timeScale: Int32 = 1
 
     static func fromSongs(_ songs: [Song]) -> [DatabaseSong] {
         songs.map { DatabaseSong(fromSong: $0) }
     }
 
+    init(identifier: String, backendId: String, url: String) {
+        self.identifier = identifier
+        self.backendId = backendId
+        self.url = url
+    }
+
     convenience init(fromSong song: Song) {
-        self.init()
-        identifier = song.identifier
-        backendId = song.backendId
-        url = song.url.absoluteString
+        self.init(
+            identifier: song.identifier,
+            backendId: song.backendId,
+            url: song.url.absoluteString
+        )
+
         title = song.title
         artist = song.artist
         album = song.album

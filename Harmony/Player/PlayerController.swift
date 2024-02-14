@@ -242,7 +242,7 @@ class PlayerController: NSObject, ObservableObject  {
         return .success
     }
 
-    @MainActor func playSong(_ dbSong: DatabaseSong, withinSongs songs: Results<DatabaseSong>) {
+    @MainActor func playSong(_ dbSong: DatabaseSong, withinSongs songs: [DatabaseSong]) {
         let id = dbSong.identifier
         guard let song = dbSong.toSong() else {
             Logger.player.error("Could not convert dbsong with id: \(id)")

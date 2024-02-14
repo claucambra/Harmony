@@ -9,7 +9,7 @@ import DequeModule
 import Foundation
 import HarmonyKit
 import OSLog
-import RealmSwift
+import SwiftData
 
 @MainActor
 class PlayerQueue: ObservableObject {
@@ -19,7 +19,7 @@ class PlayerQueue: ObservableObject {
     static let viewLoadTriggerCount = 5
     /// The parent list of songs that the user was viewing when they manually added a song. This is
     /// used to add contextually-relevant previous and upcoming songs.
-    @Published var results: Results<DatabaseSong>? {
+    @Published var results: [DatabaseSong]? {
         // TODO: Listen to changes to this and upd. songs
         didSet {
             shuffledIdentifiers = [] // Shuffle freshly
@@ -200,7 +200,7 @@ class PlayerQueue: ObservableObject {
         playNextSongs.append(song)
     }
 
-    func addCurrentSong(_ song: Song, dbSong: DatabaseSong, parentResults: Results<DatabaseSong>) {
+    func addCurrentSong(_ song: Song, dbSong: DatabaseSong, parentResults: [DatabaseSong]) {
         results = parentResults
         addedSongResultsIndex = parentResults.firstIndex(of: dbSong)
         lastLoadPreviousSongResultsIndex = addedSongResultsIndex

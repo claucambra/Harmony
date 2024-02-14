@@ -7,32 +7,14 @@
 
 import HarmonyKit
 import OSLog
-import RealmSwift
+import SwiftData
 import SwiftUI
 
 struct SongsTable: View {
-    @ObservedResults(
-        DatabaseSong.self,
-        sortDescriptor: SortDescriptor(keyPath: \DatabaseSong.title)
-    ) var songs
+    @Query var songs: [DatabaseSong]
     @Binding var selection: Set<DatabaseSong.ID>
     @State private var sortOrder = [KeyPathComparator(\DatabaseSong.title, order: .reverse)]
     @State private var searchText = ""
-    private var searchQuery: Binding<String> {
-        Binding {
-            searchText
-        } set: { newValue in
-            searchText = newValue
-            guard searchText != "" else {
-                $songs.filter = nil
-                return
-            }
-            // When possible, change this to use the `where` property using the type-safe API
-            // We need to manually filter because we can't pick the case sensitibity or CONTAINS
-            // when using searchable on the collection directly
-            $songs.filter = NSPredicate(format: "title CONTAINS[cd] %@", searchText)
-        }
-    }
 
     #if os(iOS)
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -60,9 +42,9 @@ struct SongsTable: View {
             guard let sortDescriptor = newValue.first else { return }
             let keyPath = sortDescriptor.keyPath
             let ascending = sortDescriptor.order == .reverse
-            $songs.sortDescriptor = SortDescriptor(keyPath: keyPath, ascending: ascending)
+            //$songs.sortDescriptor = SortDescriptor(keyPath: keyPath, ascending: ascending)
         })
-        .searchable(text: searchQuery)
+        .searchable(text: $searchText)
     }
 
     @ViewBuilder
@@ -88,10 +70,10 @@ struct SongsTable: View {
         }
     }
 
-    private func playSongsFromIds(_ ids: Set<DatabaseSong.ID>) {
+    @MainActor private func playSongsFromIds(_ ids: Set<DatabaseSong.ID>) {
         for id in ids {
             guard let dbObject = songs.filter({ $0.id == id }).first else {
-                Logger.songsTable.error("Could not find song with id: \(id)")
+                Logger.songsTable.error("Could not find song with id")
                 return
             }
             PlayerController.shared.playSong(dbObject, withinSongs: songs)
