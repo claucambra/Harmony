@@ -117,7 +117,7 @@ struct ContentView: View {
     @ViewBuilder
     var rightSidebarQueue: some View {
         PlayerQueueView()
-            .inspectorColumnWidth(320) // Fix visual issues with inspector toggle and search b.
+            .inspectorColumnWidth(400) // Fix visual issues with inspector toggle and search b.
             .toolbar {
                 #if os(macOS)
                 inspectorToolbarItem
