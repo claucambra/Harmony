@@ -367,7 +367,6 @@ class PlayerQueue: ObservableObject {
                 Logger.queue.error("Acquired repeated song clone should not be nil!")
                 continue
             }
-            print(unboundedIndex, boundedIndex, repeatIndex, lastIndexToLoad, newSong.title)
             futureSongs.append(newSong)
         }
     }
