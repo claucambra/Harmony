@@ -234,6 +234,24 @@ class PlayerQueue: ObservableObject {
         pastSongsRepeatStartIndex = nil
     }
 
+    func clearSongsAfterCurrent() {
+        playNextSongs.removeAll()
+        futureSongs.removeAll()
+
+        shuffledIdentifiers.removeAll()
+        repeatIndex = nil
+        pastSongsRepeatStartIndex = nil
+    }
+
+    func clear() {
+        clearPastSongs()
+        clearSongsAfterCurrent()
+
+        addedSongResultsIndex = nil
+        lastLoadPreviousSongResultsIndex = nil
+        results = nil
+    }
+
     func cycleRepeatState() {
         switch repeatState {
         case .disabled:

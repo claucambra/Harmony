@@ -78,6 +78,12 @@ struct PlayerQueueView: View {
             } label: {
                 Label("Clear played songs", systemImage: "text.badge.minus")
             }
+
+            Button {
+                queue.clear()
+            } label: {
+                Label("Clear queue", systemImage: "trash.fill")
+            }
         }
     }
 }
