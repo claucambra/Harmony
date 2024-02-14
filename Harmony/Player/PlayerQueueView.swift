@@ -26,6 +26,7 @@ struct PlayerQueueView: View {
                         ForEach(queue.pastSongs) { song in
                             PlayerQueueListItemView(song: song, isCurrentSong: false)
                         }
+                        .onDelete(perform: { indexSet in queue.removePastSongs(indexSet) })
                     }
                 }
                 #endif

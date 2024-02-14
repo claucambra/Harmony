@@ -215,6 +215,12 @@ class PlayerQueue: ObservableObject {
         loadNextPage()
     }
 
+    func removePastSongs(_ indexSet: IndexSet) {
+        pastSongs.remove(atOffsets: indexSet)
+        pastSongsRepeatStartIndex? -= indexSet.count
+        repeatIndex? -= 1
+    }
+
     func cycleRepeatState() {
         switch repeatState {
         case .disabled:
