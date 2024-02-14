@@ -9,15 +9,14 @@ import HarmonyKit
 import SwiftUI
 
 struct SongListItemView: View {
-    let song: DatabaseSong
+    let song: Song
     let isCurrentSong: Bool
     let cornerRadius = UIMeasurements.cornerRadius
     let borderWidth = UIMeasurements.thinBorderWidth
 
     var body: some View {
-        let actualSong = song.toSong() // TODO: Find a better way to get the artwork
         HStack {
-            SongArtworkView(song: actualSong)
+            SongArtworkView(song: song)
                 .frame(height: UIMeasurements.smallArtworkHeight)
                 .clipShape(.rect(cornerRadius: cornerRadius))
                 .overlay(

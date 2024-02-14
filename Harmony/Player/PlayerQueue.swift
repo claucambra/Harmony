@@ -19,7 +19,7 @@ class PlayerQueue: ObservableObject {
     static let viewLoadTriggerCount = 5
     /// The parent list of songs that the user was viewing when they manually added a song. This is
     /// used to add contextually-relevant previous and upcoming songs.
-    @Published var results: [DatabaseSong]? {
+    @Published var results: LazySequence<[Song]>? {
         // TODO: Listen to changes to this and upd. songs
         didSet {
             shuffledIdentifiers = [] // Shuffle freshly
@@ -95,7 +95,7 @@ class PlayerQueue: ObservableObject {
             }
             let previousSongResultsIndex = lastLoadPreviousSongResultsIndex - 1
             guard previousSongResultsIndex >= 0 else { return nil }
-            guard let previousResultsSong = results?[previousSongResultsIndex].toSong() else {
+            guard let previousResultsSong = results?[previousSongResultsIndex] else {
                 return nil
             }
             self.lastLoadPreviousSongResultsIndex? -= 1
@@ -135,7 +135,7 @@ class PlayerQueue: ObservableObject {
 
     // TODO: This is unnecessary, in the view we know which section each song belongs to, create
     // TODO: more efficient implementation with independent methods
-    func moveToSong(instanceId: ObjectIdentifier) async {
+    func moveToSong(instanceId: PersistentIdentifier) async {
         guard let currentSong = currentSong, currentSong.id != instanceId else { return }
 
         @Sendable func findAndSetSong(_ songs: Deque<Song>, findHandler: @escaping (Int) -> ()) {
@@ -194,15 +194,14 @@ class PlayerQueue: ObservableObject {
         }
     }
 
-    func insertNextSong(_ dbSong: DatabaseSong) {
-        guard let song = dbSong.toSong() else { return }
+    func insertNextSong(_ song: Song) {
         song.isPlayNext = true
         playNextSongs.append(song)
     }
 
-    func addCurrentSong(_ song: Song, dbSong: DatabaseSong, parentResults: [DatabaseSong]) {
+    func addCurrentSong(_ song: Song, parentResults: LazySequence<[Song]>) {
         results = parentResults
-        addedSongResultsIndex = parentResults.firstIndex(of: dbSong)
+        addedSongResultsIndex = parentResults.firstIndex(of: song)
         lastLoadPreviousSongResultsIndex = addedSongResultsIndex
 
         if currentSong?.identifier != song.identifier {
@@ -387,12 +386,11 @@ class PlayerQueue: ObservableObject {
 
         while remainingResults > 0, insertedCount < nextPageSize  {
             guard let randomIndex = eligibleRange.randomElement() else { continue }
-            let randomDbSong = results[randomIndex]
-            let randomDbSongIdentifier = randomDbSong.identifier
-            guard !shuffledIdentifiers.contains(randomDbSongIdentifier),
-                  let randomSong = randomDbSong.toSong() else { continue }
+            let randomSong = results[randomIndex]
+            let randomSongIdentifier = randomSong.identifier
+            guard !shuffledIdentifiers.contains(randomSongIdentifier) else { continue }
             futureSongs.append(randomSong)
-            shuffledIdentifiers.insert(randomDbSongIdentifier)
+            shuffledIdentifiers.insert(randomSongIdentifier)
             remainingResults -= 1
             insertedCount += 1
         }
@@ -456,7 +454,7 @@ class PlayerQueue: ObservableObject {
         let lastResultIndex = min(nextResultIndex + nextPageSize - 1, finalResultIndex)
 
         for i in firstResultIndex...lastResultIndex {
-            guard let song = results[i].toSong() else { continue }
+            let song = results[i]
             futureSongs.append(song)
             pastSongsRepeatStartIndex = nil  // We have added new songs, can't be at end index now
         }

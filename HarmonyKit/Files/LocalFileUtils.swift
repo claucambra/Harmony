@@ -35,7 +35,7 @@ public func chooseLocalURL(eligible: LocalURLChoiceEligibility, multiple: Bool =
     dialog.canChooseDirectories = eligible == .onlyDirectories || eligible == .filesOrDirectories
     dialog.allowsMultipleSelection = multiple
 
-    if (dialog.runModal() ==  NSApplication.ModalResponse.OK) {
+    if (dialog.runModal() == NSApplication.ModalResponse.OK) {
         return dialog.url
     }
     return nil

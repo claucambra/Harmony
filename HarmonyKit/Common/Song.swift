@@ -7,6 +7,7 @@
 
 import AVFoundation
 import OSLog
+import SwiftData
 
 #if os(macOS)
 import AppKit
@@ -14,14 +15,13 @@ import AppKit
 import UIKit
 #endif
 
-public typealias SongAssetProviderClosure = (Song) -> AVAsset
-
-public class Song: Identifiable, Hashable {
+@Model
+public final class Song: Identifiable, Hashable {
     public static func == (lhs: Song, rhs: Song) -> Bool {
         lhs.identifier == rhs.identifier
     }
 
-    public let identifier: String
+    @Attribute(.unique) public let identifier: String
     public let backendId: String
     public let url: URL
     public var isPlayNext = false
@@ -33,18 +33,12 @@ public class Song: Identifiable, Hashable {
     public private(set) var subject: String = ""
     public private(set) var contributor: String = ""
     public private(set) var type: String = ""
-    public private(set) var duration: CMTime = CMTime(seconds: 0, preferredTimescale: 44100)
+    public private(set) var duration: TimeInterval = 0
     public private(set) var artwork: Data?
-    public var asset: AVAsset {
-        get {
-            if internalAsset == nil {
-                internalAsset = assetProviderClosure!(self)
-            }
-            return internalAsset!
-        }
+    @Transient public var asset: AVAsset {
+        get { internalAsset ?? AVAsset(url: url) }
     }
-    private var internalAsset: AVAsset?
-    private var assetProviderClosure: SongAssetProviderClosure?
+    @Transient private var internalAsset: AVAsset?
 
     public init?(url: URL, asset: AVAsset, identifier: String, backendId: String) async {
         self.url = url
@@ -55,7 +49,7 @@ public class Song: Identifiable, Hashable {
         title = url.lastPathComponent
 
         do {
-            duration = try await asset.load(.duration)
+            duration = try await asset.load(.duration).seconds
         } catch let error {
             Logger.defaultLog.error("Could not get duration for song \(url): \(error)")
         }
@@ -116,7 +110,7 @@ public class Song: Identifiable, Hashable {
         }
     }
 
-    public init(
+    private init(
         identifier: String,
         backendId: String,
         url: URL,
@@ -128,9 +122,8 @@ public class Song: Identifiable, Hashable {
         subject: String,
         contributor: String,
         type: String,
-        duration: CMTime,
-        asset: AVAsset? = nil,
-        assetProviderClosure: SongAssetProviderClosure? = nil
+        duration: TimeInterval,
+        asset: AVAsset
     ) {
         self.identifier = identifier
         self.backendId = backendId
@@ -144,15 +137,7 @@ public class Song: Identifiable, Hashable {
         self.contributor = contributor
         self.type = type
         self.duration = duration
-
-        if let asset = asset {
-            internalAsset = asset
-        } else if let assetProviderClosure = assetProviderClosure {
-            self.assetProviderClosure = assetProviderClosure
-        } else {
-            Logger.defaultLog.critical("Song should have an asset or an asset provider closure!")
-            Logger.defaultLog.critical("No asset for \(identifier) (\(url))")
-        }
+        self.internalAsset = asset
 
         let semaphore = DispatchSemaphore(value: 0)
         Task {
@@ -176,8 +161,7 @@ public class Song: Identifiable, Hashable {
             contributor: contributor,
             type: type,
             duration: duration,
-            asset: asset,
-            assetProviderClosure: assetProviderClosure
+            asset: asset
         )
     }
 
@@ -185,7 +169,7 @@ public class Song: Identifiable, Hashable {
         hasher.combine(identifier)
     }
 
-    func setupArtwork() async {
+    private func setupArtwork() async {
         guard let metadata = try? await asset.load(.metadata) else { return }
         guard let artworkItem = AVMetadataItem.metadataItems(
             from: metadata,
@@ -196,7 +180,7 @@ public class Song: Identifiable, Hashable {
         artwork = artworkData
     }
 
-    func audioFileMetadata() -> NSDictionary {
+    private func audioFileMetadata() -> NSDictionary {
         // TODO: What do when url is remote?
         var fileId: AudioFileID? = nil
         var status: OSStatus = AudioFileOpenURL(

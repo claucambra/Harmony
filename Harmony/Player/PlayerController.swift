@@ -10,7 +10,7 @@ import Foundation
 import HarmonyKit
 import MediaPlayer
 import OSLog
-import RealmSwift
+import SwiftData
 
 #if os(macOS)
 import AppKit
@@ -77,7 +77,7 @@ class PlayerController: NSObject, ObservableObject  {
             if songDuration.isNaN {
                 Logger.player.warning("AVPlayer current item duration seconds isNaN.")
                 Logger.player.warning("Trying to use controller's current song's duration secs.")
-                songDuration = currentSong?.duration.seconds ?? 0
+                songDuration = currentSong?.duration ?? 0
             }
             periodicTimeObserver = avPlayer.addPeriodicTimeObserver(
                 forInterval: hundredMsTime, queue: .main
@@ -242,15 +242,9 @@ class PlayerController: NSObject, ObservableObject  {
         return .success
     }
 
-    @MainActor func playSong(_ dbSong: DatabaseSong, withinSongs songs: [DatabaseSong]) {
-        let id = dbSong.identifier
-        guard let song = dbSong.toSong() else {
-            Logger.player.error("Could not convert dbsong with id: \(id)")
-            return
-        }
-
+    func playSong(_ song: Song, withinSongs songs: LazySequence<[Song]>) {
         currentSong = song
-        queue.addCurrentSong(song, dbSong: dbSong, parentResults: songs)
+        queue.addCurrentSong(song, parentResults: songs)
         play()
     }
 
@@ -262,7 +256,7 @@ class PlayerController: NSObject, ObservableObject  {
         currentSong = queueCurrentSong
     }
 
-    func playSongFromQueue(instanceId: ObjectIdentifier) {
+    func playSongFromQueue(instanceId: PersistentIdentifier) {
         Task {
             await queue.moveToSong(instanceId: instanceId)
             guard let queueCurrentSong = queue.currentSong else {

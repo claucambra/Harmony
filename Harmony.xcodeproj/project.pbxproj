@@ -55,8 +55,6 @@
 		535054212B64142200D7EAF2 /* DequeModule in Frameworks */ = {isa = PBXBuildFile; productRef = 535054202B64142200D7EAF2 /* DequeModule */; };
 		535054242B64180C00D7EAF2 /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = 535054232B64180C00D7EAF2 /* Realm */; };
 		535054262B64180C00D7EAF2 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 535054252B64180C00D7EAF2 /* RealmSwift */; };
-		535054282B641A8900D7EAF2 /* DatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535054272B641A8900D7EAF2 /* DatabaseManager.swift */; };
-		5350542A2B641FAB00D7EAF2 /* DatabaseSong.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535054292B641FAA00D7EAF2 /* DatabaseSong.swift */; };
 		5350542B2B64293600D7EAF2 /* SyncController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5350535F2B59581600D7EAF2 /* SyncController.swift */; };
 		5350542F2B64E48600D7EAF2 /* OrderedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = 5350542E2B64E48600D7EAF2 /* OrderedCollections */; };
 		535054322B66248C00D7EAF2 /* ConfiguredBackendsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535054312B66248C00D7EAF2 /* ConfiguredBackendsListView.swift */; };
@@ -181,8 +179,6 @@
 		535054182B63A4AA00D7EAF2 /* QueueButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueueButton.swift; sourceTree = "<group>"; };
 		5350541A2B63BBC500D7EAF2 /* ConfiguredBackendsListItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfiguredBackendsListItemView.swift; sourceTree = "<group>"; };
 		5350541C2B63C71400D7EAF2 /* BackendPresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendPresentable.swift; sourceTree = "<group>"; };
-		535054272B641A8900D7EAF2 /* DatabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseManager.swift; sourceTree = "<group>"; };
-		535054292B641FAA00D7EAF2 /* DatabaseSong.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseSong.swift; sourceTree = "<group>"; };
 		535054312B66248C00D7EAF2 /* ConfiguredBackendsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfiguredBackendsListView.swift; sourceTree = "<group>"; };
 		535F1BCD2B4A8F1400C78D98 /* Harmony.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Harmony.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		535F1BD02B4A8F1400C78D98 /* HarmonyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HarmonyApp.swift; sourceTree = "<group>"; };
@@ -453,15 +449,6 @@
 			path = Buttons;
 			sourceTree = "<group>";
 		};
-		5350541E2B640F0D00D7EAF2 /* Database */ = {
-			isa = PBXGroup;
-			children = (
-				535054272B641A8900D7EAF2 /* DatabaseManager.swift */,
-				535054292B641FAA00D7EAF2 /* DatabaseSong.swift */,
-			);
-			path = Database;
-			sourceTree = "<group>";
-		};
 		5350542D2B64E48600D7EAF2 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -506,7 +493,6 @@
 			isa = PBXGroup;
 			children = (
 				53D666682B74C51B0042C03D /* Common */,
-				5350541E2B640F0D00D7EAF2 /* Database */,
 				535054022B6356E400D7EAF2 /* Extensions */,
 				535053742B5AA63500D7EAF2 /* Library */,
 				5350537A2B5BB1E200D7EAF2 /* Navigation */,
@@ -823,8 +809,6 @@
 				535054322B66248C00D7EAF2 /* ConfiguredBackendsListView.swift in Sources */,
 				535053732B5AA61A00D7EAF2 /* SongsTable.swift in Sources */,
 				53D666672B73EAD40042C03D /* SongListItemView.swift in Sources */,
-				535054282B641A8900D7EAF2 /* DatabaseManager.swift in Sources */,
-				5350542A2B641FAB00D7EAF2 /* DatabaseSong.swift in Sources */,
 				5350537C2B5BB1FE00D7EAF2 /* Sidebar.swift in Sources */,
 				535054192B63A4AA00D7EAF2 /* QueueButton.swift in Sources */,
 				53802A3A2B66AF2B0066208D /* PhonePlayerDrawer.swift in Sources */,

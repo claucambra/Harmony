@@ -5,11 +5,12 @@
 //  Created by Claudio Cambra on 4/2/24.
 //
 
+import HarmonyKit
 import SwiftUI
 
 struct SongContextMenuItems: View {
     @ObservedObject var queue = PlayerController.shared.queue
-    let song: DatabaseSong
+    let song: Song
 
     var body: some View {
         Button {
