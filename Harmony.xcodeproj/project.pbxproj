@@ -53,8 +53,6 @@
 		5350541B2B63BBC500D7EAF2 /* ConfiguredBackendsListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5350541A2B63BBC500D7EAF2 /* ConfiguredBackendsListItemView.swift */; };
 		5350541D2B63C71400D7EAF2 /* BackendPresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5350541C2B63C71400D7EAF2 /* BackendPresentable.swift */; };
 		535054212B64142200D7EAF2 /* DequeModule in Frameworks */ = {isa = PBXBuildFile; productRef = 535054202B64142200D7EAF2 /* DequeModule */; };
-		535054242B64180C00D7EAF2 /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = 535054232B64180C00D7EAF2 /* Realm */; };
-		535054262B64180C00D7EAF2 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 535054252B64180C00D7EAF2 /* RealmSwift */; };
 		5350542B2B64293600D7EAF2 /* SyncController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5350535F2B59581600D7EAF2 /* SyncController.swift */; };
 		5350542F2B64E48600D7EAF2 /* OrderedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = 5350542E2B64E48600D7EAF2 /* OrderedCollections */; };
 		535054322B66248C00D7EAF2 /* ConfiguredBackendsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535054312B66248C00D7EAF2 /* ConfiguredBackendsListView.swift */; };
@@ -226,8 +224,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				5350542F2B64E48600D7EAF2 /* OrderedCollections in Frameworks */,
-				535054262B64180C00D7EAF2 /* RealmSwift in Frameworks */,
-				535054242B64180C00D7EAF2 /* Realm in Frameworks */,
 				5350533E2B5955C900D7EAF2 /* HarmonyKit.framework in Frameworks */,
 				535054212B64142200D7EAF2 /* DequeModule in Frameworks */,
 			);
@@ -619,8 +615,6 @@
 			name = Harmony;
 			packageProductDependencies = (
 				535054202B64142200D7EAF2 /* DequeModule */,
-				535054232B64180C00D7EAF2 /* Realm */,
-				535054252B64180C00D7EAF2 /* RealmSwift */,
 				5350542E2B64E48600D7EAF2 /* OrderedCollections */,
 			);
 			productName = Harmony;
@@ -704,7 +698,6 @@
 			mainGroup = 535F1BC42B4A8F1400C78D98;
 			packageReferences = (
 				5350541F2B64142200D7EAF2 /* XCRemoteSwiftPackageReference "swift-collections" */,
-				535054222B64180C00D7EAF2 /* XCRemoteSwiftPackageReference "realm-swift" */,
 			);
 			productRefGroup = 535F1BCE2B4A8F1400C78D98 /* Products */;
 			projectDirPath = "";
@@ -1370,14 +1363,6 @@
 				minimumVersion = 1.0.6;
 			};
 		};
-		535054222B64180C00D7EAF2 /* XCRemoteSwiftPackageReference "realm-swift" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/realm/realm-swift.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 10.46.0;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -1385,16 +1370,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 5350541F2B64142200D7EAF2 /* XCRemoteSwiftPackageReference "swift-collections" */;
 			productName = DequeModule;
-		};
-		535054232B64180C00D7EAF2 /* Realm */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 535054222B64180C00D7EAF2 /* XCRemoteSwiftPackageReference "realm-swift" */;
-			productName = Realm;
-		};
-		535054252B64180C00D7EAF2 /* RealmSwift */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 535054222B64180C00D7EAF2 /* XCRemoteSwiftPackageReference "realm-swift" */;
-			productName = RealmSwift;
 		};
 		5350542E2B64E48600D7EAF2 /* OrderedCollections */ = {
 			isa = XCSwiftPackageProductDependency;
