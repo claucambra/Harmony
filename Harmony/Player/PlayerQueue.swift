@@ -229,6 +229,11 @@ class PlayerQueue: ObservableObject {
         futureSongs.remove(atOffsets: indexSet)
     }
 
+    func clearPastSongs() {
+        pastSongs.removeAll()
+        pastSongsRepeatStartIndex = nil
+    }
+
     func cycleRepeatState() {
         switch repeatState {
         case .disabled:

@@ -72,5 +72,12 @@ struct PlayerQueueView: View {
                 #endif
             }
         }
+        .toolbar {
+            Button {
+                queue.clearPastSongs()
+            } label: {
+                Label("Clear played songs", systemImage: "text.badge.minus")
+            }
+        }
     }
 }
