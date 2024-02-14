@@ -252,6 +252,11 @@ class PlayerQueue: ObservableObject {
         results = nil
     }
 
+    func reset() {
+        clear()
+        currentSong = nil
+    }
+
     func cycleRepeatState() {
         switch repeatState {
         case .disabled:
