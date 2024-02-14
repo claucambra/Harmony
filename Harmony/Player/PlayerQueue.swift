@@ -221,6 +221,14 @@ class PlayerQueue: ObservableObject {
         repeatIndex? -= 1
     }
 
+    func removePlayNextSongs(_ indexSet: IndexSet) {
+        playNextSongs.remove(atOffsets: indexSet)
+    }
+
+    func removeFutureSongs(_ indexSet: IndexSet) {
+        futureSongs.remove(atOffsets: indexSet)
+    }
+
     func cycleRepeatState() {
         switch repeatState {
         case .disabled:
@@ -331,6 +339,7 @@ class PlayerQueue: ObservableObject {
                 Logger.queue.error("Acquired repeated song clone should not be nil!")
                 continue
             }
+            print(unboundedIndex, boundedIndex, repeatIndex, lastIndexToLoad, newSong.title)
             futureSongs.append(newSong)
         }
     }

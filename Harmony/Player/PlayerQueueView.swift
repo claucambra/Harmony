@@ -41,6 +41,7 @@ struct PlayerQueueView: View {
                         ForEach(queue.playNextSongs) { song in
                             PlayerQueueListItemView(song: song, isCurrentSong: false)
                         }
+                        .onDelete(perform: { indexSet in queue.removePlayNextSongs(indexSet) })
                     }
                     .id(playNextSongsSectionId)
                 }
@@ -52,6 +53,7 @@ struct PlayerQueueView: View {
                                     queue.loadNextPageIfNeeded(song: song)
                                 }
                         }
+                        .onDelete(perform: { indexSet in queue.removeFutureSongs(indexSet) })
                     }
                     .id(futureSongsSectionId)
                 }
