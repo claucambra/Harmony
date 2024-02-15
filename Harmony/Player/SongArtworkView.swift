@@ -23,13 +23,7 @@ struct SongArtworkView: View {
             }
             #endif
         } else {
-            ZStack(alignment: .center) {
-                Rectangle()
-                    .foregroundStyle(.clear)
-                    .aspectRatio(CGSize(width: 1, height: 1), contentMode: .fit)
-                adjustedImage(Image(systemName: "music.note"))
-                    .padding(UIMeasurements.mediumPadding)
-            }
+            PlaceholderArtworkView()
         }
     }
 

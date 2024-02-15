@@ -27,17 +27,7 @@ struct FloatingCurrentSongView: View {
                 )
                     .frame(height: UIMeasurements.smallArtworkHeight)
             } else {
-                ZStack(alignment: .center) {
-                    Rectangle()
-                        .foregroundStyle(.clear)
-                        .aspectRatio(CGSize(width: 1, height: 1), contentMode: .fit)
-                    Image(systemName: "music.note")
-                        .interpolation(.high)
-                        .resizable()
-                        .scaledToFit()
-                        .aspectRatio(CGSize(width: 1, height: 1), contentMode: .fit)
-                        .padding(UIMeasurements.mediumPadding)
-                }
+                PlaceholderArtworkView()
             }
             VStack(alignment: .trailing) {
                 Text(controller.currentSong?.title ?? "Harmony")
