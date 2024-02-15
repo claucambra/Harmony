@@ -13,6 +13,7 @@ struct ContentView: View {
     @State private var path = NavigationPath()
     @State private var settingsSheetVisible = false
     @State private var queueVisible = false
+    @State private var searchText = ""
     #if os(macOS)
     let buttonStackInToolbar = true
     let buttonStackPlacement = ToolbarItemPlacement.navigation
@@ -20,12 +21,14 @@ struct ContentView: View {
     let volumeSliderPlacement = ToolbarItemPlacement.destructiveAction
     let displayVolumeSlider = true
     let floatingBarSafeArea = 0.0
+    let searchablePlacement = SearchFieldPlacement.sidebar
     #else
     let buttonStackInToolbar = UIDevice.current.userInterfaceIdiom != .phone
     let buttonStackPlacement = ToolbarItemPlacement.topBarLeading
     let volumeSliderPlacement = ToolbarItemPlacement.topBarTrailing
     let displayVolumeSlider = false
     let floatingBarSafeArea = UIDevice.current.userInterfaceIdiom == .phone ? 88.0 : 0.0 // TODO
+    let searchablePlacement = SearchFieldPlacement.automatic
     #endif
 
     var body: some View {
@@ -112,6 +115,8 @@ struct ContentView: View {
             }
             #endif
         }
+        .environment(\.searchText, searchText)
+        .searchable(text: $searchText, placement: searchablePlacement) // TODO: Re-add suggestions
     }
 
     @ViewBuilder

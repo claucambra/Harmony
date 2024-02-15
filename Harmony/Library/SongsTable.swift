@@ -12,9 +12,9 @@ import SwiftUI
 
 struct SongsTable: View {
     @Query(sort: \Song.title) var songs: [Song]
-    @Binding var selection: Set<Song.ID>
+    @Environment(\.modelContext) var modelContext
+    @State var selection: Set<Song.ID> = []
     @State private var sortOrder = [KeyPathComparator(\Song.title, order: .reverse)]
-    @State private var searchText = ""
     @State private var sortedSongs: [Song] = []
 
     #if os(iOS)
@@ -23,6 +23,15 @@ struct SongsTable: View {
     #else
     private let isCompact = false
     #endif
+
+    init(searchText: String) {
+        _songs = Query(
+            filter: #Predicate {
+                searchText.isEmpty ? true : $0.title.localizedStandardContains(searchText)
+            },
+            sort: \Song.title
+        )
+    }
 
     var body: some View {
         Table(sortedSongs, selection: $selection, sortOrder: $sortOrder) {
@@ -39,13 +48,13 @@ struct SongsTable: View {
             playSongsFromIds(ids)
         }
         .onAppear { sortedSongs = songs }
+        .onChange(of: songs) { sortedSongs = songs }
         .onChange(of: sortOrder) { // HACK: This is very slow.
             // When it is possible to sort the query directly, do that.
             Task.detached(priority: .userInitiated) {
                 sortedSongs = songs.sorted(using: sortOrder)
             }
         }
-        .searchable(text: $searchText)
     }
 
     @ViewBuilder
@@ -85,7 +94,7 @@ struct SongsTable: View {
 struct SongsTable_Previews: PreviewProvider {
     struct Preview: View {
         var body: some View {
-            SongsTable(selection: .constant([]))
+            SongsTable(searchText: "")
         }
     }
 

@@ -9,12 +9,13 @@ import HarmonyKit
 import SwiftUI
 
 struct DetailColumn: View {
+    @Environment(\.searchText) var searchText
     @Binding var selection: Panel?
 
     var body: some View {
         switch selection ?? .songs {
         case .songs:
-            SongsTable(selection: .constant([]))
+            SongsTable(searchText: searchText)
                 .navigationTitle("Songs")
         }
     }
