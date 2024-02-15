@@ -12,7 +12,7 @@ import SwiftUI
 
 struct SongsTable: View {
     @Query(sort: \Song.title) var songs: [Song]
-    @Environment(\.modelContext) var modelContext
+    @Binding var searchText: String
     @State var selection: Set<Song.ID> = []
     @State private var sortOrder = [KeyPathComparator(\Song.title, order: .reverse)]
     @State private var sortedSongs: [Song] = []
@@ -24,10 +24,12 @@ struct SongsTable: View {
     private let isCompact = false
     #endif
 
-    init(searchText: String) {
+    init(searchText: Binding<String>) {
+        _searchText = searchText
+        let searchTextVal = searchText.wrappedValue
         _songs = Query(
             filter: #Predicate {
-                searchText.isEmpty ? true : $0.title.localizedStandardContains(searchText)
+                searchTextVal.isEmpty ? true : $0.title.localizedStandardContains(searchTextVal)
             },
             sort: \Song.title
         )
@@ -55,6 +57,9 @@ struct SongsTable: View {
                 sortedSongs = songs.sorted(using: sortOrder)
             }
         }
+        #if !os(macOS)
+        .searchable(text: $searchText)
+        #endif
     }
 
     @ViewBuilder
@@ -94,7 +99,7 @@ struct SongsTable: View {
 struct SongsTable_Previews: PreviewProvider {
     struct Preview: View {
         var body: some View {
-            SongsTable(searchText: "")
+            SongsTable(searchText: .constant("Search text"))
         }
     }
 

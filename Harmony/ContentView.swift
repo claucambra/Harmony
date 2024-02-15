@@ -58,7 +58,7 @@ struct ContentView: View {
                 .safeAreaPadding([.bottom], floatingBarSafeArea)
         } detail: {
             NavigationStack(path: $path) {
-                DetailColumn(selection: $selection)
+                DetailColumn(selection: $selection, searchText: $searchText)
             }
             .safeAreaPadding([.bottom], floatingBarSafeArea)
             .toolbar {
@@ -115,14 +115,14 @@ struct ContentView: View {
             }
             #endif
         }
-        .environment(\.searchText, searchText)
+        #if os(macOS)
         .searchable(text: $searchText, placement: searchablePlacement) // TODO: Re-add suggestions
+        #endif
     }
 
     @ViewBuilder
     var rightSidebarQueue: some View {
         PlayerQueueView()
-            .inspectorColumnWidth(400) // Fix visual issues with inspector toggle and search b.
             .toolbar {
                 #if os(macOS)
                 inspectorToolbarItem
