@@ -18,13 +18,27 @@ struct FloatingCurrentSongView: View {
 
     var body: some View {
         HStack {
-            SongArtworkView(song: PlayerController.shared.currentSong)
+            if let currentSong = PlayerController.shared.currentSong {
+                SongArtworkView(song: currentSong)
                 .clipShape(.rect(cornerRadius: cornerRadius))
                 .overlay(
                     RoundedRectangle(cornerRadius: cornerRadius)
                         .stroke(.separator, lineWidth: borderWidth)
                 )
-                .frame(height: UIMeasurements.smallArtworkHeight)
+                    .frame(height: UIMeasurements.smallArtworkHeight)
+            } else {
+                ZStack(alignment: .center) {
+                    Rectangle()
+                        .foregroundStyle(.clear)
+                        .aspectRatio(CGSize(width: 1, height: 1), contentMode: .fit)
+                    Image(systemName: "music.note")
+                        .interpolation(.high)
+                        .resizable()
+                        .scaledToFit()
+                        .aspectRatio(CGSize(width: 1, height: 1), contentMode: .fit)
+                        .padding(UIMeasurements.mediumPadding)
+                }
+            }
             VStack(alignment: .trailing) {
                 Text(controller.currentSong?.title ?? "Harmony")
                     .bold()

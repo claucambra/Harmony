@@ -17,10 +17,27 @@ struct ToolbarCurrentSongView: View {
 
     var body: some View {
         HStack(spacing: horizontalSpacing) {
-            SongArtworkView(song: controller.currentSong)
-                .frame(maxHeight: .infinity)
-                .clipShape(.rect(topLeadingRadius: borderRadius, bottomLeadingRadius: borderRadius))
-                .padding([.top, .bottom, .leading], borderWidth)
+            if let currentSong = controller.currentSong {
+                SongArtworkView(song: currentSong)
+                    .frame(maxHeight: .infinity)
+                    .clipShape(.rect(topLeadingRadius: borderRadius, bottomLeadingRadius: borderRadius))
+                    .padding([.top, .bottom, .leading], borderWidth)
+            } else {
+                ZStack(alignment: .center) {
+                    Rectangle()
+                        .foregroundStyle(.clear)
+                        .aspectRatio(CGSize(width: 1, height: 1), contentMode: .fit)
+                    Image(systemName: "music.note")
+                        .interpolation(.high)
+                        .resizable()
+                        .scaledToFit()
+                        .aspectRatio(CGSize(width: 1, height: 1), contentMode: .fit)
+                        .frame(maxHeight: .infinity)
+                        .clipShape(.rect(topLeadingRadius: borderRadius, bottomLeadingRadius: borderRadius))
+                        .padding(UIMeasurements.mediumPadding)
+                        .padding([.top, .bottom, .leading], borderWidth)
+                }
+            }
             VStack(spacing: 0) {
                 HStack {
                     Text(controller.currentSong?.title ?? "Harmony")

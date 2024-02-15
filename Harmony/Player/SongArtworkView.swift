@@ -9,10 +9,10 @@ import HarmonyKit
 import SwiftUI
 
 struct SongArtworkView: View {
-    let song: Song?
+    @ObservedObject var song: Song
 
     var body: some View {
-        if let imageData = song?.artwork {
+        if let imageData = song.artwork {
             #if os(macOS)
             if let image = NSImage(data: imageData) {
                 adjustedImage(Image(nsImage: image))

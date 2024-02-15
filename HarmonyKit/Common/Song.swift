@@ -16,11 +16,7 @@ import UIKit
 #endif
 
 @Model
-public final class Song: Identifiable, Hashable {
-    public static func == (lhs: Song, rhs: Song) -> Bool {
-        lhs.identifier == rhs.identifier
-    }
-
+public final class Song: ObservableObject {
     @Attribute(.unique) public let identifier: String
     public let backendId: String
     public let url: URL
@@ -40,14 +36,23 @@ public final class Song: Identifiable, Hashable {
         }
         return internalArtwork
     }
-    @Transient public private(set) var internalArtwork: Data?
+    @Published @Transient public private(set) var internalArtwork: Data?
     @Transient public var asset: AVAsset {
         if internalAsset == nil {
-            internalAsset = AVAsset(url: url)
+            if Thread.isMainThread {
+                internalAsset = AVAsset(url: url)
+            } else {
+                let semaphore = DispatchSemaphore(value: 0)
+                Task { @MainActor in
+                    internalAsset = AVAsset(url: url)
+                    semaphore.signal()
+                }
+                semaphore.wait()
+            }
         }
         return internalAsset!
     }
-    @Transient private var internalAsset: AVAsset?
+    @Published @Transient private var internalAsset: AVAsset?
 
     public init?(url: URL, asset: AVAsset, identifier: String, backendId: String) async {
         self.url = url
@@ -169,17 +174,10 @@ public final class Song: Identifiable, Hashable {
         )
     }
 
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(identifier)
-    }
-
     private func syncSetupArtwork() {
-        let semaphore = DispatchSemaphore(value: 0)
         Task {
             await setupArtwork()
-            semaphore.signal()
         }
-        semaphore.wait()
     }
 
     private func setupArtwork() async {
@@ -190,7 +188,9 @@ public final class Song: Identifiable, Hashable {
         ).first else { return }
         guard let artworkData = try? await artworkItem.load(.value) as? Data else { return }
 
-        internalArtwork = artworkData
+        Task { @MainActor in
+            internalArtwork = artworkData
+        }
     }
 
     private func audioFileMetadata() -> NSDictionary {

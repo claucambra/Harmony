@@ -10,7 +10,7 @@ import SwiftUI
 
 struct SongContextMenuItems: View {
     @ObservedObject var queue = PlayerController.shared.queue
-    let song: Song
+    @ObservedObject var song: Song
 
     var body: some View {
         Button {

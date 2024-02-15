@@ -9,7 +9,7 @@ import HarmonyKit
 import SwiftUI
 
 struct PlayerQueueListItemView: View {
-    let song: Song
+    @ObservedObject var song: Song
     let isCurrentSong: Bool
     let cornerRadius = UIMeasurements.cornerRadius
     let borderWidth = UIMeasurements.thinBorderWidth
