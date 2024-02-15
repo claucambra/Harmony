@@ -34,9 +34,18 @@ public final class Song: Identifiable, Hashable {
     public private(set) var contributor: String = ""
     public private(set) var type: String = ""
     public private(set) var duration: TimeInterval = 0
-    public private(set) var artwork: Data?
+    @Transient public var artwork: Data? {
+        if internalArtwork == nil {
+            syncSetupArtwork()
+        }
+        return internalArtwork
+    }
+    @Transient public private(set) var internalArtwork: Data?
     @Transient public var asset: AVAsset {
-        get { internalAsset ?? AVAsset(url: url) }
+        if internalAsset == nil {
+            internalAsset = AVAsset(url: url)
+        }
+        return internalAsset!
     }
     @Transient private var internalAsset: AVAsset?
 
@@ -61,7 +70,7 @@ public final class Song: Identifiable, Hashable {
             for (key, value) in tagsDict {
                 let key = key as? String ?? ""
                 if key == AVMetadataKey.commonKeyArtwork.rawValue {
-                    artwork = value as? Data ?? Data()
+                    internalArtwork = value as? Data ?? Data()
                     continue
                 }
 
@@ -139,12 +148,7 @@ public final class Song: Identifiable, Hashable {
         self.duration = duration
         self.internalAsset = asset
 
-        let semaphore = DispatchSemaphore(value: 0)
-        Task {
-            await setupArtwork()
-            semaphore.signal()
-        }
-        semaphore.wait()
+        syncSetupArtwork()
     }
 
     public func clone() -> Song {
@@ -169,6 +173,15 @@ public final class Song: Identifiable, Hashable {
         hasher.combine(identifier)
     }
 
+    private func syncSetupArtwork() {
+        let semaphore = DispatchSemaphore(value: 0)
+        Task {
+            await setupArtwork()
+            semaphore.signal()
+        }
+        semaphore.wait()
+    }
+
     private func setupArtwork() async {
         guard let metadata = try? await asset.load(.metadata) else { return }
         guard let artworkItem = AVMetadataItem.metadataItems(
@@ -177,7 +190,7 @@ public final class Song: Identifiable, Hashable {
         ).first else { return }
         guard let artworkData = try? await artworkItem.load(.value) as? Data else { return }
 
-        artwork = artworkData
+        internalArtwork = artworkData
     }
 
     private func audioFileMetadata() -> NSDictionary {
