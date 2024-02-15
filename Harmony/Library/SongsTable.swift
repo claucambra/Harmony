@@ -15,6 +15,7 @@ struct SongsTable: View {
     @Binding var selection: Set<Song.ID>
     @State private var sortOrder = [KeyPathComparator(\Song.title, order: .reverse)]
     @State private var searchText = ""
+    @State private var sortedSongs: [Song] = []
 
     #if os(iOS)
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -24,7 +25,7 @@ struct SongsTable: View {
     #endif
 
     var body: some View {
-        Table(songs, selection: $selection, sortOrder: $sortOrder) {
+        Table(sortedSongs, selection: $selection, sortOrder: $sortOrder) {
             TableColumn("Title", value: \.title) { song in
                 titleItem(song: song)
             }
@@ -37,12 +38,13 @@ struct SongsTable: View {
         } primaryAction: { ids in
             playSongsFromIds(ids)
         }
-        .onChange(of: sortOrder, { oldValue, newValue in
-            guard let sortDescriptor = newValue.first else { return }
-            let keyPath = sortDescriptor.keyPath
-            let ascending = sortDescriptor.order == .reverse
-            //$songs.sortDescriptor = SortDescriptor(keyPath: keyPath, ascending: ascending)
-        })
+        .onAppear { sortedSongs = songs }
+        .onChange(of: sortOrder) { // HACK: This is very slow.
+            // When it is possible to sort the query directly, do that.
+            Task.detached(priority: .userInitiated) {
+                sortedSongs = songs.sorted(using: sortOrder)
+            }
+        }
         .searchable(text: $searchText)
     }
 
