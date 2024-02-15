@@ -463,7 +463,7 @@ class PlayerQueue: ObservableObject {
             pastSongsRepeatStartIndex = proposedPastSongsRepeatStartIndex
         }
 
-        Logger.queue.debug("Loaded \((finalResultIndex - firstResultIndex) + 1) ordered results")
+        Logger.queue.debug("Loaded \((lastResultIndex - firstResultIndex) + 1) ordered results")
     }
 
     private func loadNextPageFromResults(nextPageSize: Int) {
