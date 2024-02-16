@@ -13,12 +13,15 @@ extension Logger {
     static let ncBackend = Logger(subsystem: subsystem, category: "ncBackend")
 }
 
+fileprivate let NextcloudWebDavFilesUrlSuffix: String = "/remote.php/dav/files/"
+
 public class NextcloudBackend: NSObject, Backend {
     public let typeDescription: BackendDescription = ncBackendTypeDescription
     public let id: String
     public var presentation: BackendPresentable
     public var configValues: BackendConfiguration
     private let ncKit: NextcloudKit
+    private let filesPath: String
 
     public required init(config: BackendConfiguration) {
         configValues = config
@@ -37,6 +40,8 @@ public class NextcloudBackend: NSObject, Backend {
         let serverUrl = config[NextcloudBackendFieldId.serverUrl.rawValue] as! String
         ncKit = NextcloudKit()
         ncKit.setup(user: user, userId: user, password: password, urlBase: serverUrl)
+
+        filesPath = serverUrl + NextcloudWebDavFilesUrlSuffix + user
     }
 
     public func scan() async -> [Song] {
