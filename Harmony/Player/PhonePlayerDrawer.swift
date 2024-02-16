@@ -26,14 +26,25 @@ struct PhonePlayerDrawer: View {
                 } else {
                     VStack {
                         Spacer()
-                        SongArtworkView(song: PlayerController.shared.currentSong)
-                            .clipShape(.rect(cornerRadius: cornerRadius))
-                            .shadow(radius: shadowRadius)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: cornerRadius)
-                                    .stroke(.separator, lineWidth: borderWidth)
-                            )
-                            .frame(height: UIMeasurements.largeArtworkHeight)
+                        if let currentSong = PlayerController.shared.currentSong {
+                            SongArtworkView(song: currentSong)
+                                .clipShape(.rect(cornerRadius: cornerRadius))
+                                .shadow(radius: shadowRadius)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: cornerRadius)
+                                        .stroke(.separator, lineWidth: borderWidth)
+                                )
+                                .frame(height: UIMeasurements.largeArtworkHeight)
+                        } else {
+                            PlaceholderArtworkView()
+                                .clipShape(.rect(cornerRadius: cornerRadius))
+                                .shadow(radius: shadowRadius)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: cornerRadius)
+                                        .stroke(.separator, lineWidth: borderWidth)
+                                )
+                                .frame(height: UIMeasurements.largeArtworkHeight)
+                        }
                         Spacer()
                         Text(controller.currentSong?.title ?? "Harmony")
                             .bold()
