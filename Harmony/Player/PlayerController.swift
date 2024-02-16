@@ -152,6 +152,13 @@ class PlayerController: NSObject, ObservableObject  {
         } catch let error {
             Logger.player.error("Failed to set the audio session configuration: \(error)")
         }
+
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleInterruption),
+            name: AVAudioSession.interruptionNotification,
+            object: audioSession
+        )
         #endif
 
         super.init()
@@ -220,6 +227,29 @@ class PlayerController: NSObject, ObservableObject  {
         ]
         nowPlayingInfoCenter.nowPlayingInfo?.merge(playbackInfo) { current, new in new }
     }
+
+    #if !os(macOS)
+    @objc func handleInterruption(notification: Notification) {
+        guard let userInfo = notification.userInfo,
+              let typeValue = userInfo[AVAudioSessionInterruptionTypeKey] as? UInt,
+              let type = AVAudioSession.InterruptionType(rawValue: typeValue) else {
+            return
+        }
+        // Switch over the interruption type.
+        switch type {
+        case .began:
+            pause()
+        case .ended:
+            guard let optionsValue = userInfo[AVAudioSessionInterruptionOptionKey] as? UInt else { return }
+            let options = AVAudioSession.InterruptionOptions(rawValue: optionsValue)
+            if options.contains(.shouldResume) {
+                play()
+            }
+        @unknown default:
+            return
+        }
+    }
+    #endif
 
     @discardableResult func play() -> MPRemoteCommandHandlerStatus {
         guard let avPlayer = avPlayer else { return .noActionableNowPlayingItem }
