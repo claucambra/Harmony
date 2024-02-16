@@ -12,6 +12,7 @@ import OSLog
 import SwiftData
 
 fileprivate let UserDefaultsRepeatKey = "queue-repeat"
+fileprivate let UserDefaultsShuffleKey = "queue-shuffle"
 
 @MainActor
 class PlayerQueue: ObservableObject {
@@ -41,8 +42,11 @@ class PlayerQueue: ObservableObject {
     /// priority over the upcoming songs.
     @Published var playNextSongs: Deque<Song> = Deque()
     /// Shuffle state (on or off). This will affect how upcoming songs are ordered and generated.
-    @Published var shuffleEnabled = false {
-        didSet { reloadFutureSongs() }
+    @Published var shuffleEnabled = UserDefaults.standard.bool(forKey: UserDefaultsShuffleKey) {
+        didSet {
+            reloadFutureSongs()
+            UserDefaults.standard.set(shuffleEnabled, forKey: UserDefaultsShuffleKey)
+        }
     }
     /// Repeat state (off, repeating queue, or repeating current song). This will affect how upcoming
     /// songs are generated.
@@ -96,6 +100,9 @@ class PlayerQueue: ObservableObject {
         let defaults = UserDefaults.standard
         if defaults.value(forKey: UserDefaultsRepeatKey) == nil {
             repeatState = .disabled
+        }
+        if defaults.value(forKey: UserDefaultsShuffleKey) == nil {
+            shuffleEnabled = false
         }
     }
 
