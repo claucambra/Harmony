@@ -25,10 +25,9 @@ public final class Song: ObservableObject {
     public private(set) var artist: String = ""
     public private(set) var album: String = ""
     public private(set) var genre: String = ""
-    public private(set) var creator: String = ""
-    public private(set) var subject: String = ""
-    public private(set) var contributor: String = ""
-    public private(set) var type: String = ""
+    public private(set) var composer: String = ""
+    public private(set) var grouping: String = ""
+    public private(set) var peformer: String = ""
     public private(set) var duration: TimeInterval = 0
     @Transient public var artwork: Data? {
         if internalArtwork == nil {
@@ -87,13 +86,13 @@ public final class Song: ObservableObject {
                 } else if key == AVMetadataKey.commonKeyArtist.rawValue {
                     artist = value ?? ""
                 } else if key == AVMetadataKey.commonKeyCreator.rawValue {
-                    creator = value ?? ""
+                    composer = value ?? ""
                 } else if key == AVMetadataKey.commonKeySubject.rawValue {
-                    subject = value ?? ""
+                    grouping = value ?? ""
                 } else if key == AVMetadataKey.commonKeyContributor.rawValue {
-                    contributor = value ?? ""
+                    peformer = value ?? ""
                 } else if key == AVMetadataKey.commonKeyType.rawValue {
-                    type = value ?? ""
+                    genre = value ?? ""
                 }
             }
             return
@@ -113,13 +112,13 @@ public final class Song: ObservableObject {
             } else if item.commonKey == .commonKeyArtist {
                 artist = value ?? ""
             } else if item.commonKey == .commonKeyCreator {
-                creator = value ?? ""
+                composer = value ?? ""
             } else if item.commonKey == .commonKeySubject {
-                subject = value ?? ""
+                grouping = value ?? ""
             } else if item.commonKey == .commonKeyContributor {
-                contributor = value ?? ""
+                peformer = value ?? ""
             } else if item.commonKey == .commonKeyType {
-                type = value ?? ""
+                genre = value ?? ""
             }
         }
     }
@@ -132,10 +131,9 @@ public final class Song: ObservableObject {
         artist: String,
         album: String,
         genre: String,
-        creator: String,
-        subject: String,
-        contributor: String,
-        type: String,
+        composer: String,
+        grouping: String,
+        peformer: String,
         duration: TimeInterval,
         asset: AVAsset
     ) {
@@ -146,10 +144,9 @@ public final class Song: ObservableObject {
         self.artist = artist
         self.album = album
         self.genre = genre
-        self.creator = creator
-        self.subject = subject
-        self.contributor = contributor
-        self.type = type
+        self.composer = composer
+        self.grouping = grouping
+        self.peformer = peformer
         self.duration = duration
         self.internalAsset = asset
 
@@ -165,10 +162,9 @@ public final class Song: ObservableObject {
             artist: artist,
             album: album,
             genre: genre,
-            creator: creator,
-            subject: subject,
-            contributor: contributor,
-            type: type,
+            composer: composer,
+            grouping: grouping,
+            peformer: peformer,
             duration: duration,
             asset: asset
         )
