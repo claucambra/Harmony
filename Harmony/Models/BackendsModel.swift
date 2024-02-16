@@ -29,12 +29,14 @@ class BackendsModel: ObservableObject {
         var currentBackends = backends.keys
         for backendDescription in availableBackends {
             for config in configurations {
-                guard let configuredBackend = backendFromDescriptionId(
-                    backendDescription.id, withConfig: config
-                ) else {
+                guard let configId = config[BackendConfigurationIdFieldKey] as? String,
+                      configId.starts(with: backendDescription.id),
+                      let configuredBackend = backendFromDescriptionId(
+                        backendDescription.id, withConfig: config
+                      )
+                else {
                     continue
                 }
-                let configId = configuredBackend.id
                 backends[configId] = configuredBackend
                 currentBackends.remove(configId)
             }
