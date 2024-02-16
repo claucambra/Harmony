@@ -41,13 +41,83 @@ public class NextcloudBackend: NSObject, Backend {
         ncKit = NextcloudKit()
         ncKit.setup(user: user, userId: user, password: password, urlBase: serverUrl)
 
-        filesPath = serverUrl + NextcloudWebDavFilesUrlSuffix + user
+        let davRelativePath = config[NextcloudBackendFieldId.musicPath.rawValue] as! String
+        filesPath = serverUrl + NextcloudWebDavFilesUrlSuffix + user + davRelativePath
     }
 
     public func scan() async -> [Song] {
-        return []  // TODO
+        return await recursiveScanRemotePath(filesPath)
     }
-    
+
+    private func recursiveScanRemotePath(_ path: String) async -> [Song] {
+        Logger.ncBackend.debug("Starting read of: \(path)")
+
+        let readResult = await withCheckedContinuation { continuation in
+            ncKit.readFileOrFolder(
+                serverUrlFileName: path, depth: "1"
+            ) { _, files, _, error in
+                continuation.resume(returning: (files, error))
+            }
+        }
+
+        let files = readResult.0
+        let error = readResult.1
+
+        guard error == .success else {
+            Logger.ncBackend.error("Could not scan \(path): \(error.errorDescription)")
+            return []
+        }
+
+        guard !files.isEmpty else {
+            Logger.ncBackend.warning("Received no items from readFileOrFolder of \(path)")
+            return []
+        }
+
+        var songs: [Song] = []
+
+        for file in files {
+            let receivedFileUrl = file.serverUrl + "/" + file.fileName
+            Logger.ncBackend.debug("Received file \(receivedFileUrl)")
+
+            guard file.directory else {
+                // Process received file
+                guard let songUrl = URL(string: receivedFileUrl) else {
+                    Logger.ncBackend.error("Received serverUrl for \(receivedFileUrl) is invalid")
+                    continue
+                }
+
+                guard fileHasPlayableExtension(fileURL: songUrl) else {
+                    Logger.ncBackend.info("File at \(songUrl) is not a playable song file, skip")
+                    continue
+                }
+
+                let asset = AVAsset(url: songUrl)
+
+                guard let song = await Song(
+                    url: songUrl,
+                    asset: asset,
+                    identifier: file.ocId,
+                    backendId: self.id
+                ) else {
+                    Logger.ncBackend.error("Could not create song from \(file)")
+                    continue
+                }
+
+                Logger.ncBackend.debug("Acquired valid song: \(songUrl)")
+                songs.append(song)
+                continue
+            }
+
+            // Handle directories here.
+            // We don't care about the metadata for the directory itself so skip it.
+            guard receivedFileUrl != path else { continue } // First item is always the requested.
+            let childRecursiveScanSongs = await recursiveScanRemotePath(receivedFileUrl)
+            songs.append(contentsOf: childRecursiveScanSongs)
+        }
+
+        return songs
+    }
+
     public func assetForSong(atURL url: URL) -> AVAsset? {
         return nil  // TODO
     }
