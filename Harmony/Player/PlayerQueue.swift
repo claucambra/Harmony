@@ -377,7 +377,7 @@ class PlayerQueue: ObservableObject {
               !results.isEmpty
         else { return }
 
-        let afterAddedSongCount = results.count - (addedSongResultsIndex + 1 + 1)
+        let afterAddedSongCount = results.count - (addedSongResultsIndex + 1)
         var remainingResults = afterAddedSongCount - shuffledIdentifiers.count
         guard remainingResults > 0 else { return }
 
