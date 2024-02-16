@@ -146,6 +146,8 @@ class PlayerController: NSObject, ObservableObject  {
     private var periodicTimeObserver: Any?
 
     override init() {
+        super.init()
+
         #if !os(macOS)
         do {
             try audioSession.setCategory(.playback)
@@ -160,8 +162,6 @@ class PlayerController: NSObject, ObservableObject  {
             object: audioSession
         )
         #endif
-
-        super.init()
 
         if UserDefaults.standard.value(forKey: UserDefaultsVolumeKey) == nil {
             volume = 1.0
