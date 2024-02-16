@@ -70,6 +70,7 @@
 		53B9796F2B7F6D55002DA742 /* NextcloudKit in Frameworks */ = {isa = PBXBuildFile; productRef = 53B9796E2B7F6D55002DA742 /* NextcloudKit */; };
 		53D6664D2B6B7E3E0042C03D /* PlayerQueueListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D6664C2B6B7E3E0042C03D /* PlayerQueueListItemView.swift */; };
 		53D666532B6E50340042C03D /* EnvironmentValues+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D666522B6E50340042C03D /* EnvironmentValues+Extension.swift */; };
+		53D666562B6E9C300042C03D /* NextcloudBackend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D666552B6E9C300042C03D /* NextcloudBackend.swift */; };
 		53D666582B6E9DB60042C03D /* NextcloudBackendDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D666572B6E9DB60042C03D /* NextcloudBackendDescription.swift */; };
 		53D6665B2B6E9DCF0042C03D /* LocalBackendDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D6665A2B6E9DCF0042C03D /* LocalBackendDescription.swift */; };
 		53D6665D2B6F34CC0042C03D /* SongContextMenuItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D6665C2B6F34CC0042C03D /* SongContextMenuItems.swift */; };
@@ -197,6 +198,7 @@
 		53B9796B2B7E8159002DA742 /* PlaceholderArtworkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceholderArtworkView.swift; sourceTree = "<group>"; };
 		53D6664C2B6B7E3E0042C03D /* PlayerQueueListItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerQueueListItemView.swift; sourceTree = "<group>"; };
 		53D666522B6E50340042C03D /* EnvironmentValues+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EnvironmentValues+Extension.swift"; sourceTree = "<group>"; };
+		53D666552B6E9C300042C03D /* NextcloudBackend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NextcloudBackend.swift; sourceTree = "<group>"; };
 		53D666572B6E9DB60042C03D /* NextcloudBackendDescription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NextcloudBackendDescription.swift; sourceTree = "<group>"; };
 		53D6665A2B6E9DCF0042C03D /* LocalBackendDescription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalBackendDescription.swift; sourceTree = "<group>"; };
 		53D6665C2B6F34CC0042C03D /* SongContextMenuItems.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongContextMenuItems.swift; sourceTree = "<group>"; };
@@ -538,6 +540,7 @@
 		53D666542B6E9C1D0042C03D /* Nextcloud */ = {
 			isa = PBXGroup;
 			children = (
+				53D666552B6E9C300042C03D /* NextcloudBackend.swift */,
 				53D666572B6E9DB60042C03D /* NextcloudBackendDescription.swift */,
 			);
 			path = Nextcloud;
@@ -778,6 +781,7 @@
 				535053FF2B62892500D7EAF2 /* AVPlayer+Extension.swift in Sources */,
 				535053552B5955F900D7EAF2 /* LocalBackend.swift in Sources */,
 				535053622B5975A100D7EAF2 /* Logger+Extension.swift in Sources */,
+				53D666562B6E9C300042C03D /* NextcloudBackend.swift in Sources */,
 				53D666582B6E9DB60042C03D /* NextcloudBackendDescription.swift in Sources */,
 				535053502B5955F900D7EAF2 /* HarmonyKit.docc in Sources */,
 				535053542B5955F900D7EAF2 /* Backend.swift in Sources */,
