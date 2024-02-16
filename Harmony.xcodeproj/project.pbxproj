@@ -67,6 +67,7 @@
 		53802A3C2B66C49F0066208D /* SongArtworkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53802A3B2B66C49F0066208D /* SongArtworkView.swift */; };
 		53802A3E2B6790330066208D /* ToolbarVolumeSliderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53802A3D2B6790330066208D /* ToolbarVolumeSliderView.swift */; };
 		53B9796C2B7E8159002DA742 /* PlaceholderArtworkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53B9796B2B7E8159002DA742 /* PlaceholderArtworkView.swift */; };
+		53B9796F2B7F6D55002DA742 /* NextcloudKit in Frameworks */ = {isa = PBXBuildFile; productRef = 53B9796E2B7F6D55002DA742 /* NextcloudKit */; };
 		53D6664D2B6B7E3E0042C03D /* PlayerQueueListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D6664C2B6B7E3E0042C03D /* PlayerQueueListItemView.swift */; };
 		53D666532B6E50340042C03D /* EnvironmentValues+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D666522B6E50340042C03D /* EnvironmentValues+Extension.swift */; };
 		53D666582B6E9DB60042C03D /* NextcloudBackendDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D666572B6E9DB60042C03D /* NextcloudBackendDescription.swift */; };
@@ -210,6 +211,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				53B9796F2B7F6D55002DA742 /* NextcloudKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -578,6 +580,9 @@
 			dependencies = (
 			);
 			name = HarmonyKit;
+			packageProductDependencies = (
+				53B9796E2B7F6D55002DA742 /* NextcloudKit */,
+			);
 			productName = HarmonyKit;
 			productReference = 535053292B5955C800D7EAF2 /* HarmonyKit.framework */;
 			productType = "com.apple.product-type.framework";
@@ -701,6 +706,7 @@
 			mainGroup = 535F1BC42B4A8F1400C78D98;
 			packageReferences = (
 				5350541F2B64142200D7EAF2 /* XCRemoteSwiftPackageReference "swift-collections" */,
+				53B9796D2B7F6D55002DA742 /* XCRemoteSwiftPackageReference "NextcloudKit" */,
 			);
 			productRefGroup = 535F1BCE2B4A8F1400C78D98 /* Products */;
 			projectDirPath = "";
@@ -1367,6 +1373,14 @@
 				minimumVersion = 1.0.6;
 			};
 		};
+		53B9796D2B7F6D55002DA742 /* XCRemoteSwiftPackageReference "NextcloudKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/nextcloud/NextcloudKit.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.9.5;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -1379,6 +1393,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 5350541F2B64142200D7EAF2 /* XCRemoteSwiftPackageReference "swift-collections" */;
 			productName = OrderedCollections;
+		};
+		53B9796E2B7F6D55002DA742 /* NextcloudKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 53B9796D2B7F6D55002DA742 /* XCRemoteSwiftPackageReference "NextcloudKit" */;
+			productName = NextcloudKit;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
