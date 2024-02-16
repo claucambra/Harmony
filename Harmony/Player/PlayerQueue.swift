@@ -11,9 +11,11 @@ import HarmonyKit
 import OSLog
 import SwiftData
 
+fileprivate let UserDefaultsRepeatKey = "queue-repeat"
+
 @MainActor
 class PlayerQueue: ObservableObject {
-    enum RepeatState { case disabled, queue, currentSong }
+    enum RepeatState: Int { case disabled, queue, currentSong }
 
     static let defaultPageSize = 10
     static let viewLoadTriggerCount = 5
@@ -44,8 +46,13 @@ class PlayerQueue: ObservableObject {
     }
     /// Repeat state (off, repeating queue, or repeating current song). This will affect how upcoming
     /// songs are generated.
-    @Published var repeatState: RepeatState = .disabled {
-        didSet { reloadFutureSongs() }
+    @Published var repeatState = RepeatState(
+        rawValue: UserDefaults.standard.integer(forKey: UserDefaultsRepeatKey)
+    ) ?? .disabled {
+        didSet {
+            reloadFutureSongs()
+            UserDefaults.standard.set(repeatState.rawValue, forKey: UserDefaultsRepeatKey)
+        }
     }
     /// Contains the identifiers for songs that have already been added to upcoming songs. Needed to
     /// not repeat already-added songs during the random sampling of results. This is only relevant
@@ -83,6 +90,13 @@ class PlayerQueue: ObservableObject {
     /// which the queue would start repeating.
     private var proposedPastSongsRepeatStartIndex: Int {
         pastSongs.count + currentSongCount + futureSongs.count
+    }
+
+    init() {
+        let defaults = UserDefaults.standard
+        if defaults.value(forKey: UserDefaultsRepeatKey) == nil {
+            repeatState = .disabled
+        }
     }
 
     func backward() -> Song? {
