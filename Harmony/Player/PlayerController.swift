@@ -21,6 +21,8 @@ import UIKit
 fileprivate let AVPlayerTimeControlStatusKeyPath = "timeControlStatus"
 fileprivate let hundredMsTime = CMTime(seconds: 0.1, preferredTimescale: CMTimeScale(MSEC_PER_SEC))
 
+fileprivate let UserDefaultsVolumeKey = "player-volume"
+
 @MainActor
 class PlayerController: NSObject, ObservableObject  {
     enum ScrubState { case inactive, started, finished }
@@ -97,8 +99,11 @@ class PlayerController: NSObject, ObservableObject  {
             }
         }
     }
-    @Published var volume: Float = 1.0 {
-        didSet { avPlayer?.volume = volume }
+    @Published var volume: Float = UserDefaults.standard.float(forKey: UserDefaultsVolumeKey) {
+        didSet {
+            UserDefaults.standard.set(volume, forKey: UserDefaultsVolumeKey)
+            avPlayer?.volume = volume
+        }
     }
     @Published var scrubState: ScrubState = .inactive {
         didSet {
@@ -150,7 +155,11 @@ class PlayerController: NSObject, ObservableObject  {
         #endif
 
         super.init()
-        
+
+        if UserDefaults.standard.value(forKey: UserDefaultsVolumeKey) == nil {
+            volume = 1.0
+        }
+
         remoteCommandCenter.playCommand.addTarget { _ in self.play() }
         remoteCommandCenter.pauseCommand.addTarget { _ in self.pause() }
         remoteCommandCenter.togglePlayPauseCommand.addTarget { _ in self.togglePlayPause() }
