@@ -20,7 +20,7 @@ func playableFileExtensions() -> [String] {
     return avExtensions
 }
 
-func fileHasPlayableExtension(fileURL: URL) -> Bool {
+public func fileHasPlayableExtension(fileURL: URL) -> Bool {
     let fileExtension = fileURL.pathExtension.lowercased()
     return playableFileExtensions().contains(fileExtension)
 }
