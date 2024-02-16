@@ -240,12 +240,6 @@ class PlayerController: NSObject, ObservableObject  {
         guard let avPlayer = avPlayer else { return .noActionableNowPlayingItem }
         #if os(macOS)
         nowPlayingInfoCenter.playbackState = .paused
-        #else
-        do {
-            try audioSession.setActive(false)
-        } catch let error {
-            Logger.player.error("Failed to deactivate audio session: \(error)")
-        }
         #endif
         avPlayer.pause()
         return .success
