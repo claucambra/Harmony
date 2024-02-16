@@ -21,7 +21,9 @@ public class NextcloudBackend: NSObject, Backend {
     public var presentation: BackendPresentable
     public var configValues: BackendConfiguration
     private let ncKit: NextcloudKit
+    private let ncKitBackground: NKBackground
     private let filesPath: String
+    private let headers: Dictionary<String, String>
 
     public required init(config: BackendConfiguration) {
         configValues = config
@@ -40,9 +42,19 @@ public class NextcloudBackend: NSObject, Backend {
         let serverUrl = config[NextcloudBackendFieldId.serverUrl.rawValue] as! String
         ncKit = NextcloudKit()
         ncKit.setup(user: user, userId: user, password: password, urlBase: serverUrl)
+        ncKitBackground = NKBackground(nkCommonInstance: ncKit.nkCommonInstance)
 
         let davRelativePath = config[NextcloudBackendFieldId.musicPath.rawValue] as! String
         filesPath = serverUrl + NextcloudWebDavFilesUrlSuffix + user + davRelativePath
+
+        let loginString = "\(user):\(password)"
+        let loginData = loginString.data(using: String.Encoding.utf8)!
+        let base64LoginString = loginData.base64EncodedString()
+
+        headers = [
+            "Authorization": "Basic \(base64LoginString)",
+            "User-Agent": ncKit.nkCommonInstance.userAgent ?? ""
+        ]
     }
 
     public func scan() async -> [Song] {
@@ -91,7 +103,9 @@ public class NextcloudBackend: NSObject, Backend {
                     continue
                 }
 
-                let asset = AVAsset(url: songUrl)
+                let asset = AVURLAsset(url: songUrl, options: [
+                    "AVURLAssetHTTPHeaderFieldsKey": headers
+                ])
 
                 guard let song = await Song(
                     url: songUrl,
