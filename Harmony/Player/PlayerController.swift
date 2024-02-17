@@ -36,10 +36,28 @@ class PlayerController: NSObject, ObservableObject  {
     @Published var currentSong: Song? {
         didSet {
             guard let currentSong = currentSong else {
+                Logger.player.error("Provided current song is nil")
                 avPlayer = nil
                 nowPlayingInfoCenter.nowPlayingInfo = nil
                 return
             }
+
+            guard let songBackend = BackendsModel.shared.backends[currentSong.backendId] else {
+                Logger.player.error("Could not acquire song backend for song \(currentSong.url)")
+                avPlayer = nil
+                nowPlayingInfoCenter.nowPlayingInfo = nil
+                return
+            }
+
+            if let urlAsset = currentSong.asset as? AVURLAsset,
+               let assetResourceDelegate = songBackend.assetResourceLoaderDelegate
+            {
+                Logger.player.debug("Current song is an AVURLAsset and backend has resource loader")
+                urlAsset.resourceLoader.setDelegate(
+                    assetResourceDelegate, queue: DispatchQueue.global()
+                )
+            }
+
             let playerItem = AVPlayerItem(asset: currentSong.asset)
             avPlayer = AVPlayer(playerItem: playerItem)
             updateNowPlayingMetadataInfo()
