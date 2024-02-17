@@ -46,7 +46,10 @@ public class NextcloudBackend: NSObject, Backend {
         ncKit.setup(user: user, userId: user, password: password, urlBase: serverUrl)
         ncKitBackground = NKBackground(nkCommonInstance: ncKit.nkCommonInstance)
 
-        let davRelativePath = config[NextcloudBackendFieldId.musicPath.rawValue] as! String
+        var davRelativePath = config[NextcloudBackendFieldId.musicPath.rawValue] as! String
+        if davRelativePath.last == "/" {
+            davRelativePath.removeLast()
+        }
         filesPath = serverUrl + NextcloudWebDavFilesUrlSuffix + user + davRelativePath
 
         let loginString = "\(user):\(password)"
@@ -93,6 +96,8 @@ public class NextcloudBackend: NSObject, Backend {
 
         for file in files {
             let receivedFileUrl = file.serverUrl + "/" + file.fileName
+            // We don't care about the metadata for the directory itself so skip it.
+            guard receivedFileUrl != filesPath else { continue }
             logger.debug("Received file \(receivedFileUrl)")
 
             guard file.directory else {
@@ -102,10 +107,7 @@ public class NextcloudBackend: NSObject, Backend {
                 songs.append(song)
                 continue
             }
-
-            // Handle directories here.
-            // We don't care about the metadata for the directory itself so skip it.
-            guard receivedFileUrl != path else { continue } // First item is always the requested.
+            
             let childRecursiveScanSongs = await recursiveScanRemotePath(receivedFileUrl)
             songs.append(contentsOf: childRecursiveScanSongs)
         }
