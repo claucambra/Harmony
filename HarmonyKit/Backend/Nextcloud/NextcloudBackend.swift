@@ -25,6 +25,7 @@ public class NextcloudBackend: NSObject, Backend {
     private let filesPath: String
     private let headers: Dictionary<String, String>
     private let assetResourceLoader: NextcloudAVAssetResourceLoaderDelegate
+    private let logger = Logger.ncBackend
 
     public required init(config: BackendConfiguration) {
         configValues = config
@@ -65,7 +66,7 @@ public class NextcloudBackend: NSObject, Backend {
     }
 
     private func recursiveScanRemotePath(_ path: String) async -> [Song] {
-        Logger.ncBackend.debug("Starting read of: \(path)")
+        logger.debug("Starting read of: \(path)")
 
         let readResult = await withCheckedContinuation { continuation in
             ncKit.readFileOrFolder(
@@ -79,12 +80,12 @@ public class NextcloudBackend: NSObject, Backend {
         let error = readResult.1
 
         guard error == .success else {
-            Logger.ncBackend.error("Could not scan \(path): \(error.errorDescription)")
+            logger.error("Could not scan \(path): \(error.errorDescription)")
             return []
         }
 
         guard !files.isEmpty else {
-            Logger.ncBackend.warning("Received no items from readFileOrFolder of \(path)")
+            logger.warning("Received no items from readFileOrFolder of \(path)")
             return []
         }
 
@@ -92,34 +93,12 @@ public class NextcloudBackend: NSObject, Backend {
 
         for file in files {
             let receivedFileUrl = file.serverUrl + "/" + file.fileName
-            Logger.ncBackend.debug("Received file \(receivedFileUrl)")
+            logger.debug("Received file \(receivedFileUrl)")
 
             guard file.directory else {
-                // Process received file
-                guard let songUrl = URL(string: receivedFileUrl) else {
-                    Logger.ncBackend.error("Received serverUrl for \(receivedFileUrl) is invalid")
+                guard let song = await handleReadFile(receivedFileUrl, ocId: file.ocId) else {
                     continue
                 }
-
-                guard fileHasPlayableExtension(fileURL: songUrl) else {
-                    Logger.ncBackend.info("File at \(songUrl) is not a playable song file, skip")
-                    continue
-                }
-
-                let asset = AVURLAsset(url: songUrl)
-                asset.resourceLoader.setDelegate(assetResourceLoader, queue: DispatchQueue.global())
-
-                guard let song = await Song(
-                    url: songUrl,
-                    asset: asset,
-                    identifier: file.ocId,
-                    backendId: self.id
-                ) else {
-                    Logger.ncBackend.error("Could not create song from \(file)")
-                    continue
-                }
-
-                Logger.ncBackend.debug("Acquired valid song: \(songUrl)")
                 songs.append(song)
                 continue
             }
@@ -132,6 +111,33 @@ public class NextcloudBackend: NSObject, Backend {
         }
 
         return songs
+    }
+
+    private func handleReadFile(_ receivedFileUrl: String, ocId: String) async -> Song? {
+        // Process received file
+        guard let songUrl = URL(string: receivedFileUrl) else {
+            logger.error("Received serverUrl for \(receivedFileUrl) is invalid")
+            return nil
+        }
+
+        guard fileHasPlayableExtension(fileURL: songUrl) else {
+            logger.info("File at \(songUrl) is not a playable song file, skip")
+            return nil
+        }
+
+        let asset = AVURLAsset(url: songUrl)
+        let queue = DispatchQueue.global()
+        asset.resourceLoader.setDelegate(assetResourceLoader, queue: queue)
+
+        guard let song = await Song(
+            url: songUrl, asset: asset, identifier: ocId, backendId: self.id
+        ) else {
+            logger.error("Could not create song from \(receivedFileUrl)")
+            return nil
+        }
+
+        logger.debug("Acquired valid song: \(songUrl)")
+        return song
     }
 
     public func assetForSong(atURL url: URL) -> AVAsset? {
