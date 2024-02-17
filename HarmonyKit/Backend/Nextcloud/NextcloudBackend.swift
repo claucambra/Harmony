@@ -24,6 +24,7 @@ public class NextcloudBackend: NSObject, Backend {
     private let ncKitBackground: NKBackground
     private let filesPath: String
     private let headers: Dictionary<String, String>
+    private let assetResourceLoader: NextcloudAVAssetResourceLoaderDelegate
 
     public required init(config: BackendConfiguration) {
         configValues = config
@@ -55,6 +56,8 @@ public class NextcloudBackend: NSObject, Backend {
             "Authorization": "Basic \(base64LoginString)",
             "User-Agent": ncKit.nkCommonInstance.userAgent ?? ""
         ]
+
+        assetResourceLoader = NextcloudAVAssetResourceLoaderDelegate(user: user, password: password)
     }
 
     public func scan() async -> [Song] {
@@ -103,9 +106,8 @@ public class NextcloudBackend: NSObject, Backend {
                     continue
                 }
 
-                let asset = AVURLAsset(url: songUrl, options: [
-                    "AVURLAssetHTTPHeaderFieldsKey": headers
-                ])
+                let asset = AVURLAsset(url: songUrl)
+                asset.resourceLoader.setDelegate(assetResourceLoader, queue: DispatchQueue.global())
 
                 guard let song = await Song(
                     url: songUrl,
