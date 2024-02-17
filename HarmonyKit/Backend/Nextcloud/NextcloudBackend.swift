@@ -26,6 +26,7 @@ public class NextcloudBackend: NSObject, Backend {
     private let headers: Dictionary<String, String>
     private let assetResourceLoader: NextcloudAVAssetResourceLoaderDelegate
     private let logger = Logger.ncBackend
+    private let maxConcurrentScans = 4
 
     public required init(config: BackendConfiguration) {
         configValues = config
@@ -92,26 +93,45 @@ public class NextcloudBackend: NSObject, Backend {
             return []
         }
 
+        let fileCount = files.count
         var songs: [Song] = []
 
-        for file in files {
-            let receivedFileUrl = file.serverUrl + "/" + file.fileName
-            // We don't care about the metadata for the directory itself so skip it.
-            guard receivedFileUrl != filesPath else { continue }
-            logger.debug("Received file \(receivedFileUrl)")
-
-            guard file.directory else {
-                guard let song = await handleReadFile(receivedFileUrl, ocId: file.ocId) else {
-                    continue
+        await withTaskGroup(of: [Song].self) { group in
+            for i in 0..<fileCount {
+                // When we have submitted the maximum concurrent scans in the first burst, wait for
+                // a task to finish off before submitting the next scan, thus limiting concurrent
+                // tasks.
+                if i >= self.maxConcurrentScans - 1 {
+                    guard let scanResult = await group.next() else { continue }
+                    songs.append(contentsOf: scanResult)
                 }
-                songs.append(song)
-                continue
+
+                let file = files[i]
+                let receivedFileUrl = file.serverUrl + "/" + file.fileName
+                // We don't care about the metadata for the directory itself so skip it.
+                guard receivedFileUrl != filesPath else { continue }
+                logger.debug("Received file \(receivedFileUrl)")
+                let ocId = file.ocId
+
+                group.addTask(priority: .userInitiated) {
+                    if file.directory {
+                        return await self.recursiveScanRemotePath(receivedFileUrl)
+                    } else if let song = await self.handleReadFile(receivedFileUrl, ocId: ocId) {
+                        return [song]
+                    } else {
+                        return []
+                    }
+                }
             }
-            
-            let childRecursiveScanSongs = await recursiveScanRemotePath(receivedFileUrl)
-            songs.append(contentsOf: childRecursiveScanSongs)
+
+            // Collects the remaining tasks not waited for in the in-loop throttling section (this
+            // should only be the last task, which is not covered by the await group.next())
+            for await scanResult in group {
+                songs.append(contentsOf: scanResult)
+            }
         }
 
+        logger.info("Finished scan of \(path)")
         return songs
     }
 
