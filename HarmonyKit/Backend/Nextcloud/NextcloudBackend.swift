@@ -23,7 +23,6 @@ public class NextcloudBackend: NSObject, Backend {
     private let ncKit: NextcloudKit
     private let ncKitBackground: NKBackground
     private let filesPath: String
-    private let headers: Dictionary<String, String>
     private let assetResourceLoader: NextcloudAVAssetResourceLoaderDelegate
     private let logger = Logger.ncBackend
     private let maxConcurrentScans = 4
@@ -52,15 +51,6 @@ public class NextcloudBackend: NSObject, Backend {
             davRelativePath.removeLast()
         }
         filesPath = serverUrl + NextcloudWebDavFilesUrlSuffix + user + davRelativePath
-
-        let loginString = "\(user):\(password)"
-        let loginData = loginString.data(using: String.Encoding.utf8)!
-        let base64LoginString = loginData.base64EncodedString()
-
-        headers = [
-            "Authorization": "Basic \(base64LoginString)",
-            "User-Agent": ncKit.nkCommonInstance.userAgent ?? ""
-        ]
 
         assetResourceLoader = NextcloudAVAssetResourceLoaderDelegate(user: user, password: password)
     }
