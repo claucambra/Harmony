@@ -20,10 +20,10 @@ public class NextcloudBackend: NSObject, Backend {
     public let id: String
     public var presentation: BackendPresentable
     public var configValues: BackendConfiguration
+    public var assetResourceLoaderDelegate: AVAssetResourceLoaderDelegate?
     private let ncKit: NextcloudKit
     private let ncKitBackground: NKBackground
     private let filesPath: String
-    private let assetResourceLoader: NextcloudAVAssetResourceLoaderDelegate
     private let logger = Logger.ncBackend
     private let maxConcurrentScans = 4
 
@@ -52,7 +52,9 @@ public class NextcloudBackend: NSObject, Backend {
         }
         filesPath = serverUrl + NextcloudWebDavFilesUrlSuffix + user + davRelativePath
 
-        assetResourceLoader = NextcloudAVAssetResourceLoaderDelegate(user: user, password: password)
+        assetResourceLoaderDelegate = NextcloudAVAssetResourceLoaderDelegate(
+            user: user, password: password
+        )
     }
 
     public func scan() async -> [Song] {
@@ -139,7 +141,7 @@ public class NextcloudBackend: NSObject, Backend {
 
         let asset = AVURLAsset(url: songUrl)
         let queue = DispatchQueue.global()
-        asset.resourceLoader.setDelegate(assetResourceLoader, queue: queue)
+        asset.resourceLoader.setDelegate(assetResourceLoaderDelegate, queue: queue)
 
         guard let song = await Song(
             url: songUrl, asset: asset, identifier: ocId, backendId: self.id
