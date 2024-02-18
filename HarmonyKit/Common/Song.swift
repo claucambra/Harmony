@@ -31,12 +31,26 @@ public final class Song: ObservableObject {
     public private(set) var peformer: String = ""
     public private(set) var duration: TimeInterval = 0
     @Attribute(.externalStorage) public var artwork: Data?
+    public internal(set) var local: Bool = false
+    public internal(set) var localUrl: URL?
+    public internal(set) var versionId: String = ""
 
     // Used by the backends during scanning, initial creation that sets all values received
-    public init?(url: URL, asset: AVAsset, identifier: String, backendId: String) async {
+    public init?(
+        url: URL,
+        asset: AVAsset,
+        identifier: String,
+        backendId: String,
+        local: Bool = false,
+        localUrl: URL? = nil,
+        versionId: String = ""
+    ) async {
         self.url = url
         self.identifier = identifier
         self.backendId = backendId
+        self.local = local
+        self.localUrl = localUrl
+        self.versionId = versionId
 
         title = url.lastPathComponent
 
@@ -114,7 +128,10 @@ public final class Song: ObservableObject {
         grouping: String,
         peformer: String,
         duration: TimeInterval,
-        artwork: Data?
+        artwork: Data?,
+        local: Bool = false,
+        localUrl: URL? = nil,
+        versionId: String = ""
     ) {
         self.identifier = identifier
         self.backendId = backendId
@@ -128,6 +145,9 @@ public final class Song: ObservableObject {
         self.peformer = peformer
         self.duration = duration
         self.artwork = artwork
+        self.local = local
+        self.localUrl = localUrl
+        self.versionId = versionId
     }
 
     public func clone() -> Song {
@@ -143,7 +163,10 @@ public final class Song: ObservableObject {
             grouping: grouping,
             peformer: peformer,
             duration: duration,
-            artwork: artwork
+            artwork: artwork,
+            local: local,
+            localUrl: localUrl,
+            versionId: versionId
         )
     }
 
