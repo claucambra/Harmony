@@ -7,6 +7,7 @@
 
 import AVFoundation
 import CryptoKit
+import OSLog
 
 #if os(macOS)
 import AppKit
@@ -26,6 +27,20 @@ func calculateMD5Checksum(forFileAtLocalURL url: URL) -> String? {
         print("Error reading file before calculating MD5 checksum: \(error)")
         return nil
     }
+}
+
+func localFileURL(song: Song) -> URL? {
+    guard let storageUrl = FileManager.default.urls(
+        for: .applicationSupportDirectory, in: .userDomainMask
+    ).first else {
+        Logger.defaultLog.error("Could not get application support directory url for \(song.url)")
+        return nil
+    }
+
+    let backendUrl = storageUrl.appendingPathComponent(song.backendId, conformingTo: .directory)
+    let songFileName = song.identifier + "." + song.url.pathExtension
+    let songUrl = backendUrl.appendingPathComponent(songFileName, conformingTo: .audio)
+    return songUrl
 }
 
 #if os(macOS)
