@@ -165,7 +165,9 @@ public class NextcloudBackend: NSObject, Backend {
     }
 
     public func assetForSong(_ song: Song) -> AVAsset? {
-        let asset = AVURLAsset(url: song.url)
+        let url = song.localUrl ?? song.url
+        Logger.ncBackend.debug("Providing url \(url) for \(song.title)")
+        let asset = AVURLAsset(url: url)
         asset.resourceLoader.setDelegate(assetResourceLoaderDelegate, queue: DispatchQueue.global())
         return asset
     }
