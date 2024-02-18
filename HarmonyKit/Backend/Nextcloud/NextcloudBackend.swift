@@ -30,14 +30,6 @@ public class NextcloudBackend: NSObject, Backend {
     public required init(config: BackendConfiguration) {
         configValues = config
         id = config[BackendConfigurationIdFieldKey] as! String
-        presentation = BackendPresentable(
-            backendId: id,
-            typeId: typeDescription.id,
-            systemImage: typeDescription.systemImageName,
-            primary: typeDescription.name,
-            secondary: typeDescription.description,
-            config: "" // TODO
-        )
 
         let user = config[NextcloudBackendFieldId.username.rawValue] as! String
         let password = config[NextcloudBackendFieldId.password.rawValue] as! String
@@ -55,14 +47,33 @@ public class NextcloudBackend: NSObject, Backend {
         assetResourceLoaderDelegate = NextcloudAVAssetResourceLoaderDelegate(
             user: user, password: password
         )
+
+        presentation = BackendPresentable(
+            backendId: id,
+            typeId: typeDescription.id,
+            systemImage: typeDescription.systemImageName,
+            primary: typeDescription.name,
+            secondary: typeDescription.description,
+            config: "URL: \(filesPath)"
+        )
     }
 
     public func scan() async -> [Song] {
-        return await recursiveScanRemotePath(filesPath)
+        Task { @MainActor in
+            self.presentation.state = "Starting full scan..."
+        }
+        let songs = await recursiveScanRemotePath(filesPath)
+        Task { @MainActor in
+            self.presentation.state = "Finished full scan at \(Date().formatted())"
+        }
+        return songs
     }
 
     private func recursiveScanRemotePath(_ path: String) async -> [Song] {
         logger.debug("Starting read of: \(path)")
+        Task { @MainActor in
+            self.presentation.state = "Scanning \(path)..."
+        }
 
         let readResult = await withCheckedContinuation { continuation in
             ncKit.readFileOrFolder(
