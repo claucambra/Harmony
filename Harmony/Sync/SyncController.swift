@@ -35,7 +35,8 @@ public class SyncController: ObservableObject {
 
         let backends = BackendsModel.shared.backends.values
         for backend in backends {
-            await self.syncBackend(backend)
+            let retrievedIdentifiers = await self.syncBackend(backend)
+            await clearStaleSongs(backendId: backend.id, freshSongIdentifiers: retrievedIdentifiers)
         }
 
         currentlySyncingFully = false
@@ -74,5 +75,27 @@ public class SyncController: ObservableObject {
         let songs = await backend.scan()
         self.currentlySyncing.remove(backendId)
         return songs
+    }
+
+    @MainActor
+    private func clearStaleSongs(backendId: String, freshSongIdentifiers: Set<String>) {
+        let context = songsContainer.mainContext
+        let fetchDescriptor = FetchDescriptor<Song>(
+            predicate: #Predicate { $0.backendId == backendId }
+        )
+
+        do {
+            let backendSongs = try context.fetch(fetchDescriptor)
+            let staleSongs = try backendSongs.filter(
+                #Predicate { !freshSongIdentifiers.contains($0.identifier) }
+            )
+            for staleSong in staleSongs {
+                Logger.sync.debug("Removing stale song: \(staleSong.url)")
+                context.delete(staleSong)
+            }
+            try context.save()
+        } catch let error {
+            Logger.sync.error("Could not clear stale songs for \(backendId): \(error)")
+        }
     }
 }
