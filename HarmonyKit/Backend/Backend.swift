@@ -13,7 +13,6 @@ public protocol Backend: Identifiable, Hashable, ObservableObject {
     var id: String { get }
     var presentation: BackendPresentable { get }
     var configValues: BackendConfiguration { get }
-    var assetResourceLoaderDelegate: AVAssetResourceLoaderDelegate? { get }
 
     func scan() async -> [Song]
     func assetForSong(_ song: Song) -> AVAsset?

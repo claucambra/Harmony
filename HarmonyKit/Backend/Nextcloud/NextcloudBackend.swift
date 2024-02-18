@@ -20,7 +20,7 @@ public class NextcloudBackend: NSObject, Backend {
     public let id: String
     public var presentation: BackendPresentable
     public var configValues: BackendConfiguration
-    public var assetResourceLoaderDelegate: AVAssetResourceLoaderDelegate?
+    private let assetResourceLoaderDelegate: NextcloudAVAssetResourceLoaderDelegate
     private let ncKit: NextcloudKit
     private let ncKitBackground: NKBackground
     private let filesPath: String
@@ -140,8 +140,7 @@ public class NextcloudBackend: NSObject, Backend {
         }
 
         let asset = AVURLAsset(url: songUrl)
-        let queue = DispatchQueue.global()
-        asset.resourceLoader.setDelegate(assetResourceLoaderDelegate, queue: queue)
+        asset.resourceLoader.setDelegate(assetResourceLoaderDelegate, queue: DispatchQueue.global())
 
         guard let song = await Song(
             url: songUrl, asset: asset, identifier: ocId, backendId: self.id
@@ -156,11 +155,7 @@ public class NextcloudBackend: NSObject, Backend {
 
     public func assetForSong(_ song: Song) -> AVAsset? {
         let asset = AVURLAsset(url: song.url)
-        if let assetResourceDelegate = assetResourceLoaderDelegate {
-            asset.resourceLoader.setDelegate(
-                assetResourceDelegate, queue: DispatchQueue.global()
-            )
-        }
+        asset.resourceLoader.setDelegate(assetResourceLoaderDelegate, queue: DispatchQueue.global())
         return asset
     }
     

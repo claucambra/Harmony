@@ -17,7 +17,6 @@ public class LocalBackend: NSObject, Backend {
     public let typeDescription = localBackendTypeDescription
     public let id: String
     public var configValues: BackendConfiguration = [:]
-    public var assetResourceLoaderDelegate: AVAssetResourceLoaderDelegate?
     public private(set) var presentation: BackendPresentable
     public private(set) var path: URL {
         didSet { DispatchQueue.main.async { self.presentation.config = self.path.path } }
