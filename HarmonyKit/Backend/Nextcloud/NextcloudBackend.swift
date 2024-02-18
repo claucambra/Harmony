@@ -201,6 +201,14 @@ public class NextcloudBackend: NSObject, Backend {
     }
     
     public func evictSong(_ song: Song) async {
-        // TODO
+        guard let localUrl = localFileURL(song: song) else { return }
+        Logger.ncBackend.info("Evicting song: \(song.url)")
+
+        do {
+            try FileManager.default.removeItem(at: localUrl)
+            song.localUrl = nil
+        } catch let error {
+            Logger.ncBackend.error("Could not delete song \(song.url) at \(localUrl): \(error)")
+        }
     }
 }
