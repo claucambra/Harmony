@@ -12,21 +12,23 @@ import SwiftData
 
 public class SyncController: ObservableObject {
     static let shared = SyncController()
+    let songsContainer = try! ModelContainer(for: Song.self)
     @Published var currentlySyncing: Set<String> = Set()
     @Published var currentlySyncingFully: Bool = false
-    let songsContainer = try! ModelContainer(for: Song.self)
-    private var pollTimer: Timer? = nil
-
-    private init(poll: Bool = true) {
-        if poll {
-            let interval = TimeInterval(15 * 60)
-            pollTimer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true) { _ in
-                Task {
-                    await self.sync()
+    @Published var poll: Bool = false {
+        didSet {
+            if poll {
+                let interval = TimeInterval(60 * 60)
+                pollTimer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true) { _ in
+                    Task { await self.sync() }
                 }
+            } else {
+                pollTimer?.invalidate()
+                pollTimer = nil
             }
         }
     }
+    private var pollTimer: Timer? = nil
 
     public func sync() async {
         currentlySyncingFully = true
