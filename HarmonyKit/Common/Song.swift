@@ -15,6 +15,7 @@ import AppKit
 import UIKit
 #endif
 
+// TODO: Implement artwork when loading from database
 @Model
 public final class Song: ObservableObject {
     @Attribute(.unique) public let identifier: String
@@ -29,33 +30,11 @@ public final class Song: ObservableObject {
     public private(set) var grouping: String = ""
     public private(set) var peformer: String = ""
     public private(set) var duration: TimeInterval = 0
-    @Transient public var artwork: Data? {
-        if internalArtwork == nil {
-            syncSetupArtwork()
-        }
-        return internalArtwork
-    }
-    @Published @Transient public private(set) var internalArtwork: Data?
-    @Transient public var asset: AVAsset {
-        if internalAsset == nil {
-            if Thread.isMainThread {
-                internalAsset = AVAsset(url: url)
-            } else {
-                let semaphore = DispatchSemaphore(value: 0)
-                Task { @MainActor in
-                    internalAsset = AVAsset(url: url)
-                    semaphore.signal()
-                }
-                semaphore.wait()
-            }
-        }
-        return internalAsset!
-    }
-    @Published @Transient private var internalAsset: AVAsset?
+    @Attribute(.externalStorage) public var artwork: Data?
 
+    // Used by the backends during scanning, initial creation that sets all values received
     public init?(url: URL, asset: AVAsset, identifier: String, backendId: String) async {
         self.url = url
-        self.internalAsset = asset
         self.identifier = identifier
         self.backendId = backendId
 
@@ -67,14 +46,14 @@ public final class Song: ObservableObject {
             Logger.defaultLog.error("Could not get duration for song \(url): \(error)")
         }
 
-        await setupArtwork()
+        await setupArtwork(asset: asset)
 
         guard !url.lastPathComponent.contains(".flac") else {
             let tagsDict = audioFileMetadata()
             for (key, value) in tagsDict {
                 let key = key as? String ?? ""
                 if key == AVMetadataKey.commonKeyArtwork.rawValue {
-                    internalArtwork = value as? Data ?? Data()
+                    artwork = value as? Data ?? Data()
                     continue
                 }
 
@@ -135,7 +114,7 @@ public final class Song: ObservableObject {
         grouping: String,
         peformer: String,
         duration: TimeInterval,
-        asset: AVAsset
+        artwork: Data?
     ) {
         self.identifier = identifier
         self.backendId = backendId
@@ -148,9 +127,7 @@ public final class Song: ObservableObject {
         self.grouping = grouping
         self.peformer = peformer
         self.duration = duration
-        self.internalAsset = asset
-
-        syncSetupArtwork()
+        self.artwork = artwork
     }
 
     public func clone() -> Song {
@@ -166,17 +143,11 @@ public final class Song: ObservableObject {
             grouping: grouping,
             peformer: peformer,
             duration: duration,
-            asset: asset
+            artwork: artwork
         )
     }
 
-    private func syncSetupArtwork() {
-        Task {
-            await setupArtwork()
-        }
-    }
-
-    private func setupArtwork() async {
+    private func setupArtwork(asset: AVAsset) async {
         guard let metadata = try? await asset.load(.metadata) else { return }
         guard let artworkItem = AVMetadataItem.metadataItems(
             from: metadata,
@@ -185,7 +156,7 @@ public final class Song: ObservableObject {
         guard let artworkData = try? await artworkItem.load(.value) as? Data else { return }
 
         Task { @MainActor in
-            internalArtwork = artworkData
+            artwork = artworkData
         }
     }
 
