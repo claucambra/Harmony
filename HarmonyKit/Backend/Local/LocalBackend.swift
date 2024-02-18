@@ -84,7 +84,13 @@ public class LocalBackend: NSObject, Backend {
             let asset = AVAsset(url: url)
             guard let csum = calculateMD5Checksum(forFileAtLocalURL: url) else { continue }
             guard let song = await Song(
-                url: url, asset: asset, identifier: csum, backendId: id
+                url: url,
+                asset: asset,
+                identifier: csum,
+                backendId: id,
+                local: true,
+                localUrl: url,
+                versionId: csum
             ) else { continue }
             songs.append(song)
         }
