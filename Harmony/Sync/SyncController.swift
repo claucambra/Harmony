@@ -48,11 +48,12 @@ public class SyncController: ObservableObject {
         let ingestTask = Task { @MainActor in
             var refreshedSongIdentifiers: Set<String> = []
             for song in refreshedSongs {
+                let songIdentifier = song.identifier
                 do {
                     let context = songsContainer.mainContext
                     context.insert(song)
                     try context.save()
-                    refreshedSongIdentifiers.insert(song.identifier)
+                    refreshedSongIdentifiers.insert(songIdentifier)
                 } catch let error {
                     Logger.sync.error("Could not save song to data: \(error)")
                 }
