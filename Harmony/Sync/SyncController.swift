@@ -41,18 +41,29 @@ public class SyncController: ObservableObject {
         currentlySyncingFully = false
     }
 
-    func syncBackend(_ backend: any Backend) async {
+    func syncBackend(_ backend: any Backend) async -> Set<String> {
         let refreshedSongs = await runSyncForBackend(backend)
-        Task { @MainActor in
+
+        let ingestTask = Task { @MainActor in
+            var refreshedSongIdentifiers: Set<String> = []
             for song in refreshedSongs {
                 do {
                     let context = songsContainer.mainContext
                     context.insert(song)
                     try context.save()
+                    refreshedSongIdentifiers.insert(song.identifier)
                 } catch let error {
                     Logger.sync.error("Could not save song to data: \(error)")
                 }
             }
+            return refreshedSongIdentifiers
+        }
+
+        do {
+            return try await ingestTask.result.get()
+        } catch let error {
+            Logger.sync.error("Could not get result from ingestion task: \(error)")
+            return []
         }
     }
 
