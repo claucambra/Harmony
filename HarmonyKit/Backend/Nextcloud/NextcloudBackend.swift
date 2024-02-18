@@ -114,12 +114,13 @@ public class NextcloudBackend: NSObject, Backend {
                 // We don't care about the metadata for the directory itself so skip it.
                 guard receivedFileUrl != filesPath else { continue }
                 logger.debug("Received file \(receivedFileUrl)")
-                let ocId = file.ocId
 
                 group.addTask(priority: .userInitiated) {
                     if file.directory {
                         return await self.recursiveScanRemotePath(receivedFileUrl)
-                    } else if let song = await self.handleReadFile(receivedFileUrl, ocId: ocId) {
+                    } else if let song = await self.handleReadFile(
+                        receivedFileUrl, ocId: file.ocId, etag: file.etag
+                    ) {
                         return [song]
                     } else {
                         return []
@@ -138,7 +139,9 @@ public class NextcloudBackend: NSObject, Backend {
         return songs
     }
 
-    private func handleReadFile(_ receivedFileUrl: String, ocId: String) async -> Song? {
+    private func handleReadFile(
+        _ receivedFileUrl: String, ocId: String, etag: String
+    ) async -> Song? {
         // Process received file
         guard let songUrl = URL(string: receivedFileUrl) else {
             logger.error("Received serverUrl for \(receivedFileUrl) is invalid")
@@ -154,7 +157,12 @@ public class NextcloudBackend: NSObject, Backend {
         asset.resourceLoader.setDelegate(assetResourceLoaderDelegate, queue: DispatchQueue.global())
 
         guard let song = await Song(
-            url: songUrl, asset: asset, identifier: ocId, backendId: self.id
+            url: songUrl, 
+            asset: asset,
+            identifier: ocId,
+            backendId: self.id,
+            local: false,
+            versionId: etag
         ) else {
             logger.error("Could not create song from \(receivedFileUrl)")
             return nil
