@@ -181,7 +181,23 @@ public class NextcloudBackend: NSObject, Backend {
     }
     
     public func fetchSong(_ song: Song) async {
-        // TODO
+        guard let localUrl = localFileURL(song: song) else { return }
+        let localPath = localUrl.path
+        Logger.ncBackend.info("Downloading song for offline playback: \(song.url) to \(localPath)")
+
+        await withCheckedContinuation { continuation in
+            ncKit.download(
+                serverUrlFileName: song.url, fileNameLocalPath: localPath
+            ) { account, etag, date, length, allHeaderFields, nkError in
+                guard nkError == .success else {
+                    Logger.ncBackend.error("Download error: \(nkError.errorDescription)")
+                    return
+                }
+                song.localUrl = localUrl
+                Logger.ncBackend.debug("Successfully downloaded \(song.url) to \(localUrl)")
+                continuation.resume()
+            }
+        }
     }
     
     public func evictSong(_ song: Song) async {
