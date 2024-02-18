@@ -19,15 +19,9 @@ struct FloatingCurrentSongView: View {
     var body: some View {
         HStack {
             if let currentSong = PlayerController.shared.currentSong {
-                SongArtworkView(song: currentSong)
-                .clipShape(.rect(cornerRadius: cornerRadius))
-                .overlay(
-                    RoundedRectangle(cornerRadius: cornerRadius)
-                        .stroke(.separator, lineWidth: borderWidth)
-                )
-                    .frame(height: UIMeasurements.smallArtworkHeight)
+                artworkViewWithModifiers(SongArtworkView(song: currentSong))
             } else {
-                PlaceholderArtworkView()
+                artworkViewWithModifiers(PlaceholderArtworkView())
             }
             VStack(alignment: .trailing) {
                 Text(controller.currentSong?.title ?? "Harmony")
@@ -57,5 +51,16 @@ struct FloatingCurrentSongView: View {
                 .shadow(radius: shadowRadius)
 
         }
+    }
+
+    @ViewBuilder
+    func artworkViewWithModifiers(_ view: some View) -> some View {
+        view
+            .clipShape(.rect(cornerRadius: cornerRadius))
+            .overlay(
+                RoundedRectangle(cornerRadius: cornerRadius)
+                    .stroke(.separator, lineWidth: borderWidth)
+            )
+            .frame(height: UIMeasurements.smallArtworkHeight)
     }
 }
