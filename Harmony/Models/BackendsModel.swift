@@ -47,8 +47,8 @@ class BackendsModel: ObservableObject {
         }
     }
 
-    func assetForSong(atURL url: URL, backendId: String) -> AVAsset? {
-        guard let backend = backends[backendId] else { return nil }
-        return backend.assetForSong(atURL: url)
+    func assetForSong(_ song: Song) -> AVAsset? {
+        guard let backend = backends[song.backendId] else { return nil }
+        return backend.assetForSong(song)
     }
 }

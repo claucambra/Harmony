@@ -154,8 +154,14 @@ public class NextcloudBackend: NSObject, Backend {
         return song
     }
 
-    public func assetForSong(atURL url: URL) -> AVAsset? {
-        return nil  // TODO
+    public func assetForSong(_ song: Song) -> AVAsset? {
+        let asset = AVURLAsset(url: song.url)
+        if let assetResourceDelegate = assetResourceLoaderDelegate {
+            asset.resourceLoader.setDelegate(
+                assetResourceDelegate, queue: DispatchQueue.global()
+            )
+        }
+        return asset
     }
     
     public func fetchSong(_ song: Song) async {

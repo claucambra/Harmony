@@ -16,7 +16,7 @@ public protocol Backend: Identifiable, Hashable, ObservableObject {
     var assetResourceLoaderDelegate: AVAssetResourceLoaderDelegate? { get }
 
     func scan() async -> [Song]
-    func assetForSong(atURL url: URL) -> AVAsset?
+    func assetForSong(_ song: Song) -> AVAsset?
     func fetchSong(_ song: Song) async
     func evictSong(_ song: Song) async
 

@@ -148,7 +148,7 @@ public class LocalBackend: NSObject, Backend {
         return
     }
 
-    public func assetForSong(atURL url: URL) -> AVAsset? {
-        return AVAsset(url: url)
+    public func assetForSong(_ song: Song) -> AVAsset? {
+        return AVAsset(url: song.url)
     }
 }
