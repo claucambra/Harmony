@@ -49,19 +49,18 @@ class PlayerController: NSObject, ObservableObject  {
                 return
             }
 
-            if let urlAsset = currentSong.asset as? AVURLAsset,
-               let assetResourceDelegate = songBackend.assetResourceLoaderDelegate
-            {
+            let asset = AVURLAsset(url: currentSong.url)
+            if let assetResourceDelegate = songBackend.assetResourceLoaderDelegate {
                 Logger.player.debug("Current song is an AVURLAsset and backend has resource loader")
-                urlAsset.resourceLoader.setDelegate(
+                asset.resourceLoader.setDelegate(
                     assetResourceDelegate, queue: DispatchQueue.global()
                 )
             }
 
-            let playerItem = AVPlayerItem(asset: currentSong.asset)
+            let playerItem = AVPlayerItem(asset: asset)
             avPlayer = AVPlayer(playerItem: playerItem)
             updateNowPlayingMetadataInfo()
-            Logger.player.info("Set current song: \(currentSong.title)")
+            Logger.player.info("Set current song: \(currentSong.title) \(currentSong.url)")
         }
     }
     @Published private (set) var avPlayer: AVPlayer? {
