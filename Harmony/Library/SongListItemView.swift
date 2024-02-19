@@ -15,6 +15,8 @@ struct SongListItemView: View {
     let borderWidth = UIMeasurements.thinBorderWidth
 
     var body: some View {
+        let songIsDownloaded = song.localUrl != nil
+
         HStack {
             SongArtworkView(song: song)
                 .frame(height: UIMeasurements.smallArtworkHeight)
@@ -35,6 +37,13 @@ struct SongListItemView: View {
                     .foregroundStyle(.secondary)
             }
             .fixedSize(horizontal: false, vertical: true)
+            Spacer()
+            Label(
+                songIsDownloaded ? "Available offline" : "Available online only",
+                systemImage: songIsDownloaded ? "arrow.down.circle.fill" : "cloud"
+            )
+                .foregroundStyle(.tertiary)
+                .labelStyle(.iconOnly)
         }
     }
 }
