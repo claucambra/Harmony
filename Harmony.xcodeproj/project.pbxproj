@@ -69,6 +69,7 @@
 		53B9796C2B7E8159002DA742 /* PlaceholderArtworkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53B9796B2B7E8159002DA742 /* PlaceholderArtworkView.swift */; };
 		53B9796F2B7F6D55002DA742 /* NextcloudKit in Frameworks */ = {isa = PBXBuildFile; productRef = 53B9796E2B7F6D55002DA742 /* NextcloudKit */; };
 		53B979732B80274C002DA742 /* NextcloudAVAssetResourceLoaderDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53B979722B80274C002DA742 /* NextcloudAVAssetResourceLoaderDelegate.swift */; };
+		53B979752B833AA9002DA742 /* LoadingIndicatorOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53B979742B833AA9002DA742 /* LoadingIndicatorOverlayView.swift */; };
 		53D6664D2B6B7E3E0042C03D /* PlayerQueueListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D6664C2B6B7E3E0042C03D /* PlayerQueueListItemView.swift */; };
 		53D666532B6E50340042C03D /* EnvironmentValues+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D666522B6E50340042C03D /* EnvironmentValues+Extension.swift */; };
 		53D666562B6E9C300042C03D /* NextcloudBackend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D666552B6E9C300042C03D /* NextcloudBackend.swift */; };
@@ -198,6 +199,7 @@
 		53802A3D2B6790330066208D /* ToolbarVolumeSliderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolbarVolumeSliderView.swift; sourceTree = "<group>"; };
 		53B9796B2B7E8159002DA742 /* PlaceholderArtworkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceholderArtworkView.swift; sourceTree = "<group>"; };
 		53B979722B80274C002DA742 /* NextcloudAVAssetResourceLoaderDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NextcloudAVAssetResourceLoaderDelegate.swift; sourceTree = "<group>"; };
+		53B979742B833AA9002DA742 /* LoadingIndicatorOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingIndicatorOverlayView.swift; sourceTree = "<group>"; };
 		53D6664C2B6B7E3E0042C03D /* PlayerQueueListItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerQueueListItemView.swift; sourceTree = "<group>"; };
 		53D666522B6E50340042C03D /* EnvironmentValues+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EnvironmentValues+Extension.swift"; sourceTree = "<group>"; };
 		53D666552B6E9C300042C03D /* NextcloudBackend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NextcloudBackend.swift; sourceTree = "<group>"; };
@@ -552,8 +554,9 @@
 		53D666682B74C51B0042C03D /* Common */ = {
 			isa = PBXGroup;
 			children = (
-				53D666692B74C53F0042C03D /* UIMeasurements.swift */,
+				53B979742B833AA9002DA742 /* LoadingIndicatorOverlayView.swift */,
 				53B9796B2B7E8159002DA742 /* PlaceholderArtworkView.swift */,
+				53D666692B74C53F0042C03D /* UIMeasurements.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -831,6 +834,7 @@
 				53D6666C2B74D6C80042C03D /* PlayerScrubberView.swift in Sources */,
 				535053A02B5D1CC700D7EAF2 /* BackendsModel.swift in Sources */,
 				535F1BD12B4A8F1400C78D98 /* HarmonyApp.swift in Sources */,
+				53B979752B833AA9002DA742 /* LoadingIndicatorOverlayView.swift in Sources */,
 				535054172B63A3F500D7EAF2 /* RepeatButton.swift in Sources */,
 				535053982B5CF4C900D7EAF2 /* BackendConfigurationFieldView.swift in Sources */,
 				53D6664D2B6B7E3E0042C03D /* PlayerQueueListItemView.swift in Sources */,
