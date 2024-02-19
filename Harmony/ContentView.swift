@@ -87,6 +87,9 @@ struct ContentView: View {
 
                 #if !os(macOS)
                 if UIDevice.current.userInterfaceIdiom != .phone {
+                    ToolbarItem {
+                        AirPlayButton()
+                    }
                     inspectorToolbarItem
                 }
                 #endif
