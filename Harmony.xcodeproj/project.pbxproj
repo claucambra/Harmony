@@ -26,7 +26,6 @@
 		5350537C2B5BB1FE00D7EAF2 /* Sidebar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5350537B2B5BB1FE00D7EAF2 /* Sidebar.swift */; };
 		5350537E2B5BB39000D7EAF2 /* DetailColumn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5350537D2B5BB39000D7EAF2 /* DetailColumn.swift */; };
 		535053812B5BBDC000D7EAF2 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535053802B5BBDC000D7EAF2 /* SettingsView.swift */; };
-		535053832B5BC28E00D7EAF2 /* BackendsSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535053822B5BC28E00D7EAF2 /* BackendsSettingsView.swift */; };
 		535053862B5BC98B00D7EAF2 /* BackendChoiceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535053852B5BC98B00D7EAF2 /* BackendChoiceView.swift */; };
 		535053882B5BCD0200D7EAF2 /* BackendDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535053872B5BCD0200D7EAF2 /* BackendDescription.swift */; };
 		5350538D2B5BD1A700D7EAF2 /* FilePlayability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5350538C2B5BD1A700D7EAF2 /* FilePlayability.swift */; };
@@ -157,7 +156,6 @@
 		5350537B2B5BB1FE00D7EAF2 /* Sidebar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sidebar.swift; sourceTree = "<group>"; };
 		5350537D2B5BB39000D7EAF2 /* DetailColumn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailColumn.swift; sourceTree = "<group>"; };
 		535053802B5BBDC000D7EAF2 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
-		535053822B5BC28E00D7EAF2 /* BackendsSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendsSettingsView.swift; sourceTree = "<group>"; };
 		535053852B5BC98B00D7EAF2 /* BackendChoiceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendChoiceView.swift; sourceTree = "<group>"; };
 		535053872B5BCD0200D7EAF2 /* BackendDescription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendDescription.swift; sourceTree = "<group>"; };
 		5350538C2B5BD1A700D7EAF2 /* FilePlayability.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilePlayability.swift; sourceTree = "<group>"; };
@@ -382,7 +380,6 @@
 				535053972B5CF4C900D7EAF2 /* BackendConfigurationFieldView.swift */,
 				5350539A2B5D026F00D7EAF2 /* BackendConfigurationUtils.swift */,
 				535053952B5BE96800D7EAF2 /* BackendConfigurationView.swift */,
-				535053822B5BC28E00D7EAF2 /* BackendsSettingsView.swift */,
 				5350541A2B63BBC500D7EAF2 /* ConfiguredBackendsListItemView.swift */,
 				535054312B66248C00D7EAF2 /* ConfiguredBackendsListView.swift */,
 				535053EF2B62186F00D7EAF2 /* SettingsSheet.swift */,
@@ -833,7 +830,6 @@
 				5350539B2B5D026F00D7EAF2 /* BackendConfigurationUtils.swift in Sources */,
 				53B9796C2B7E8159002DA742 /* PlaceholderArtworkView.swift in Sources */,
 				535053862B5BC98B00D7EAF2 /* BackendChoiceView.swift in Sources */,
-				535053832B5BC28E00D7EAF2 /* BackendsSettingsView.swift in Sources */,
 				53D6666C2B74D6C80042C03D /* PlayerScrubberView.swift in Sources */,
 				535053A02B5D1CC700D7EAF2 /* BackendsModel.swift in Sources */,
 				535F1BD12B4A8F1400C78D98 /* HarmonyApp.swift in Sources */,
