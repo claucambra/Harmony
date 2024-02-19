@@ -45,7 +45,6 @@ struct PhonePlayerDrawer: View {
                         }
                         Spacer()
                     }
-                    .padding([.leading, .trailing], UIMeasurements.largePadding)
                 }
                 VStack(spacing: UIMeasurements.largePadding) {
                     PlayerScrubberView(size: .large)
@@ -58,21 +57,25 @@ struct PhonePlayerDrawer: View {
                         mainButton(RepeatButton())
                     }
                 }
-                .padding([.leading, .trailing], UIMeasurements.largePadding)
                 .padding([.bottom], UIMeasurements.veryLargePadding)
             }
             HStack {
+                AirPlayButton()
+                    .labelStyle(.iconOnly)
+                Spacer()
                 Button {
                     queueVisible.toggle()
                 } label: {
                     Label("Toggle queue", systemImage: "list.triangle")
                 }
                 .labelStyle(.iconOnly)
+                .frame(alignment: .trailing)
             }
             .padding([.bottom], UIMeasurements.veryLargePadding)
         }
         .presentationDetents([.large])
         .presentationDragIndicator(.visible)
+        .padding([.leading, .trailing], UIMeasurements.largePadding)
     }
 
     @ViewBuilder
