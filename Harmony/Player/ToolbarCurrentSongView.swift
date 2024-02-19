@@ -18,15 +18,9 @@ struct ToolbarCurrentSongView: View {
     var body: some View {
         HStack(spacing: horizontalSpacing) {
             if let currentSong = controller.currentSong {
-                SongArtworkView(song: currentSong)
-                    .frame(maxHeight: .infinity)
-                    .clipShape(.rect(topLeadingRadius: borderRadius, bottomLeadingRadius: borderRadius))
-                    .padding([.top, .bottom, .leading], borderWidth)
+                artworkViewWithModifiers(SongArtworkView(song: currentSong))
             } else {
-                PlaceholderArtworkView()
-                    .frame(maxHeight: .infinity)
-                    .clipShape(.rect(topLeadingRadius: borderRadius, bottomLeadingRadius: borderRadius))
-                    .padding([.top, .bottom, .leading], borderWidth)
+                artworkViewWithModifiers(PlaceholderArtworkView())
             }
             VStack(spacing: 0) {
                 HStack {
@@ -48,6 +42,14 @@ struct ToolbarCurrentSongView: View {
             RoundedRectangle(cornerRadius: borderRadius)
                 .stroke(.separator, lineWidth: borderWidth)
         )
+    }
+
+    @ViewBuilder
+    func artworkViewWithModifiers(_ view: some View) -> some View {
+        view
+            .frame(maxHeight: .infinity)
+            .clipShape(.rect(topLeadingRadius: borderRadius, bottomLeadingRadius: borderRadius))
+            .padding([.top, .bottom, .leading], borderWidth)
     }
 }
 
