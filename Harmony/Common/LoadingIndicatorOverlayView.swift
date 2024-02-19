@@ -25,7 +25,6 @@ struct LoadingIndicatorOverlayView: View {
                     topTrailing: topTrailingRadius
                 )))
             ProgressView()
-                .padding(.all, UIMeasurements.mediumPadding)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
     }
