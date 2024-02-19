@@ -27,23 +27,9 @@ struct PhonePlayerDrawer: View {
                     VStack {
                         Spacer()
                         if let currentSong = PlayerController.shared.currentSong {
-                            SongArtworkView(song: currentSong)
-                                .clipShape(.rect(cornerRadius: cornerRadius))
-                                .shadow(radius: shadowRadius)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: cornerRadius)
-                                        .stroke(.separator, lineWidth: borderWidth)
-                                )
-                                .frame(height: UIMeasurements.largeArtworkHeight)
+                            artworkViewWithModifiers(SongArtworkView(song: currentSong))
                         } else {
-                            PlaceholderArtworkView()
-                                .clipShape(.rect(cornerRadius: cornerRadius))
-                                .shadow(radius: shadowRadius)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: cornerRadius)
-                                        .stroke(.separator, lineWidth: borderWidth)
-                                )
-                                .frame(height: UIMeasurements.largeArtworkHeight)
+                            artworkViewWithModifiers(PlaceholderArtworkView())
                         }
                         Spacer()
                         Text(controller.currentSong?.title ?? "Harmony")
@@ -95,6 +81,18 @@ struct PhonePlayerDrawer: View {
             .controlSize(.large)
             .font(.system(size: buttonSymbolFontSize))
             .frame(maxWidth: .infinity)
+    }
+
+    @ViewBuilder
+    func artworkViewWithModifiers(_ view: some View) -> some View {
+        view
+            .clipShape(.rect(cornerRadius: cornerRadius))
+            .shadow(radius: shadowRadius)
+            .overlay(
+                RoundedRectangle(cornerRadius: cornerRadius)
+                    .stroke(.separator, lineWidth: borderWidth)
+            )
+            .frame(height: UIMeasurements.largeArtworkHeight)
     }
 }
 #endif
