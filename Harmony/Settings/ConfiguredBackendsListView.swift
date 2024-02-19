@@ -12,6 +12,10 @@ struct ConfiguredBackendsListView: View {
     @ObservedObject var backendsModel = BackendsModel.shared
     @State private var selection = Set<BackendPresentable.ID>()
 
+    #if os(macOS)
+    @Environment(\.openWindow) var openWindow
+    #endif
+
     var body: some View {
         List {
             Section("Configured backends") {
@@ -39,6 +43,20 @@ struct ConfiguredBackendsListView: View {
                         )
                     }
                 })
+                #if os(macOS)
+                Button(action: {
+                    openWindow(id: "backend-creator")
+                }) {
+                    Label("Configure new backend...", systemImage: "plus.circle")
+                }
+                .buttonStyle(.plain)
+                #else
+                NavigationLink {
+                    BackendChoiceView()
+                } label: {
+                    Label("Configure new backend...", systemImage: "plus.circle")
+                }
+                #endif
             }
         }
     }
