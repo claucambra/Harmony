@@ -34,15 +34,15 @@ public class SyncController: ObservableObject {
         currentlySyncingFully = true
 
         let backends = BackendsModel.shared.backends.values
+        // TODO: Run concurrently
         for backend in backends {
-            let retrievedIdentifiers = await self.syncBackend(backend)
-            await clearStaleSongs(backendId: backend.id, freshSongIdentifiers: retrievedIdentifiers)
+            await self.syncBackend(backend)
         }
 
         currentlySyncingFully = false
     }
 
-    func syncBackend(_ backend: any Backend) async -> Set<String> {
+    func syncBackend(_ backend: any Backend) async {
         let refreshedSongs = await runSyncForBackend(backend)
 
         let ingestTask = Task { @MainActor in
@@ -62,10 +62,11 @@ public class SyncController: ObservableObject {
         }
 
         do {
-            return try await ingestTask.result.get()
+            let retrievedIdentifiers = try await ingestTask.result.get()
+            await clearStaleSongs(backendId: backend.id, freshSongIdentifiers: retrievedIdentifiers)
         } catch let error {
             Logger.sync.error("Could not get result from ingestion task: \(error)")
-            return []
+            return
         }
     }
 
