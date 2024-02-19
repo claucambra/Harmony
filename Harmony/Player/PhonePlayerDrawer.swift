@@ -89,8 +89,23 @@ struct PhonePlayerDrawer: View {
             .clipShape(.rect(cornerRadius: cornerRadius))
             .shadow(radius: shadowRadius)
             .overlay(
-                RoundedRectangle(cornerRadius: cornerRadius)
-                    .stroke(.separator, lineWidth: borderWidth)
+                ZStack {
+                    RoundedRectangle(cornerRadius: cornerRadius)
+                        .stroke(.separator, lineWidth: borderWidth)
+                    if controller.timeControlStatus == .waitingToPlayAtSpecifiedRate {
+                        RoundedRectangle(cornerRadius: cornerRadius)
+                            .foregroundStyle(.ultraThinMaterial)
+                            .frame(
+                                width: UIMeasurements.smallArtworkHeight,
+                                height: UIMeasurements.smallArtworkHeight
+                            )
+                        ProgressView()
+                            .frame(
+                                width: UIMeasurements.smallArtworkHeight,
+                                height: UIMeasurements.smallArtworkHeight
+                            )
+                    }
+                }
             )
             .frame(height: UIMeasurements.largeArtworkHeight)
     }
