@@ -46,10 +46,23 @@ struct ToolbarCurrentSongView: View {
 
     @ViewBuilder
     func artworkViewWithModifiers(_ view: some View) -> some View {
-        view
-            .frame(maxHeight: .infinity)
-            .clipShape(.rect(topLeadingRadius: borderRadius, bottomLeadingRadius: borderRadius))
-            .padding([.top, .bottom, .leading], borderWidth)
+        ZStack {
+            view
+                .frame(maxHeight: .infinity)
+                .clipShape(.rect(topLeadingRadius: borderRadius, bottomLeadingRadius: borderRadius))
+            if controller.timeControlStatus == .waitingToPlayAtSpecifiedRate {
+                LoadingIndicatorOverlayView(
+                    topLeadingRadius: borderRadius,
+                    bottomLeadingRadius: borderRadius,
+                    bottomTrailingRadius: 0.0,
+                    topTrailingRadius: 0.0
+                )
+                .frame(maxHeight: .infinity)
+                .aspectRatio(CGSize(width: 1, height: 1), contentMode: .fit)
+            }
+
+        }
+        .frame(maxHeight: .infinity)
     }
 }
 
