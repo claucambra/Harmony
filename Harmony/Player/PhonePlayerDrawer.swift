@@ -52,9 +52,13 @@ struct PhonePlayerDrawer: View {
                         .frame(maxWidth: .infinity)
                     HStack {
                         mainButton(ShuffleButton())
+                        Spacer()
                         mainButton(ChangeSongButton(buttonChangeType: .previous))
+                        Spacer()
                         mainButton(PlayButton())
+                        Spacer()
                         mainButton(ChangeSongButton(buttonChangeType: .next))
+                        Spacer()
                         mainButton(RepeatButton())
                     }
                 }
@@ -82,9 +86,8 @@ struct PhonePlayerDrawer: View {
     @ViewBuilder
     func mainButton(_ button: some View) -> some View {
         button
-            .controlSize(.large)
+            .controlSize(.extraLarge)
             .font(.system(size: buttonSymbolFontSize))
-            .frame(maxWidth: .infinity)
     }
 
     @ViewBuilder
