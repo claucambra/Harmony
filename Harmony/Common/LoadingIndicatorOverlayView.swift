@@ -11,7 +11,7 @@ struct LoadingIndicatorOverlayView: View {
     var body: some View {
         ZStack(alignment: .center) {
             RoundedRectangle(cornerRadius: UIMeasurements.cornerRadius)
-                .foregroundStyle(.thickMaterial)
+                .foregroundStyle(.regularMaterial)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             ProgressView()
                 .padding(.all, UIMeasurements.mediumPadding)
