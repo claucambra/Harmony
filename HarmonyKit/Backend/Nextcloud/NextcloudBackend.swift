@@ -191,6 +191,7 @@ public class NextcloudBackend: NSObject, Backend {
             ) { account, etag, date, length, allHeaderFields, nkError in
                 guard nkError == .success else {
                     Logger.ncBackend.error("Download error: \(nkError.errorDescription)")
+                    continuation.resume()
                     return
                 }
                 song.localUrl = localUrl
