@@ -14,30 +14,32 @@ struct ConfiguredBackendsListView: View {
 
     var body: some View {
         List {
-            ForEach($backendsModel.backendPresentables) { backendPresentable in
-                let presentable = backendPresentable.wrappedValue
-                listItemView(presentable: presentable)
-                    .swipeActions(edge: .leading) {
-                        Button {
-                            Task {
-                                guard let backend = backendsModel.backends[presentable.id] else {
-                                    return
+            Section("Configured backends") {
+                ForEach($backendsModel.backendPresentables) { backendPresentable in
+                    let presentable = backendPresentable.wrappedValue
+                    listItemView(presentable: presentable)
+                        .swipeActions(edge: .leading) {
+                            Button {
+                                Task {
+                                    guard let backend = backendsModel.backends[presentable.id] else {
+                                        return
+                                    }
+                                    await SyncController.shared.syncBackend(backend)
                                 }
-                                await SyncController.shared.syncBackend(backend)
+                            } label: {
+                                Label("Sync", systemImage: "arrow.triangle.2.circlepath")
                             }
-                        } label: {
-                            Label("Sync", systemImage: "arrow.triangle.2.circlepath")
                         }
-                    }
-            }
-            .onDelete(perform: { indexSet in
-                for index in indexSet {
-                    let backend = backendsModel.backends.values[index]
-                    deleteBackendConfig(
-                        id: backend.id, withBackendDescriptionId: backend.typeDescription.id
-                    )
                 }
-            })
+                .onDelete(perform: { indexSet in
+                    for index in indexSet {
+                        let backend = backendsModel.backends.values[index]
+                        deleteBackendConfig(
+                            id: backend.id, withBackendDescriptionId: backend.typeDescription.id
+                        )
+                    }
+                })
+            }
         }
     }
 
