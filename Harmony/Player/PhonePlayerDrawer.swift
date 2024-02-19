@@ -93,13 +93,7 @@ struct PhonePlayerDrawer: View {
                     RoundedRectangle(cornerRadius: cornerRadius)
                         .stroke(.separator, lineWidth: borderWidth)
                     if controller.timeControlStatus == .waitingToPlayAtSpecifiedRate {
-                        RoundedRectangle(cornerRadius: cornerRadius)
-                            .foregroundStyle(.ultraThinMaterial)
-                            .frame(
-                                width: UIMeasurements.smallArtworkHeight,
-                                height: UIMeasurements.smallArtworkHeight
-                            )
-                        ProgressView()
+                        LoadingIndicatorOverlayView()
                             .frame(
                                 width: UIMeasurements.smallArtworkHeight,
                                 height: UIMeasurements.smallArtworkHeight
