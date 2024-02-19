@@ -58,8 +58,14 @@ struct FloatingCurrentSongView: View {
         view
             .clipShape(.rect(cornerRadius: cornerRadius))
             .overlay(
-                RoundedRectangle(cornerRadius: cornerRadius)
-                    .stroke(.separator, lineWidth: borderWidth)
+                ZStack {
+                    RoundedRectangle(cornerRadius: cornerRadius)
+                        .stroke(.separator, lineWidth: borderWidth)
+                    if controller.timeControlStatus == .waitingToPlayAtSpecifiedRate {
+                        LoadingIndicatorOverlayView()
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    }
+                }
             )
             .frame(height: UIMeasurements.smallArtworkHeight)
     }
