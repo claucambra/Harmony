@@ -36,12 +36,12 @@ struct ContentView: View {
             Sidebar(selection: $selection)
                 .toolbar {
                     ToolbarItemGroup {
-                        Button(action: {
+                        Button {
                             Task {
                                 await SyncController.shared.sync()
                             }
-                        }) {
-                            Label("Sync", systemImage: "arrow.triangle.2.circlepath.circle")
+                        } label: {
+                            Image(systemName: "arrow.triangle.2.circlepath.circle")
                         }
                         #if !os(macOS)
                         Button(action: {
