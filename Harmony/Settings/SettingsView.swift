@@ -15,21 +15,16 @@ struct SettingsView: View {
     var body: some View {
         #if os(macOS)
         TabView {
-            BackendsSettingsView()
+            ConfiguredBackendsListView()
                 .tabItem {
                     labelForTab(.backends)
                 }
                 .tag(Tabs.backends)
         }
-        .padding(UIMeasurements.largePadding)
         .frame(minWidth: UIMeasurements.mediumWindowWidth, minHeight: UIMeasurements.mediumWindowHeight)
         #else
-        List {
-            NavigationLink {
-                BackendsSettingsView()
-            } label: {
-                labelForTab(.backends)
-            }
+        VStack {
+            ConfiguredBackendsListView()
         }
         .navigationTitle("Settings")
         #endif
