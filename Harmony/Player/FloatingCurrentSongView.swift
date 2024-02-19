@@ -61,7 +61,9 @@ struct FloatingCurrentSongView: View {
                 ZStack {
                     RoundedRectangle(cornerRadius: cornerRadius)
                         .stroke(.separator, lineWidth: borderWidth)
-                    if controller.timeControlStatus == .waitingToPlayAtSpecifiedRate {
+                    if controller.currentSong?.localUrl == nil,
+                       controller.timeControlStatus == .waitingToPlayAtSpecifiedRate
+                    {
                         LoadingIndicatorOverlayView()
                             .frame(maxWidth: .infinity, maxHeight: .infinity)
                     }
