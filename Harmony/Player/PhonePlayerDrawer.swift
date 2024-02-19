@@ -45,6 +45,7 @@ struct PhonePlayerDrawer: View {
                         }
                         Spacer()
                     }
+                    .padding([.leading, .trailing], UIMeasurements.largePadding)
                 }
                 VStack(spacing: UIMeasurements.largePadding) {
                     PlayerScrubberView(size: .large)
@@ -58,6 +59,7 @@ struct PhonePlayerDrawer: View {
                     }
                 }
                 .padding([.bottom], UIMeasurements.veryLargePadding)
+                .padding([.leading, .trailing], UIMeasurements.largePadding)
             }
             HStack {
                 AirPlayButton()
@@ -72,10 +74,10 @@ struct PhonePlayerDrawer: View {
                 .frame(alignment: .trailing)
             }
             .padding([.bottom], UIMeasurements.veryLargePadding)
+            .padding([.leading, .trailing], UIMeasurements.largePadding)
         }
         .presentationDetents([.large])
         .presentationDragIndicator(.visible)
-        .padding([.leading, .trailing], UIMeasurements.largePadding)
     }
 
     @ViewBuilder
