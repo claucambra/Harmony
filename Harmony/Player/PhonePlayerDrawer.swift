@@ -62,14 +62,13 @@ struct PhonePlayerDrawer: View {
                 .padding([.leading, .trailing], UIMeasurements.largePadding)
             }
             HStack {
-                AirPlayButton()
-                    .labelStyle(.iconOnly)
+                secondaryButton(AirPlayButton().labelStyle(.iconOnly))
                 Spacer()
-                Button {
+                secondaryButton(Button {
                     queueVisible.toggle()
                 } label: {
                     Label("Toggle queue", systemImage: "list.triangle")
-                }
+                })
                 .labelStyle(.iconOnly)
                 .frame(alignment: .trailing)
             }
@@ -86,6 +85,13 @@ struct PhonePlayerDrawer: View {
             .controlSize(.large)
             .font(.system(size: buttonSymbolFontSize))
             .frame(maxWidth: .infinity)
+    }
+
+    @ViewBuilder
+    func secondaryButton(_ button: some View) -> some View {
+        button
+            .controlSize(.large)
+            .font(.system(size: UIMeasurements.mediumButtonSymbolFontSize))
     }
 
     @ViewBuilder
