@@ -9,12 +9,6 @@ import AVFoundation
 import OSLog
 import SwiftData
 
-#if os(macOS)
-import AppKit
-#else
-import UIKit
-#endif
-
 // TODO: Implement artwork when loading from database
 @Model
 public final class Song: ObservableObject {
