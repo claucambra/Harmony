@@ -85,16 +85,22 @@ struct PhonePlayerDrawer: View {
 
     @ViewBuilder
     func mainButton(_ button: some View) -> some View {
-        button
+        playerButton(button)
             .controlSize(.extraLarge)
             .font(.system(size: buttonSymbolFontSize))
     }
 
     @ViewBuilder
     func secondaryButton(_ button: some View) -> some View {
-        button
+        playerButton(button)
             .controlSize(.large)
             .font(.system(size: UIMeasurements.mediumButtonSymbolFontSize))
+    }
+
+    @ViewBuilder
+    func playerButton(_ button: some View) -> some View {
+        button
+            .foregroundStyle(.foreground)
     }
 
     @ViewBuilder
