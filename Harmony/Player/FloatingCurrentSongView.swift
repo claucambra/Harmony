@@ -35,14 +35,9 @@ struct FloatingCurrentSongView: View {
                 }
             }
             Spacer()
-            PlayButton()
-                .controlSize(.large)
-                .font(.system(size: buttonSymbolFontSize))
-                .frame(width: UIMeasurements.mediumButtonSize)
-            ChangeSongButton(buttonChangeType: .next)
-                .controlSize(.large)
-                .font(.system(size: buttonSymbolFontSize))
-                .frame(width: UIMeasurements.mediumButtonSize)
+            playbackControlButton(PlayButton())
+            playbackControlButton(ChangeSongButton(buttonChangeType: .next))
+
         }
         .padding(10)
         .background {
@@ -70,5 +65,13 @@ struct FloatingCurrentSongView: View {
                 }
             )
             .frame(height: UIMeasurements.smallArtworkHeight)
+    }
+
+    @ViewBuilder
+    func playbackControlButton(_ button: some View) -> some View {
+        button
+            .controlSize(.large)
+            .font(.system(size: buttonSymbolFontSize))
+            .frame(width: UIMeasurements.mediumButtonSize)
     }
 }
