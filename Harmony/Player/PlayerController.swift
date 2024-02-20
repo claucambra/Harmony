@@ -6,6 +6,7 @@
 //
 
 import AVFoundation
+import AVKit
 import Foundation
 import HarmonyKit
 import MediaPlayer
@@ -55,7 +56,7 @@ class PlayerController: NSObject, ObservableObject  {
             Logger.player.info("Set current song: \(currentSong.title) \(currentSong.url)")
         }
     }
-    @Published private (set) var avPlayer: AVPlayer? {
+    @Published private var avPlayer: AVPlayer? {
         willSet {
             avPlayer?.removeObserver(self, forKeyPath: AVPlayerTimeControlStatusKeyPath)
             NotificationCenter.default.removeObserver(
@@ -385,4 +386,10 @@ class PlayerController: NSObject, ObservableObject  {
             timeControlStatus = avPlayer?.timeControlStatus ?? .paused
         }
     }
+
+    #if os(macOS)
+    func configureRoutePickerView(_ routePickerView: AVRoutePickerView) {
+        routePickerView.player = avPlayer
+    }
+    #endif
 }
