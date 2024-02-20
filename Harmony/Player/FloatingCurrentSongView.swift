@@ -71,6 +71,7 @@ struct FloatingCurrentSongView: View {
     func playbackControlButton(_ button: some View) -> some View {
         button
             .controlSize(.large)
+            .foregroundStyle(.foreground)
             .font(.system(size: buttonSymbolFontSize))
             .frame(width: UIMeasurements.mediumButtonSize)
     }
