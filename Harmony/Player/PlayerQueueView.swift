@@ -12,6 +12,7 @@ struct PlayerQueueView: View {
     @ObservedObject var playerController = PlayerController.shared
     @ObservedObject var queue = PlayerController.shared.queue
     @State private var selection: Set<Song.ID> = []
+    @State var rowBackground: Color?
 
     private let currentSongSectionId = "current-song-section"
     private let futureSongsSectionId = "future-songs-section"
@@ -25,6 +26,7 @@ struct PlayerQueueView: View {
                     Section("Previously played") {
                         ForEach(queue.pastSongs) { song in
                             PlayerQueueListItemView(song: song, isCurrentSong: false)
+                                .listRowBackground(rowBackground)
                         }
                         .onDelete(perform: { indexSet in queue.removePastSongs(indexSet) })
                     }
@@ -33,6 +35,7 @@ struct PlayerQueueView: View {
                 if let currentSong = queue.currentSong {
                     Section("Currently playing") {
                         PlayerQueueListItemView(song: currentSong, isCurrentSong: true)
+                            .listRowBackground(rowBackground)
                     }
                     .id(currentSongSectionId)
                 }
@@ -40,6 +43,7 @@ struct PlayerQueueView: View {
                     Section("Playing next") {
                         ForEach(queue.playNextSongs) { song in
                             PlayerQueueListItemView(song: song, isCurrentSong: false)
+                                .listRowBackground(rowBackground)
                         }
                         .onDelete(perform: { indexSet in queue.removePlayNextSongs(indexSet) })
                     }
@@ -49,6 +53,7 @@ struct PlayerQueueView: View {
                     Section("Upcoming songs") {
                         ForEach(queue.futureSongs) { song in
                             PlayerQueueListItemView(song: song, isCurrentSong: false)
+                                .listRowBackground(rowBackground)
                                 .onAppear {
                                     queue.loadNextPageIfNeeded(song: song)
                                 }
