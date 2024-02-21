@@ -22,16 +22,17 @@ struct FLACFormat {
             case cueSheet
             case picture
             case reserved
+            case invalid
             case undefined
 
-            init(bytes: UInt8) {
-                let type = bytes & 0x7F
-                if type <= 126, type >= 7 {
+            init(byte: UInt8) {
+                let type = byte & 0x7F  // Ignore largest bit of byte as that's last block flag
+                if type == 127 {
+                    self = .invalid
+                } else if type <= 126, type >= 7 {
                     self = .reserved
-                } else if type >= 0 {
-                    self = BlockType(rawValue: type) ?? .undefined
                 } else {
-                    self = .undefined
+                    self = BlockType(rawValue: type) ?? .undefined
                 }
             }
         }
