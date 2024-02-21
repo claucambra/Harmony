@@ -8,11 +8,7 @@
 import Foundation
 
 struct FLACFormat {
-    static var streamMarker = "fLaC"
-
     struct Header {
-        static let size = 4
-
         enum BlockType: UInt8 {
             case streamInfo
             case padding
@@ -36,5 +32,21 @@ struct FLACFormat {
                 }
             }
         }
+
+        static let size = 4  // Bytes
+        let isLastMetadataBlock: Bool
+        let blockType: BlockType
+        let metadataBlockDataSize: UInt32
+
+        init(bytes: Data) {
+            isLastMetadataBlock = (bytes[0] & 0x80) != 0  // Check largest bit of byte
+            blockType = BlockType(byte: bytes[0])
+            let metadataBlockDataSizeBytes = bytes[1..<4]
+            metadataBlockDataSize = metadataBlockDataSizeBytes.withUnsafeBytes {
+                $0.load(as: UInt32.self)
+            } // All numbers are big endian
+        }
     }
+
+    static var streamMarker = "fLaC"
 }
