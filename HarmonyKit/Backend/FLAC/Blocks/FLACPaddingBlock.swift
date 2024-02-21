@@ -8,5 +8,6 @@
 import Foundation
 
 struct FLACPaddingBlock {
-    
+    public let header: FLACMetadata.Header
+    public let length: UInt32  // bytes
 }
