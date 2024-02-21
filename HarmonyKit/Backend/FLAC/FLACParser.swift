@@ -11,7 +11,7 @@ class FLACParser {
     let data: Data
 
     var isFLAC: Bool {
-        String(data: data[0 ..< 4], encoding: .ascii) == FLACFormat.streamMarker
+        String(data: data[0..<4], encoding: .ascii) == FLACMetadata.streamMarker
     }
 
     init(data: Data) {

@@ -1,5 +1,5 @@
 //
-//  FLACFormat.swift
+//  FLACMetadata.swift
 //  HarmonyKit
 //
 //  Created by Claudio Cambra on 22/2/24.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct FLACFormat {
+struct FLACMetadata {
     struct Header {
         enum BlockType: UInt8 {
             case streamInfo
@@ -49,4 +49,11 @@ struct FLACFormat {
     }
 
     static var streamMarker = "fLaC"
+    var streamInfo: FLACStreamInfoBlock?
+    var vorbisComments: FLACVorbisCommentsBlock?
+    var picture: FLACPictureBlock?
+    var application: FLACApplicationBlock?
+    var seekTable: FLACSeekTableBlock?
+    var cueSheet: FLACCueSheetBlock?
+    var paddings: [FLACPaddingBlock]?
 }
