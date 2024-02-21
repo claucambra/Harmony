@@ -9,7 +9,9 @@ import HarmonyKit
 import SwiftUI
 
 struct SongArtworkView: View {
+    enum ScaleMode { case fill, fit }
     @ObservedObject var song: Song
+    @State var scaleMode: ScaleMode = .fit
 
     var body: some View {
         if let imageData = song.artwork {
@@ -29,10 +31,16 @@ struct SongArtworkView: View {
 
     @ViewBuilder
     func adjustedImage(_ image: Image) -> some View {
-        image
+        let image = image
             .interpolation(.high)
             .resizable()
-            .scaledToFit()
             .aspectRatio(CGSize(width: 1, height: 1), contentMode: .fit)
+
+        switch scaleMode {
+        case .fill:
+            image.scaledToFill()
+        case .fit:
+            image.scaledToFit()
+        }
     }
 }
