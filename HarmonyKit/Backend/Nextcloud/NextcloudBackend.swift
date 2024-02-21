@@ -100,7 +100,7 @@ public class NextcloudBackend: NSObject, Backend {
         var songs: [Song] = []
 
         await withTaskGroup(of: [Song].self) { group in
-            for i in 0..<fileCount {
+            for i in 1..<fileCount { // First song is always the subject of the scan, not child
                 // When we have submitted the maximum concurrent scans in the first burst, wait for
                 // a task to finish off before submitting the next scan, thus limiting concurrent
                 // tasks.
