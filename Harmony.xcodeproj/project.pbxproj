@@ -62,6 +62,7 @@
 		535F1BE32B4A8F1600C78D98 /* HarmonyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535F1BE22B4A8F1600C78D98 /* HarmonyTests.swift */; };
 		535F1BED2B4A8F1600C78D98 /* HarmonyUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535F1BEC2B4A8F1600C78D98 /* HarmonyUITests.swift */; };
 		535F1BEF2B4A8F1600C78D98 /* HarmonyUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535F1BEE2B4A8F1600C78D98 /* HarmonyUITestsLaunchTests.swift */; };
+		537632D42B8663100026BFAB /* FLACParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 537632D32B8663100026BFAB /* FLACParser.swift */; };
 		53802A3A2B66AF2B0066208D /* PhonePlayerDrawer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53802A392B66AF2B0066208D /* PhonePlayerDrawer.swift */; };
 		53802A3C2B66C49F0066208D /* SongArtworkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53802A3B2B66C49F0066208D /* SongArtworkView.swift */; };
 		53802A3E2B6790330066208D /* ToolbarVolumeSliderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53802A3D2B6790330066208D /* ToolbarVolumeSliderView.swift */; };
@@ -193,6 +194,7 @@
 		535F1BE82B4A8F1600C78D98 /* HarmonyUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HarmonyUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		535F1BEC2B4A8F1600C78D98 /* HarmonyUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HarmonyUITests.swift; sourceTree = "<group>"; };
 		535F1BEE2B4A8F1600C78D98 /* HarmonyUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HarmonyUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		537632D32B8663100026BFAB /* FLACParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FLACParser.swift; sourceTree = "<group>"; };
 		53802A392B66AF2B0066208D /* PhonePlayerDrawer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhonePlayerDrawer.swift; sourceTree = "<group>"; };
 		53802A3B2B66C49F0066208D /* SongArtworkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongArtworkView.swift; sourceTree = "<group>"; };
 		53802A3D2B6790330066208D /* ToolbarVolumeSliderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolbarVolumeSliderView.swift; sourceTree = "<group>"; };
@@ -284,6 +286,7 @@
 		535053482B5955F900D7EAF2 /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				537632D32B8663100026BFAB /* FLACParser.swift */,
 				535053492B5955F900D7EAF2 /* Song.swift */,
 			);
 			path = Common;
@@ -790,6 +793,7 @@
 				535053622B5975A100D7EAF2 /* Logger+Extension.swift in Sources */,
 				53D666562B6E9C300042C03D /* NextcloudBackend.swift in Sources */,
 				53D666582B6E9DB60042C03D /* NextcloudBackendDescription.swift in Sources */,
+				537632D42B8663100026BFAB /* FLACParser.swift in Sources */,
 				535053502B5955F900D7EAF2 /* HarmonyKit.docc in Sources */,
 				535053542B5955F900D7EAF2 /* Backend.swift in Sources */,
 				53D6665B2B6E9DCF0042C03D /* LocalBackendDescription.swift in Sources */,
