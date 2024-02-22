@@ -22,7 +22,7 @@ public final class Song: ObservableObject {
     public private(set) var genre: String = ""
     public private(set) var composer: String = ""
     public private(set) var grouping: String = ""
-    public private(set) var peformer: String = ""
+    public private(set) var performer: String = ""
     public private(set) var duration: TimeInterval = 0
     @Attribute(.externalStorage) public var artwork: Data?
     public internal(set) var local: Bool = false
@@ -81,7 +81,7 @@ public final class Song: ObservableObject {
             } else if item.commonKey == .commonKeySubject {
                 grouping = value ?? ""
             } else if item.commonKey == .commonKeyContributor {
-                peformer = value ?? ""
+                performer = value ?? ""
             } else if item.commonKey == .commonKeyType {
                 genre = value ?? ""
             }
@@ -114,7 +114,7 @@ public final class Song: ObservableObject {
         self.genre = genre
         self.composer = composer
         self.grouping = grouping
-        self.peformer = peformer
+        self.performer = peformer
         self.duration = duration
         self.artwork = artwork
         self.local = local
@@ -133,7 +133,7 @@ public final class Song: ObservableObject {
             genre: genre,
             composer: composer,
             grouping: grouping,
-            peformer: peformer,
+            peformer: performer,
             duration: duration,
             artwork: artwork,
             local: local,
@@ -170,7 +170,7 @@ public final class Song: ObservableObject {
             album = metadataDict[FLACVorbisCommentsMetadataBlock.Field.album] ?? ""
             artist = metadataDict[FLACVorbisCommentsMetadataBlock.Field.artist] ?? ""
             genre = metadataDict[FLACVorbisCommentsMetadataBlock.Field.genre] ?? ""
-            peformer = metadataDict[FLACVorbisCommentsMetadataBlock.Field.performer] ?? ""
+            performer = metadataDict[FLACVorbisCommentsMetadataBlock.Field.performer] ?? ""
             artwork = flacMetadata.picture?.data
         } catch let error {
             Logger.defaultLog.error("Could not ingest local flac properties: \(error)")
