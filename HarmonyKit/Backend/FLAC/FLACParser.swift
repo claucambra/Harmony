@@ -27,6 +27,13 @@ class FLACParser {
         guard isFLAC else { throw ParseError.dataNotFlac("Cannot parse data, is not a FLAC!") }
         
         var currentData = data.advanced(by: 4)
+        var streamInfo: FLACStreamInfoMetadataBlock?
+        var vorbisComments: FLACVorbisCommentsMetadataBlock?
+        var picture: FLACPictureMetadataBlock?
+        var application: FLACApplicationMetadataBlock?
+        var seekTable: FLACSeekTableMetadataBlock?
+        var cueSheet: FLACCueSheetMetadataBlock?
+        var paddings: [FLACPaddingMetadataBlock] = []
 
         while currentData.count >= FLACMetadataBlockHeader.size {
             let headerBytes = currentData[0..<FLACMetadataBlockHeader.size]
@@ -40,38 +47,43 @@ class FLACParser {
             
             currentData = currentData.advanced(by: FLACMetadataBlockHeader.size)
 
-            var metadata = FLACMetadata()
             switch header.metadataBlockType {
             case .streamInfo:
-                metadata.streamInfo = FLACStreamInfoMetadataBlock(
+                streamInfo = FLACStreamInfoMetadataBlock(
                     bytes: currentData, header: header
                 )
             case .padding:
-                metadata.paddings.append(FLACPaddingMetadataBlock(header: header))
+                paddings.append(FLACPaddingMetadataBlock(header: header))
             case .application:
-                metadata.application = FLACApplicationMetadataBlock(
+                application = FLACApplicationMetadataBlock(
                     bytes: currentData, header: header
                 )
             case .seekTable:
-                metadata.seekTable = FLACSeekTableMetadataBlock(bytes: currentData, header: header)
+                seekTable = FLACSeekTableMetadataBlock(bytes: currentData, header: header)
             case .vorbisComment:
-                metadata.vorbisComments = FLACVorbisCommentsMetadataBlock(
+                vorbisComments = FLACVorbisCommentsMetadataBlock(
                     bytes: currentData, header: header
                 )
             case .cueSheet:
-                metadata.cueSheet = FLACCueSheetMetadataBlock(bytes: currentData, header: header)
+                cueSheet = FLACCueSheetMetadataBlock(bytes: currentData, header: header)
             case .picture:
-                metadata.picture = FLACPictureMetadataBlock(bytes: currentData, header: header)
-            case .reserved:
-                continue
-            case .invalid, .undefined:
-                continue
+                print("Skip pic")
+                //metadata.picture = FLACPictureMetadataBlock(bytes: currentData, header: header)
+            case .reserved, .invalid, .undefined:
+                print("Nothing to do")
             }
 
             currentData = currentData.advanced(by: Int(header.metadataBlockDataSize))
 
             if header.isLastMetadataBlock {
-                return metadata
+                return FLACMetadata(
+                    streamInfo: streamInfo!,
+                    vorbisComments: vorbisComments,
+                    picture: picture,
+                    application: application,
+                    seekTable: seekTable,
+                    cueSheet: cueSheet
+                )
             }
         }
 

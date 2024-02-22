@@ -9,11 +9,11 @@ import Foundation
 
 struct FLACMetadata {
     static var streamMarker = "fLaC"
-    var streamInfo: FLACStreamInfoMetadataBlock?
-    var vorbisComments: FLACVorbisCommentsMetadataBlock?
-    var picture: FLACPictureMetadataBlock?
-    var application: FLACApplicationMetadataBlock?
-    var seekTable: FLACSeekTableMetadataBlock?
-    var cueSheet: FLACCueSheetMetadataBlock?
-    var paddings: [FLACPaddingMetadataBlock]?
+    let streamInfo: FLACStreamInfoMetadataBlock
+    let vorbisComments: FLACVorbisCommentsMetadataBlock?
+    let picture: FLACPictureMetadataBlock?
+    let application: FLACApplicationMetadataBlock?
+    let seekTable: FLACSeekTableMetadataBlock?
+    let cueSheet: FLACCueSheetMetadataBlock?
+    let paddings: [FLACPaddingMetadataBlock] = []
 }
