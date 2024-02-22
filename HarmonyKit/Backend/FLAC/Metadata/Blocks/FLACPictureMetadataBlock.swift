@@ -8,7 +8,7 @@
 import Foundation
 
 struct FLACPictureMetadataBlock {
-    enum PictureType: UInt8 {
+    enum PictureType: UInt32 {
         case other
         case fileIcon  // 32x32 pixels 'file icon' (PNG only)
         case otherFileIcon
@@ -48,39 +48,57 @@ struct FLACPictureMetadataBlock {
         self.header = header
 
         var advancedBytes = bytes.advanced(by: 0)
-        let typeValue = advancedBytes[0..<4].withUnsafeBytes { $0.load(as: UInt32.self) }
-        type = PictureType(rawValue: UInt8(typeValue)) ?? .undefined
+        let typeValue = advancedBytes[0..<4].withUnsafeBytes {
+            $0.load(as: UInt32.self).bigEndian
+        }
+        type = PictureType(rawValue: typeValue) ?? .undefined
         advancedBytes = advancedBytes.advanced(by: 4)
 
-        let mimeTypeLength = Int(bytes[0..<4].withUnsafeBytes { $0.load(as: UInt32.self) })
+        let mimeTypeLength = Int(advancedBytes[0..<4].withUnsafeBytes {
+            $0.load(as: UInt32.self).bigEndian
+        })
         advancedBytes = advancedBytes.advanced(by: 4)
 
-        mimeType = String(bytes: advancedBytes[0..<mimeTypeLength], encoding: .utf8) ?? ""
+        mimeType = String(bytes: advancedBytes[0..<mimeTypeLength], encoding: .ascii) ?? ""
         advancedBytes = advancedBytes.advanced(by: mimeTypeLength)
 
-        let descriptionLength = bytes[0..<4].withUnsafeBytes { $0.load(as: UInt32.self) }
+        let descriptionLength = advancedBytes[0..<4].withUnsafeBytes {
+            $0.load(as: UInt32.self).bigEndian
+        }
         advancedBytes = advancedBytes.advanced(by: 4)
 
         if descriptionLength > 0 {
             description = String(bytes: advancedBytes[0..<descriptionLength], encoding: .utf8)
             advancedBytes = advancedBytes.advanced(by: Int(descriptionLength))
+        } else {
+            description = nil
         }
 
-        let width = Int(advancedBytes[0..<4].withUnsafeBytes { $0.load(as: UInt32.self) })
+        let width = Int(advancedBytes[0..<4].withUnsafeBytes {
+            $0.load(as: UInt32.self).bigEndian
+        })
         advancedBytes = advancedBytes.advanced(by: 4)
 
-        let height = Int(advancedBytes[0..<4].withUnsafeBytes { $0.load(as: UInt32.self) })
+        let height = Int(advancedBytes[0..<4].withUnsafeBytes {
+            $0.load(as: UInt32.self).bigEndian
+        })
         advancedBytes = advancedBytes.advanced(by: 4)
 
         size = CGSize(width: width, height: height)
 
-        colorDepth = advancedBytes[0..<4].withUnsafeBytes { $0.load(as: UInt32.self) }
+        colorDepth = advancedBytes[0..<4].withUnsafeBytes {
+            $0.load(as: UInt32.self).bigEndian
+        }
         advancedBytes = advancedBytes.advanced(by: 4)
 
-        colorUsed = advancedBytes[0..<4].withUnsafeBytes { $0.load(as: UInt32.self) }
+        colorUsed = advancedBytes[0..<4].withUnsafeBytes {
+            $0.load(as: UInt32.self).bigEndian
+        }
         advancedBytes = advancedBytes.advanced(by: 4)
 
-        length = advancedBytes[0..<4].withUnsafeBytes { $0.load(as: UInt32.self) }
+        length = advancedBytes[0..<4].withUnsafeBytes {
+            $0.load(as: UInt32.self).bigEndian
+        }
         advancedBytes = advancedBytes.advanced(by: 4)
 
         data = advancedBytes[0..<length]
