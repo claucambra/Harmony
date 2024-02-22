@@ -65,7 +65,7 @@ struct FLACVorbisCommentsMetadataBlock {
             advancedBytes = advancedBytes.advanced(by: commentLength)
 
             let keyValue = value.split(separator: "=")
-            if keyValue.count == 2, let key = Field(rawValue: String(keyValue[0])) {
+            if keyValue.count == 2, let key = Field(rawValue: String(keyValue[0]).uppercased()) {
                 processedMetadata[key] = String(keyValue[1])
             } else {
                 logger.error("Could not get key-value pair from \(keyValue), skipping")
