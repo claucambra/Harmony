@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import OSLog
 
 struct FLACVorbisCommentsMetadataBlock {
     enum Field: String {
@@ -29,6 +30,7 @@ struct FLACVorbisCommentsMetadataBlock {
     let header: FLACMetadataBlockHeader
     let vendor: String
     let metadata: [Field: String]
+    private let logger = Logger(subsystem: Logger.subsystem, category: "flacVorbisComments")
 
     init(bytes: Data, header: FLACMetadataBlockHeader) {
         var advancedBytes = bytes.advanced(by: 0)
@@ -54,9 +56,9 @@ struct FLACVorbisCommentsMetadataBlock {
             })
             advancedBytes = advancedBytes.advanced(by: 4)
 
-            guard let value = String(
-                bytes: advancedBytes[0..<commentLength], encoding: .utf8
-            ) else {
+            let valueBytes = advancedBytes[0..<commentLength]
+            guard let value = String(bytes: valueBytes, encoding: .utf8) else {
+                logger.error("Could not get string from \(valueBytes), skipping value")
                 advancedBytes = advancedBytes.advanced(by: commentLength)
                 continue
             }
@@ -65,6 +67,8 @@ struct FLACVorbisCommentsMetadataBlock {
             let keyValue = value.split(separator: "=")
             if keyValue.count == 2, let key = Field(rawValue: String(keyValue[0])) {
                 processedMetadata[key] = String(keyValue[1])
+            } else {
+                logger.error("Could not get key-value pair from \(keyValue), skipping")
             }
         }
 
