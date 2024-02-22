@@ -10,4 +10,9 @@ import Foundation
 struct FLACPaddingMetadataBlock {
     public let header: FLACMetadataBlockHeader
     public let length: UInt32  // bytes
+
+    init(header: FLACMetadataBlockHeader) {
+        self.header = header
+        length = header.metadataBlockDataSize
+    }
 }
