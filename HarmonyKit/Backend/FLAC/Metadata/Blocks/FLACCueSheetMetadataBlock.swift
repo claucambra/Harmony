@@ -37,7 +37,9 @@ struct FLACCueSheetMetadataBlock {
         mediaCatalogNumber = String(bytes: advancedBytes[0..<128], encoding: .ascii) ?? ""
         advancedBytes = advancedBytes.advanced(by: 128)
 
-        leadInSamples = advancedBytes[0..<8].withUnsafeBytes { $0.load(as: UInt64.self) }
+        leadInSamples = advancedBytes[0..<8].withUnsafeBytes {
+            $0.load(as: UInt64.self).bigEndian
+        }
         advancedBytes = advancedBytes.advanced(by: 8)
 
         isCD = (UInt32(advancedBytes[0]) & 0x80) != 0
@@ -49,7 +51,7 @@ struct FLACCueSheetMetadataBlock {
         var processedTracks: [Track] = []
         for _ in 0..<numberOfTracks {
             let trackOffsetInSamples = advancedBytes[0..<8].withUnsafeBytes {
-                $0.load(as: UInt64.self)
+                $0.load(as: UInt64.self).bigEndian
             }
             advancedBytes = advancedBytes.advanced(by: 8)
 
@@ -73,7 +75,7 @@ struct FLACCueSheetMetadataBlock {
                 advancedBytes = advancedBytes.advanced(by: Track.Index.size)
 
                 let indexPointOffsetInSamples = indexPointData[0..<8].withUnsafeBytes {
-                    $0.load(as: UInt64.self)
+                    $0.load(as: UInt64.self).bigEndian
                 }
                 let indexPointNumber = indexPointData[8]
 

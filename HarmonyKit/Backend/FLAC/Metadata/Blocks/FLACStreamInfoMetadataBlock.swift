@@ -23,10 +23,14 @@ struct FLACStreamInfoMetadataBlock {
         self.header = header
 
         var advancedBytes = bytes.advanced(by: 0)
-        minimumBlockSize = advancedBytes[0..<2].withUnsafeBytes { $0.load(as: UInt16.self) }
+        minimumBlockSize = advancedBytes[0..<2].withUnsafeBytes {
+            $0.load(as: UInt16.self).bigEndian
+        }
         advancedBytes = advancedBytes.advanced(by: 2)
 
-        maximumBlockSize = advancedBytes[0..<2].withUnsafeBytes { $0.load(as: UInt16.self) }
+        maximumBlockSize = advancedBytes[0..<2].withUnsafeBytes {
+            $0.load(as: UInt16.self).bigEndian
+        }
         advancedBytes = advancedBytes.advanced(by: 2)
 
         var usableMinimumFrameSize: UInt32 = 0
@@ -49,14 +53,16 @@ struct FLACStreamInfoMetadataBlock {
         // 2. 3 bits -> number of channels
         // 3. 5 bits -> bits per sample
         // 4. 36 bits -> total samples in stream
-        let a16 = advancedBytes[0..<2].withUnsafeBytes { $0.load(as: UInt16.self) }
+        let a16 = advancedBytes[0..<2].withUnsafeBytes { $0.load(as: UInt16.self).bigEndian }
         let a = UInt32(a16) << 4
         sampleRate = a | (UInt32(advancedBytes[2]) & 0xF0) >> 4
         channels = (UInt32(advancedBytes[2]) & 0x0E) >> 1 + 1  // Provided value is -1, re-add 1
         bitsPerSample = (UInt32(advancedBytes[2]) & 0x01) << 4 |
                         (UInt32(advancedBytes[3]) & 0xF0) >> 4 + 1  // Provided value is -1, re-add
         totalSamples = (UInt64(advancedBytes[3]) & 0x0F) << 32 |
-                        UInt64(advancedBytes[4..<8].withUnsafeBytes { $0.load(as: UInt32.self) })
+                        UInt64(advancedBytes[4..<8].withUnsafeBytes {
+            $0.load(as: UInt32.self).bigEndian
+        })
         advancedBytes = advancedBytes.advanced(by: 8)
 
         md5 = advancedBytes[0..<16].compactMap({ String(format: "%02x", $0) }).joined()

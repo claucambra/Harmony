@@ -15,9 +15,9 @@ struct FLACSeekTableMetadataBlock {
         let frameSamples: UInt16
 
         init(bytes: Data) {
-            sampleNumber = bytes[0..<8].withUnsafeBytes { $0.load(as: UInt64.self) }
-            streamOffset = bytes[8..<16].withUnsafeBytes { $0.load(as: UInt64.self) }
-            frameSamples = bytes[16..<18].withUnsafeBytes { $0.load(as: UInt16.self) }
+            sampleNumber = bytes[0..<8].withUnsafeBytes { $0.load(as: UInt64.self).bigEndian }
+            streamOffset = bytes[8..<16].withUnsafeBytes { $0.load(as: UInt64.self).bigEndian }
+            frameSamples = bytes[16..<18].withUnsafeBytes { $0.load(as: UInt16.self).bigEndian }
         }
     }
 
