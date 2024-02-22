@@ -47,8 +47,8 @@ struct FLACVorbisCommentsMetadataBlock {
         }
         advancedBytes = advancedBytes.advanced(by: 4)
 
-        for i in 0..<commentCount {
         var processedMetadata: [Field: String] = [:]
+        for _ in 0..<commentCount {
             let commentLength = Int(advancedBytes[0..<4].withUnsafeBytes {
                 $0.load(as: UInt32.self).littleEndian
             })
