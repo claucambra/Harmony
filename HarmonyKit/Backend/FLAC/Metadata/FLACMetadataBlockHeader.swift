@@ -40,9 +40,10 @@ struct FLACMetadataBlockHeader {
     init(bytes: Data) {
         isLastMetadataBlock = (bytes[0] & 0x80) != 0  // Check largest bit of byte
         metadataBlockType = MetadataBlockType(byte: bytes[0])
-        let metadataBlockDataSizeBytes = bytes[1..<4]
-        metadataBlockDataSize = metadataBlockDataSizeBytes.withUnsafeBytes {
-            $0.load(as: UInt32.self)
-        } // All numbers are big endian
+        var usableMetadataBlockDataSize: UInt32 = 0
+        for i in 1..<4 {
+            usableMetadataBlockDataSize = (usableMetadataBlockDataSize << 8) | UInt32(bytes[i])
+        } // big endian numbers
+        metadataBlockDataSize = usableMetadataBlockDataSize
     }
 }
