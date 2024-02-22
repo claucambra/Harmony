@@ -57,30 +57,8 @@ public final class Song: ObservableObject {
         await setupArtwork(asset: asset)
 
         guard !url.lastPathComponent.contains(".flac") else {
-            let tagsDict = audioFileMetadata()
-            for (key, value) in tagsDict {
-                let key = key as? String ?? ""
-                if key == AVMetadataKey.commonKeyArtwork.rawValue {
-                    artwork = value as? Data ?? Data()
-                    continue
-                }
-
-                let value = value as? String
-                if key == AVMetadataKey.commonKeyTitle.rawValue {
-                    title = value ?? ""
-                } else if key == AVMetadataKey.commonKeyAlbumName.rawValue || key == "album" {
-                    album = value ?? ""
-                } else if key == AVMetadataKey.commonKeyArtist.rawValue {
-                    artist = value ?? ""
-                } else if key == AVMetadataKey.commonKeyCreator.rawValue {
-                    composer = value ?? ""
-                } else if key == AVMetadataKey.commonKeySubject.rawValue {
-                    grouping = value ?? ""
-                } else if key == AVMetadataKey.commonKeyContributor.rawValue {
-                    peformer = value ?? ""
-                } else if key == AVMetadataKey.commonKeyType.rawValue {
-                    genre = value ?? ""
-                }
+            if url.isFileURL {
+                ingestLocalFlacProperties()
             }
             return
         }
@@ -177,23 +155,25 @@ public final class Song: ObservableObject {
         }
     }
 
-    private func audioFileMetadata() -> NSDictionary {
-        // TODO: What do when url is remote?
-        var fileId: AudioFileID? = nil
-        var status: OSStatus = AudioFileOpenURL(
-            url as CFURL, .readPermission, kAudioFileFLACType, &fileId
-        )
-        guard let audioFile = fileId else { return NSDictionary() }
+    private func ingestLocalFlacProperties() {
+        do {
+            let flacData = try Data(contentsOf: url)
+            let flacParser = FLACParser(data: flacData)
+            let flacMetadata = try flacParser.parse()
 
-        var dict: CFDictionary? = nil
-        var dataSize = UInt32(MemoryLayout<CFDictionary?>.size(ofValue: dict))
+            guard let metadataDict = flacMetadata.vorbisComments?.metadata else {
+                Logger.defaultLog.error("Could not retrieve FLAC metadata.")
+                return
+            }
 
-        status = AudioFileGetProperty(audioFile, kAudioFilePropertyInfoDictionary, &dataSize, &dict)
-        guard status == noErr else { return NSDictionary() }
-
-        AudioFileClose(audioFile)
-
-        guard let cfDict = dict else { return NSDictionary() }
-        return NSDictionary(dictionary: cfDict)
+            title = metadataDict[FLACVorbisCommentsMetadataBlock.Field.title] ?? ""
+            album = metadataDict[FLACVorbisCommentsMetadataBlock.Field.album] ?? ""
+            artist = metadataDict[FLACVorbisCommentsMetadataBlock.Field.artist] ?? ""
+            genre = metadataDict[FLACVorbisCommentsMetadataBlock.Field.genre] ?? ""
+            peformer = metadataDict[FLACVorbisCommentsMetadataBlock.Field.performer] ?? ""
+            artwork = flacMetadata.picture?.data
+        } catch let error {
+            Logger.defaultLog.error("Could not ingest local flac properties: \(error)")
+        }
     }
 }
