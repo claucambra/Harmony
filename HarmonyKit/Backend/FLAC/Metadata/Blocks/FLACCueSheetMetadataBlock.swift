@@ -47,7 +47,7 @@ struct FLACCueSheetMetadataBlock {
         advancedBytes = advancedBytes.advanced(by: 1)
 
         var processedTracks: [Track] = []
-        for i in 0..<numberOfTracks {
+        for _ in 0..<numberOfTracks {
             let trackOffsetInSamples = advancedBytes[0..<8].withUnsafeBytes {
                 $0.load(as: UInt64.self)
             }
@@ -68,7 +68,7 @@ struct FLACCueSheetMetadataBlock {
             advancedBytes = advancedBytes.advanced(by: 1)
 
             var indexPoints: [Track.Index] = []
-            for i in 0..<numberOfIndexPoints {
+            for _ in 0..<numberOfIndexPoints {
                 let indexPointData = advancedBytes[0..<Track.Index.size]
                 advancedBytes = advancedBytes.advanced(by: Track.Index.size)
 
