@@ -162,7 +162,9 @@ public class NextcloudBackend: NSObject, Backend {
             identifier: ocId,
             backendId: self.id,
             local: false,
-            versionId: etag
+            versionId: etag,
+            fetchSession: ncKit.sessionManager,
+            fetchHeaders: ncKit.nkCommonInstance.getStandardHeaders(options: NKRequestOptions())
         ) else {
             logger.error("Could not create song from \(receivedFileUrl)")
             return nil
