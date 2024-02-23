@@ -113,6 +113,9 @@ struct ContentView: View {
                     .safeAreaPadding([.leading, .trailing, .bottom], 10)
                     .frame(alignment: .bottom)
                     .onTapGesture {
+                        // Make sure to hide any keyboard currently on screen
+                        let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene
+                        let window = scene?.windows.filter {$0.isKeyWindow}.first?.endEditing(true)
                         queueVisible.toggle()
                     }
             }
