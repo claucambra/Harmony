@@ -5,11 +5,11 @@
 //  Created by Claudio Cambra on 16/1/24.
 //
 
+import Alamofire
 import AVFoundation
 import OSLog
 import SwiftData
 
-// TODO: Implement artwork when loading from database
 @Model
 public final class Song: ObservableObject {
     @Attribute(.unique) public let identifier: String
@@ -37,7 +37,9 @@ public final class Song: ObservableObject {
         backendId: String,
         local: Bool = false,
         localUrl: URL? = nil,
-        versionId: String = ""
+        versionId: String = "",
+        fetchSession: Alamofire.Session? = nil,
+        fetchHeaders: HTTPHeaders? = nil
     ) async {
         self.url = url
         self.identifier = identifier
@@ -59,6 +61,10 @@ public final class Song: ObservableObject {
         guard !url.lastPathComponent.contains(".flac") else {
             if url.isFileURL {
                 ingestLocalFlacProperties()
+            } else if let fetchSession = fetchSession {
+                await ingestRemoteFlacProperties(session: fetchSession, headers: fetchHeaders)
+            } else {
+                Logger.defaultLog.log("Cannot fetch remote flac metadata.")
             }
             return
         }
@@ -164,6 +170,17 @@ public final class Song: ObservableObject {
         } catch let error {
             Logger.defaultLog.error("Could not ingest local flac properties: \(error)")
         }
+    }
+
+    private func ingestRemoteFlacProperties(
+        session: Alamofire.Session, headers: HTTPHeaders?
+    ) async {
+        let fetcher = FLACRemoteMetadataFetcher(url: url, session: session, headers: headers)
+        guard let metadata = await fetcher.fetch() else {
+            Logger.defaultLog.error("Fetching remote FLAC metadata failed. \(self.url)")
+            return
+        }
+        ingest(flacMetadata: metadata)
     }
 
     private func ingest(flacMetadata: FLACMetadata) {

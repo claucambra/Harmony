@@ -72,6 +72,7 @@
 		537632E62B86752B0026BFAB /* FLACCueSheetMetadataBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 537632E52B86752B0026BFAB /* FLACCueSheetMetadataBlock.swift */; };
 		537632E82B8675450026BFAB /* FLACPaddingMetadataBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 537632E72B8675450026BFAB /* FLACPaddingMetadataBlock.swift */; };
 		537632EA2B8677250026BFAB /* FLACMetadataBlockHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 537632E92B8677250026BFAB /* FLACMetadataBlockHeader.swift */; };
+		537632EF2B887AA90026BFAB /* FLACRemoteMetadataFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 537632EE2B887AA90026BFAB /* FLACRemoteMetadataFetcher.swift */; };
 		53802A3A2B66AF2B0066208D /* PhonePlayerDrawer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53802A392B66AF2B0066208D /* PhonePlayerDrawer.swift */; };
 		53802A3C2B66C49F0066208D /* SongArtworkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53802A3B2B66C49F0066208D /* SongArtworkView.swift */; };
 		53802A3E2B6790330066208D /* ToolbarVolumeSliderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53802A3D2B6790330066208D /* ToolbarVolumeSliderView.swift */; };
@@ -213,6 +214,7 @@
 		537632E52B86752B0026BFAB /* FLACCueSheetMetadataBlock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FLACCueSheetMetadataBlock.swift; sourceTree = "<group>"; };
 		537632E72B8675450026BFAB /* FLACPaddingMetadataBlock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FLACPaddingMetadataBlock.swift; sourceTree = "<group>"; };
 		537632E92B8677250026BFAB /* FLACMetadataBlockHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FLACMetadataBlockHeader.swift; sourceTree = "<group>"; };
+		537632EE2B887AA90026BFAB /* FLACRemoteMetadataFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FLACRemoteMetadataFetcher.swift; sourceTree = "<group>"; };
 		53802A392B66AF2B0066208D /* PhonePlayerDrawer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhonePlayerDrawer.swift; sourceTree = "<group>"; };
 		53802A3B2B66C49F0066208D /* SongArtworkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongArtworkView.swift; sourceTree = "<group>"; };
 		53802A3D2B6790330066208D /* ToolbarVolumeSliderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolbarVolumeSliderView.swift; sourceTree = "<group>"; };
@@ -567,6 +569,7 @@
 			children = (
 				537632EB2B8677F60026BFAB /* Metadata */,
 				537632D32B8663100026BFAB /* FLACParser.swift */,
+				537632EE2B887AA90026BFAB /* FLACRemoteMetadataFetcher.swift */,
 			);
 			path = FLAC;
 			sourceTree = "<group>";
@@ -847,6 +850,7 @@
 				535053552B5955F900D7EAF2 /* LocalBackend.swift in Sources */,
 				535053622B5975A100D7EAF2 /* Logger+Extension.swift in Sources */,
 				53D666562B6E9C300042C03D /* NextcloudBackend.swift in Sources */,
+				537632EF2B887AA90026BFAB /* FLACRemoteMetadataFetcher.swift in Sources */,
 				537632D62B86643E0026BFAB /* FLACMetadata.swift in Sources */,
 				537632E22B8674F80026BFAB /* FLACApplicationMetadataBlock.swift in Sources */,
 				537632EA2B8677250026BFAB /* FLACMetadataBlockHeader.swift in Sources */,
