@@ -160,20 +160,23 @@ public final class Song: ObservableObject {
             let flacData = try Data(contentsOf: url)
             let flacParser = FLACParser(data: flacData)
             let flacMetadata = try flacParser.parse()
-
-            guard let metadataDict = flacMetadata.vorbisComments?.metadata else {
-                Logger.defaultLog.error("Could not retrieve FLAC metadata.")
-                return
-            }
-
-            title = metadataDict[FLACVorbisCommentsMetadataBlock.Field.title] ?? ""
-            album = metadataDict[FLACVorbisCommentsMetadataBlock.Field.album] ?? ""
-            artist = metadataDict[FLACVorbisCommentsMetadataBlock.Field.artist] ?? ""
-            genre = metadataDict[FLACVorbisCommentsMetadataBlock.Field.genre] ?? ""
-            performer = metadataDict[FLACVorbisCommentsMetadataBlock.Field.performer] ?? ""
-            artwork = flacMetadata.picture?.data
+            ingest(flacMetadata: flacMetadata)
         } catch let error {
             Logger.defaultLog.error("Could not ingest local flac properties: \(error)")
         }
+    }
+
+    private func ingest(flacMetadata: FLACMetadata) {
+        guard let metadataDict = flacMetadata.vorbisComments?.metadata else {
+            Logger.defaultLog.error("Could not retrieve FLAC metadata. \(self.url)")
+            return
+        }
+
+        title = metadataDict[FLACVorbisCommentsMetadataBlock.Field.title] ?? ""
+        album = metadataDict[FLACVorbisCommentsMetadataBlock.Field.album] ?? ""
+        artist = metadataDict[FLACVorbisCommentsMetadataBlock.Field.artist] ?? ""
+        genre = metadataDict[FLACVorbisCommentsMetadataBlock.Field.genre] ?? ""
+        performer = metadataDict[FLACVorbisCommentsMetadataBlock.Field.performer] ?? ""
+        artwork = flacMetadata.picture?.data
     }
 }
