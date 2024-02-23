@@ -13,6 +13,7 @@ class FLACRemoteMetadataFetcher {
     let session: Alamofire.Session
     let headers: HTTPHeaders?
     let url: URL
+    private let queue = DispatchQueue(label: "flacRemoteMetadataFetcherQueue", qos: .userInitiated)
     private let logger = Logger(
         subsystem: Bundle.main.bundleIdentifier!, category: "flacRemoteMetadataFetcher"
     )
@@ -30,7 +31,7 @@ class FLACRemoteMetadataFetcher {
 
             session
                 .streamRequest(url, headers: headers)
-                .responseStream(on: .global()) { stream in
+                .responseStream(on: queue) { stream in
                     switch stream.event {
                     case let .stream(result):
                         switch result {
