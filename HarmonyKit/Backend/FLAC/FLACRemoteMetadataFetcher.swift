@@ -41,11 +41,13 @@ class FLACRemoteMetadataFetcher {
                                 gatheredData, stream: stream, continuation: continuation
                             )
                             metadata = acquiredMetadata
-                        case let .failure(never):
+                        case .failure(_):
                             self.logger.error("Stream failure! \(self.url)")
                         }
                     case let .complete(completion):
-                        print("STREAM COMPLETED \(self.url)")
+                        let error = String(describing: completion.error)
+                        let metrics = String(describing: completion.metrics)
+                        self.logger.debug("STREAM COMPLETED \(self.url) \(error) \(metrics)")
                         continuation.resume(returning: metadata)
                     }
                 }
@@ -69,7 +71,6 @@ class FLACRemoteMetadataFetcher {
             return metadata
         } catch FLACParser.ParseError.dataNotFlac {
             logger.error("Data stream is not a FLAC! \(gatheredData.count) \(self.url)")
-            print(String(bytes: gatheredData[0..<gatheredData.count], encoding: .ascii))
             stream.cancel()
         } catch FLACParser.ParseError.unexpectedEndError {
             logger.debug("Full FLAC metadata not yet received, downloading more. \(self.url)")
