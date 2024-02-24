@@ -202,7 +202,7 @@ public class LocalBackend: NSObject, Backend {
         }
 
         let downloadedStatus = downloadedStatusValue as! String
-        return downloadedStatus == URLUbiquitousItemDownloadingStatus.notDownloaded.rawValue
+        return downloadedStatus != URLUbiquitousItemDownloadingStatus.notDownloaded.rawValue
     }
 
     private func startPollingDownloadState(forSong song: Song) {
