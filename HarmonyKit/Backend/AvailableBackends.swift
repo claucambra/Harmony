@@ -8,7 +8,7 @@
 import Foundation
 
 public let availableBackends = [
-    localBackendTypeDescription,
+    filesBackendTypeDescription,
     ncBackendTypeDescription
 ]
 
@@ -16,8 +16,8 @@ public func backendFromDescriptionId(
     _ id: String, withConfig config: BackendConfiguration
 ) -> (any Backend)? {
     switch id {
-    case localBackendTypeDescription.id:
-        return LocalBackend(config: config)
+    case filesBackendTypeDescription.id:
+        return FilesBackend(config: config)
     case ncBackendTypeDescription.id:
         return NextcloudBackend(config: config)
     default:

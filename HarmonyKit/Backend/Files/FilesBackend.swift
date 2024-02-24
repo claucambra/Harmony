@@ -1,5 +1,5 @@
 //
-//  LocalBackend.swift
+//  FilesBackend.swift
 //  Harmony
 //
 //  Created by Claudio Cambra on 16/1/24.
@@ -10,11 +10,11 @@ import CryptoKit
 import OSLog
 
 extension Logger {
-    static let localBackend = Logger(subsystem: subsystem, category: "localBackend")
+    static let filesBackend = Logger(subsystem: subsystem, category: "filesBackend")
 }
 
-public class LocalBackend: NSObject, Backend {
-    public let typeDescription = localBackendTypeDescription
+public class FilesBackend: NSObject, Backend {
+    public let typeDescription = filesBackendTypeDescription
     public let id: String
     public var configValues: BackendConfiguration = [:]
     public private(set) var presentation: BackendPresentable
@@ -23,7 +23,7 @@ public class LocalBackend: NSObject, Backend {
     }
 
     static func getPathFromConfig(_ config: BackendConfiguration) -> URL {
-        let pathConfigFieldId = LocalBackendFieldId.pathConfig.rawValue
+        let pathConfigFieldId = FilesBackendFieldId.pathConfig.rawValue
         #if os(macOS)
         let accessibleUrlPathFieldId =
             pathConfigFieldId + BackendConfigurationLocalURLAccessibleURLFieldKeySuffix
@@ -36,15 +36,15 @@ public class LocalBackend: NSObject, Backend {
 
     required public init(config: BackendConfiguration) {
         configValues = config
-        let localPath = LocalBackend.getPathFromConfig(config)
+        let localPath = FilesBackend.getPathFromConfig(config)
         path = localPath
         id = config[BackendConfigurationIdFieldKey] as! String
         presentation = BackendPresentable(
             backendId: id,
-            typeId: localBackendTypeDescription.id,
-            systemImage: localBackendTypeDescription.systemImageName,
-            primary: localBackendTypeDescription.name,
-            secondary: localBackendTypeDescription.description,
+            typeId: filesBackendTypeDescription.id,
+            systemImage: filesBackendTypeDescription.systemImageName,
+            primary: filesBackendTypeDescription.name,
+            secondary: filesBackendTypeDescription.description,
             config: "Path: " + localPath.path
         )
         super.init()
@@ -56,10 +56,10 @@ public class LocalBackend: NSObject, Backend {
         self.id = id
         presentation = BackendPresentable(
             backendId: id,
-            typeId: localBackendTypeDescription.id,
-            systemImage: localBackendTypeDescription.systemImageName,
-            primary: localBackendTypeDescription.name,
-            secondary: localBackendTypeDescription.description,
+            typeId: filesBackendTypeDescription.id,
+            systemImage: filesBackendTypeDescription.systemImageName,
+            primary: filesBackendTypeDescription.name,
+            secondary: filesBackendTypeDescription.description,
             config: "Path: " + path.path
         )
         super.init()
@@ -73,7 +73,7 @@ public class LocalBackend: NSObject, Backend {
     func configurePath() {
         guard path.startAccessingSecurityScopedResource() else {
             let errorString = "could not access security scoped resource."
-            Logger.localBackend.error("Error scanning directory \(self.path): \(errorString)")
+            Logger.filesBackend.error("Error scanning directory \(self.path): \(errorString)")
             return
         }
     }
@@ -116,7 +116,7 @@ public class LocalBackend: NSObject, Backend {
     }
 
     public func scan() async -> [Song] {
-        Logger.localBackend.info("Starting full scan of \(self.path)")
+        Logger.filesBackend.info("Starting full scan of \(self.path)")
         DispatchQueue.main.async {
             self.presentation.state = "Starting full scan..."
         }
@@ -129,7 +129,7 @@ public class LocalBackend: NSObject, Backend {
     }
 
     func recursiveScan(path: URL) async -> [URL] {
-        Logger.localBackend.info("Scanning \(path)")
+        Logger.filesBackend.info("Scanning \(path)")
 
         Task { @MainActor in
             self.presentation.state = "Scanning " + path.path + "…"
@@ -148,7 +148,7 @@ public class LocalBackend: NSObject, Backend {
             }
 
             for case let file as URL in fileList {
-                Logger.localBackend.debug("Found \(file) in \(path)")
+                Logger.filesBackend.debug("Found \(file) in \(path)")
 
                 var isDirectory: ObjCBool = false
                 if FileManager.default.fileExists(atPath: file.path, isDirectory: &isDirectory),

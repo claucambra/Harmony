@@ -15,7 +15,7 @@
 		535053522B5955F900D7EAF2 /* LocalFileUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5350534A2B5955F900D7EAF2 /* LocalFileUtils.swift */; };
 		535053532B5955F900D7EAF2 /* HarmonyKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 5350534B2B5955F900D7EAF2 /* HarmonyKit.h */; };
 		535053542B5955F900D7EAF2 /* Backend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5350534D2B5955F900D7EAF2 /* Backend.swift */; };
-		535053552B5955F900D7EAF2 /* LocalBackend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5350534F2B5955F900D7EAF2 /* LocalBackend.swift */; };
+		535053552B5955F900D7EAF2 /* FilesBackend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5350534F2B5955F900D7EAF2 /* FilesBackend.swift */; };
 		5350535B2B59565400D7EAF2 /* LocalBackendTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535053582B59565400D7EAF2 /* LocalBackendTests.swift */; };
 		5350535C2B59565400D7EAF2 /* FilePlayabilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5350535A2B59565400D7EAF2 /* FilePlayabilityTests.swift */; };
 		535053622B5975A100D7EAF2 /* Logger+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535053612B5975A100D7EAF2 /* Logger+Extension.swift */; };
@@ -85,7 +85,7 @@
 		53D666532B6E50340042C03D /* EnvironmentValues+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D666522B6E50340042C03D /* EnvironmentValues+Extension.swift */; };
 		53D666562B6E9C300042C03D /* NextcloudBackend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D666552B6E9C300042C03D /* NextcloudBackend.swift */; };
 		53D666582B6E9DB60042C03D /* NextcloudBackendDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D666572B6E9DB60042C03D /* NextcloudBackendDescription.swift */; };
-		53D6665B2B6E9DCF0042C03D /* LocalBackendDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D6665A2B6E9DCF0042C03D /* LocalBackendDescription.swift */; };
+		53D6665B2B6E9DCF0042C03D /* FilesBackendDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D6665A2B6E9DCF0042C03D /* FilesBackendDescription.swift */; };
 		53D6665D2B6F34CC0042C03D /* SongContextMenuItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D6665C2B6F34CC0042C03D /* SongContextMenuItems.swift */; };
 		53D666632B7285120042C03D /* FloatingCurrentSongView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D666622B7285120042C03D /* FloatingCurrentSongView.swift */; };
 		53D666672B73EAD40042C03D /* SongListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D666662B73EAD40042C03D /* SongListItemView.swift */; };
@@ -153,7 +153,7 @@
 		5350534A2B5955F900D7EAF2 /* LocalFileUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalFileUtils.swift; sourceTree = "<group>"; };
 		5350534B2B5955F900D7EAF2 /* HarmonyKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HarmonyKit.h; sourceTree = "<group>"; };
 		5350534D2B5955F900D7EAF2 /* Backend.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Backend.swift; sourceTree = "<group>"; };
-		5350534F2B5955F900D7EAF2 /* LocalBackend.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalBackend.swift; sourceTree = "<group>"; };
+		5350534F2B5955F900D7EAF2 /* FilesBackend.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilesBackend.swift; sourceTree = "<group>"; };
 		535053582B59565400D7EAF2 /* LocalBackendTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalBackendTests.swift; sourceTree = "<group>"; };
 		5350535A2B59565400D7EAF2 /* FilePlayabilityTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilePlayabilityTests.swift; sourceTree = "<group>"; };
 		5350535D2B59573900D7EAF2 /* HarmonyKit.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = HarmonyKit.xctestplan; sourceTree = "<group>"; };
@@ -226,7 +226,7 @@
 		53D666522B6E50340042C03D /* EnvironmentValues+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EnvironmentValues+Extension.swift"; sourceTree = "<group>"; };
 		53D666552B6E9C300042C03D /* NextcloudBackend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NextcloudBackend.swift; sourceTree = "<group>"; };
 		53D666572B6E9DB60042C03D /* NextcloudBackendDescription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NextcloudBackendDescription.swift; sourceTree = "<group>"; };
-		53D6665A2B6E9DCF0042C03D /* LocalBackendDescription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalBackendDescription.swift; sourceTree = "<group>"; };
+		53D6665A2B6E9DCF0042C03D /* FilesBackendDescription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilesBackendDescription.swift; sourceTree = "<group>"; };
 		53D6665C2B6F34CC0042C03D /* SongContextMenuItems.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongContextMenuItems.swift; sourceTree = "<group>"; };
 		53D666622B7285120042C03D /* FloatingCurrentSongView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingCurrentSongView.swift; sourceTree = "<group>"; };
 		53D666662B73EAD40042C03D /* SongListItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongListItemView.swift; sourceTree = "<group>"; };
@@ -319,19 +319,19 @@
 				535053872B5BCD0200D7EAF2 /* BackendDescription.swift */,
 				5350541C2B63C71400D7EAF2 /* BackendPresentable.swift */,
 				537632DB2B8673F00026BFAB /* FLAC */,
-				5350534E2B5955F900D7EAF2 /* Local */,
+				5350534E2B5955F900D7EAF2 /* Files */,
 				53D666542B6E9C1D0042C03D /* Nextcloud */,
 			);
 			path = Backend;
 			sourceTree = "<group>";
 		};
-		5350534E2B5955F900D7EAF2 /* Local */ = {
+		5350534E2B5955F900D7EAF2 /* Files */ = {
 			isa = PBXGroup;
 			children = (
-				5350534F2B5955F900D7EAF2 /* LocalBackend.swift */,
-				53D6665A2B6E9DCF0042C03D /* LocalBackendDescription.swift */,
+				5350534F2B5955F900D7EAF2 /* FilesBackend.swift */,
+				53D6665A2B6E9DCF0042C03D /* FilesBackendDescription.swift */,
 			);
-			path = Local;
+			path = Files;
 			sourceTree = "<group>";
 		};
 		535053562B59565400D7EAF2 /* Backend */ = {
@@ -847,7 +847,7 @@
 				535053922B5BD41200D7EAF2 /* AvailableBackends.swift in Sources */,
 				535053FF2B62892500D7EAF2 /* AVPlayer+Extension.swift in Sources */,
 				53B979732B80274C002DA742 /* NextcloudAVAssetResourceLoaderDelegate.swift in Sources */,
-				535053552B5955F900D7EAF2 /* LocalBackend.swift in Sources */,
+				535053552B5955F900D7EAF2 /* FilesBackend.swift in Sources */,
 				535053622B5975A100D7EAF2 /* Logger+Extension.swift in Sources */,
 				53D666562B6E9C300042C03D /* NextcloudBackend.swift in Sources */,
 				537632EF2B887AA90026BFAB /* FLACRemoteMetadataFetcher.swift in Sources */,
@@ -860,7 +860,7 @@
 				537632E42B8675170026BFAB /* FLACSeekTableMetadataBlock.swift in Sources */,
 				535053542B5955F900D7EAF2 /* Backend.swift in Sources */,
 				537632DE2B86745A0026BFAB /* FLACVorbisCommentsMetadataBlock.swift in Sources */,
-				53D6665B2B6E9DCF0042C03D /* LocalBackendDescription.swift in Sources */,
+				53D6665B2B6E9DCF0042C03D /* FilesBackendDescription.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

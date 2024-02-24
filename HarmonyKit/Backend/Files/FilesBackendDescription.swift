@@ -1,5 +1,5 @@
 //
-//  LocalBackendDescription.swift
+//  FilesBackendDescription.swift
 //  HarmonyKit
 //
 //  Created by Claudio Cambra on 4/2/24.
@@ -7,18 +7,18 @@
 
 import Foundation
 
-enum LocalBackendFieldId: String {
+enum FilesBackendFieldId: String {
     case pathConfig = "path-field"
 }
 
-let localBackendTypeDescription = BackendDescription(
-    id: "local-backend",
-    name: "Local Backend",
-    description: "Provides music stored locally on your computer.",
-    systemImageName: "internaldrive",
+let filesBackendTypeDescription = BackendDescription(
+    id: "files-backend",
+    name: "Files Backend",
+    description: "Provides music stored as files.",
+    systemImageName: "doc",
     configDescription: [
         BackendConfigurationField(
-            id: LocalBackendFieldId.pathConfig.rawValue,
+            id: FilesBackendFieldId.pathConfig.rawValue,
             title: "Path",
             description: "Location of files. Can be multiple locations.",
             valueType: .localUrl,
