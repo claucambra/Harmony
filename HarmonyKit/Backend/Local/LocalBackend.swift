@@ -86,20 +86,7 @@ public class LocalBackend: NSObject, Backend {
 
             if FileManager.default.isUbiquitousItem(at: url) {  // This is an iCloud file
                 Logger.defaultLog.debug("Found an iCloud file: \(url)")
-                let nsurl = url as NSURL
-                var downloadedStatusValue: AnyObject? =
-                    URLUbiquitousItemDownloadingStatus.downloaded.rawValue as AnyObject
-                do {
-                    try nsurl.getResourceValue(
-                        &downloadedStatusValue, forKey: URLResourceKey.ubiquitousItemDownloadingStatusKey
-                    )
-                } catch {
-                    Logger.defaultLog.error("Could not get iCloud download status of \(url)")
-                }
-
-                let downloadedStatus = downloadedStatusValue as! String
-                let isDownloaded =
-                    downloadedStatus == URLResourceKey.ubiquitousItemDownloadingStatusKey.rawValue
+                let isDownloaded = ubiquitousFileIsDownloaded(url: url)
 
                 song = await Song(
                     url: url,
@@ -198,5 +185,21 @@ public class LocalBackend: NSObject, Backend {
 
     public func assetForSong(_ song: Song) -> AVAsset? {
         return AVAsset(url: song.url)
+    }
+
+    private func ubiquitousFileIsDownloaded(url: URL) -> Bool {
+        let nsurl = url as NSURL
+        var downloadedStatusValue: AnyObject? =
+            URLUbiquitousItemDownloadingStatus.downloaded.rawValue as AnyObject
+        do {
+            try nsurl.getResourceValue(
+                &downloadedStatusValue, forKey: URLResourceKey.ubiquitousItemDownloadingStatusKey
+            )
+        } catch {
+            Logger.defaultLog.error("Could not get iCloud download status of \(url)")
+        }
+
+        let downloadedStatus = downloadedStatusValue as! String
+        return downloadedStatus == URLUbiquitousItemDownloadingStatus.notDownloaded.rawValue
     }
 }
