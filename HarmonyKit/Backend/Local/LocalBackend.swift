@@ -177,11 +177,23 @@ public class LocalBackend: NSObject, Backend {
     }
 
     public func fetchSong(_ song: Song) async {
-        return
+        let fileManager = FileManager.default
+        guard fileManager.isUbiquitousItem(at: song.url) else { return }
+        do {
+            try fileManager.startDownloadingUbiquitousItem(at: song.url)
+        } catch let error {
+            Logger.defaultLog.error("Could not fetch iCloud song: \(error)")
+        }
     }
     
     public func evictSong(_ song: Song) async {
-        return
+        let fileManager = FileManager.default
+        guard fileManager.isUbiquitousItem(at: song.url) else { return }
+        do {
+            try fileManager.evictUbiquitousItem(at: song.url)
+        } catch let error {
+            Logger.defaultLog.error("Could not evict iCloud song: \(error)")
+        }
     }
 
     public func assetForSong(_ song: Song) -> AVAsset? {
