@@ -167,6 +167,7 @@ public class LocalBackend: NSObject, Backend {
         let fileManager = FileManager.default
         guard fileManager.isUbiquitousItem(at: song.url) else { return }
         do {
+            startPollingDownloadState(forSong: song)
             try fileManager.startDownloadingUbiquitousItem(at: song.url)
         } catch let error {
             Logger.defaultLog.error("Could not fetch iCloud song: \(error)")
@@ -177,6 +178,7 @@ public class LocalBackend: NSObject, Backend {
         let fileManager = FileManager.default
         guard fileManager.isUbiquitousItem(at: song.url) else { return }
         do {
+            startPollingDownloadState(forSong: song)
             try fileManager.evictUbiquitousItem(at: song.url)
         } catch let error {
             Logger.defaultLog.error("Could not evict iCloud song: \(error)")
@@ -201,5 +203,19 @@ public class LocalBackend: NSObject, Backend {
 
         let downloadedStatus = downloadedStatusValue as! String
         return downloadedStatus == URLUbiquitousItemDownloadingStatus.notDownloaded.rawValue
+    }
+
+    private func startPollingDownloadState(forSong song: Song) {
+        // Since we do not use the document picker to select files we cannot use NSMetadataQuery
+        // and have to resort to manually polling the state of the file until completion of the
+        // download
+        Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
+            if self.ubiquitousFileIsDownloaded(url: song.url) {
+                song.localUrl = song.url
+                timer.invalidate()
+            } else {
+                song.localUrl = nil
+            }
+        }
     }
 }
