@@ -78,20 +78,51 @@ public class LocalBackend: NSObject, Backend {
         }
     }
 
-    func songsFromLocalUrls(_ urls:[URL]) async -> [Song] {
+    func songsFromLocalUrls(_ urls: [URL]) async -> [Song] {
         var songs: [Song] = []
         for url in urls {
             let asset = AVAsset(url: url)
-            guard let csum = calculateMD5Checksum(forFileAtLocalURL: url) else { continue }
-            guard let song = await Song(
-                url: url,
-                asset: asset,
-                identifier: csum,
-                backendId: id,
-                local: true,
-                localUrl: url,
-                versionId: csum
-            ) else { continue }
+            var song: Song?
+
+            if FileManager.default.isUbiquitousItem(at: url) {  // This is an iCloud file
+                Logger.defaultLog.debug("Found an iCloud file: \(url)")
+                let nsurl = url as NSURL
+                var downloadedStatusValue: AnyObject? =
+                    URLUbiquitousItemDownloadingStatus.downloaded.rawValue as AnyObject
+                do {
+                    try nsurl.getResourceValue(
+                        &downloadedStatusValue, forKey: URLResourceKey.ubiquitousItemDownloadingStatusKey
+                    )
+                } catch {
+                    Logger.defaultLog.error("Could not get iCloud download status of \(url)")
+                }
+
+                let downloadedStatus = downloadedStatusValue as! String
+                let isDownloaded =
+                    downloadedStatus == URLResourceKey.ubiquitousItemDownloadingStatusKey.rawValue
+
+                song = await Song(
+                    url: url,
+                    asset: asset,
+                    identifier: url.absoluteString,  // TODO
+                    backendId: id,
+                    local: false,
+                    localUrl: isDownloaded ? url : nil,
+                    versionId: url.absoluteString  // TODO
+                )
+            } else {
+                guard let csum = calculateMD5Checksum(forFileAtLocalURL: url) else { continue }
+                song = await Song(
+                    url: url,
+                    asset: asset,
+                    identifier: csum,
+                    backendId: id,
+                    local: true,
+                    localUrl: url,
+                    versionId: csum
+                )
+            }
+            guard let song = song else { continue }
             songs.append(song)
         }
         return songs
