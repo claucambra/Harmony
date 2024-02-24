@@ -13,6 +13,7 @@ import SwiftUI
 struct SongsTable: View {
     @Query(sort: \Song.title) var songs: [Song]
     @Binding var searchText: String
+    @Binding var showOnlineSongs: Bool
     @State var selection: Set<Song.ID> = []
     @State private var sortOrder = [KeyPathComparator(\Song.title, order: .reverse)]
     @State private var sortedSongs: [Song] = []
@@ -24,12 +25,23 @@ struct SongsTable: View {
     private let isCompact = false
     #endif
 
-    init(searchText: Binding<String>) {
+    init(searchText: Binding<String>, showOnlineSongs: Binding<Bool>) {
         _searchText = searchText
+        _showOnlineSongs  = showOnlineSongs
         let searchTextVal = searchText.wrappedValue
+        let showOnlineSongsVal = showOnlineSongs.wrappedValue
+
         _songs = Query(
             filter: #Predicate {
-                searchTextVal.isEmpty ? true : $0.title.localizedStandardContains(searchTextVal)
+                if searchTextVal.isEmpty, showOnlineSongsVal {
+                    true
+                } else if !searchTextVal.isEmpty, showOnlineSongsVal {
+                    $0.title.localizedStandardContains(searchTextVal)
+                } else if searchTextVal.isEmpty, !showOnlineSongsVal {
+                    $0.localUrl != nil
+                } else {
+                    $0.title.localizedStandardContains(searchTextVal) && $0.localUrl != nil
+                }
             },
             sort: \Song.title
         )
@@ -99,7 +111,7 @@ struct SongsTable: View {
 struct SongsTable_Previews: PreviewProvider {
     struct Preview: View {
         var body: some View {
-            SongsTable(searchText: .constant("Search text"))
+            SongsTable(searchText: .constant("Search text"), showOnlineSongs: .constant(true))
         }
     }
 

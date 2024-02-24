@@ -14,6 +14,7 @@ struct ContentView: View {
     @State private var settingsSheetVisible = false
     @State private var queueVisible = false
     @State private var searchText = ""
+    @State private var showOnlineSongs = true
     #if os(macOS)
     let buttonStackInToolbar = true
     let buttonStackPlacement = ToolbarItemPlacement.navigation
@@ -33,7 +34,7 @@ struct ContentView: View {
 
     var body: some View {
         NavigationSplitView {
-            Sidebar(selection: $selection)
+            Sidebar(selection: $selection, showOnlineSongs: $showOnlineSongs)
                 .toolbar {
                     ToolbarItemGroup {
                         Button {
@@ -58,7 +59,11 @@ struct ContentView: View {
                 .safeAreaPadding([.bottom], floatingBarSafeArea)
         } detail: {
             NavigationStack(path: $path) {
-                DetailColumn(selection: $selection, searchText: $searchText)
+                DetailColumn(
+                    selection: $selection, 
+                    searchText: $searchText,
+                    showOnlineSongs: $showOnlineSongs
+                )
             }
             .safeAreaPadding([.bottom], floatingBarSafeArea)
             .toolbar {

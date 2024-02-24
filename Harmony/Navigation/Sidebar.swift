@@ -13,12 +13,18 @@ enum Panel {
 
 struct Sidebar: View {
     @Binding var selection: Panel?
+    @Binding var showOnlineSongs: Bool
 
     var body: some View {
         List(selection: $selection) {
             Section("Library") {
                 NavigationLink(value: Panel.songs) {
                     Label("Songs", systemImage: "music.note")
+                }
+            }
+            Section("Filters") {
+                Toggle(isOn: $showOnlineSongs) {
+                    Label("Undownloaded songs", systemImage: "cloud")
                 }
             }
         }
@@ -29,8 +35,9 @@ struct Sidebar: View {
 struct Sidebar_Previews: PreviewProvider {
     struct Preview: View {
         @State private var selection: Panel? = Panel.songs
+        @State private var showOnlineSongs = true
         var body: some View {
-            Sidebar(selection: $selection)
+            Sidebar(selection: $selection, showOnlineSongs: $showOnlineSongs)
         }
     }
 

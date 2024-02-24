@@ -11,11 +11,12 @@ import SwiftUI
 struct DetailColumn: View {
     @Binding var selection: Panel?
     @Binding var searchText: String
+    @Binding var showOnlineSongs: Bool
 
     var body: some View {
         switch selection ?? .songs {
         case .songs:
-            SongsTable(searchText: $searchText)
+            SongsTable(searchText: $searchText, showOnlineSongs: $showOnlineSongs)
                 .navigationTitle("Songs")
         }
     }
@@ -25,9 +26,12 @@ struct DetailColumn_Previews: PreviewProvider {
     struct Preview: View {
         @State private var selection: Panel? = .songs
         @State private var searchText = "Search text"
+        @State private var showOnlineSongs = true
 
         var body: some View {
-            DetailColumn(selection: $selection, searchText: $searchText)
+            DetailColumn(
+                selection: $selection, searchText: $searchText, showOnlineSongs: $showOnlineSongs
+            )
         }
     }
     static var previews: some View {
