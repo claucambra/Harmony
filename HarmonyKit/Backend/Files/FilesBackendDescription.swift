@@ -13,7 +13,7 @@ enum FilesBackendFieldId: String {
 
 let filesBackendTypeDescription = BackendDescription(
     id: "files-backend",
-    name: "Files Backend",
+    name: "Files",
     description: "Provides music stored as files.",
     systemImageName: "doc",
     configDescription: [

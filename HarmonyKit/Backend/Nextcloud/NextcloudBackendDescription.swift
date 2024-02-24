@@ -16,7 +16,7 @@ enum NextcloudBackendFieldId: String {
 
 let ncBackendTypeDescription = BackendDescription(
     id: "nc-backend",
-    name: "Nextcloud Backend",
+    name: "Nextcloud",
     description: "Provides music stored on your Nextcloud server.",
     systemImageName: "cloud",
     configDescription: [
