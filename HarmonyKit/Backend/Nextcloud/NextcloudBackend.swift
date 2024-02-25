@@ -60,10 +60,12 @@ public class NextcloudBackend: NSObject, Backend {
 
     public func scan() async -> [Song] {
         Task { @MainActor in
+            self.presentation.scanning = true
             self.presentation.state = "Starting full scan..."
         }
         let songs = await recursiveScanRemotePath(filesPath)
         Task { @MainActor in
+            self.presentation.scanning = false
             self.presentation.state = "Finished full scan at \(Date().formatted())"
         }
         return songs
