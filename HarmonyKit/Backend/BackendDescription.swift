@@ -10,7 +10,7 @@ import Foundation
 public typealias BackendConfiguration = [String: Any]
 
 public enum BackendConfigurationValueType {
-    case bool, int, float, string, localUrl
+    case bool, int, float, string, password, localUrl
 }
 
 public struct BackendConfigurationField: Hashable, Identifiable {
