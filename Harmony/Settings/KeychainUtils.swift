@@ -79,3 +79,23 @@ func updatePasswordInKeychain(
     }
     Logger.config.debug("Updated password under \(bundleId) \(backendId + "/" + fieldId)")
 }
+
+func deletePasswordInKeychain(forBackend backendId: String, withFieldId fieldId: String) {
+    guard let bundleId = Bundle.main.bundleIdentifier else { return }
+    let query: [String: AnyObject] = [
+        kSecAttrService as String: bundleId as AnyObject,
+        kSecAttrAccount as String: backendId + "/" + fieldId as AnyObject,
+        kSecClass as String: kSecClassGenericPassword
+    ]
+    let status = SecItemDelete(query as CFDictionary)
+    guard status != errSecItemNotFound else {
+        Logger.config.error("Cannot delete nonexistent password under \(backendId + "/" + fieldId)")
+        return
+    }
+    guard status == errSecSuccess else {
+        let string = SecCopyErrorMessageString(status, nil)
+        Logger.config.error("Error deleting password under \(backendId + "/" + fieldId): \(string)")
+        return
+    }
+    Logger.config.debug("Deleted password under \(bundleId) \(backendId + "/" + fieldId)")
+}
