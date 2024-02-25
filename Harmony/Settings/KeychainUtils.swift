@@ -51,11 +51,9 @@ func savePasswordInKeychain(
 
     var status = SecItemAdd(query as CFDictionary, nil )
 
-    if status == errSecDuplicateItem {
-        status = SecItemUpdate(
-            query as CFDictionary,
-            [kSecValueData as String: password as AnyObject] as CFDictionary
-        )
+    guard status != errSecDuplicateItem else {
+        updatePasswordInKeychain(password, forBackend: backendId, withFieldId: fieldId)
+        return
     }
 
     guard status == errSecSuccess else {
@@ -64,4 +62,27 @@ func savePasswordInKeychain(
     }
 
     Logger.config.debug("Saved password under \(bundleId) \(backendId + "/" + fieldId)")
+}
+
+func updatePasswordInKeychain(
+    _ password: String, forBackend backendId: String, withFieldId fieldId: String
+) {
+    guard let bundleId = Bundle.main.bundleIdentifier else { return }
+    let query: [String: AnyObject] = [
+        kSecAttrService as String: bundleId as AnyObject,
+        kSecAttrAccount as String: backendId + "/" + fieldId as AnyObject,
+        kSecClass as String: kSecClassGenericPassword
+    ]
+    let attributes: [String: AnyObject] = [kSecValueData as String: password.data(using: .utf8) as AnyObject]
+    let status = SecItemUpdate(query as CFDictionary, attributes as CFDictionary)
+    guard status != errSecItemNotFound else {
+        Logger.config.error("Cannot update nonexistent password under \(backendId + "/" + fieldId)")
+        return
+    }
+    guard status == errSecSuccess else {
+        let string = SecCopyErrorMessageString(status, nil)
+        Logger.config.error("Error updating password under \(backendId + "/" + fieldId): \(string)")
+        return
+    }
+    Logger.config.debug("Updated password under \(bundleId) \(backendId + "/" + fieldId)")
 }
