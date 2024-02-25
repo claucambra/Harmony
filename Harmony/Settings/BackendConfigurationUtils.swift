@@ -91,13 +91,18 @@ func existingConfigsForBackend(descriptionId: String) -> [BackendConfiguration] 
 
     var configs: [BackendConfiguration] = []
     for existingConfig in existingConfigs {
-        guard let config = existingConfig as? BackendConfiguration else { continue }
+        guard var config = existingConfig as? BackendConfiguration else { continue }
 
         let bookmarkDatas = Array(
             config.keys
                 .filter { $0.contains(BackendConfigurationLocalURLBookmarkDataFieldKeySuffix) }
                 .map { config[$0] }
         )
+        let passwordFields = Array(
+            config.keys
+                .filter { $0.contains(BackendConfigurationPasswordFieldKeySuffix) }
+        )
+
         for data in bookmarkDatas {
             guard let data = data as? Data else {
                 Logger.config.error("Found bookmark data is not valid data.")
@@ -125,6 +130,20 @@ func existingConfigsForBackend(descriptionId: String) -> [BackendConfiguration] 
             }
             #endif
         }
+
+        for passwordField in passwordFields {
+            guard let backendId = config[BackendConfigurationIdFieldKey] as? String else {
+                Logger.config.error("Could not get backend id!")
+                continue
+            }
+            guard let fieldId = config[passwordField] as? String else {
+                Logger.config.error("Could not get password field id!")
+                continue
+            }
+            let password = getPasswordInKeychain(forBackend: backendId, fieldId: fieldId)
+            config[fieldId] = password
+        }
+
         configs.append(config)
     }
     return configs
