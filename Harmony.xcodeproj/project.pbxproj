@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5315227B2B8BC936002E31BE /* KeychainUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5315227A2B8BC936002E31BE /* KeychainUtils.swift */; };
 		535053332B5955C900D7EAF2 /* HarmonyKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 535053292B5955C800D7EAF2 /* HarmonyKit.framework */; };
 		5350533E2B5955C900D7EAF2 /* HarmonyKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 535053292B5955C800D7EAF2 /* HarmonyKit.framework */; };
 		5350533F2B5955C900D7EAF2 /* HarmonyKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 535053292B5955C800D7EAF2 /* HarmonyKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -146,6 +147,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		5315227A2B8BC936002E31BE /* KeychainUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainUtils.swift; sourceTree = "<group>"; };
 		535053292B5955C800D7EAF2 /* HarmonyKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = HarmonyKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		535053322B5955C800D7EAF2 /* HarmonyKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HarmonyKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		535053472B5955F900D7EAF2 /* HarmonyKit.docc */ = {isa = PBXFileReference; lastKnownFileType = folder.documentationcatalog; path = HarmonyKit.docc; sourceTree = "<group>"; };
@@ -405,6 +407,7 @@
 				535053952B5BE96800D7EAF2 /* BackendConfigurationView.swift */,
 				5350541A2B63BBC500D7EAF2 /* ConfiguredBackendsListItemView.swift */,
 				535054312B66248C00D7EAF2 /* ConfiguredBackendsListView.swift */,
+				5315227A2B8BC936002E31BE /* KeychainUtils.swift */,
 				535053EF2B62186F00D7EAF2 /* SettingsSheet.swift */,
 				535053802B5BBDC000D7EAF2 /* SettingsView.swift */,
 			);
@@ -882,6 +885,7 @@
 				535053962B5BE96800D7EAF2 /* BackendConfigurationView.swift in Sources */,
 				5350540F2B63A12800D7EAF2 /* PlayButton.swift in Sources */,
 				53D666532B6E50340042C03D /* EnvironmentValues+Extension.swift in Sources */,
+				5315227B2B8BC936002E31BE /* KeychainUtils.swift in Sources */,
 				535F1BD32B4A8F1400C78D98 /* ContentView.swift in Sources */,
 				535054152B63A3AD00D7EAF2 /* ShuffleButton.swift in Sources */,
 				535054112B63A1EB00D7EAF2 /* ChangeSongButton.swift in Sources */,
