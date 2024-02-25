@@ -70,7 +70,6 @@ public class SyncController: ObservableObject {
     }
 
     private func runSyncForBackend(_ backend: any Backend) async -> [Song] {
-        let backendId = backend.id
         guard !backend.presentation.scanning else { return [] }
         let songs = await backend.scan()
         return songs
