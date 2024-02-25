@@ -17,25 +17,20 @@ func getPasswordInKeychain(forBackend backendId: String, fieldId: String) -> Str
         kSecMatchLimit as String: kSecMatchLimitOne,
         kSecReturnData as String: kCFBooleanTrue
     ]
-
     var itemCopy: AnyObject?
     let status = SecItemCopyMatching(query as CFDictionary, &itemCopy)
-
     guard status != errSecItemNotFound else {
         Logger.config.error("No password found for \(backendId + "/" + fieldId)")
         return nil
     }
-
     guard status == errSecSuccess else {
         let string = SecCopyErrorMessageString(status, nil)
         Logger.config.error("Failed to get password for \(backendId + "/" + fieldId): \(string)")
         return nil
     }
-
     guard let password = itemCopy as? Data else {
         return nil
     }
-
     return String(data: password, encoding: .utf8)
 }
 
@@ -49,20 +44,16 @@ func savePasswordInKeychain(
         kSecClass as String: kSecClassGenericPassword,
         kSecValueData as String: password as AnyObject
     ]
-
     let status = SecItemAdd(query as CFDictionary, nil)
-
     guard status != errSecDuplicateItem else {
         updatePasswordInKeychain(password, forBackend: backendId, withFieldId: fieldId)
         return
     }
-
     guard status == errSecSuccess else {
         let string = SecCopyErrorMessageString(status, nil)
         Logger.config.error("Error saving password for \(backendId), received status \(string)")
         return
     }
-
     Logger.config.debug("Saved password under \(bundleId) \(backendId + "/" + fieldId)")
 }
 
