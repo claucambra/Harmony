@@ -9,11 +9,12 @@ import AVFoundation
 import Foundation
 import HarmonyKit
 import OrderedCollections
+import OSLog
 
 class BackendsModel: ObservableObject {
     static let shared = BackendsModel()
     @Published var configurations = existingBackendConfigs()
-    @Published var backends: OrderedDictionary<String, any Backend> = [:] {
+    @Published var backends: OrderedDictionary<String, any Backend> = [:] {  // <BackendId: Backend>
         didSet { backendPresentables = backends.values.map { $0.presentation } }
     }
     @Published var backendPresentables: [BackendPresentable] = []
@@ -44,6 +45,16 @@ class BackendsModel: ObservableObject {
 
         for remainingBackend in currentBackends {
             backends.removeValue(forKey: remainingBackend)
+            if let backendStorageUrl = backendStorageUrl(backendId: remainingBackend),
+               FileManager.default.fileExists(atPath: backendStorageUrl.path) 
+            {
+                do {
+                    try FileManager.default.removeItem(at: backendStorageUrl)
+                    Logger.backendsModel.debug("Cleared up storage for \(remainingBackend)")
+                } catch let error {
+                    Logger.backendsModel.error("Could not clean up storage for \(remainingBackend)")
+                }
+            }
         }
     }
 

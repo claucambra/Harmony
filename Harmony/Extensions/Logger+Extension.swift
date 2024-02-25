@@ -9,6 +9,7 @@ import OSLog
 
 extension Logger {
     static var subsystem = Bundle.main.bundleIdentifier!
+    static let backendsModel = Logger(subsystem: subsystem, category: "backendsModel")
     static let config = Logger(subsystem: subsystem, category: "config")
     static let database = Logger(subsystem: subsystem, category: "database")
     static let player = Logger(subsystem: subsystem, category: "player")
