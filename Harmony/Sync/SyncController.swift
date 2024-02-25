@@ -13,7 +13,6 @@ import SwiftData
 public class SyncController: ObservableObject {
     static let shared = SyncController()
     let songsContainer = try! ModelContainer(for: Song.self)
-    @Published var currentlySyncing: Set<String> = Set()
     @Published var currentlySyncingFully: Bool = false
     @Published var poll: Bool = false {
         didSet {
@@ -72,10 +71,8 @@ public class SyncController: ObservableObject {
 
     private func runSyncForBackend(_ backend: any Backend) async -> [Song] {
         let backendId = backend.id
-        guard !currentlySyncing.contains(backendId) else { return [] }
-        self.currentlySyncing.insert(backendId)
+        guard !backend.presentation.scanning else { return [] }
         let songs = await backend.scan()
-        self.currentlySyncing.remove(backendId)
         return songs
     }
 
