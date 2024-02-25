@@ -175,7 +175,10 @@ public class NextcloudBackend: NSObject, Backend {
     }
 
     public func assetForSong(_ song: Song) -> AVAsset? {
-        let url = song.localUrl ?? song.url
+        var url = song.url
+        if song.downloaded, let localUrl = localFileURL(song: song) {
+            url = localUrl
+        } // TODO: Reset downloaded state here if file not found
         Logger.ncBackend.debug("Providing url \(url) for \(song.title)")
         let asset = AVURLAsset(url: url)
         asset.resourceLoader.setDelegate(assetResourceLoaderDelegate, queue: DispatchQueue.global())
@@ -196,7 +199,7 @@ public class NextcloudBackend: NSObject, Backend {
                     continuation.resume()
                     return
                 }
-                song.localUrl = localUrl
+                song.downloaded = true
                 Logger.ncBackend.debug("Successfully downloaded \(song.url) to \(localUrl)")
                 continuation.resume()
             }
@@ -209,7 +212,7 @@ public class NextcloudBackend: NSObject, Backend {
 
         do {
             try FileManager.default.removeItem(at: localUrl)
-            song.localUrl = nil
+            song.downloaded = false
         } catch let error {
             Logger.ncBackend.error("Could not delete song \(song.url) at \(localUrl): \(error)")
         }

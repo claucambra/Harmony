@@ -50,7 +50,8 @@ struct ToolbarCurrentSongView: View {
             view
                 .frame(maxHeight: .infinity)
                 .clipShape(.rect(topLeadingRadius: borderRadius, bottomLeadingRadius: borderRadius))
-            if controller.currentSong?.localUrl == nil,
+            if let currentSong = controller.currentSong,
+               !currentSong.downloaded,
                controller.timeControlStatus == .waitingToPlayAtSpecifiedRate
             {
                 LoadingIndicatorOverlayView(

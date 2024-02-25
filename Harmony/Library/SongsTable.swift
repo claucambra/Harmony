@@ -38,9 +38,9 @@ struct SongsTable: View {
                 } else if !searchTextVal.isEmpty, showOnlineSongsVal {
                     $0.title.localizedStandardContains(searchTextVal)
                 } else if searchTextVal.isEmpty, !showOnlineSongsVal {
-                    $0.localUrl != nil
+                    $0.downloaded
                 } else {
-                    $0.title.localizedStandardContains(searchTextVal) && $0.localUrl != nil
+                    $0.title.localizedStandardContains(searchTextVal) && $0.downloaded
                 }
             },
             sort: \Song.title

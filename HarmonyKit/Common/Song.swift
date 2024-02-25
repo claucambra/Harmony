@@ -26,7 +26,7 @@ public final class Song: ObservableObject {
     public private(set) var duration: TimeInterval = 0
     @Attribute(.externalStorage) public var artwork: Data?
     public internal(set) var local: Bool = false
-    public internal(set) var localUrl: URL?
+    public internal(set) var downloaded: Bool = false
     public internal(set) var versionId: String = ""
 
     // Used by the backends during scanning, initial creation that sets all values received
@@ -36,7 +36,7 @@ public final class Song: ObservableObject {
         identifier: String,
         backendId: String,
         local: Bool = false,
-        localUrl: URL? = nil,
+        downloaded: Bool = false,
         versionId: String = "",
         fetchSession: Alamofire.Session? = nil,
         fetchHeaders: HTTPHeaders? = nil
@@ -45,7 +45,7 @@ public final class Song: ObservableObject {
         self.identifier = identifier
         self.backendId = backendId
         self.local = local
-        self.localUrl = localUrl
+        self.downloaded = downloaded
         self.versionId = versionId
 
         title = url.lastPathComponent
@@ -108,7 +108,7 @@ public final class Song: ObservableObject {
         duration: TimeInterval,
         artwork: Data?,
         local: Bool = false,
-        localUrl: URL? = nil,
+        downloaded: Bool = false,
         versionId: String = ""
     ) {
         self.identifier = identifier
@@ -124,7 +124,7 @@ public final class Song: ObservableObject {
         self.duration = duration
         self.artwork = artwork
         self.local = local
-        self.localUrl = localUrl
+        self.downloaded = downloaded
         self.versionId = versionId
     }
 
@@ -143,7 +143,7 @@ public final class Song: ObservableObject {
             duration: duration,
             artwork: artwork,
             local: local,
-            localUrl: localUrl,
+            downloaded: downloaded,
             versionId: versionId
         )
     }

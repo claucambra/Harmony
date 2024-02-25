@@ -94,7 +94,7 @@ public class FilesBackend: NSObject, Backend {
                     identifier: url.absoluteString,  // TODO
                     backendId: id,
                     local: false,
-                    localUrl: isDownloaded ? url : nil,
+                    downloaded: isDownloaded,
                     versionId: url.absoluteString  // TODO
                 )
             } else {
@@ -105,7 +105,7 @@ public class FilesBackend: NSObject, Backend {
                     identifier: csum,
                     backendId: id,
                     local: true,
-                    localUrl: url,
+                    downloaded: true,
                     versionId: csum
                 )
             }
@@ -216,13 +216,13 @@ public class FilesBackend: NSObject, Backend {
         // download
         Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
             if self.ubiquitousFileIsDownloaded(url: song.url) {
-                song.localUrl = song.url
+                song.downloaded = true
                 if endState == URLUbiquitousItemDownloadingStatus.downloaded ||
                     endState == URLUbiquitousItemDownloadingStatus.current {
                     timer.invalidate()
                 }
             } else {
-                song.localUrl = nil
+                song.downloaded = false
                 if endState == URLUbiquitousItemDownloadingStatus.notDownloaded {
                     timer.invalidate()
                 }

@@ -127,7 +127,8 @@ struct PhonePlayerDrawer: View {
                 ZStack {
                     RoundedRectangle(cornerRadius: cornerRadius)
                         .stroke(.separator, lineWidth: borderWidth)
-                    if controller.currentSong?.localUrl == nil,
+                    if let currentSong = controller.currentSong,
+                       !currentSong.downloaded,
                        controller.timeControlStatus == .waitingToPlayAtSpecifiedRate
                     {
                         LoadingIndicatorOverlayView()
