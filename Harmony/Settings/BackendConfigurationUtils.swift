@@ -10,6 +10,7 @@ import HarmonyKit
 import OSLog
 
 let BackendConfigurationLocalURLBookmarkDataFieldKeySuffix = "__bookmark-data"
+let BackendConfigurationPasswordFieldKeySuffix = "__password"
 
 func saveBackendConfig(
     _ configValues: BackendConfiguration,
@@ -40,6 +41,8 @@ func saveBackendConfig(
         fullConfig[BackendConfigurationIdFieldKey] = descriptionId + String(existingConfigsCount)
     }
 
+    let backendId = fullConfig[BackendConfigurationIdFieldKey] as! String
+
     for field in backendDescription.configDescription {
         guard let fieldValue = fullConfig[field.id] else {
             fullConfig[field.id] = field.defaultValue
@@ -60,6 +63,11 @@ func saveBackendConfig(
             Logger.config.debug("Stored local url bookmark data under key \(dataFieldId)")
             fullConfig[field.id] = url.path
             url.stopAccessingSecurityScopedResource()
+        } else if field.valueType == .password {
+            fullConfig.removeValue(forKey: field.id)
+            fullConfig[field.id + BackendConfigurationPasswordFieldKeySuffix] = field.id
+            guard let password = fieldValue as? String else { continue }
+            savePasswordInKeychain(password, forBackend: backendId, withFieldId: field.id)
         }
     }
 
