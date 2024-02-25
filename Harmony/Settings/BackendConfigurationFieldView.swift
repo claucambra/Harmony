@@ -26,8 +26,11 @@ struct BackendConfigurationFieldView: View {
             TextField(field.title, 
                       text: binding(for: field.id, fallback: field.defaultValue as? String ?? "0"))
         } else if field.valueType == .string {
-            TextField(field.title, 
+            TextField(field.title,
                       text: binding(for: field.id, fallback: field.defaultValue as? String ?? ""))
+        } else if field.valueType == .password {
+            SecureField(field.title,
+                        text: binding(for: field.id, fallback: field.defaultValue as? String ?? ""))
         } else if field.valueType == .localUrl {
             TextField(field.title, 
                       text: binding(for: field.id, fallback: field.defaultValue as? String ?? ""))
