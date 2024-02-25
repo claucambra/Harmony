@@ -9,8 +9,8 @@ import Combine
 import Foundation
 
 public class BackendPresentable: ObservableObject, Hashable, Identifiable {
-    @Published public var id: String // The backend's id
-    @Published public var typeId: String
+    public let id: String // The backend's id
+    public let typeId: String
     @Published public var systemImage: String
     @Published public var primary: String
     @Published public var secondary: String
