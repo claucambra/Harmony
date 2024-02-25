@@ -42,7 +42,7 @@ let ncBackendTypeDescription = BackendDescription(
             id: NextcloudBackendFieldId.password.rawValue,
             title: "Password",
             description: "Nextcloud user password",
-            valueType: .string,
+            valueType: .password,
             isArray: false,
             optional: false,
             defaultValue: ""
