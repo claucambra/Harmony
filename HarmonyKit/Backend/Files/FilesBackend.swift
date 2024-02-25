@@ -118,11 +118,13 @@ public class FilesBackend: NSObject, Backend {
     public func scan() async -> [Song] {
         Logger.filesBackend.info("Starting full scan of \(self.path)")
         DispatchQueue.main.async {
+            self.presentation.scanning = true
             self.presentation.state = "Starting full scan..."
         }
         let urls = await recursiveScan(path: path)
         let songs = await songsFromLocalUrls(urls)
         DispatchQueue.main.async {
+            self.presentation.scanning = false
             self.presentation.state = "Finished full scan at " + Date().formatted()
         }
         return songs
