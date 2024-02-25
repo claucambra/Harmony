@@ -27,7 +27,8 @@ func getPasswordInKeychain(forBackend backendId: String, fieldId: String) -> Str
     }
 
     guard status == errSecSuccess else {
-        Logger.config.error("Failed to get password for \(backendId + "/" + fieldId): \(status)")
+        let string = SecCopyErrorMessageString(status, nil)
+        Logger.config.error("Failed to get password for \(backendId + "/" + fieldId): \(string)")
         return nil
     }
 
@@ -57,7 +58,8 @@ func savePasswordInKeychain(
     }
 
     guard status == errSecSuccess else {
-        Logger.config.error("Error saving password for \(backendId), received status \(status)")
+        let string = SecCopyErrorMessageString(status, nil)
+        Logger.config.error("Error saving password for \(backendId), received status \(string)")
         return
     }
 
