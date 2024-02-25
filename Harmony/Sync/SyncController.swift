@@ -62,7 +62,7 @@ public class SyncController: ObservableObject {
 
         do {
             let retrievedIdentifiers = try await ingestTask.result.get()
-            await clearStaleSongs(backendId: backend.id, freshSongIdentifiers: retrievedIdentifiers)
+            await clearSongs(backendId: backend.id, withExceptions: retrievedIdentifiers)
         } catch let error {
             Logger.sync.error("Could not get result from ingestion task: \(error)")
             return
@@ -75,8 +75,8 @@ public class SyncController: ObservableObject {
         return songs
     }
 
-    @MainActor
-    private func clearStaleSongs(backendId: String, freshSongIdentifiers: Set<String>) {
+    @MainActor  // Remove songs. Exceptions should contain song ids
+    func clearSongs(backendId: String, withExceptions exceptions: Set<String>) {
         let context = songsContainer.mainContext
         let fetchDescriptor = FetchDescriptor<Song>(
             predicate: #Predicate { $0.backendId == backendId }
@@ -85,7 +85,7 @@ public class SyncController: ObservableObject {
         do {
             let backendSongs = try context.fetch(fetchDescriptor)
             let staleSongs = try backendSongs.filter(
-                #Predicate { !freshSongIdentifiers.contains($0.identifier) }
+                #Predicate { !exceptions.contains($0.identifier) }
             )
             for staleSong in staleSongs {
                 Logger.sync.debug("Removing stale song: \(staleSong.url)")
