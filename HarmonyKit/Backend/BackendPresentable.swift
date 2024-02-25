@@ -16,6 +16,7 @@ public class BackendPresentable: ObservableObject, Hashable, Identifiable {
     @Published public var secondary: String
     @Published public var config: String
     @Published public var state: String
+    @Published public var scanning: Bool
 
     public static func == (lhs: BackendPresentable, rhs: BackendPresentable) -> Bool {
         lhs.id == rhs.id
@@ -28,7 +29,8 @@ public class BackendPresentable: ObservableObject, Hashable, Identifiable {
         primary: String,
         secondary: String,
         config: String = "Not configured",
-        state: String = "Idle"
+        state: String = "Idle",
+        scanning: Bool = false
     ) {
         id = backendId
         self.typeId = typeId
@@ -37,6 +39,7 @@ public class BackendPresentable: ObservableObject, Hashable, Identifiable {
         self.secondary = secondary
         self.config = config
         self.state = state
+        self.scanning = false
     }
 
     public func hash(into hasher: inout Hasher) {
@@ -47,5 +50,6 @@ public class BackendPresentable: ObservableObject, Hashable, Identifiable {
         hasher.combine(secondary)
         hasher.combine(config)
         hasher.combine(state)
+        hasher.combine(scanning)
     }
 }
