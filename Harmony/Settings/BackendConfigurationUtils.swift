@@ -167,6 +167,18 @@ func deleteBackendConfig(id: String, withBackendDescriptionId descriptionId: Str
         Logger.config.info("Config with id: \(id) does not exist. Can't delete.")
         return
     }
+    
+    let config = backendConfigs[configIdx]
+    let passwordFields = Array(
+        config.keys.filter { $0.contains(BackendConfigurationPasswordFieldKeySuffix) }
+    )
+    for passwordField in passwordFields {
+        guard let fieldId = config[passwordField] as? String else {
+            Logger.config.error("Could not get password field id!")
+            continue
+        }
+        deletePasswordInKeychain(forBackend: id, withFieldId: fieldId)
+    }
 
     backendConfigs.remove(at: configIdx)
     defaults.set(backendConfigs, forKey: descriptionId)
