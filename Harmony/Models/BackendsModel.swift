@@ -45,16 +45,22 @@ class BackendsModel: ObservableObject {
 
         for remainingBackend in currentBackends {
             backends.removeValue(forKey: remainingBackend)
-            if let backendStorageUrl = backendStorageUrl(backendId: remainingBackend),
-               FileManager.default.fileExists(atPath: backendStorageUrl.path) 
-            {
-                do {
-                    try FileManager.default.removeItem(at: backendStorageUrl)
-                    Logger.backendsModel.debug("Cleared up storage for \(remainingBackend)")
-                } catch let error {
-                    Logger.backendsModel.error("Could not clean up storage for \(remainingBackend)")
-                }
+            clearBackendStorage(remainingBackend)
+        }
+    }
+
+    private func clearBackendStorage(_ backendId: String) {
+        if let backendStorageUrl = backendStorageUrl(backendId: backendId),
+           FileManager.default.fileExists(atPath: backendStorageUrl.path)
+        {
+            do {
+                try FileManager.default.removeItem(at: backendStorageUrl)
+                Logger.backendsModel.debug("Cleared up storage for \(backendId)")
+            } catch let error {
+                Logger.backendsModel.error("Could not clean up storage for \(backendId)")
             }
+        } else {
+            Logger.backendsModel.warning("Can't clear inexistent storage for \(backendId)")
         }
     }
 
