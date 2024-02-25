@@ -50,7 +50,7 @@ func savePasswordInKeychain(
         kSecValueData as String: password as AnyObject
     ]
 
-    var status = SecItemAdd(query as CFDictionary, nil )
+    let status = SecItemAdd(query as CFDictionary, nil)
 
     guard status != errSecDuplicateItem else {
         updatePasswordInKeychain(password, forBackend: backendId, withFieldId: fieldId)
