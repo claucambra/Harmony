@@ -41,6 +41,8 @@ struct UIMeasurements {
 
     static let toolbarCurrentSongViewWidth = 320.0
 
+    static let tableColumnMiniWidth = 16.0
+
     static var smallFontSize: CGFloat {
         get {
             #if os(macOS)

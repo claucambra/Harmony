@@ -55,6 +55,10 @@ struct SongsTable: View {
             TableColumn("Album", value: \.album)
             TableColumn("Artist", value: \.artist)
             TableColumn("Genre", value: \.genre)
+            TableColumn("State") { song in
+                availableOfflineView(song: song)
+            }
+            .width(UIMeasurements.tableColumnMiniWidth)
         }
         .contextMenu(forSelectionType: Song.ID.self) { items in
             contextMenuItemsForSongs(ids: items)
@@ -80,6 +84,19 @@ struct SongsTable: View {
             SongListItemView(song: song, isCurrentSong: false)
         } else {
             Text(song.title)
+        }
+    }
+
+    @ViewBuilder
+    private func availableOfflineView(song: Song) -> some View {
+        if song.downloaded {
+            Label("Available offline", systemImage: "arrow.down.circle.fill")
+                .labelStyle(.iconOnly)
+                .foregroundStyle(.tertiary)
+        } else {
+            Label("Streamable song", systemImage: "cloud")
+                .labelStyle(.iconOnly)
+                .foregroundStyle(.tertiary)
         }
     }
 
