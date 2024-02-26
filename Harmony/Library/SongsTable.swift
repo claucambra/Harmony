@@ -59,6 +59,10 @@ struct SongsTable: View {
                 availableOfflineView(song: song)
             }
             .width(UIMeasurements.tableColumnMiniWidth)
+            TableColumn("Playing") { song in
+                CurrentlyPlayingSongIndicatorView(song: song)
+            }
+            .width(UIMeasurements.tableColumnMiniWidth)
         }
         .contextMenu(forSelectionType: Song.ID.self) { items in
             contextMenuItemsForSongs(ids: items)

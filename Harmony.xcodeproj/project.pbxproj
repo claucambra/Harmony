@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		5315227B2B8BC936002E31BE /* KeychainUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5315227A2B8BC936002E31BE /* KeychainUtils.swift */; };
+		5315227D2B8CF235002E31BE /* CurrentlyPlayingSongIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5315227C2B8CF235002E31BE /* CurrentlyPlayingSongIndicatorView.swift */; };
 		535053332B5955C900D7EAF2 /* HarmonyKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 535053292B5955C800D7EAF2 /* HarmonyKit.framework */; };
 		5350533E2B5955C900D7EAF2 /* HarmonyKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 535053292B5955C800D7EAF2 /* HarmonyKit.framework */; };
 		5350533F2B5955C900D7EAF2 /* HarmonyKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 535053292B5955C800D7EAF2 /* HarmonyKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -148,6 +149,7 @@
 
 /* Begin PBXFileReference section */
 		5315227A2B8BC936002E31BE /* KeychainUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainUtils.swift; sourceTree = "<group>"; };
+		5315227C2B8CF235002E31BE /* CurrentlyPlayingSongIndicatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentlyPlayingSongIndicatorView.swift; sourceTree = "<group>"; };
 		535053292B5955C800D7EAF2 /* HarmonyKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = HarmonyKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		535053322B5955C800D7EAF2 /* HarmonyKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HarmonyKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		535053472B5955F900D7EAF2 /* HarmonyKit.docc */ = {isa = PBXFileReference; lastKnownFileType = folder.documentationcatalog; path = HarmonyKit.docc; sourceTree = "<group>"; };
@@ -614,6 +616,7 @@
 		53D666682B74C51B0042C03D /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				5315227C2B8CF235002E31BE /* CurrentlyPlayingSongIndicatorView.swift */,
 				53B979742B833AA9002DA742 /* LoadingIndicatorOverlayView.swift */,
 				53B9796B2B7E8159002DA742 /* PlaceholderArtworkView.swift */,
 				53D666692B74C53F0042C03D /* UIMeasurements.swift */,
@@ -913,6 +916,7 @@
 				5350540A2B63939C00D7EAF2 /* PlayerQueueView.swift in Sources */,
 				5350542B2B64293600D7EAF2 /* SyncController.swift in Sources */,
 				535054042B6356EF00D7EAF2 /* Logger+Extension.swift in Sources */,
+				5315227D2B8CF235002E31BE /* CurrentlyPlayingSongIndicatorView.swift in Sources */,
 				535054082B635A0B00D7EAF2 /* ToolbarCurrentSongView.swift in Sources */,
 				535054012B62D98200D7EAF2 /* PlayerQueue.swift in Sources */,
 				53D6665D2B6F34CC0042C03D /* SongContextMenuItems.swift in Sources */,
