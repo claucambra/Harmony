@@ -22,9 +22,14 @@ struct PhonePlayerDrawer: View {
         VStack {
             VStack {
                 if queueVisible {
+                    let maskGradient = LinearGradient(
+                        gradient: Gradient(colors: [.black, .black, .black, .clear]),
+                        startPoint: .top, endPoint: .bottom
+                    )
                     PlayerQueueView(rowBackground: Color.clear)
                         .listStyle(.grouped)
                         .scrollContentBackground(.hidden)
+                        .mask(maskGradient)
                 } else {
                     VStack {
                         Spacer()
