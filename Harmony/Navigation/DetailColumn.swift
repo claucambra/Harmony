@@ -18,6 +18,9 @@ struct DetailColumn: View {
         case .songs:
             SongsTable(searchText: $searchText, showOnlineSongs: $showOnlineSongs)
                 .navigationTitle("Songs")
+        case .albums:
+            AlbumsGridView(searchText: $searchText, showOnlineSongs: $showOnlineSongs)
+                .navigationTitle("Albums")
         }
     }
 }
