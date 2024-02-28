@@ -12,7 +12,7 @@ import SwiftData
 
 public class SyncController: ObservableObject {
     static let shared = SyncController()
-    let songsContainer = try! ModelContainer(for: Song.self)
+    let container = try! ModelContainer(for: Song.self, Album.self)
     @Published var currentlySyncingFully: Bool = false
     @Published var poll: Bool = false {
         didSet {
@@ -49,7 +49,7 @@ public class SyncController: ObservableObject {
             for song in refreshedSongs {
                 let songIdentifier = song.identifier
                 do {
-                    let context = songsContainer.mainContext
+                    let context = container.mainContext
                     context.insert(song)
                     try context.save()
                     refreshedSongIdentifiers.insert(songIdentifier)
@@ -77,7 +77,7 @@ public class SyncController: ObservableObject {
 
     @MainActor  // Remove songs. Exceptions should contain song ids
     func clearSongs(backendId: String, withExceptions exceptions: Set<String>) {
-        let context = songsContainer.mainContext
+        let context = container.mainContext
         let fetchDescriptor = FetchDescriptor<Song>(
             predicate: #Predicate { $0.backendId == backendId }
         )
