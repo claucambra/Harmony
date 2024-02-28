@@ -93,6 +93,7 @@
 		53D666672B73EAD40042C03D /* SongListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D666662B73EAD40042C03D /* SongListItemView.swift */; };
 		53D6666A2B74C53F0042C03D /* UIMeasurements.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D666692B74C53F0042C03D /* UIMeasurements.swift */; };
 		53D6666C2B74D6C80042C03D /* PlayerScrubberView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D6666B2B74D6C80042C03D /* PlayerScrubberView.swift */; };
+		53FE14692B8F8DAA006C4193 /* AlbumsGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53FE14682B8F8DAA006C4193 /* AlbumsGridView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -236,6 +237,7 @@
 		53D666662B73EAD40042C03D /* SongListItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongListItemView.swift; sourceTree = "<group>"; };
 		53D666692B74C53F0042C03D /* UIMeasurements.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIMeasurements.swift; sourceTree = "<group>"; };
 		53D6666B2B74D6C80042C03D /* PlayerScrubberView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerScrubberView.swift; sourceTree = "<group>"; };
+		53FE14682B8F8DAA006C4193 /* AlbumsGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumsGridView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -373,6 +375,7 @@
 		535053742B5AA63500D7EAF2 /* Library */ = {
 			isa = PBXGroup;
 			children = (
+				53FE14682B8F8DAA006C4193 /* AlbumsGridView.swift */,
 				53D6665C2B6F34CC0042C03D /* SongContextMenuItems.swift */,
 				53D666662B73EAD40042C03D /* SongListItemView.swift */,
 				535053722B5AA61A00D7EAF2 /* SongsTable.swift */,
@@ -887,6 +890,7 @@
 			files = (
 				535053962B5BE96800D7EAF2 /* BackendConfigurationView.swift in Sources */,
 				5350540F2B63A12800D7EAF2 /* PlayButton.swift in Sources */,
+				53FE14692B8F8DAA006C4193 /* AlbumsGridView.swift in Sources */,
 				53D666532B6E50340042C03D /* EnvironmentValues+Extension.swift in Sources */,
 				5315227B2B8BC936002E31BE /* KeychainUtils.swift in Sources */,
 				535F1BD32B4A8F1400C78D98 /* ContentView.swift in Sources */,
