@@ -10,17 +10,17 @@ import SwiftData
 import SwiftUI
 
 struct AlbumsGridView: View {
-    @Query(sort: \Song.title) var songs: [Song]
+    @Query(sort: \Album.title) var albums: [Album]
     @Binding var searchText: String
     @Binding var showOnlineSongs: Bool
-    @State var selection: Set<Song.ID> = []
+    @State var selection: Set<Album.ID> = []
     let columns = [GridItem(.flexible()), GridItem(.flexible())]
 
     var body: some View {
         ScrollView {
             LazyVGrid(columns: columns) {
-                ForEach(songs) { song in
-                    Rectangle().foregroundColor(.orange).frame(height: 25)
+                ForEach(albums) { album in
+                    Text(album.title)
                 }
             }
         }
