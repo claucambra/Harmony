@@ -94,6 +94,7 @@
 		53D6666A2B74C53F0042C03D /* UIMeasurements.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D666692B74C53F0042C03D /* UIMeasurements.swift */; };
 		53D6666C2B74D6C80042C03D /* PlayerScrubberView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D6666B2B74D6C80042C03D /* PlayerScrubberView.swift */; };
 		53FE14692B8F8DAA006C4193 /* AlbumsGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53FE14682B8F8DAA006C4193 /* AlbumsGridView.swift */; };
+		53FE146B2B8F9457006C4193 /* Album.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53FE146A2B8F9457006C4193 /* Album.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -238,6 +239,7 @@
 		53D666692B74C53F0042C03D /* UIMeasurements.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIMeasurements.swift; sourceTree = "<group>"; };
 		53D6666B2B74D6C80042C03D /* PlayerScrubberView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerScrubberView.swift; sourceTree = "<group>"; };
 		53FE14682B8F8DAA006C4193 /* AlbumsGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumsGridView.swift; sourceTree = "<group>"; };
+		53FE146A2B8F9457006C4193 /* Album.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Album.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -313,6 +315,7 @@
 		535053482B5955F900D7EAF2 /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				53FE146A2B8F9457006C4193 /* Album.swift */,
 				535053492B5955F900D7EAF2 /* Song.swift */,
 			);
 			path = Common;
@@ -844,6 +847,7 @@
 			files = (
 				537632E62B86752B0026BFAB /* FLACCueSheetMetadataBlock.swift in Sources */,
 				5350541D2B63C71400D7EAF2 /* BackendPresentable.swift in Sources */,
+				53FE146B2B8F9457006C4193 /* Album.swift in Sources */,
 				535053F42B6239AC00D7EAF2 /* FilePickerRepresentable.swift in Sources */,
 				535053782B5AB24500D7EAF2 /* AVAsset+Extension.swift in Sources */,
 				535053522B5955F900D7EAF2 /* LocalFileUtils.swift in Sources */,
