@@ -57,6 +57,7 @@ public class SyncController: ObservableObject {
                     Logger.sync.error("Could not save song to data: \(error)")
                 }
             }
+            refreshAlbums()
             return refreshedSongIdentifiers
         }
 
@@ -94,6 +95,36 @@ public class SyncController: ObservableObject {
             try context.save()
         } catch let error {
             Logger.sync.error("Could not clear stale songs for \(backendId): \(error)")
+        }
+    }
+
+    @MainActor
+    func refreshAlbums() {
+        Logger.sync.info("Refreshing albums.")
+        let context = container.mainContext
+        let fetchDescriptor = FetchDescriptor<Song>()
+        
+        do {
+            let songs = try context.fetch(fetchDescriptor)
+            var albumDict: Dictionary<String, [Song]> = [:]
+            for song in songs {
+                let album = song.album
+                if var existingSongs = albumDict[album] {
+                    existingSongs.append(song)
+                    albumDict[album] = existingSongs
+                } else {
+                    albumDict[album] = [song]
+                }
+            }
+
+            Logger.sync.info("About to insert \(albumDict.count) albums.")
+            for songs in albumDict.values {
+                guard let album = Album(songs: songs) else { continue }
+                context.insert(album)
+            }
+            try context.save()
+        } catch let error {
+            Logger.sync.error("Could not refresh albums: \(error)")
         }
     }
 }
