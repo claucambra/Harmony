@@ -23,6 +23,7 @@ struct AlbumsGridView: View {
                     AlbumGridItemView(album: album)
                 }
             }
+            .padding()
         }
     }
 }
