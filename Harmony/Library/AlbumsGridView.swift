@@ -20,7 +20,7 @@ struct AlbumsGridView: View {
         ScrollView {
             LazyVGrid(columns: columns) {
                 ForEach(albums) { album in
-                    Text(album.title)
+                    AlbumGridItemView(album: album)
                 }
             }
         }

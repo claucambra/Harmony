@@ -95,6 +95,7 @@
 		53D6666C2B74D6C80042C03D /* PlayerScrubberView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D6666B2B74D6C80042C03D /* PlayerScrubberView.swift */; };
 		53FE14692B8F8DAA006C4193 /* AlbumsGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53FE14682B8F8DAA006C4193 /* AlbumsGridView.swift */; };
 		53FE146B2B8F9457006C4193 /* Album.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53FE146A2B8F9457006C4193 /* Album.swift */; };
+		53FE146D2B9054A9006C4193 /* AlbumGridItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53FE146C2B9054A9006C4193 /* AlbumGridItemView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -240,6 +241,7 @@
 		53D6666B2B74D6C80042C03D /* PlayerScrubberView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerScrubberView.swift; sourceTree = "<group>"; };
 		53FE14682B8F8DAA006C4193 /* AlbumsGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumsGridView.swift; sourceTree = "<group>"; };
 		53FE146A2B8F9457006C4193 /* Album.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Album.swift; sourceTree = "<group>"; };
+		53FE146C2B9054A9006C4193 /* AlbumGridItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumGridItemView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -379,6 +381,7 @@
 			isa = PBXGroup;
 			children = (
 				53FE14682B8F8DAA006C4193 /* AlbumsGridView.swift */,
+				53FE146C2B9054A9006C4193 /* AlbumGridItemView.swift */,
 				53D6665C2B6F34CC0042C03D /* SongContextMenuItems.swift */,
 				53D666662B73EAD40042C03D /* SongListItemView.swift */,
 				535053722B5AA61A00D7EAF2 /* SongsTable.swift */,
@@ -923,6 +926,7 @@
 				535053F02B62186F00D7EAF2 /* SettingsSheet.swift in Sources */,
 				5350540A2B63939C00D7EAF2 /* PlayerQueueView.swift in Sources */,
 				5350542B2B64293600D7EAF2 /* SyncController.swift in Sources */,
+				53FE146D2B9054A9006C4193 /* AlbumGridItemView.swift in Sources */,
 				535054042B6356EF00D7EAF2 /* Logger+Extension.swift in Sources */,
 				5315227D2B8CF235002E31BE /* CurrentlyPlayingSongIndicatorView.swift in Sources */,
 				535054082B635A0B00D7EAF2 /* ToolbarCurrentSongView.swift in Sources */,
