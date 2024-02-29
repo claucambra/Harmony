@@ -12,12 +12,12 @@ struct AlbumGridItemView: View {
     let album: Album
 
     var body: some View {
-        VStack(alignment: .leading) {
+        VStack {
+            ArtworkView(artwork: album.artwork)
+                .frame(maxWidth: .infinity)
             Text(album.title)
-                .multilineTextAlignment(.leading)
                 .frame(maxWidth: .infinity)
             Text(album.artist ?? "Unknown artist")
-                .multilineTextAlignment(.leading)
                 .foregroundStyle(.secondary)
                 .frame(maxWidth: .infinity)
         }
