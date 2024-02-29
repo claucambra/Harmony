@@ -96,6 +96,7 @@
 		53FE146B2B8F9457006C4193 /* Album.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53FE146A2B8F9457006C4193 /* Album.swift */; };
 		53FE146D2B9054A9006C4193 /* AlbumGridItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53FE146C2B9054A9006C4193 /* AlbumGridItemView.swift */; };
 		53FE146F2B905D16006C4193 /* ArtworkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53FE146E2B905D16006C4193 /* ArtworkView.swift */; };
+		53FE14712B906C68006C4193 /* BorderedArtworkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53FE14702B906C68006C4193 /* BorderedArtworkView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -242,6 +243,7 @@
 		53FE146A2B8F9457006C4193 /* Album.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Album.swift; sourceTree = "<group>"; };
 		53FE146C2B9054A9006C4193 /* AlbumGridItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumGridItemView.swift; sourceTree = "<group>"; };
 		53FE146E2B905D16006C4193 /* ArtworkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtworkView.swift; sourceTree = "<group>"; };
+		53FE14702B906C68006C4193 /* BorderedArtworkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BorderedArtworkView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -625,6 +627,7 @@
 			isa = PBXGroup;
 			children = (
 				53FE146E2B905D16006C4193 /* ArtworkView.swift */,
+				53FE14702B906C68006C4193 /* BorderedArtworkView.swift */,
 				5315227C2B8CF235002E31BE /* CurrentlyPlayingSongIndicatorView.swift */,
 				53B979742B833AA9002DA742 /* LoadingIndicatorOverlayView.swift */,
 				53B9796B2B7E8159002DA742 /* PlaceholderArtworkView.swift */,
@@ -923,6 +926,7 @@
 				535053982B5CF4C900D7EAF2 /* BackendConfigurationFieldView.swift in Sources */,
 				53D6664D2B6B7E3E0042C03D /* PlayerQueueListItemView.swift in Sources */,
 				535053F02B62186F00D7EAF2 /* SettingsSheet.swift in Sources */,
+				53FE14712B906C68006C4193 /* BorderedArtworkView.swift in Sources */,
 				5350540A2B63939C00D7EAF2 /* PlayerQueueView.swift in Sources */,
 				5350542B2B64293600D7EAF2 /* SyncController.swift in Sources */,
 				53FE146D2B9054A9006C4193 /* AlbumGridItemView.swift in Sources */,
