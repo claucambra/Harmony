@@ -24,5 +24,6 @@ public final class Album {
         artist = referenceSong.artist
         genre = referenceSong.genre
         // year = referenceSong.year
+        artwork = referenceSong.artwork
     }
 }
