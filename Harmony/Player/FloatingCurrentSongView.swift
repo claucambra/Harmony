@@ -19,7 +19,7 @@ struct FloatingCurrentSongView: View {
     var body: some View {
         HStack {
             if let currentSong = PlayerController.shared.currentSong {
-                artworkViewWithModifiers(SongArtworkView(song: currentSong))
+                artworkViewWithModifiers(ArtworkView(artwork: currentSong.artwork))
             } else {
                 artworkViewWithModifiers(PlaceholderArtworkView())
             }

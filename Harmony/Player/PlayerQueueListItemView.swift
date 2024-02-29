@@ -17,7 +17,7 @@ struct PlayerQueueListItemView: View {
 
     var body: some View {
         HStack {
-            SongArtworkView(song: song)
+            ArtworkView(artwork: song.artwork)
                 .frame(height: isCurrentSong ?
                        UIMeasurements.mediumArtworkHeight : UIMeasurements.smallArtworkHeight)
                 .clipShape(.rect(cornerRadius: cornerRadius))

@@ -1,20 +1,19 @@
 //
-//  SongArtworkView.swift
+//  ArtworkView.swift
 //  Harmony
 //
-//  Created by Claudio Cambra on 29/1/24.
+//  Created by Claudio Cambra on 29/2/24.
 //
 
-import HarmonyKit
 import SwiftUI
 
-struct SongArtworkView: View {
+struct ArtworkView: View {
     enum ScaleMode { case fill, fit }
-    @ObservedObject var song: Song
+    let artwork: Data?
     @State var scaleMode: ScaleMode = .fit
 
     var body: some View {
-        if let imageData = song.artwork {
+        if let imageData = artwork {
             #if os(macOS)
             if let image = NSImage(data: imageData) {
                 adjustedImage(Image(nsImage: image))
@@ -44,3 +43,4 @@ struct SongArtworkView: View {
         }
     }
 }
+

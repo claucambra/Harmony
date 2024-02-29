@@ -18,7 +18,7 @@ struct ToolbarCurrentSongView: View {
     var body: some View {
         HStack(spacing: horizontalSpacing) {
             if let currentSong = controller.currentSong {
-                artworkViewWithModifiers(SongArtworkView(song: currentSong))
+                artworkViewWithModifiers(ArtworkView(artwork: currentSong.artwork))
             } else {
                 artworkViewWithModifiers(PlaceholderArtworkView())
             }

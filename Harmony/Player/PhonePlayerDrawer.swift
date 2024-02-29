@@ -34,7 +34,7 @@ struct PhonePlayerDrawer: View {
                     VStack {
                         Spacer()
                         if let currentSong = PlayerController.shared.currentSong {
-                            artworkViewWithModifiers(SongArtworkView(song: currentSong))
+                            artworkViewWithModifiers(ArtworkView(artwork: song.artwork))
                         } else {
                             artworkViewWithModifiers(PlaceholderArtworkView())
                         }
@@ -92,7 +92,7 @@ struct PhonePlayerDrawer: View {
             withAnimation(.linear(duration: 0.3)) {
                 ZStack {
                     if let currentSong = controller.currentSong {
-                        SongArtworkView(song: currentSong, scaleMode: .fill)
+                        ArtworkView(artwork: currentSong.artwork, scaleMode: .fill)
                             .frame(maxWidth: .infinity, maxHeight: .infinity)
                     }
                     Rectangle()
