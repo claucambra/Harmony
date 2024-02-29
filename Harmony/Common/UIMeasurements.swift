@@ -12,14 +12,15 @@ import UIKit
 #endif
 
 struct UIMeasurements {
-    static let smallPadding = 5.0
-    static let mediumPadding = 10.0
+    static let smallPadding = 8.0
+    static let mediumPadding = 12.0
     static let largePadding = 20.0
-    static let veryLargePadding = 40.0
+    static let veryLargePadding = 32.0
+    static let ultraLargePadding = 48.0
 
-    static let smallCornerRadius = 2.5
-    static let cornerRadius = 5.0
-    static let largeCornerRadius = 10.0
+    static let smallCornerRadius = 2.0
+    static let cornerRadius = 4.0
+    static let largeCornerRadius = 8.0
 
     static let thinBorderWidth = 1.0
 
