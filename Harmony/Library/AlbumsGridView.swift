@@ -14,6 +14,8 @@ struct AlbumsGridView: View {
     @Binding var searchText: String
     @Binding var showOnlineSongs: Bool
     @State var selection: Set<Album.ID> = []
+    @State var albumDetailVisible = false
+    @State var detailAlbum: Album?
 
     #if os(macOS)
     let columns = [
@@ -63,6 +65,10 @@ struct AlbumsGridView: View {
             LazyVGrid(columns: columns, spacing: interItemPadding) {
                 ForEach(albums) { album in
                     AlbumGridItemView(album: album)
+                        .onTapGesture {
+                            detailAlbum = album
+                            albumDetailVisible = true
+                        }
                 }
             }
             #if os(macOS)
@@ -71,6 +77,13 @@ struct AlbumsGridView: View {
             .padding([.top, .bottom], verticalPadding)
             #endif
             .padding([.leading, .trailing], horizontalPadding)
+            .navigationDestination(isPresented: $albumDetailVisible) {
+                if let detailAlbum = detailAlbum {
+                    let title = detailAlbum.title.isEmpty ? "Unknown album" : detailAlbum.title
+                    AlbumDetailView(album: detailAlbum)
+                        .navigationTitle(title)
+                }
+            }
         }
         .background(.background)
     }
