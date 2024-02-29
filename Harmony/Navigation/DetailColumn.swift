@@ -20,43 +20,10 @@ struct DetailColumn: View {
             SongsTable(searchText: $searchText, showOnlineSongs: $showOnlineSongs)
                 .navigationTitle("Songs")
         case .albums:
-            AlbumsGridView(
-                searchText: $searchText,
-                showOnlineSongs: $showOnlineSongs,
-                secondaryToolbarHeight: $secondaryToolbarHeight
-            )
-            .navigationTitle("Albums")
-            .overlay(alignment: .top) {
-                #if os(macOS)
-                secondaryToolbar
-                #endif
-            }
+            AlbumsGridView(searchText: $searchText, showOnlineSongs: $showOnlineSongs)
+                .navigationTitle("Albums")
         }
     }
-
-    #if os(macOS)
-    var secondaryToolbar: some View {
-        GeometryReader { proxy in
-            HStack {
-                Text("Albums")
-                    .font(.title)
-                    .fontWeight(.medium)
-                    .padding([.top, .bottom], UIMeasurements.smallPadding)
-                    .padding([.leading, .trailing], UIMeasurements.mediumPadding)
-                Spacer()
-
-            }
-            .background {
-                GeometryReader { proxy in
-                    Rectangle()
-                        .foregroundStyle(.bar)
-                        .onAppear { secondaryToolbarHeight = proxy.size.height }
-                }
-            }
-            .frame(maxWidth: .infinity)
-        }
-    }
-    #endif
 }
 
 struct DetailColumn_Previews: PreviewProvider {
