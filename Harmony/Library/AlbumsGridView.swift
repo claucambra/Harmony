@@ -51,5 +51,6 @@ struct AlbumsGridView: View {
             .padding([.top, .bottom], UIMeasurements.veryLargePadding)
             .padding([.leading, .trailing], UIMeasurements.ultraLargePadding)
         }
+        .background(.background)
     }
 }
