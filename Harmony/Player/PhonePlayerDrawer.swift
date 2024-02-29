@@ -33,13 +33,10 @@ struct PhonePlayerDrawer: View {
                 } else {
                     VStack {
                         Spacer()
-                        ArtworkView(artwork: PlayerController.shared.currentSong?.artwork)
-                            .clipShape(.rect(cornerRadius: cornerRadius))
+                        BorderedArtworkView(artwork: PlayerController.shared.currentSong?.artwork)
                             .shadow(radius: shadowRadius)
                             .overlay(
                                 ZStack {
-                                    RoundedRectangle(cornerRadius: cornerRadius)
-                                        .stroke(.separator, lineWidth: borderWidth)
                                     if let currentSong = controller.currentSong,
                                        !currentSong.downloaded,
                                        controller.timeControlStatus == .waitingToPlayAtSpecifiedRate

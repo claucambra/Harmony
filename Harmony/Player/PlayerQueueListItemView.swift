@@ -11,22 +11,12 @@ import SwiftUI
 struct PlayerQueueListItemView: View {
     @ObservedObject var song: Song
     let isCurrentSong: Bool
-    let cornerRadius = UIMeasurements.cornerRadius
-    let borderWidth = UIMeasurements.thinBorderWidth
-    let shadowRadius = UIMeasurements.shadowRadius
 
     var body: some View {
         HStack {
-            ArtworkView(artwork: song.artwork)
+            BorderedArtworkView(artwork: song.artwork)
                 .frame(height: isCurrentSong ?
                        UIMeasurements.mediumArtworkHeight : UIMeasurements.smallArtworkHeight)
-                .clipShape(.rect(cornerRadius: cornerRadius))
-                .shadow(radius: isCurrentSong ? shadowRadius : 0)
-                .overlay(
-                    RoundedRectangle(cornerRadius: cornerRadius)
-                        .stroke(.separator, lineWidth: borderWidth)
-                )
-                .padding(isCurrentSong ? shadowRadius : 0)
             VStack(alignment: .leading) {
                 if isCurrentSong {
                     Label("Currently playing", systemImage: "speaker.wave.3.fill")

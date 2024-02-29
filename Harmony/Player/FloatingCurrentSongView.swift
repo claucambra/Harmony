@@ -11,19 +11,15 @@ import SwiftUI
 struct FloatingCurrentSongView: View {
     @ObservedObject var controller = PlayerController.shared
 
-    let cornerRadius = UIMeasurements.cornerRadius
-    let borderWidth = UIMeasurements.thinBorderWidth
     let shadowRadius = UIMeasurements.shadowRadius
     let buttonSymbolFontSize = UIMeasurements.mediumButtonSymbolFontSize
 
     var body: some View {
         HStack {
-            ArtworkView(artwork: PlayerController.shared.currentSong?.artwork)
-                .clipShape(.rect(cornerRadius: cornerRadius))
+            BorderedArtworkView(artwork: PlayerController.shared.currentSong?.artwork)
+                .frame(height: UIMeasurements.smallArtworkHeight)
                 .overlay(
                     ZStack {
-                        RoundedRectangle(cornerRadius: cornerRadius)
-                            .stroke(.separator, lineWidth: borderWidth)
                         if let currentSong = controller.currentSong,
                            !currentSong.downloaded,
                            controller.timeControlStatus == .waitingToPlayAtSpecifiedRate
@@ -33,7 +29,6 @@ struct FloatingCurrentSongView: View {
                         }
                     }
                 )
-                .frame(height: UIMeasurements.smallArtworkHeight)
             VStack(alignment: .trailing) {
                 Text(controller.currentSong?.title ?? "Harmony")
                     .bold()

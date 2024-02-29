@@ -11,23 +11,12 @@ import SwiftUI
 struct SongListItemView: View {
     @ObservedObject var song: Song
     let isCurrentSong: Bool
-    let cornerRadius = UIMeasurements.cornerRadius
-    let borderWidth = UIMeasurements.thinBorderWidth
 
     var body: some View {
         HStack {
-            ArtworkView(artwork: song.artwork)
+            BorderedArtworkView(artwork: song.artwork)
                 .frame(height: UIMeasurements.smallArtworkHeight)
-                .clipShape(.rect(cornerRadius: cornerRadius))
-                .overlay(
-                    RoundedRectangle(cornerRadius: cornerRadius)
-                        .stroke(.separator, lineWidth: borderWidth)
-                )
             VStack(alignment: .leading) {
-                if isCurrentSong {
-                    Label("Currently playing", systemImage: "speaker.wave.3.fill")
-                        .font(.headline)
-                }
                 Text(song.title)
                     .lineLimit(1)
                 Text(song.artist)

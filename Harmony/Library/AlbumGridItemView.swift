@@ -13,7 +13,7 @@ struct AlbumGridItemView: View {
 
     var body: some View {
         VStack {
-            ArtworkView(artwork: album.artwork)
+            BorderedArtworkView(artwork: album.artwork)
                 .frame(maxWidth: .infinity)
             Text(album.title)
                 .lineLimit(1)
