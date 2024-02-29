@@ -12,6 +12,7 @@ struct DetailColumn: View {
     @Binding var selection: Panel?
     @Binding var searchText: String
     @Binding var showOnlineSongs: Bool
+    @State var secondaryToolbarHeight: CGFloat = 0.0
 
     var body: some View {
         switch selection ?? .songs {
@@ -19,8 +20,12 @@ struct DetailColumn: View {
             SongsTable(searchText: $searchText, showOnlineSongs: $showOnlineSongs)
                 .navigationTitle("Songs")
         case .albums:
-            AlbumsGridView(searchText: $searchText, showOnlineSongs: $showOnlineSongs)
-                .navigationTitle("Albums")
+            AlbumsGridView(
+                searchText: $searchText,
+                showOnlineSongs: $showOnlineSongs,
+                secondaryToolbarHeight: $secondaryToolbarHeight
+            )
+            .navigationTitle("Albums")
             .overlay(alignment: .top) {
                 #if os(macOS)
                 secondaryToolbar

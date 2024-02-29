@@ -13,6 +13,7 @@ struct AlbumsGridView: View {
     @Query(sort: \Album.title) var albums: [Album]
     @Binding var searchText: String
     @Binding var showOnlineSongs: Bool
+    @Binding var secondaryToolbarHeight: CGFloat
     @State var selection: Set<Album.ID> = []
 
     #if os(macOS)
@@ -31,9 +32,14 @@ struct AlbumsGridView: View {
     let interItemPadding = UIMeasurements.largePadding
     #endif
 
-    init(searchText: Binding<String>, showOnlineSongs: Binding<Bool>) {
+    init(
+        searchText: Binding<String>,
+        showOnlineSongs: Binding<Bool>,
+        secondaryToolbarHeight: Binding<CGFloat>
+    ) {
         _searchText = searchText
         _showOnlineSongs  = showOnlineSongs
+        _secondaryToolbarHeight = secondaryToolbarHeight
         let searchTextVal = searchText.wrappedValue
         let showOnlineSongsVal = showOnlineSongs.wrappedValue
 
@@ -65,5 +71,6 @@ struct AlbumsGridView: View {
             .padding([.leading, .trailing], horizontalPadding)
         }
         .background(.background)
+        .safeAreaPadding([.top], secondaryToolbarHeight)
     }
 }
