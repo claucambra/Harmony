@@ -17,11 +17,7 @@ struct ToolbarCurrentSongView: View {
 
     var body: some View {
         HStack(spacing: horizontalSpacing) {
-            if let currentSong = controller.currentSong {
-                artworkViewWithModifiers(ArtworkView(artwork: currentSong.artwork))
-            } else {
-                artworkViewWithModifiers(PlaceholderArtworkView())
-            }
+            artworkWithLoadingOverlay
             VStack(spacing: 0) {
                 HStack {
                     Text(controller.currentSong?.title ?? "Harmony")
@@ -45,11 +41,13 @@ struct ToolbarCurrentSongView: View {
     }
 
     @ViewBuilder
-    func artworkViewWithModifiers(_ view: some View) -> some View {
+    var artworkWithLoadingOverlay: some View {
         ZStack {
-            view
+            ArtworkView(artwork: controller.currentSong?.artwork)
                 .frame(maxHeight: .infinity)
-                .clipShape(.rect(topLeadingRadius: borderRadius, bottomLeadingRadius: borderRadius))
+                .clipShape(
+                    .rect(topLeadingRadius: borderRadius, bottomLeadingRadius: borderRadius)
+                )
             if let currentSong = controller.currentSong,
                !currentSong.downloaded,
                controller.timeControlStatus == .waitingToPlayAtSpecifiedRate

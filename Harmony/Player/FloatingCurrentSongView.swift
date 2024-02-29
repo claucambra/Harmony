@@ -18,11 +18,22 @@ struct FloatingCurrentSongView: View {
 
     var body: some View {
         HStack {
-            if let currentSong = PlayerController.shared.currentSong {
-                artworkViewWithModifiers(ArtworkView(artwork: currentSong.artwork))
-            } else {
-                artworkViewWithModifiers(PlaceholderArtworkView())
-            }
+            ArtworkView(artwork: PlayerController.shared.currentSong?.artwork)
+                .clipShape(.rect(cornerRadius: cornerRadius))
+                .overlay(
+                    ZStack {
+                        RoundedRectangle(cornerRadius: cornerRadius)
+                            .stroke(.separator, lineWidth: borderWidth)
+                        if let currentSong = controller.currentSong,
+                           !currentSong.downloaded,
+                           controller.timeControlStatus == .waitingToPlayAtSpecifiedRate
+                        {
+                            LoadingIndicatorOverlayView()
+                                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        }
+                    }
+                )
+                .frame(height: UIMeasurements.smallArtworkHeight)
             VStack(alignment: .trailing) {
                 Text(controller.currentSong?.title ?? "Harmony")
                     .bold()
@@ -46,26 +57,6 @@ struct FloatingCurrentSongView: View {
                 .shadow(radius: shadowRadius)
 
         }
-    }
-
-    @ViewBuilder
-    func artworkViewWithModifiers(_ view: some View) -> some View {
-        view
-            .clipShape(.rect(cornerRadius: cornerRadius))
-            .overlay(
-                ZStack {
-                    RoundedRectangle(cornerRadius: cornerRadius)
-                        .stroke(.separator, lineWidth: borderWidth)
-                    if let currentSong = controller.currentSong,
-                       !currentSong.downloaded,
-                       controller.timeControlStatus == .waitingToPlayAtSpecifiedRate
-                    {
-                        LoadingIndicatorOverlayView()
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    }
-                }
-            )
-            .frame(height: UIMeasurements.smallArtworkHeight)
     }
 
     @ViewBuilder

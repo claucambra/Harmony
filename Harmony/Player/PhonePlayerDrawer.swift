@@ -33,11 +33,26 @@ struct PhonePlayerDrawer: View {
                 } else {
                     VStack {
                         Spacer()
-                        if let currentSong = PlayerController.shared.currentSong {
-                            artworkViewWithModifiers(ArtworkView(artwork: song.artwork))
-                        } else {
-                            artworkViewWithModifiers(PlaceholderArtworkView())
-                        }
+                        ArtworkView(artwork: PlayerController.shared.currentSong?.artwork)
+                            .clipShape(.rect(cornerRadius: cornerRadius))
+                            .shadow(radius: shadowRadius)
+                            .overlay(
+                                ZStack {
+                                    RoundedRectangle(cornerRadius: cornerRadius)
+                                        .stroke(.separator, lineWidth: borderWidth)
+                                    if let currentSong = controller.currentSong,
+                                       !currentSong.downloaded,
+                                       controller.timeControlStatus == .waitingToPlayAtSpecifiedRate
+                                    {
+                                        LoadingIndicatorOverlayView()
+                                            .frame(
+                                                width: UIMeasurements.smallArtworkHeight,
+                                                height: UIMeasurements.smallArtworkHeight
+                                            )
+                                    }
+                                }
+                            )
+                            .frame(height: UIMeasurements.largeArtworkHeight)
                         Spacer()
                         Text(controller.currentSong?.title ?? "Harmony")
                             .bold()
@@ -121,30 +136,6 @@ struct PhonePlayerDrawer: View {
     func playerButton(_ button: some View) -> some View {
         button
             .foregroundStyle(.foreground)
-    }
-
-    @ViewBuilder
-    func artworkViewWithModifiers(_ view: some View) -> some View {
-        view
-            .clipShape(.rect(cornerRadius: cornerRadius))
-            .shadow(radius: shadowRadius)
-            .overlay(
-                ZStack {
-                    RoundedRectangle(cornerRadius: cornerRadius)
-                        .stroke(.separator, lineWidth: borderWidth)
-                    if let currentSong = controller.currentSong,
-                       !currentSong.downloaded,
-                       controller.timeControlStatus == .waitingToPlayAtSpecifiedRate
-                    {
-                        LoadingIndicatorOverlayView()
-                            .frame(
-                                width: UIMeasurements.smallArtworkHeight,
-                                height: UIMeasurements.smallArtworkHeight
-                            )
-                    }
-                }
-            )
-            .frame(height: UIMeasurements.largeArtworkHeight)
     }
 }
 #endif
