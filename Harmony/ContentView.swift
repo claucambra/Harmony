@@ -16,18 +16,9 @@ struct ContentView: View {
     @State private var searchText = ""
     @State private var showOnlineSongs = true
     #if os(macOS)
-    let buttonStackInToolbar = true
-    let buttonStackPlacement = ToolbarItemPlacement.navigation
-    let currentSongPlacement = ToolbarItemPlacement.principal
-    let volumeSliderPlacement = ToolbarItemPlacement.destructiveAction
-    let displayVolumeSlider = true
     let floatingBarSafeArea = 0.0
     let searchablePlacement = SearchFieldPlacement.sidebar
     #else
-    let buttonStackInToolbar = UIDevice.current.userInterfaceIdiom != .phone
-    let buttonStackPlacement = ToolbarItemPlacement.topBarLeading
-    let volumeSliderPlacement = ToolbarItemPlacement.topBarTrailing
-    let displayVolumeSlider = false
     let floatingBarSafeArea = UIDevice.current.userInterfaceIdiom == .phone ? 88.0 : 0.0 // TODO
     let searchablePlacement = SearchFieldPlacement.automatic
     #endif
@@ -66,39 +57,6 @@ struct ContentView: View {
                 )
             }
             .safeAreaPadding([.bottom], floatingBarSafeArea)
-            .toolbar {
-                if buttonStackInToolbar {
-                    ToolbarItemGroup(placement: buttonStackPlacement) {
-                        ShuffleButton()
-                        ChangeSongButton(buttonChangeType: .previous)
-                        PlayButton()
-                        ChangeSongButton(buttonChangeType: .next)
-                        RepeatButton()
-                    }
-                }
-
-                #if os(macOS)
-                ToolbarItem(placement: currentSongPlacement) {
-                    ToolbarCurrentSongView()
-                }
-                #endif
-
-                if displayVolumeSlider {
-                    ToolbarItemGroup(placement: volumeSliderPlacement) {
-                        Spacer()
-                        ToolbarVolumeSliderView()
-                    }
-                }
-
-                #if !os(macOS)
-                if UIDevice.current.userInterfaceIdiom != .phone {
-                    ToolbarItem {
-                        AirPlayButton()
-                    }
-                    inspectorToolbarItem
-                }
-                #endif
-            }
         }
         .inspector(isPresented: $queueVisible) {
             #if os(macOS)
@@ -129,6 +87,16 @@ struct ContentView: View {
         #if os(macOS)
         .searchable(text: $searchText, placement: searchablePlacement) // TODO: Re-add suggestions
         #endif
+        .toolbar {
+            ControlsToolbar(queueVisible: $queueVisible)
+        }
+    }
+
+    @ToolbarContentBuilder
+    var inspectorToolbarItem: some ToolbarContent {
+        ToolbarItem {
+            QueueButton(queueVisible: $queueVisible)
+        }
     }
 
     @ViewBuilder
@@ -139,13 +107,6 @@ struct ContentView: View {
                 inspectorToolbarItem
                 #endif
             }
-    }
-
-    @ToolbarContentBuilder
-    var inspectorToolbarItem: some ToolbarContent {
-        ToolbarItem {
-            QueueButton(queueVisible: $queueVisible)
-        }
     }
 }
 

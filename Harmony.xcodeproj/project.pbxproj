@@ -97,6 +97,7 @@
 		53FE146D2B9054A9006C4193 /* AlbumGridItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53FE146C2B9054A9006C4193 /* AlbumGridItemView.swift */; };
 		53FE146F2B905D16006C4193 /* ArtworkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53FE146E2B905D16006C4193 /* ArtworkView.swift */; };
 		53FE14712B906C68006C4193 /* BorderedArtworkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53FE14702B906C68006C4193 /* BorderedArtworkView.swift */; };
+		53FE14752B90E064006C4193 /* ControlsToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53FE14742B90E064006C4193 /* ControlsToolbar.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -244,6 +245,7 @@
 		53FE146C2B9054A9006C4193 /* AlbumGridItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumGridItemView.swift; sourceTree = "<group>"; };
 		53FE146E2B905D16006C4193 /* ArtworkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtworkView.swift; sourceTree = "<group>"; };
 		53FE14702B906C68006C4193 /* BorderedArtworkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BorderedArtworkView.swift; sourceTree = "<group>"; };
+		53FE14742B90E064006C4193 /* ControlsToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlsToolbar.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -384,6 +386,7 @@
 			children = (
 				53FE14682B8F8DAA006C4193 /* AlbumsGridView.swift */,
 				53FE146C2B9054A9006C4193 /* AlbumGridItemView.swift */,
+				53FE14742B90E064006C4193 /* ControlsToolbar.swift */,
 				53D6665C2B6F34CC0042C03D /* SongContextMenuItems.swift */,
 				53D666662B73EAD40042C03D /* SongListItemView.swift */,
 				535053722B5AA61A00D7EAF2 /* SongsTable.swift */,
@@ -924,6 +927,7 @@
 				53B979752B833AA9002DA742 /* LoadingIndicatorOverlayView.swift in Sources */,
 				535054172B63A3F500D7EAF2 /* RepeatButton.swift in Sources */,
 				535053982B5CF4C900D7EAF2 /* BackendConfigurationFieldView.swift in Sources */,
+				53FE14752B90E064006C4193 /* ControlsToolbar.swift in Sources */,
 				53D6664D2B6B7E3E0042C03D /* PlayerQueueListItemView.swift in Sources */,
 				535053F02B62186F00D7EAF2 /* SettingsSheet.swift in Sources */,
 				53FE14712B906C68006C4193 /* BorderedArtworkView.swift in Sources */,
