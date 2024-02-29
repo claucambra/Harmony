@@ -24,6 +24,7 @@ public final class Song: ObservableObject {
     public private(set) var grouping: String = ""
     public private(set) var performer: String = ""
     public private(set) var duration: TimeInterval = 0
+    public private(set) var parentAlbum: Album?
     @Attribute(.externalStorage) public var artwork: Data?
     public internal(set) var local: Bool = false
     public internal(set) var downloaded: Bool = false
