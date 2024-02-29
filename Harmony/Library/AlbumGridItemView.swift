@@ -16,8 +16,10 @@ struct AlbumGridItemView: View {
             ArtworkView(artwork: album.artwork)
                 .frame(maxWidth: .infinity)
             Text(album.title)
+                .lineLimit(1)
                 .frame(maxWidth: .infinity)
             Text(album.artist ?? "Unknown artist")
+                .lineLimit(1)
                 .foregroundStyle(.secondary)
                 .frame(maxWidth: .infinity)
         }
