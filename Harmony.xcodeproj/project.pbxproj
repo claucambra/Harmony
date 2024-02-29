@@ -98,6 +98,7 @@
 		53FE146F2B905D16006C4193 /* ArtworkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53FE146E2B905D16006C4193 /* ArtworkView.swift */; };
 		53FE14712B906C68006C4193 /* BorderedArtworkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53FE14702B906C68006C4193 /* BorderedArtworkView.swift */; };
 		53FE14752B90E064006C4193 /* ControlsToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53FE14742B90E064006C4193 /* ControlsToolbar.swift */; };
+		53FE14772B90F030006C4193 /* AlbumDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53FE14762B90F030006C4193 /* AlbumDetailView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -246,6 +247,7 @@
 		53FE146E2B905D16006C4193 /* ArtworkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtworkView.swift; sourceTree = "<group>"; };
 		53FE14702B906C68006C4193 /* BorderedArtworkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BorderedArtworkView.swift; sourceTree = "<group>"; };
 		53FE14742B90E064006C4193 /* ControlsToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlsToolbar.swift; sourceTree = "<group>"; };
+		53FE14762B90F030006C4193 /* AlbumDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumDetailView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -384,8 +386,9 @@
 		535053742B5AA63500D7EAF2 /* Library */ = {
 			isa = PBXGroup;
 			children = (
-				53FE14682B8F8DAA006C4193 /* AlbumsGridView.swift */,
+				53FE14762B90F030006C4193 /* AlbumDetailView.swift */,
 				53FE146C2B9054A9006C4193 /* AlbumGridItemView.swift */,
+				53FE14682B8F8DAA006C4193 /* AlbumsGridView.swift */,
 				53FE14742B90E064006C4193 /* ControlsToolbar.swift */,
 				53D6665C2B6F34CC0042C03D /* SongContextMenuItems.swift */,
 				53D666662B73EAD40042C03D /* SongListItemView.swift */,
@@ -924,6 +927,7 @@
 				53D6666C2B74D6C80042C03D /* PlayerScrubberView.swift in Sources */,
 				535053A02B5D1CC700D7EAF2 /* BackendsModel.swift in Sources */,
 				535F1BD12B4A8F1400C78D98 /* HarmonyApp.swift in Sources */,
+				53FE14772B90F030006C4193 /* AlbumDetailView.swift in Sources */,
 				53B979752B833AA9002DA742 /* LoadingIndicatorOverlayView.swift in Sources */,
 				535054172B63A3F500D7EAF2 /* RepeatButton.swift in Sources */,
 				535053982B5CF4C900D7EAF2 /* BackendConfigurationFieldView.swift in Sources */,
