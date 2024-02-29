@@ -14,7 +14,7 @@ struct AlbumsGridView: View {
     @Binding var searchText: String
     @Binding var showOnlineSongs: Bool
     @State var selection: Set<Album.ID> = []
-    let columns = [GridItem(.flexible()), GridItem(.flexible())]
+    let columns = [GridItem(.adaptive(minimum: 180, maximum: 300))]
 
     var body: some View {
         ScrollView {
