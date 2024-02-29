@@ -14,9 +14,22 @@ struct AlbumsGridView: View {
     @Binding var searchText: String
     @Binding var showOnlineSongs: Bool
     @State var selection: Set<Album.ID> = []
+
+    #if os(macOS)
     let columns = [
         GridItem(.adaptive(minimum: 180, maximum: 300), spacing: UIMeasurements.largePadding)
     ]
+    let horizontalPadding = UIMeasurements.ultraLargePadding
+    let verticalPadding = UIMeasurements.veryLargePadding
+    let interItemPadding = UIMeasurements.largePadding
+    #else
+    let columns = [
+        GridItem(.adaptive(minimum: 160, maximum: 240), spacing: UIMeasurements.largePadding)
+    ]
+    let horizontalPadding = UIMeasurements.largePadding
+    let verticalPadding = UIMeasurements.largePadding
+    let interItemPadding = UIMeasurements.largePadding
+    #endif
 
     init(searchText: Binding<String>, showOnlineSongs: Binding<Bool>) {
         _searchText = searchText
@@ -43,13 +56,13 @@ struct AlbumsGridView: View {
 
     var body: some View {
         ScrollView {
-            LazyVGrid(columns: columns, spacing: UIMeasurements.largePadding) {
+            LazyVGrid(columns: columns, spacing: interItemPadding) {
                 ForEach(albums) { album in
                     AlbumGridItemView(album: album)
                 }
             }
-            .padding([.top, .bottom], UIMeasurements.veryLargePadding)
-            .padding([.leading, .trailing], UIMeasurements.ultraLargePadding)
+            .padding([.top, .bottom], verticalPadding)
+            .padding([.leading, .trailing], horizontalPadding)
         }
         .background(.background)
     }
