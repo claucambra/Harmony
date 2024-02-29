@@ -16,6 +16,29 @@ struct AlbumsGridView: View {
     @State var selection: Set<Album.ID> = []
     let columns = [GridItem(.adaptive(minimum: 180, maximum: 300))]
 
+    init(searchText: Binding<String>, showOnlineSongs: Binding<Bool>) {
+        _searchText = searchText
+        _showOnlineSongs  = showOnlineSongs
+        let searchTextVal = searchText.wrappedValue
+        let showOnlineSongsVal = showOnlineSongs.wrappedValue
+
+        _albums = Query(
+            filter: #Predicate {
+                if searchTextVal.isEmpty, showOnlineSongsVal {
+                    true
+                } else if !searchTextVal.isEmpty, showOnlineSongsVal {
+                    $0.title.localizedStandardContains(searchTextVal)
+                } else if searchTextVal.isEmpty, !showOnlineSongsVal {
+                    $0.songs.contains(where: { $0.downloaded })
+                } else {
+                    $0.title.localizedStandardContains(searchTextVal) && 
+                    $0.songs.contains(where: { $0.downloaded })
+                }
+            },
+            sort: \Album.title
+        )
+    }
+
     var body: some View {
         ScrollView {
             LazyVGrid(columns: columns) {
