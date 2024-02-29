@@ -92,19 +92,14 @@ struct ContentView: View {
         }
     }
 
-    @ToolbarContentBuilder
-    var inspectorToolbarItem: some ToolbarContent {
-        ToolbarItem {
-            QueueButton(queueVisible: $queueVisible)
-        }
-    }
-
     @ViewBuilder
     var rightSidebarQueue: some View {
         PlayerQueueView()
             .toolbar {
                 #if os(macOS)
-                inspectorToolbarItem
+                ToolbarItem {
+                    QueueButton(queueVisible: $queueVisible)
+                }
                 #endif
             }
     }

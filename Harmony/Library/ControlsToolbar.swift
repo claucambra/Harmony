@@ -54,7 +54,9 @@ struct ControlsToolbar: ToolbarContent {
             ToolbarItem {
                 AirPlayButton()
             }
-            inspectorToolbarItem
+            ToolbarItem {
+                QueueButton(queueVisible: $queueVisible)
+            }
         }
         #endif
     }
