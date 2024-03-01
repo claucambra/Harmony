@@ -27,9 +27,8 @@ struct AlbumDetailView: View {
     var body: some View {
         List(selection: $selection) {
             HStack(spacing: UIMeasurements.largePadding) {
-                BorderedArtworkView(artwork: album.artwork)
+                ColouredShadowArtworkView(artwork: album.artwork)
                     .frame(maxHeight: UIMeasurements.largeArtworkHeight)
-                    .shadow(radius: UIMeasurements.shadowRadius)
                     .background {
                         GeometryReader { proxy in
                             Rectangle()
@@ -114,6 +113,7 @@ struct AlbumDetailView: View {
             #if os(macOS)
                 .padding([.leading, .trailing], UIMeasurements.largePadding)
             #endif
+                .frame(maxWidth: .infinity)
         }
         .buttonStyle(.borderedProminent)
         .controlSize(.extraLarge)

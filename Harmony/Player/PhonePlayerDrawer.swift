@@ -33,8 +33,7 @@ struct PhonePlayerDrawer: View {
                 } else {
                     VStack {
                         Spacer()
-                        BorderedArtworkView(artwork: PlayerController.shared.currentSong?.artwork)
-                            .shadow(radius: shadowRadius)
+                        ColouredShadowArtworkView(artwork: controller.currentSong?.artwork)
                             .overlay(
                                 ZStack {
                                     if let currentSong = controller.currentSong,
