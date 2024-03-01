@@ -30,6 +30,27 @@ struct AlbumGridItemView: View {
                     .foregroundStyle(.gray)
                     .opacity(hoveredArtwork ? UIMeasurements.hoverOverlayOpacity : 0.0)
                     .animation(UIMeasurements.hoverAnimation, value: hoveredArtwork)
+                if hoveredArtwork {
+                    HStack {
+                        Button {
+                            guard let firstSong = album.songs.first else { return }
+                            let controller = PlayerController.shared
+                            controller.playSong(firstSong, withinSongs: album.songs.lazy)
+                        } label: {
+                            Image(systemName: "play.circle.fill")
+                                .symbolRenderingMode(.hierarchical)
+                                .resizable()
+                                .scaledToFit()
+                        }
+                        .buttonStyle(.borderless)
+                        .controlSize(.large)
+                        .frame(
+                            width: UIMeasurements.mediumButtonSize,
+                            height: UIMeasurements.mediumButtonSize
+                        )
+                    }
+                    .padding(UIMeasurements.smallPadding)
+                }
             }
             Text(titleString)
                 .lineLimit(1)
