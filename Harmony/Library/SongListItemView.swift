@@ -31,6 +31,8 @@ struct SongListItemView: View {
             }
             .fixedSize(horizontal: false, vertical: true)
             Spacer()
+            Text(Duration.seconds(song.duration).formatted(.time(pattern: .minuteSecond)))
+                .foregroundStyle(.secondary)
             Label(
                 song.downloaded ? "Available offline" : "Available online only",
                 systemImage: song.downloaded ? "arrow.down.circle.fill" : "cloud"
