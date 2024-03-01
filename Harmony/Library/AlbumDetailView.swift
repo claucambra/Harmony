@@ -29,6 +29,7 @@ struct AlbumDetailView: View {
                     .shadow(radius: UIMeasurements.shadowRadius)
 
                 VStack(alignment: .leading) {
+                    Spacer()
                     Text(album.title.isEmpty ? "Unknown album" : album.title)
                         .font(.title)
                         .bold()
@@ -45,6 +46,18 @@ struct AlbumDetailView: View {
                         .multilineTextAlignment(.leading)
                         .foregroundStyle(.secondary)
                         .frame(maxWidth: .infinity, alignment: .leading)
+                    Spacer()
+                    Button {
+                        guard let firstSong = album.songs.first else { return }
+                        let controller = PlayerController.shared
+                        controller.playSong(firstSong, withinSongs: album.songs.lazy)
+                    } label: {
+                        Label("Play", systemImage: "play.fill")
+                            .foregroundStyle(.foreground)
+                            .padding([.leading, .trailing], UIMeasurements.largePadding)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .controlSize(.extraLarge)
                 }
                 .frame(maxWidth: .infinity)
             }
