@@ -23,7 +23,7 @@ struct AlbumDetailView: View {
         List(selection: $selection) {
             HStack(spacing: UIMeasurements.largePadding) {
                 BorderedArtworkView(artwork: album.artwork)
-                    .frame(height: UIMeasurements.largeArtworkHeight)
+                    .frame(maxWidth: UIMeasurements.largeArtworkHeight)
 
                 VStack(alignment: .leading) {
                     Text(album.title.isEmpty ? "Unknown album" : album.title)
@@ -40,9 +40,10 @@ struct AlbumDetailView: View {
                         .multilineTextAlignment(.leading)
                         .foregroundStyle(.secondary)
                 }
+                .frame(maxWidth: .infinity)
             }
             .listRowInsets(.init(
-                top: pagePadding,
+                top: UIMeasurements.largePadding,
                 leading: pagePadding,
                 bottom: UIMeasurements.largePadding,
                 trailing: pagePadding
