@@ -14,9 +14,11 @@ struct AlbumDetailView: View {
     #if os(macOS)
     let horizontalPadding = UIMeasurements.ultraLargePadding
     let verticalPadding = UIMeasurements.veryLargePadding
+    let buttonsAlongsideArtwork = true
     #else
     let horizontalPadding = UIMeasurements.largePadding
     let verticalPadding = UIMeasurements.largePadding
+    let buttonsAlongsideArtwork = UIDevice.current.userInterfaceIdiom != .phone
     #endif
 
     @State var selection: Set<Song.ID> = []
@@ -47,19 +49,11 @@ struct AlbumDetailView: View {
                         .foregroundStyle(.secondary)
                         .frame(maxWidth: .infinity, alignment: .leading)
                     Spacer()
-                    Button {
-                        guard let firstSong = album.songs.first else { return }
-                        let controller = PlayerController.shared
-                        controller.playSong(firstSong, withinSongs: album.songs.lazy)
-                    } label: {
-                        Label("Play", systemImage: "play.fill")
-                            .foregroundStyle(.foreground)
-                            .padding([.leading, .trailing], UIMeasurements.largePadding)
+                    if buttonsAlongsideArtwork {
+                        playButton
                     }
-                    .buttonStyle(.borderedProminent)
-                    .controlSize(.extraLarge)
                 }
-                .frame(maxWidth: .infinity)
+                .frame(maxWidth: .infinity, maxHeight: UIMeasurements.largeArtworkHeight)
             }
             .listRowInsets(.init(
                 top: verticalPadding,
@@ -68,6 +62,18 @@ struct AlbumDetailView: View {
                 trailing: horizontalPadding
             ))
             .listRowSeparator(.hidden)
+
+            if !buttonsAlongsideArtwork {
+                playButton
+                    .listRowInsets(.init(
+                        top: 0,
+                        leading: horizontalPadding,
+                        bottom: verticalPadding,
+                        trailing: horizontalPadding
+                    ))
+                    .listRowSeparator(.hidden)
+                    .frame(alignment: .center)
+            }
 
             ForEach(album.songs) { song in
                 SongListItemView(song: song, displayArtwork: false, displayArtist: false)
@@ -85,5 +91,22 @@ struct AlbumDetailView: View {
         } primaryAction: { ids in
             playSongsFromIds(ids, songs: album.songs)
         }
+    }
+
+    @ViewBuilder @MainActor
+    var playButton: some View {
+        Button {
+            guard let firstSong = album.songs.first else { return }
+            let controller = PlayerController.shared
+            controller.playSong(firstSong, withinSongs: album.songs.lazy)
+        } label: {
+            Label("Play", systemImage: "play.fill")
+                .foregroundStyle(.primary)
+            #if os(macOS)
+                .padding([.leading, .trailing], UIMeasurements.largePadding)
+            #endif
+        }
+        .buttonStyle(.borderedProminent)
+        .controlSize(.extraLarge)
     }
 }
