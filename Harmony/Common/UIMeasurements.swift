@@ -26,6 +26,10 @@ struct UIMeasurements {
 
     static let shadowRadius = 4.0
 
+    static let smallBlurRadius = 2.0
+
+    static let hoverOverlayOpacity = 0.3
+
     static let mediumButtonSize = 40.0
     static let mediumButtonSymbolFontSize = 24.0
     static let largeButtonSymbolFontSize = 32.0

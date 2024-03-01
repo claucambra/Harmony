@@ -13,14 +13,22 @@ struct AlbumGridItemView: View {
     let fallbackTitle = "Unknown album"
     let fallbackArtist = "Unknown artist"
 
+    @State var hoveredArtwork = false
+
     var body: some View {
         let titleString = album.title == "" ? fallbackTitle : album.title
         let artistString = album.artist == nil || album.artist == ""
             ? fallbackArtist
             : album.artist ?? fallbackArtist
         VStack {
-            BorderedArtworkView(artwork: album.artwork)
-                .frame(maxWidth: .infinity)
+            ZStack(alignment: .bottom) {
+                BorderedArtworkView(artwork: album.artwork)
+                    .frame(maxWidth: .infinity)
+                    .blur(radius: hoveredArtwork ? UIMeasurements.smallBlurRadius : 0.0)
+                RoundedRectangle(cornerRadius: UIMeasurements.cornerRadius)
+                    .foregroundStyle(.gray)
+                    .opacity(hoveredArtwork ? UIMeasurements.hoverOverlayOpacity : 0.0)
+            }
             Text(titleString)
                 .lineLimit(1)
                 .frame(maxWidth: .infinity)
@@ -28,6 +36,9 @@ struct AlbumGridItemView: View {
                 .lineLimit(1)
                 .foregroundStyle(.secondary)
                 .frame(maxWidth: .infinity)
+        }
+        .onHover { inside in
+            hoveredArtwork = inside
         }
     }
 }
