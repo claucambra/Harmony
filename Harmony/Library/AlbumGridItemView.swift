@@ -14,6 +14,7 @@ struct AlbumGridItemView: View {
     let fallbackArtist = "Unknown artist"
 
     @State var hoveredArtwork = false
+    @State var hoveredPlayButton = false
 
     var body: some View {
         let titleString = album.title == "" ? fallbackTitle : album.title
@@ -25,9 +26,10 @@ struct AlbumGridItemView: View {
                 BorderedArtworkView(artwork: album.artwork)
                     .frame(maxWidth: .infinity)
                     .blur(radius: hoveredArtwork ? UIMeasurements.smallBlurRadius : 0.0)
+                    .clipShape(RoundedRectangle(cornerRadius: UIMeasurements.cornerRadius))
                     .animation(UIMeasurements.hoverAnimation, value: hoveredArtwork)
                 RoundedRectangle(cornerRadius: UIMeasurements.cornerRadius)
-                    .foregroundStyle(.gray)
+                    .foregroundStyle(.black)
                     .opacity(hoveredArtwork ? UIMeasurements.hoverOverlayOpacity : 0.0)
                     .animation(UIMeasurements.hoverAnimation, value: hoveredArtwork)
                 if hoveredArtwork {
@@ -37,10 +39,16 @@ struct AlbumGridItemView: View {
                             let controller = PlayerController.shared
                             controller.playSong(firstSong, withinSongs: album.songs.lazy)
                         } label: {
+                            let primaryColor: Color = hoveredPlayButton ? .accentColor : .white
+                            let renderMode: SymbolRenderingMode = hoveredPlayButton
+                                ? .multicolor
+                                : .hierarchical
                             Image(systemName: "play.circle.fill")
-                                .symbolRenderingMode(.hierarchical)
                                 .resizable()
                                 .scaledToFit()
+                                .symbolRenderingMode(renderMode)
+                                .foregroundStyle(primaryColor, .white)
+
                         }
                         .buttonStyle(.borderless)
                         .controlSize(.large)
@@ -48,6 +56,8 @@ struct AlbumGridItemView: View {
                             width: UIMeasurements.mediumButtonSize,
                             height: UIMeasurements.mediumButtonSize
                         )
+                        .onHover { inside in hoveredPlayButton = inside }
+                        Spacer()
                     }
                     .padding(UIMeasurements.smallPadding)
                 }
