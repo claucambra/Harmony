@@ -42,7 +42,7 @@ func savePasswordInKeychain(
         kSecAttrService as String: bundleId as AnyObject,
         kSecAttrAccount as String: backendId + "/" + fieldId as AnyObject,
         kSecClass as String: kSecClassGenericPassword,
-        kSecValueData as String: password as AnyObject
+        kSecValueData as String: password.data(using: .utf8) as AnyObject
     ]
     let status = SecItemAdd(query as CFDictionary, nil)
     guard status != errSecDuplicateItem else {
