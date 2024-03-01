@@ -12,9 +12,11 @@ struct AlbumDetailView: View {
     let album: Album
 
     #if os(macOS)
-    let pagePadding = UIMeasurements.ultraLargePadding
+    let horizontalPadding = UIMeasurements.ultraLargePadding
+    let verticalPadding = UIMeasurements.veryLargePadding
     #else
-    let pagePadding = UIMeasurements.largePadding
+    let horizontalPadding = UIMeasurements.largePadding
+    let verticalPadding = UIMeasurements.largePadding
     #endif
 
     @State var selection: Set<Song.ID> = []
@@ -47,10 +49,10 @@ struct AlbumDetailView: View {
                 .frame(maxWidth: .infinity)
             }
             .listRowInsets(.init(
-                top: UIMeasurements.largePadding,
-                leading: pagePadding,
-                bottom: UIMeasurements.largePadding,
-                trailing: pagePadding
+                top: verticalPadding,
+                leading: horizontalPadding,
+                bottom: verticalPadding,
+                trailing: horizontalPadding
             ))
             .listRowSeparator(.hidden)
 
@@ -58,9 +60,9 @@ struct AlbumDetailView: View {
                 SongListItemView(song: song, displayArtwork: false, displayArtist: false)
                     .listRowInsets(.init(
                         top: UIMeasurements.smallPadding,
-                        leading: pagePadding,
+                        leading: horizontalPadding,
                         bottom: UIMeasurements.smallPadding,
-                        trailing: pagePadding
+                        trailing: horizontalPadding
                     ))
             }
         }
