@@ -24,6 +24,7 @@ struct AlbumDetailView: View {
             HStack(spacing: UIMeasurements.largePadding) {
                 BorderedArtworkView(artwork: album.artwork)
                     .frame(maxHeight: UIMeasurements.largeArtworkHeight)
+                    .shadow(radius: UIMeasurements.shadowRadius)
 
                 VStack(alignment: .leading) {
                     Text(album.title.isEmpty ? "Unknown album" : album.title)
