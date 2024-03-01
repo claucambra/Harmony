@@ -79,8 +79,8 @@ struct AlbumsGridView: View {
             .padding([.leading, .trailing], horizontalPadding)
             .navigationDestination(isPresented: $albumDetailVisible) {
                 if let detailAlbum = detailAlbum {
-                    let title = detailAlbum.title.isEmpty ? "Unknown album" : detailAlbum.title
                     AlbumDetailView(album: detailAlbum)
+                        .navigationBarTitleDisplayMode(.inline)
                 }
             }
         }
