@@ -67,5 +67,10 @@ struct AlbumDetailView: View {
             }
         }
         .listStyle(.plain)
+        .contextMenu(forSelectionType: Song.ID.self) { items in
+            contextMenuItemsForSongs(ids: items, songs: album.songs)
+        } primaryAction: { ids in
+            playSongsFromIds(ids, songs: album.songs)
+        }
     }
 }
