@@ -50,11 +50,11 @@ struct AlbumDetailView: View {
             .listRowSeparator(.hidden)
 
             ForEach(album.songs) { song in
-                Text(song.title)
+                SongListItemView(song: song, displayArtwork: false, displayArtist: false)
                     .listRowInsets(.init(
-                        top: 0,
+                        top: UIMeasurements.smallPadding,
                         leading: pagePadding,
-                        bottom: 0,
+                        bottom: UIMeasurements.smallPadding,
                         trailing: pagePadding
                     ))
             }
