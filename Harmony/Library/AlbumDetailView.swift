@@ -11,9 +11,17 @@ import SwiftUI
 struct AlbumDetailView: View {
     let album: Album
 
+    #if os(macOS)
+    let pagePadding = UIMeasurements.ultraLargePadding
+    #else
+    let pagePadding = UIMeasurements.largePadding
+    #endif
+
+    @State var selection: Set<Song.ID> = []
+
     var body: some View {
-        List {
-            HStack {
+        List(selection: $selection) {
+            HStack(spacing: UIMeasurements.largePadding) {
                 BorderedArtworkView(artwork: album.artwork)
                     .frame(height: UIMeasurements.largeArtworkHeight)
 
@@ -30,11 +38,27 @@ struct AlbumDetailView: View {
                             : album.genre ?? "Unknown genre")
                         .font(.subheadline)
                         .multilineTextAlignment(.leading)
+                        .foregroundStyle(.secondary)
                 }
             }
+            .listRowInsets(.init(
+                top: pagePadding,
+                leading: pagePadding,
+                bottom: UIMeasurements.largePadding,
+                trailing: pagePadding
+            ))
+            .listRowSeparator(.hidden)
+
             ForEach(album.songs) { song in
                 Text(song.title)
+                    .listRowInsets(.init(
+                        top: 0,
+                        leading: pagePadding,
+                        bottom: 0,
+                        trailing: pagePadding
+                    ))
             }
         }
+        .listStyle(.plain)
     }
 }
