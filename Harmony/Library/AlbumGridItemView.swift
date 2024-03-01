@@ -25,9 +25,11 @@ struct AlbumGridItemView: View {
                 BorderedArtworkView(artwork: album.artwork)
                     .frame(maxWidth: .infinity)
                     .blur(radius: hoveredArtwork ? UIMeasurements.smallBlurRadius : 0.0)
+                    .animation(UIMeasurements.hoverAnimation, value: hoveredArtwork)
                 RoundedRectangle(cornerRadius: UIMeasurements.cornerRadius)
                     .foregroundStyle(.gray)
                     .opacity(hoveredArtwork ? UIMeasurements.hoverOverlayOpacity : 0.0)
+                    .animation(UIMeasurements.hoverAnimation, value: hoveredArtwork)
             }
             Text(titleString)
                 .lineLimit(1)

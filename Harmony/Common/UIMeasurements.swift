@@ -11,6 +11,8 @@ import AppKit
 import UIKit
 #endif
 
+import SwiftUI
+
 struct UIMeasurements {
     static let smallPadding = 8.0
     static let mediumPadding = 12.0
@@ -47,6 +49,8 @@ struct UIMeasurements {
     static let toolbarCurrentSongViewWidth = 320.0
 
     static let tableColumnMiniWidth = 16.0
+
+    static let hoverAnimation = Animation.linear(duration: 0.05)
 
     static var smallFontSize: CGFloat {
         get {
