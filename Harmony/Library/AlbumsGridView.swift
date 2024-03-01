@@ -81,7 +81,6 @@ struct AlbumsGridView: View {
                 if let detailAlbum = detailAlbum {
                     let title = detailAlbum.title.isEmpty ? "Unknown album" : detailAlbum.title
                     AlbumDetailView(album: detailAlbum)
-                        .navigationTitle(title)
                 }
             }
         }
