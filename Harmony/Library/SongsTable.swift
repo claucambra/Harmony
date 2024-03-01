@@ -65,9 +65,9 @@ struct SongsTable: View {
             .width(UIMeasurements.tableColumnMiniWidth)
         }
         .contextMenu(forSelectionType: Song.ID.self) { items in
-            contextMenuItemsForSongs(ids: items)
+            contextMenuItemsForSongs(ids: items, songs: songs)
         } primaryAction: { ids in
-            playSongsFromIds(ids)
+            playSongsFromIds(ids, songs: songs)
         }
         .onAppear { sortedSongs = songs }
         .onChange(of: songs) { sortedSongs = songs }
@@ -101,30 +101,6 @@ struct SongsTable: View {
             Label("Streamable song", systemImage: "cloud")
                 .labelStyle(.iconOnly)
                 .foregroundStyle(.tertiary)
-        }
-    }
-
-    @ViewBuilder
-    private func contextMenuItemsForSongs(ids: Set<Song.ID>) -> some View {
-        if let songId = ids.first {
-            contextMenuItemsForSong(id: songId)
-        }
-    }
-
-    @ViewBuilder
-    private func contextMenuItemsForSong(id: Song.ID) -> some View {
-        if let dbObject = songs.filter({ $0.id == id }).first {
-            SongContextMenuItems(song: dbObject)
-        }
-    }
-
-    @MainActor private func playSongsFromIds(_ ids: Set<Song.ID>) {
-        for id in ids {
-            guard let dbObject = songs.filter({ $0.id == id }).first else {
-                Logger.songsTable.error("Could not find song with id")
-                return
-            }
-            PlayerController.shared.playSong(dbObject, withinSongs: songs.lazy)
         }
     }
 }

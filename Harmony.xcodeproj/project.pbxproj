@@ -99,6 +99,7 @@
 		53FE14712B906C68006C4193 /* BorderedArtworkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53FE14702B906C68006C4193 /* BorderedArtworkView.swift */; };
 		53FE14752B90E064006C4193 /* ControlsToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53FE14742B90E064006C4193 /* ControlsToolbar.swift */; };
 		53FE14772B90F030006C4193 /* AlbumDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53FE14762B90F030006C4193 /* AlbumDetailView.swift */; };
+		53FE14792B91F872006C4193 /* UISongUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53FE14782B91F872006C4193 /* UISongUtils.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -248,6 +249,7 @@
 		53FE14702B906C68006C4193 /* BorderedArtworkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BorderedArtworkView.swift; sourceTree = "<group>"; };
 		53FE14742B90E064006C4193 /* ControlsToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlsToolbar.swift; sourceTree = "<group>"; };
 		53FE14762B90F030006C4193 /* AlbumDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumDetailView.swift; sourceTree = "<group>"; };
+		53FE14782B91F872006C4193 /* UISongUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UISongUtils.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -393,6 +395,7 @@
 				53D6665C2B6F34CC0042C03D /* SongContextMenuItems.swift */,
 				53D666662B73EAD40042C03D /* SongListItemView.swift */,
 				535053722B5AA61A00D7EAF2 /* SongsTable.swift */,
+				53FE14782B91F872006C4193 /* UISongUtils.swift */,
 			);
 			path = Library;
 			sourceTree = "<group>";
@@ -913,6 +916,7 @@
 				535054152B63A3AD00D7EAF2 /* ShuffleButton.swift in Sources */,
 				535054112B63A1EB00D7EAF2 /* ChangeSongButton.swift in Sources */,
 				53D6666A2B74C53F0042C03D /* UIMeasurements.swift in Sources */,
+				53FE14792B91F872006C4193 /* UISongUtils.swift in Sources */,
 				535053942B5BDA7500D7EAF2 /* BackendChoiceListItemView.swift in Sources */,
 				535054322B66248C00D7EAF2 /* ConfiguredBackendsListView.swift in Sources */,
 				535053732B5AA61A00D7EAF2 /* SongsTable.swift in Sources */,
