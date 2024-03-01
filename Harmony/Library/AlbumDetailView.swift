@@ -23,22 +23,25 @@ struct AlbumDetailView: View {
         List(selection: $selection) {
             HStack(spacing: UIMeasurements.largePadding) {
                 BorderedArtworkView(artwork: album.artwork)
-                    .frame(maxWidth: UIMeasurements.largeArtworkHeight)
+                    .frame(maxHeight: UIMeasurements.largeArtworkHeight)
 
                 VStack(alignment: .leading) {
                     Text(album.title.isEmpty ? "Unknown album" : album.title)
                         .font(.title)
                         .bold()
                         .multilineTextAlignment(.leading)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                     Text(album.artist ?? "Unknown artist")
                         .font(.title)
                         .multilineTextAlignment(.leading)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                     Text(album.genre == nil || album.genre!.isEmpty
                             ? "Unknown genre"
                             : album.genre ?? "Unknown genre")
                         .font(.subheadline)
                         .multilineTextAlignment(.leading)
                         .foregroundStyle(.secondary)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                 }
                 .frame(maxWidth: .infinity)
             }
