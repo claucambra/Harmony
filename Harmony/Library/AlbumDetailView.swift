@@ -21,6 +21,7 @@ struct AlbumDetailView: View {
     let buttonsAlongsideArtwork = UIDevice.current.userInterfaceIdiom != .phone
     #endif
 
+    @State var artworkWidth: CGFloat = 0.0
     @State var selection: Set<Song.ID> = []
 
     var body: some View {
@@ -29,6 +30,14 @@ struct AlbumDetailView: View {
                 BorderedArtworkView(artwork: album.artwork)
                     .frame(maxHeight: UIMeasurements.largeArtworkHeight)
                     .shadow(radius: UIMeasurements.shadowRadius)
+                    .background {
+                        GeometryReader { proxy in
+                            Rectangle()
+                                .fill(.clear)
+                                .onAppear { artworkWidth = proxy.size.width }
+                                .onChange(of: proxy.size) { artworkWidth = proxy.size.width }
+                        }
+                    }
 
                 VStack(alignment: .leading) {
                     Spacer()
@@ -72,7 +81,7 @@ struct AlbumDetailView: View {
                         trailing: horizontalPadding
                     ))
                     .listRowSeparator(.hidden)
-                    .frame(alignment: .center)
+                    .frame(width: artworkWidth)
             }
 
             ForEach(album.songs) { song in
