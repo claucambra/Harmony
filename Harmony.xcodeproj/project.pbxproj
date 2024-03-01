@@ -100,6 +100,7 @@
 		53FE14752B90E064006C4193 /* ControlsToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53FE14742B90E064006C4193 /* ControlsToolbar.swift */; };
 		53FE14772B90F030006C4193 /* AlbumDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53FE14762B90F030006C4193 /* AlbumDetailView.swift */; };
 		53FE14792B91F872006C4193 /* UISongUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53FE14782B91F872006C4193 /* UISongUtils.swift */; };
+		53FE147B2B923EEB006C4193 /* ColouredShadowArtworkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53FE147A2B923EEB006C4193 /* ColouredShadowArtworkView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -250,6 +251,7 @@
 		53FE14742B90E064006C4193 /* ControlsToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlsToolbar.swift; sourceTree = "<group>"; };
 		53FE14762B90F030006C4193 /* AlbumDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumDetailView.swift; sourceTree = "<group>"; };
 		53FE14782B91F872006C4193 /* UISongUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UISongUtils.swift; sourceTree = "<group>"; };
+		53FE147A2B923EEB006C4193 /* ColouredShadowArtworkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColouredShadowArtworkView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -637,6 +639,7 @@
 			children = (
 				53FE146E2B905D16006C4193 /* ArtworkView.swift */,
 				53FE14702B906C68006C4193 /* BorderedArtworkView.swift */,
+				53FE147A2B923EEB006C4193 /* ColouredShadowArtworkView.swift */,
 				5315227C2B8CF235002E31BE /* CurrentlyPlayingSongIndicatorView.swift */,
 				53B979742B833AA9002DA742 /* LoadingIndicatorOverlayView.swift */,
 				53B9796B2B7E8159002DA742 /* PlaceholderArtworkView.swift */,
@@ -941,6 +944,7 @@
 				53FE14712B906C68006C4193 /* BorderedArtworkView.swift in Sources */,
 				5350540A2B63939C00D7EAF2 /* PlayerQueueView.swift in Sources */,
 				5350542B2B64293600D7EAF2 /* SyncController.swift in Sources */,
+				53FE147B2B923EEB006C4193 /* ColouredShadowArtworkView.swift in Sources */,
 				53FE146D2B9054A9006C4193 /* AlbumGridItemView.swift in Sources */,
 				535054042B6356EF00D7EAF2 /* Logger+Extension.swift in Sources */,
 				5315227D2B8CF235002E31BE /* CurrentlyPlayingSongIndicatorView.swift in Sources */,

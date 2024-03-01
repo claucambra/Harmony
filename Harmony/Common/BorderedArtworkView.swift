@@ -9,9 +9,9 @@ import SwiftUI
 
 struct BorderedArtworkView: View {
     let artwork: Data?
-    let borderWidth = UIMeasurements.thinBorderWidth
-    let cornerRadius = UIMeasurements.cornerRadius
-    let scaleMode = ArtworkView.ScaleMode.fit
+    @State var borderWidth = UIMeasurements.thinBorderWidth
+    @State var cornerRadius = UIMeasurements.cornerRadius
+    @State var scaleMode = ArtworkView.ScaleMode.fit
 
     var body: some View {
         ArtworkView(artwork: artwork, scaleMode: scaleMode)
