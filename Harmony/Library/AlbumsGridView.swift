@@ -80,7 +80,9 @@ struct AlbumsGridView: View {
             .navigationDestination(isPresented: $albumDetailVisible) {
                 if let detailAlbum = detailAlbum {
                     AlbumDetailView(album: detailAlbum)
+                        #if !os(macOS)
                         .navigationBarTitleDisplayMode(.inline)
+                        #endif
                 }
             }
         }
