@@ -116,6 +116,6 @@ struct AlbumDetailView: View {
                 .frame(maxWidth: .infinity)
         }
         .buttonStyle(.borderedProminent)
-        .controlSize(.extraLarge)
+        .controlSize(.large)
     }
 }
