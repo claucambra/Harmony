@@ -97,6 +97,44 @@ public final class Song: ObservableObject {
                 genre = value ?? ""
             }
         }
+
+        // Now go for specific metadata
+        guard let specificMetadataFormats = try? await asset.load(.availableMetadataFormats) else {
+            Logger.defaultLog.log("Could not get available metadata formats for asset \(asset)")
+            return
+        }
+
+        guard let metadataFormat = specificMetadataFormats.first else {
+            Logger.defaultLog.log("Received no available metadata formats for asset \(asset)")
+            return
+        }
+
+        guard let specificMetadata = try? await asset.loadMetadata(for: metadataFormat) else {
+            Logger.defaultLog.log("Could not load specific metadata for asset \(asset)")
+            return
+        }
+
+        switch(metadataFormat) {
+        case .id3Metadata:
+            for item in specificMetadata {
+                guard let itemKey = item.key as? String else {
+                    Logger.defaultLog.warning("Received unknown type of ID3 key")
+                    continue
+                }
+                if itemKey.uppercased() == "TRCK" {
+                    trackNumber = (try? await item.load(.numberValue) as? Int) ?? 1
+                } else if itemKey.uppercased() == "TPOS" {
+                    discNumber = (try? await item.load(.numberValue) as? Int) ?? 1
+                    discTotal = discNumber
+                } else if itemKey.uppercased() == "TYER" {
+                    year = (try? await item.load(.numberValue) as? Int) ?? 0
+                } else {
+                    Logger.defaultLog.debug("Unknown ID3 tag \(itemKey) for song \(self.title)")
+                }
+            }
+        default:
+            return
+        }
     }
 
     private init(
