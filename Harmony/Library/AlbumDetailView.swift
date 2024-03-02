@@ -10,6 +10,7 @@ import SwiftUI
 
 struct AlbumDetailView: View {
     let album: Album
+    let sortedSongs: [Song]
 
     #if os(macOS)
     let horizontalPadding = UIMeasurements.ultraLargePadding
@@ -27,6 +28,14 @@ struct AlbumDetailView: View {
 
     @State var artworkWidth: CGFloat = 0.0
     @State var selection: Set<Song.ID> = []
+
+    init(album: Album) {
+        self.album = album
+        sortedSongs = album.songs.sorted {
+            guard $0.trackNumber != 0, $1.trackNumber != 0 else { return $0.title < $1.title }
+            return $0.trackNumber < $1.trackNumber
+        }
+    }
 
     var body: some View {
         let albumSongCount = album.songs.count
@@ -98,7 +107,7 @@ struct AlbumDetailView: View {
                     .frame(width: artworkWidth)
             }
 
-            ForEach(album.songs) { song in
+            ForEach(sortedSongs) { song in
                 SongListItemView(song: song, displayArtwork: false, displayArtist: false)
                     .listRowInsets(.init(
                         top: UIMeasurements.smallPadding,
@@ -122,9 +131,9 @@ struct AlbumDetailView: View {
         }
         .listStyle(.plain)
         .contextMenu(forSelectionType: Song.ID.self) { items in
-            contextMenuItemsForSongs(ids: items, songs: album.songs)
+            contextMenuItemsForSongs(ids: items, songs: sortedSongs)
         } primaryAction: { ids in
-            playSongsFromIds(ids, songs: album.songs)
+            playSongsFromIds(ids, songs: sortedSongs)
         }
     }
 
@@ -133,7 +142,7 @@ struct AlbumDetailView: View {
         Button {
             guard let firstSong = album.songs.first else { return }
             let controller = PlayerController.shared
-            controller.playSong(firstSong, withinSongs: album.songs.lazy)
+            controller.playSong(firstSong, withinSongs: sortedSongs.lazy)
         } label: {
             Label("Play", systemImage: "play.fill")
                 .foregroundStyle(.primary)
