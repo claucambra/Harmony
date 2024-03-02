@@ -24,6 +24,10 @@ public final class Song: ObservableObject {
     public private(set) var grouping: String = ""
     public private(set) var performer: String = ""
     public private(set) var duration: TimeInterval = 0
+    public private(set) var year: Int = 0
+    public private(set) var trackNumber: Int = 0
+    public private(set) var discNumber: Int = 1
+    public private(set) var discTotal: Int = 1
     public private(set) var parentAlbum: Album?
     @Attribute(.externalStorage) public var artwork: Data?
     public internal(set) var local: Bool = false
@@ -190,11 +194,16 @@ public final class Song: ObservableObject {
             return
         }
 
-        title = metadataDict[FLACVorbisCommentsMetadataBlock.Field.title] ?? ""
-        album = metadataDict[FLACVorbisCommentsMetadataBlock.Field.album] ?? ""
-        artist = metadataDict[FLACVorbisCommentsMetadataBlock.Field.artist] ?? ""
-        genre = metadataDict[FLACVorbisCommentsMetadataBlock.Field.genre] ?? ""
-        performer = metadataDict[FLACVorbisCommentsMetadataBlock.Field.performer] ?? ""
+        let field = FLACVorbisCommentsMetadataBlock.Field.self
+        title = metadataDict[field.title] ?? ""
+        album = metadataDict[field.album] ?? ""
+        artist = metadataDict[field.artist] ?? ""
+        genre = metadataDict[field.genre] ?? ""
+        performer = metadataDict[field.performer] ?? ""
+        year = Int(metadataDict[field.year] ?? "") ?? 0
+        trackNumber = Int(metadataDict[field.trackNumber] ?? "") ?? 0
+        discNumber = Int(metadataDict[field.discNumber] ?? "") ?? 1
+        discTotal = Int(metadataDict[field.discTotal] ?? "") ?? 1
         artwork = flacMetadata.picture?.data
     }
 }
