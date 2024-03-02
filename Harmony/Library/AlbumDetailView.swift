@@ -76,7 +76,7 @@ struct AlbumDetailView: View {
                         playButton
                     }
                 }
-                .frame(maxWidth: .infinity, maxHeight: UIMeasurements.largeArtworkHeight)
+                .frame(maxWidth: .infinity, maxHeight: artworkWidth)
             }
             .listRowInsets(.init(
                 top: verticalPadding,
