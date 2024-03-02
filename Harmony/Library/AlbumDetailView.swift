@@ -25,6 +25,17 @@ struct AlbumDetailView: View {
     @State var selection: Set<Song.ID> = []
 
     var body: some View {
+        let albumSongCount = album.songs.count
+        let albumSongCountString = albumSongCount == 1 
+            ? "\(albumSongCount) song"
+            : "\(albumSongCount) songs"
+        let albumTotalDuration = album.songs.reduce(0, { x, song in
+            x + song.duration
+        })
+        let albumDuration = Duration
+            .seconds(albumTotalDuration)
+            .formatted(.time(pattern: .minuteSecond))
+
         List(selection: $selection) {
             HStack(spacing: UIMeasurements.largePadding) {
                 ColouredShadowArtworkView(artwork: album.artwork)
@@ -92,6 +103,18 @@ struct AlbumDetailView: View {
                         trailing: horizontalPadding
                     ))
             }
+
+            Text("\(albumSongCountString), \(albumDuration) minutes")
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+                .listRowSeparator(.hidden, edges: [.bottom])
+                .listRowInsets(.init(
+                    top: verticalPadding,
+                    leading: horizontalPadding,
+                    bottom: verticalPadding,
+                    trailing: horizontalPadding
+                ))
+                .selectionDisabled()
         }
         .listStyle(.plain)
         .contextMenu(forSelectionType: Song.ID.self) { items in
