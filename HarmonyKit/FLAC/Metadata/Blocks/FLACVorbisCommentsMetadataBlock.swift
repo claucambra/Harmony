@@ -25,6 +25,14 @@ struct FLACVorbisCommentsMetadataBlock {
         case location = "LOCATION"
         case contact = "CONTACT"
         case isrc = "ISRC"
+        case year = "YEAR"
+        case albumArtist = "ALBUMARTIST"
+        case discNumber = "DISCNUMBER"
+        case discTotal = "DISCTOTAL"
+        case length = "LENGTH"
+        case bpm = "BPM"
+        case publisher = "PUBLISHER"
+        case barcode = "BARCODE"
     }
 
     let header: FLACMetadataBlockHeader
