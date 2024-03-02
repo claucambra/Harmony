@@ -15,10 +15,14 @@ struct AlbumDetailView: View {
     let horizontalPadding = UIMeasurements.ultraLargePadding
     let verticalPadding = UIMeasurements.veryLargePadding
     let buttonsAlongsideArtwork = true
+    let albumTitleFont = Font.largeTitle
+    let albumArtistFont = Font.title
     #else
     let horizontalPadding = UIMeasurements.largePadding
     let verticalPadding = UIMeasurements.largePadding
     let buttonsAlongsideArtwork = UIDevice.current.userInterfaceIdiom != .phone
+    let albumTitleFont: Font = UIDevice.current.userInterfaceIdiom == .phone ? .title2 : .title
+    let albumArtistFont: Font = UIDevice.current.userInterfaceIdiom == .phone ? .title3 : .title2
     #endif
 
     @State var artworkWidth: CGFloat = 0.0
@@ -52,12 +56,12 @@ struct AlbumDetailView: View {
                 VStack(alignment: .leading) {
                     Spacer()
                     Text(album.title.isEmpty ? "Unknown album" : album.title)
-                        .font(.title)
+                        .font(albumTitleFont)
                         .bold()
                         .multilineTextAlignment(.leading)
                         .frame(maxWidth: .infinity, alignment: .leading)
                     Text(album.artist ?? "Unknown artist")
-                        .font(.title)
+                        .font(albumArtistFont)
                         .multilineTextAlignment(.leading)
                         .frame(maxWidth: .infinity, alignment: .leading)
                     Text(album.genre == nil || album.genre!.isEmpty
