@@ -15,11 +15,10 @@ struct ContentView: View {
     @State private var queueVisible = false
     @State private var searchText = ""
     @State private var showOnlineSongs = true
+    @State private var floatingBarHeight = 0.0
     #if os(macOS)
-    let floatingBarSafeArea = 0.0
     let searchablePlacement = SearchFieldPlacement.sidebar
     #else
-    let floatingBarSafeArea = UIDevice.current.userInterfaceIdiom == .phone ? 88.0 : 0.0 // TODO
     let searchablePlacement = SearchFieldPlacement.automatic
     #endif
 
@@ -47,7 +46,7 @@ struct ContentView: View {
                         #endif
                     }
                 }
-                .safeAreaPadding([.bottom], floatingBarSafeArea)
+                .safeAreaPadding([.bottom], floatingBarHeight)
         } detail: {
             NavigationStack(path: $path) {
                 DetailColumn(
@@ -56,7 +55,8 @@ struct ContentView: View {
                     showOnlineSongs: $showOnlineSongs
                 )
             }
-            .safeAreaPadding([.bottom], floatingBarSafeArea)
+            .safeAreaPadding([.bottom], floatingBarHeight)
+            .environment(\.floatingBarHeight, floatingBarHeight)
         }
         .inspector(isPresented: $queueVisible) {
             #if os(macOS)
@@ -73,8 +73,22 @@ struct ContentView: View {
             #if os(iOS)
             if UIDevice.current.userInterfaceIdiom == .phone {
                 FloatingCurrentSongView()
-                    .safeAreaPadding([.leading, .trailing, .bottom], 10)
+                    .safeAreaPadding([.leading, .trailing, .bottom], UIMeasurements.largePadding)
                     .frame(alignment: .bottom)
+                    .background {
+                        GeometryReader { proxy in
+                            Rectangle()
+                                .foregroundStyle(.clear)
+                                .onAppear {
+                                    let safeHeight = proxy.size.height + UIMeasurements.largePadding
+                                    floatingBarHeight = safeHeight
+                                }
+                                .onChange(of: proxy.size) {
+                                    let safeHeight = proxy.size.height + UIMeasurements.largePadding
+                                    floatingBarHeight = safeHeight
+                                }
+                        }
+                    }
                     .onTapGesture {
                         // Make sure to hide any keyboard currently on screen
                         let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene
