@@ -11,6 +11,7 @@ import SwiftUI
 
 struct AlbumsGridView: View {
     @Query(sort: \Album.title) var albums: [Album]
+    @Environment(\.floatingBarHeight) var floatingBarHeight
     @Binding var searchText: String
     @Binding var showOnlineSongs: Bool
     @State var selection: Set<Album.ID> = []
@@ -82,6 +83,7 @@ struct AlbumsGridView: View {
                     AlbumDetailView(album: detailAlbum)
                         #if !os(macOS)
                         .navigationBarTitleDisplayMode(.inline)
+                        .safeAreaPadding([.bottom], floatingBarHeight)
                         #endif
                 }
             }
