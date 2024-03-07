@@ -22,7 +22,7 @@ public final class Album {
         title = referenceSong.album
         artist = referenceSong.artist
         genre = referenceSong.genre
-        // year = referenceSong.year
+        year = referenceSong.year
         artwork = referenceSong.artwork
         setSongs(songs)
     }
