@@ -108,13 +108,18 @@ struct AlbumDetailView: View {
             }
 
             ForEach(sortedSongs) { song in
-                SongListItemView(song: song, displayArtwork: false, displayArtist: false)
-                    .listRowInsets(.init(
-                        top: UIMeasurements.smallPadding,
-                        leading: horizontalPadding,
-                        bottom: UIMeasurements.smallPadding,
-                        trailing: horizontalPadding
-                    ))
+                SongListItemView(
+                    song: song,
+                    displayArtwork: false,
+                    displayArtist: false,
+                    displayTrackNumber: true
+                )
+                .listRowInsets(.init(
+                    top: UIMeasurements.smallPadding,
+                    leading: horizontalPadding,
+                    bottom: UIMeasurements.smallPadding,
+                    trailing: horizontalPadding
+                ))
             }
 
             Text("\(albumSongCountString), \(albumDuration) minutes")
