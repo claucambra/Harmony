@@ -29,6 +29,6 @@ func contextMenuItemsForSong(id: Song.ID, songs: [Song]) -> some View {
             Logger.songsTable.error("Could not find song with id")
             return
         }
-        PlayerController.shared.playSong(song, withinSongs: songs.lazy)
+        PlayerController.shared.playSong(song, withinSongs: songs)
     }
 }

@@ -142,7 +142,7 @@ struct AlbumDetailView: View {
         Button {
             guard let firstSong = album.songs.first else { return }
             let controller = PlayerController.shared
-            controller.playSong(firstSong, withinSongs: sortedSongs.lazy)
+            controller.playSong(firstSong, withinSongs: sortedSongs)
         } label: {
             Label("Play", systemImage: "play.fill")
                 .foregroundStyle(.primary)

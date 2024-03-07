@@ -22,7 +22,7 @@ class PlayerQueue: ObservableObject {
     static let viewLoadTriggerCount = 5
     /// The parent list of songs that the user was viewing when they manually added a song. This is
     /// used to add contextually-relevant previous and upcoming songs.
-    @Published var results: LazySequence<[Song]>? {
+    @Published var results: [Song]? {
         // TODO: Listen to changes to this and upd. songs
         didSet {
             shuffledIdentifiers = [] // Shuffle freshly
@@ -220,7 +220,7 @@ class PlayerQueue: ObservableObject {
         playNextSongs.append(song)
     }
 
-    func addCurrentSong(_ song: Song, parentResults: LazySequence<[Song]>) {
+    func addCurrentSong(_ song: Song, parentResults: [Song]) {
         results = parentResults
         addedSongResultsIndex = parentResults.firstIndex(of: song)
         lastLoadPreviousSongResultsIndex = addedSongResultsIndex

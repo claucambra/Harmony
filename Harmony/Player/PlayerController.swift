@@ -285,7 +285,7 @@ class PlayerController: NSObject, ObservableObject  {
         return .success
     }
 
-    func playSong(_ song: Song, withinSongs songs: LazySequence<[Song]>) {
+    func playSong(_ song: Song, withinSongs songs: [Song]) {
         currentSong = song
         queue.addCurrentSong(song, parentResults: songs)
         play()
