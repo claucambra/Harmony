@@ -16,6 +16,7 @@ public final class Album {
     public var genre: String?
     public var year: Int?
     @Attribute(.externalStorage) public var artwork: Data?
+    @Transient public var downloaded: Bool = false
 
     public init?(songs: [Song]) {
         guard let referenceSong = songs.first else { return nil }
@@ -24,6 +25,7 @@ public final class Album {
         genre = referenceSong.genre
         year = referenceSong.year
         artwork = referenceSong.artwork
+        downloaded = songs.filter { !$0.downloaded }.isEmpty
         setSongs(songs)
     }
 
