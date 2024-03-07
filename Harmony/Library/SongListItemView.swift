@@ -39,12 +39,8 @@ struct SongListItemView: View {
             Spacer()
             Text(Duration.seconds(song.duration).formatted(.time(pattern: .minuteSecond)))
                 .foregroundStyle(.secondary)
-            Label(
-                song.downloaded ? "Available offline" : "Available online only",
-                systemImage: song.downloaded ? "arrow.down.circle.fill" : "cloud"
-            )
+            DownloadStateLabelView(downloaded: song.downloaded)
                 .foregroundStyle(.tertiary)
-                .labelStyle(.iconOnly)
         }
     }
 }
