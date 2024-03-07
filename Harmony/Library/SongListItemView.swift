@@ -13,9 +13,15 @@ struct SongListItemView: View {
     @State var isCurrentSong = false
     @State var displayArtwork = true
     @State var displayArtist = true
+    @State var displayTrackNumber = false
 
     var body: some View {
         HStack {
+            if displayTrackNumber {
+                Text("\(song.trackNumber)")
+                    .foregroundStyle(.secondary)
+                    .onAppear { print(song.trackNumber) }
+            }
             if displayArtwork {
                 BorderedArtworkView(artwork: song.artwork)
                     .frame(height: UIMeasurements.smallArtworkHeight)
