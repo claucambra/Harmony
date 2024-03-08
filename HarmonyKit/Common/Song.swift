@@ -31,7 +31,9 @@ public final class Song: ObservableObject {
     public private(set) var parentAlbum: Album?
     @Attribute(.externalStorage) public var artwork: Data?
     public internal(set) var local: Bool = false
-    public internal(set) var downloaded: Bool = false
+    public internal(set) var downloaded: Bool = false {
+        didSet { parentAlbum?.updateDownloaded() }
+    }
     public internal(set) var versionId: String = ""
 
     // Used by the backends during scanning, initial creation that sets all values received
