@@ -166,6 +166,10 @@ public class FilesBackend: NSObject, Backend {
     }
 
     public func fetchSong(_ song: Song) async {
+        guard !song.downloaded else {
+            Logger.defaultLog.info("Not downloading already downloaded song \(song.url)")
+            return
+        }
         let fileManager = FileManager.default
         guard fileManager.isUbiquitousItem(at: song.url) else { return }
         do {

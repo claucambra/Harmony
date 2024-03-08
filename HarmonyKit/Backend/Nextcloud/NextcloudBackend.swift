@@ -188,7 +188,10 @@ public class NextcloudBackend: NSObject, Backend {
     }
     
     public func fetchSong(_ song: Song) async {
-        guard let localUrl = localFileURL(song: song) else { return }
+        guard !song.downloaded else {
+            Logger.ncBackend.info("Not downloading already downloaded song \(song.url)")
+            return
+        }
         let localPath = localUrl.path
         Logger.ncBackend.info("Downloading song for offline playback: \(song.url) to \(localPath)")
 
