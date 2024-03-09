@@ -30,21 +30,26 @@ struct SongsTable: View {
         _showOnlineSongs  = showOnlineSongs
         let searchTextVal = searchText.wrappedValue
         let showOnlineSongsVal = showOnlineSongs.wrappedValue
-
-        _songs = Query(
-            filter: #Predicate {
-                if searchTextVal.isEmpty, showOnlineSongsVal {
-                    true
-                } else if !searchTextVal.isEmpty, showOnlineSongsVal {
-                    $0.title.localizedStandardContains(searchTextVal)
-                } else if searchTextVal.isEmpty, !showOnlineSongsVal {
-                    $0.downloaded
-                } else {
-                    $0.title.localizedStandardContains(searchTextVal) && $0.downloaded
-                }
-            },
-            sort: \Song.title
-        )
+        let downloadedState = DownloadState.downloaded.rawValue
+        let outdatedDownloadedState = DownloadState.downloadedOutdated.rawValue
+        var predicate: Predicate<Song>
+        if searchTextVal.isEmpty, showOnlineSongsVal {
+            predicate = #Predicate<Song> { !$0.identifier.isEmpty }
+        } else if !searchTextVal.isEmpty, showOnlineSongsVal {
+            predicate = #Predicate<Song> { $0.title.localizedStandardContains(searchTextVal) }
+        } else if searchTextVal.isEmpty, !showOnlineSongsVal {
+            predicate = #Predicate<Song> {
+                $0.downloadState == downloadedState ||
+                $0.downloadState == outdatedDownloadedState
+            }
+        } else {
+            predicate = #Predicate<Song> {
+                $0.title.localizedStandardContains(searchTextVal)
+                && ($0.downloadState == downloadedState ||
+                    $0.downloadState == outdatedDownloadedState)
+            }
+        }
+        _songs = Query(filter: predicate, sort: \Song.title)
     }
 
     var body: some View {
@@ -93,7 +98,8 @@ struct SongsTable: View {
 
     @ViewBuilder
     private func availableOfflineView(song: Song) -> some View {
-        if song.downloaded {
+        if song.downloadState == DownloadState.downloaded.rawValue ||
+            song.downloadState == DownloadState.downloadedOutdated.rawValue {
             Label("Available offline", systemImage: "arrow.down.circle.fill")
                 .labelStyle(.iconOnly)
                 .foregroundStyle(.tertiary)

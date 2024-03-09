@@ -178,7 +178,9 @@ public class NextcloudBackend: NSObject, Backend {
 
     public func assetForSong(_ song: Song) -> AVAsset? {
         var url = song.url
-        if song.downloaded, let localUrl = localFileURL(song: song) {
+        if song.downloadState == DownloadState.downloaded.rawValue,
+            let localUrl = localFileURL(song: song)
+        {
             url = localUrl
         } // TODO: Reset downloaded state here if file not found
         Logger.ncBackend.debug("Providing url \(url) for \(song.title)")
@@ -191,7 +193,7 @@ public class NextcloudBackend: NSObject, Backend {
         _ song: Song,
         progressHandler: @Sendable @escaping (Progress) -> Void
     ) async {
-        guard !song.downloaded else {
+        guard song.downloadState != DownloadState.downloaded.rawValue else {
             Logger.ncBackend.info("Not downloading already downloaded song \(song.url)")
             return
         }
@@ -207,15 +209,17 @@ public class NextcloudBackend: NSObject, Backend {
                 serverUrlFileName: song.url, 
                 fileNameLocalPath: localPath,
                 progressHandler: { progress in
+                    song.downloadState = DownloadState.downloading.rawValue
                     progressHandler(progress)
                 },
                 completionHandler: { account, etag, date, length, allHeaderFields, nkError in
                     guard nkError == .success else {
                         Logger.ncBackend.error("Download error: \(nkError.errorDescription)")
+                        song.downloadState = DownloadState.notDownloaded.rawValue
                         continuation.resume()
                         return
                     }
-                    song.downloaded = true
+                    song.downloadState = DownloadState.downloaded.rawValue
                     Logger.ncBackend.debug("Successfully downloaded \(song.url) to \(localUrl)")
                     continuation.resume()
             })
@@ -228,7 +232,7 @@ public class NextcloudBackend: NSObject, Backend {
 
         do {
             try FileManager.default.removeItem(at: localUrl)
-            song.downloaded = false
+            song.downloadState = DownloadState.notDownloaded.rawValue
         } catch let error {
             Logger.ncBackend.error("Could not delete song \(song.url) at \(localUrl): \(error)")
         }

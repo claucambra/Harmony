@@ -29,7 +29,7 @@ public final class Album {
     }
 
     func updateDownloaded() {
-        downloaded = songs.filter { !$0.downloaded }.isEmpty
+        downloaded = songs.filter { $0.downloadState != DownloadState.downloaded.rawValue }.isEmpty
     }
 
     private func setSongs(_ songs: [Song]) {

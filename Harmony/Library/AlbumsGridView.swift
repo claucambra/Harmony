@@ -37,22 +37,30 @@ struct AlbumsGridView: View {
         _showOnlineSongs  = showOnlineSongs
         let searchTextVal = searchText.wrappedValue
         let showOnlineSongsVal = showOnlineSongs.wrappedValue
-
-        _albums = Query(
-            filter: #Predicate {
-                if searchTextVal.isEmpty, showOnlineSongsVal {
-                    true
-                } else if !searchTextVal.isEmpty, showOnlineSongsVal {
-                    $0.title.localizedStandardContains(searchTextVal)
-                } else if searchTextVal.isEmpty, !showOnlineSongsVal {
-                    $0.songs.contains(where: { $0.downloaded })
-                } else {
-                    $0.title.localizedStandardContains(searchTextVal) && 
-                    $0.songs.contains(where: { $0.downloaded })
-                }
-            },
-            sort: \Album.title
-        )
+        let downloadedState = DownloadState.downloaded.rawValue
+        let outdatedDownloadedState = DownloadState.downloadedOutdated.rawValue
+        var predicate: Predicate<Album>
+        if searchTextVal.isEmpty, showOnlineSongsVal {
+            predicate = #Predicate<Album> { !$0.songs.isEmpty }
+        } else if !searchTextVal.isEmpty, showOnlineSongsVal {
+            predicate = #Predicate<Album> { $0.title.localizedStandardContains(searchTextVal) }
+        } else if searchTextVal.isEmpty, !showOnlineSongsVal {
+            predicate = #Predicate<Album> {
+                $0.songs.contains(where: {
+                    $0.downloadState == downloadedState ||
+                    $0.downloadState == outdatedDownloadedState
+                })
+            }
+        } else {
+            predicate = #Predicate<Album> {
+                $0.title.localizedStandardContains(searchTextVal) &&
+                $0.songs.contains(where: {
+                    $0.downloadState == downloadedState ||
+                    $0.downloadState == outdatedDownloadedState
+                })
+            }
+        }
+        _albums = Query(filter: predicate, sort: \Album.title)
     }
 
     var body: some View {

@@ -18,14 +18,14 @@ struct SongContextMenuItems: View {
         } label: {
             Label("Play next", systemImage: "text.line.first.and.arrowtriangle.forward")
         }
-        if !song.local, !song.downloaded {
+        if !song.local, song.downloadState != DownloadState.downloaded.rawValue {
             Button {
                 let backend = BackendsModel.shared.backends[song.backendId]
                 Task { await backend?.fetchSong(song) }
             } label: {
                 Label("Keep available offline", systemImage: "square.and.arrow.down")
             }
-        } else if !song.local, song.downloaded {
+        } else if !song.local, song.downloadState != DownloadState.downloaded.rawValue {
             Button(role: .destructive) {
                 let backend = BackendsModel.shared.backends[song.backendId]
                 Task { await backend?.evictSong(song) }

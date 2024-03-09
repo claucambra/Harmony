@@ -6,7 +6,7 @@
 //
 
 import Foundation
-
+import HarmonyKit
 import SwiftUI
 
 struct ToolbarCurrentSongView: View {
@@ -49,7 +49,8 @@ struct ToolbarCurrentSongView: View {
                     .rect(topLeadingRadius: borderRadius, bottomLeadingRadius: borderRadius)
                 )
             if let currentSong = controller.currentSong,
-               !currentSong.downloaded,
+               currentSong.downloadState != DownloadState.downloaded.rawValue ||
+                currentSong.downloadState != DownloadState.downloadedOutdated.rawValue,
                controller.timeControlStatus == .waitingToPlayAtSpecifiedRate
             {
                 LoadingIndicatorOverlayView(

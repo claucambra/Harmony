@@ -5,8 +5,8 @@
 //  Created by Claudio Cambra on 6/2/24.
 //
 
+import HarmonyKit
 import SwiftUI
-
 
 struct FloatingCurrentSongView: View {
     @ObservedObject var controller = PlayerController.shared
@@ -21,7 +21,7 @@ struct FloatingCurrentSongView: View {
                 .overlay(
                     ZStack {
                         if let currentSong = controller.currentSong,
-                           !currentSong.downloaded,
+                           currentSong.downloadState != DownloadState.downloaded.rawValue,
                            controller.timeControlStatus == .waitingToPlayAtSpecifiedRate
                         {
                             LoadingIndicatorOverlayView()

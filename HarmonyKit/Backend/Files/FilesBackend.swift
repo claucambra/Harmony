@@ -94,7 +94,7 @@ public class FilesBackend: NSObject, Backend {
                     identifier: url.absoluteString,  // TODO
                     backendId: id,
                     local: false,
-                    downloaded: isDownloaded,
+                    downloadState: isDownloaded ? .downloaded : .notDownloaded,
                     versionId: url.absoluteString  // TODO
                 )
             } else {
@@ -105,7 +105,7 @@ public class FilesBackend: NSObject, Backend {
                     identifier: csum,
                     backendId: id,
                     local: true,
-                    downloaded: true,
+                    downloadState: .downloaded,
                     versionId: csum
                 )
             }
@@ -169,7 +169,7 @@ public class FilesBackend: NSObject, Backend {
         _ song: Song,
         progressHandler: @escaping @Sendable (Double) -> Void
     ) async {
-        guard !song.downloaded else {
+        guard song.downloadState != DownloadState.downloaded.rawValue else {
             Logger.defaultLog.info("Not downloading already downloaded song \(song.url)")
             return
         }
@@ -177,6 +177,7 @@ public class FilesBackend: NSObject, Backend {
         guard fileManager.isUbiquitousItem(at: song.url) else { return }
         do {
             Logger.defaultLog.debug("Fetching iCloud song: \(song.url)")
+            song.downloadState = DownloadState.downloading.rawValue
             await startPollingDownloadState(forSong: song, endState: .downloaded)
             try fileManager.startDownloadingUbiquitousItem(at: song.url)
         } catch let error {
@@ -227,16 +228,16 @@ public class FilesBackend: NSObject, Backend {
         // download
         Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
             if self.ubiquitousFileIsDownloaded(url: song.url) {
-                song.downloaded = true
+                song.downloadState = DownloadState.downloaded.rawValue
                 if endState == URLUbiquitousItemDownloadingStatus.downloaded ||
                     endState == URLUbiquitousItemDownloadingStatus.current {
                     timer.invalidate()
                 }
             } else {
-                song.downloaded = false
+                song.downloadState = DownloadState.notDownloaded.rawValue
                 if endState == URLUbiquitousItemDownloadingStatus.notDownloaded {
                     timer.invalidate()
-                } 
+                }
                 // The download has not yet finished. Normally we would invoke the progressHandler.
                 // With iCloud this comes with a caveat, which is that we cannot track the
                 // progress of the download as we cannot use NSMetadataQuery.

@@ -5,6 +5,7 @@
 //  Created by Claudio Cambra on 28/1/24.
 //
 
+import HarmonyKit
 import SwiftUI
 
 #if !os(macOS)
@@ -36,8 +37,9 @@ struct PhonePlayerDrawer: View {
                         ColouredShadowArtworkView(artwork: controller.currentSong?.artwork)
                             .overlay(
                                 ZStack {
+                                    let downloadedState = DownloadState.downloaded.rawValue
                                     if let currentSong = controller.currentSong,
-                                       !currentSong.downloaded,
+                                       currentSong.downloadState != downloadedState,
                                        controller.timeControlStatus == .waitingToPlayAtSpecifiedRate
                                     {
                                         LoadingIndicatorOverlayView()
