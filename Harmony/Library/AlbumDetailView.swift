@@ -82,7 +82,11 @@ struct AlbumDetailView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                     Spacer()
                     if buttonsAlongsideArtwork {
-                        playButton
+                        HStack {
+                            playButton
+                            downloadButton
+                        }
+                        .frame(maxWidth: .infinity)
                     }
                 }
                 .frame(maxWidth: .infinity, maxHeight: artworkWidth)
@@ -94,17 +98,24 @@ struct AlbumDetailView: View {
                 trailing: horizontalPadding
             ))
             .listRowSeparator(.hidden)
+            .selectionDisabled()
 
             if !buttonsAlongsideArtwork {
-                playButton
-                    .listRowInsets(.init(
-                        top: 0,
-                        leading: horizontalPadding,
-                        bottom: verticalPadding,
-                        trailing: horizontalPadding
-                    ))
-                    .listRowSeparator(.hidden)
-                    .frame(width: artworkWidth)
+                HStack {
+                    playButton
+                        .frame(width: artworkWidth)
+                    Spacer()
+                    downloadButton
+                }
+                .listRowInsets(.init(
+                    top: 0,
+                    leading: horizontalPadding,
+                    bottom: verticalPadding,
+                    trailing: horizontalPadding
+                ))
+                .listRowSeparator(.hidden)
+                .selectionDisabled()
+                .frame(maxWidth: .infinity)
             }
 
             ForEach(sortedSongs) { song in
@@ -158,5 +169,19 @@ struct AlbumDetailView: View {
         }
         .buttonStyle(.borderedProminent)
         .controlSize(.large)
+    }
+
+    @ViewBuilder
+    var downloadButton: some View {
+        Button {
+            let songs = album.songs
+            for song in songs {
+                let backend = BackendsModel.shared.backends[song.backendId]
+                Task { await backend?.fetchSong(song) }
+            }
+        } label: {
+            DownloadStateLabelView(downloaded: album.downloaded)
+        }
+        .buttonStyle(.borderless)
     }
 }
