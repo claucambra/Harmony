@@ -220,8 +220,7 @@ public class FilesBackend: NSObject, Backend {
     @MainActor
     private func startPollingDownloadState(
         forSong song: Song, 
-        endState: URLUbiquitousItemDownloadingStatus?,
-        progressHandler: @Sendable @escaping (Progress) -> Void = { _ in }
+        endState: URLUbiquitousItemDownloadingStatus?
     ) {
         // Since we do not use the document picker to select files we cannot use NSMetadataQuery
         // and have to resort to manually polling the state of the file until completion of the
