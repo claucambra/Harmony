@@ -93,6 +93,7 @@
 		53D666672B73EAD40042C03D /* SongListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D666662B73EAD40042C03D /* SongListItemView.swift */; };
 		53D6666A2B74C53F0042C03D /* UIMeasurements.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D666692B74C53F0042C03D /* UIMeasurements.swift */; };
 		53D6666C2B74D6C80042C03D /* PlayerScrubberView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D6666B2B74D6C80042C03D /* PlayerScrubberView.swift */; };
+		53F4C8AD2B9CDFD80063604E /* SongDownloadStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53F4C8AC2B9CDFD80063604E /* SongDownloadStateView.swift */; };
 		53FE14692B8F8DAA006C4193 /* AlbumsGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53FE14682B8F8DAA006C4193 /* AlbumsGridView.swift */; };
 		53FE146B2B8F9457006C4193 /* Album.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53FE146A2B8F9457006C4193 /* Album.swift */; };
 		53FE146D2B9054A9006C4193 /* AlbumGridItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53FE146C2B9054A9006C4193 /* AlbumGridItemView.swift */; };
@@ -245,6 +246,7 @@
 		53D666662B73EAD40042C03D /* SongListItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongListItemView.swift; sourceTree = "<group>"; };
 		53D666692B74C53F0042C03D /* UIMeasurements.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIMeasurements.swift; sourceTree = "<group>"; };
 		53D6666B2B74D6C80042C03D /* PlayerScrubberView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerScrubberView.swift; sourceTree = "<group>"; };
+		53F4C8AC2B9CDFD80063604E /* SongDownloadStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongDownloadStateView.swift; sourceTree = "<group>"; };
 		53FE14682B8F8DAA006C4193 /* AlbumsGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumsGridView.swift; sourceTree = "<group>"; };
 		53FE146A2B8F9457006C4193 /* Album.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Album.swift; sourceTree = "<group>"; };
 		53FE146C2B9054A9006C4193 /* AlbumGridItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumGridItemView.swift; sourceTree = "<group>"; };
@@ -646,6 +648,7 @@
 				53B19BE32B9A0EBA00FE53E4 /* DownloadStateLabelView.swift */,
 				53B979742B833AA9002DA742 /* LoadingIndicatorOverlayView.swift */,
 				53B9796B2B7E8159002DA742 /* PlaceholderArtworkView.swift */,
+				53F4C8AC2B9CDFD80063604E /* SongDownloadStateView.swift */,
 				53D666692B74C53F0042C03D /* UIMeasurements.swift */,
 			);
 			path = Common;
@@ -942,6 +945,7 @@
 				535054172B63A3F500D7EAF2 /* RepeatButton.swift in Sources */,
 				535053982B5CF4C900D7EAF2 /* BackendConfigurationFieldView.swift in Sources */,
 				53FE14752B90E064006C4193 /* ControlsToolbar.swift in Sources */,
+				53F4C8AD2B9CDFD80063604E /* SongDownloadStateView.swift in Sources */,
 				53D6664D2B6B7E3E0042C03D /* PlayerQueueListItemView.swift in Sources */,
 				535053F02B62186F00D7EAF2 /* SettingsSheet.swift in Sources */,
 				53FE14712B906C68006C4193 /* BorderedArtworkView.swift in Sources */,

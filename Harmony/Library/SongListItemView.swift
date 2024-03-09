@@ -39,7 +39,7 @@ struct SongListItemView: View {
             Spacer()
             Text(Duration.seconds(song.duration).formatted(.time(pattern: .minuteSecond)))
                 .foregroundStyle(.secondary)
-            DownloadStateLabelView(state: song.downloadState)
+            SongDownloadStateView(song: song)
                 .foregroundStyle(.tertiary)
         }
     }
