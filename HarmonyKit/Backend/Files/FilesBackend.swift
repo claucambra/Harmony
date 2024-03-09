@@ -165,7 +165,10 @@ public class FilesBackend: NSObject, Backend {
         return audioFiles
     }
 
-    public func fetchSong(_ song: Song) async {
+    public func fetchSong(
+        _ song: Song,
+        progressHandler: @escaping @Sendable (Double) -> Void
+    ) async {
         guard !song.downloaded else {
             Logger.defaultLog.info("Not downloading already downloaded song \(song.url)")
             return
@@ -215,7 +218,9 @@ public class FilesBackend: NSObject, Backend {
 
     @MainActor
     private func startPollingDownloadState(
-        forSong song: Song, endState: URLUbiquitousItemDownloadingStatus
+        forSong song: Song, 
+        endState: URLUbiquitousItemDownloadingStatus?,
+        progressHandler: @Sendable @escaping (Progress) -> Void = { _ in }
     ) {
         // Since we do not use the document picker to select files we cannot use NSMetadataQuery
         // and have to resort to manually polling the state of the file until completion of the
@@ -231,7 +236,11 @@ public class FilesBackend: NSObject, Backend {
                 song.downloaded = false
                 if endState == URLUbiquitousItemDownloadingStatus.notDownloaded {
                     timer.invalidate()
-                }
+                } 
+                // The download has not yet finished. Normally we would invoke the progressHandler.
+                // With iCloud this comes with a caveat, which is that we cannot track the
+                // progress of the download as we cannot use NSMetadataQuery.
+                // So no progress recording.
             }
         }
     }

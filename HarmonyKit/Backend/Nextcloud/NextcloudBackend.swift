@@ -187,7 +187,10 @@ public class NextcloudBackend: NSObject, Backend {
         return asset
     }
     
-    public func fetchSong(_ song: Song) async {
+    public func fetchSong(
+        _ song: Song,
+        progressHandler: @Sendable @escaping (Progress) -> Void
+    ) async {
         guard !song.downloaded else {
             Logger.ncBackend.info("Not downloading already downloaded song \(song.url)")
             return
@@ -201,17 +204,21 @@ public class NextcloudBackend: NSObject, Backend {
 
         await withCheckedContinuation { continuation in
             ncKit.download(
-                serverUrlFileName: song.url, fileNameLocalPath: localPath
-            ) { account, etag, date, length, allHeaderFields, nkError in
-                guard nkError == .success else {
-                    Logger.ncBackend.error("Download error: \(nkError.errorDescription)")
+                serverUrlFileName: song.url, 
+                fileNameLocalPath: localPath,
+                progressHandler: { progress in
+                    progressHandler(progress)
+                },
+                completionHandler: { account, etag, date, length, allHeaderFields, nkError in
+                    guard nkError == .success else {
+                        Logger.ncBackend.error("Download error: \(nkError.errorDescription)")
+                        continuation.resume()
+                        return
+                    }
+                    song.downloaded = true
+                    Logger.ncBackend.debug("Successfully downloaded \(song.url) to \(localUrl)")
                     continuation.resume()
-                    return
-                }
-                song.downloaded = true
-                Logger.ncBackend.debug("Successfully downloaded \(song.url) to \(localUrl)")
-                continuation.resume()
-            }
+            })
         }
     }
     

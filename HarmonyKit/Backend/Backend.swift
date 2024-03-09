@@ -16,7 +16,7 @@ public protocol Backend: Identifiable, Hashable, ObservableObject {
 
     func scan() async -> [Song]
     func assetForSong(_ song: Song) -> AVAsset?
-    func fetchSong(_ song: Song) async
+    func fetchSong(_ song: Song, progressHandler: @Sendable @escaping (Progress) -> Void) async
     func evictSong(_ song: Song) async
 
     init(config: BackendConfiguration)
