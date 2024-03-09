@@ -9,7 +9,7 @@ import HarmonyKit
 import SwiftUI
 
 struct SongListItemView: View {
-    @ObservedObject var song: Song
+    @State var song: Song
     @State var isCurrentSong = false
     @State var displayArtwork = true
     @State var displayArtist = true

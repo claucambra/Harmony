@@ -9,7 +9,7 @@ import HarmonyKit
 import SwiftUI
 
 struct PlayerQueueListItemView: View {
-    @ObservedObject var song: Song
+    @State var song: Song
     let isCurrentSong: Bool
 
     var body: some View {
