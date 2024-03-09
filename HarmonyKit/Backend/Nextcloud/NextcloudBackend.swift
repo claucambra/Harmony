@@ -197,6 +197,10 @@ public class NextcloudBackend: NSObject, Backend {
             Logger.ncBackend.info("Not downloading already downloaded song \(song.url)")
             return
         }
+        guard song.downloadState != DownloadState.downloaded.rawValue else {
+            Logger.ncBackend.info("Song already downloading \(song.url)")
+            return
+        }
         guard let localUrl = localFileURL(song: song) else {
             Logger.ncBackend.error("Unable to get prospective local url for song \(song.url)")
             return

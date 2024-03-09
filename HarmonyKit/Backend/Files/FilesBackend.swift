@@ -173,6 +173,10 @@ public class FilesBackend: NSObject, Backend {
             Logger.defaultLog.info("Not downloading already downloaded song \(song.url)")
             return
         }
+        guard song.downloadState != DownloadState.downloaded.rawValue else {
+            Logger.ncBackend.info("Song already downloading \(song.url)")
+            return
+        }
         let fileManager = FileManager.default
         guard fileManager.isUbiquitousItem(at: song.url) else { return }
         do {
