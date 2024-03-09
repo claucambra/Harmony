@@ -165,10 +165,7 @@ public class FilesBackend: NSObject, Backend {
         return audioFiles
     }
 
-    public func fetchSong(
-        _ song: Song,
-        progressHandler: @escaping @Sendable (Double) -> Void
-    ) async {
+    public func fetchSong(_ song: Song) async {
         guard song.downloadState != DownloadState.downloaded.rawValue else {
             Logger.defaultLog.info("Not downloading already downloaded song \(song.url)")
             return

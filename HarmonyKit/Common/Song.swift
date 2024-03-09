@@ -38,6 +38,7 @@ public final class Song: ObservableObject {
     public internal(set) var downloadState = DownloadState.notDownloaded.rawValue {
         didSet { parentAlbum?.updateDownloaded() }
     }
+    @Transient public internal(set) var downloadProgress: Double = 0.0
     public internal(set) var versionId: String = ""
 
     // Used by the backends during scanning, initial creation that sets all values received

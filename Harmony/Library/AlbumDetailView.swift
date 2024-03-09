@@ -177,7 +177,8 @@ struct AlbumDetailView: View {
             DownloadStateLabelView(
                 state: album.downloaded
                     ? DownloadState.downloaded.rawValue
-                    : DownloadState.notDownloaded.rawValue)
+                    : DownloadState.notDownloaded.rawValue
+            )
         }
         .buttonStyle(.borderless)
     }

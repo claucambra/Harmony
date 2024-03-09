@@ -189,10 +189,7 @@ public class NextcloudBackend: NSObject, Backend {
         return asset
     }
     
-    public func fetchSong(
-        _ song: Song,
-        progressHandler: @Sendable @escaping (Progress) -> Void
-    ) async {
+    public func fetchSong(_ song: Song) async {
         guard song.downloadState != DownloadState.downloaded.rawValue else {
             Logger.ncBackend.info("Not downloading already downloaded song \(song.url)")
             return
@@ -214,7 +211,7 @@ public class NextcloudBackend: NSObject, Backend {
                 fileNameLocalPath: localPath,
                 progressHandler: { progress in
                     song.downloadState = DownloadState.downloading.rawValue
-                    progressHandler(progress)
+                    song.downloadProgress = progress.fractionCompleted
                 },
                 completionHandler: { account, etag, date, length, allHeaderFields, nkError in
                     guard nkError == .success else {
