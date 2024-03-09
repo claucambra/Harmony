@@ -174,7 +174,10 @@ struct AlbumDetailView: View {
                 Task { await backend?.fetchSong(song) }
             }
         } label: {
-            DownloadStateLabelView(downloaded: album.downloaded)
+            DownloadStateLabelView(
+                state: album.downloaded
+                    ? DownloadState.downloaded.rawValue
+                    : DownloadState.notDownloaded.rawValue)
         }
         .buttonStyle(.borderless)
     }

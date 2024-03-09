@@ -25,7 +25,10 @@ struct SongContextMenuItems: View {
             } label: {
                 Label("Keep available offline", systemImage: "square.and.arrow.down")
             }
-        } else if !song.local, song.downloadState != DownloadState.downloaded.rawValue {
+        } else if !song.local,
+                  song.downloadState == DownloadState.downloaded.rawValue ||
+                    song.downloadState == DownloadState.downloadedOutdated.rawValue
+        {
             Button(role: .destructive) {
                 let backend = BackendsModel.shared.backends[song.backendId]
                 Task { await backend?.evictSong(song) }
