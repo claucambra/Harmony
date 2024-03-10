@@ -190,7 +190,10 @@ public final class Song: ObservableObject {
         self.versionId = versionId
     }
 
-    public func clone() -> Song {
+    public func clone(
+        downloadState: DownloadState? = nil
+    ) -> Song {
+        let dlState = downloadState ?? DownloadState(rawValue: self.downloadState) ?? .notDownloaded
         return Song(
             identifier: identifier,
             backendId: backendId,
@@ -210,7 +213,7 @@ public final class Song: ObservableObject {
             parentAlbum: parentAlbum,
             artwork: artwork,
             local: local,
-            downloadState: DownloadState(rawValue: downloadState) ?? .notDownloaded,
+            downloadState: dlState,
             downloadProgress: downloadProgress,
             versionId: versionId
         )
