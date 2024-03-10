@@ -95,6 +95,7 @@
 		53D6666C2B74D6C80042C03D /* PlayerScrubberView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D6666B2B74D6C80042C03D /* PlayerScrubberView.swift */; };
 		53EA71282B9DAB38008FEB8A /* SplitContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53EA71272B9DAB38008FEB8A /* SplitContentView.swift */; };
 		53EA712A2B9DAF7B008FEB8A /* TabContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53EA71292B9DAF7B008FEB8A /* TabContentView.swift */; };
+		53EA712C2B9E1053008FEB8A /* TabBarAccessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53EA712B2B9E1053008FEB8A /* TabBarAccessor.swift */; };
 		53F4C8AD2B9CDFD80063604E /* SongDownloadStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53F4C8AC2B9CDFD80063604E /* SongDownloadStateView.swift */; };
 		53FE14692B8F8DAA006C4193 /* AlbumsGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53FE14682B8F8DAA006C4193 /* AlbumsGridView.swift */; };
 		53FE146B2B8F9457006C4193 /* Album.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53FE146A2B8F9457006C4193 /* Album.swift */; };
@@ -250,6 +251,7 @@
 		53D6666B2B74D6C80042C03D /* PlayerScrubberView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerScrubberView.swift; sourceTree = "<group>"; };
 		53EA71272B9DAB38008FEB8A /* SplitContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitContentView.swift; sourceTree = "<group>"; };
 		53EA71292B9DAF7B008FEB8A /* TabContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabContentView.swift; sourceTree = "<group>"; };
+		53EA712B2B9E1053008FEB8A /* TabBarAccessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarAccessor.swift; sourceTree = "<group>"; };
 		53F4C8AC2B9CDFD80063604E /* SongDownloadStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongDownloadStateView.swift; sourceTree = "<group>"; };
 		53FE14682B8F8DAA006C4193 /* AlbumsGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumsGridView.swift; sourceTree = "<group>"; };
 		53FE146A2B8F9457006C4193 /* Album.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Album.swift; sourceTree = "<group>"; };
@@ -655,6 +657,7 @@
 				53B979742B833AA9002DA742 /* LoadingIndicatorOverlayView.swift */,
 				53B9796B2B7E8159002DA742 /* PlaceholderArtworkView.swift */,
 				53F4C8AC2B9CDFD80063604E /* SongDownloadStateView.swift */,
+				53EA712B2B9E1053008FEB8A /* TabBarAccessor.swift */,
 				53D666692B74C53F0042C03D /* UIMeasurements.swift */,
 			);
 			path = Common;
@@ -953,6 +956,7 @@
 				535053982B5CF4C900D7EAF2 /* BackendConfigurationFieldView.swift in Sources */,
 				53FE14752B90E064006C4193 /* ControlsToolbar.swift in Sources */,
 				53F4C8AD2B9CDFD80063604E /* SongDownloadStateView.swift in Sources */,
+				53EA712C2B9E1053008FEB8A /* TabBarAccessor.swift in Sources */,
 				53D6664D2B6B7E3E0042C03D /* PlayerQueueListItemView.swift in Sources */,
 				535053F02B62186F00D7EAF2 /* SettingsSheet.swift in Sources */,
 				53FE14712B906C68006C4193 /* BorderedArtworkView.swift in Sources */,
