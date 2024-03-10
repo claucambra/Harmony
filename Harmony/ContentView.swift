@@ -23,6 +23,81 @@ struct ContentView: View {
     #endif
 
     var body: some View {
+        mainView
+            .inspector(isPresented: $queueVisible) {
+                #if os(macOS)
+                rightSidebarQueue
+                #else
+                if UIDevice.current.userInterfaceIdiom == .phone {
+                    PhonePlayerDrawer()
+                } else {
+                    rightSidebarQueue.navigationTitle("Queue")
+                }
+                #endif
+            }
+            .overlay(alignment: .bottom) {
+                #if os(iOS)
+                if UIDevice.current.userInterfaceIdiom == .phone {
+                    FloatingCurrentSongView()
+                        .safeAreaPadding(
+                            [.leading, .trailing, .bottom], UIMeasurements.largePadding
+                        )
+                        .frame(alignment: .bottom)
+                        .background {
+                            GeometryReader { proxy in
+                                Rectangle()
+                                    .foregroundStyle(.clear)
+                                    .onAppear {
+                                        let barHeight = proxy.size.height
+                                        let safeHeight = barHeight + UIMeasurements.largePadding
+                                        floatingBarHeight = safeHeight
+                                    }
+                                    .onChange(of: proxy.size) {
+                                        let barHeight = proxy.size.height
+                                        let safeHeight = barHeight + UIMeasurements.largePadding
+                                        floatingBarHeight = safeHeight
+                                    }
+                            }
+                        }
+                        .onTapGesture {
+                            // Make sure to hide any keyboard currently on screen
+                            let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene
+                            scene?.windows.filter {$0.isKeyWindow}.first?.endEditing(true)
+                            queueVisible.toggle()
+                        }
+                }
+                #endif
+            }
+            #if os(macOS)
+            .searchable(text: $searchText, placement: searchablePlacement)
+            #endif
+            .toolbar {
+                ControlsToolbar(queueVisible: $queueVisible)
+            }
+            .environment(\.floatingBarHeight, floatingBarHeight)
+    }
+
+    @ViewBuilder
+    private var mainView: some View {
+        #if os(macOS)
+        splitView
+        #else
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            splitView
+        } else {
+            TabContentView(
+                path: $path,
+                searchText: $searchText,
+                selection: $selection,
+                settingsSheetVisible: $settingsSheetVisible,
+                showOnlineSongs: $showOnlineSongs
+            )
+        }
+        #endif
+    }
+
+    @ViewBuilder
+    private var splitView: some View {
         SplitContentView(
             path: $path,
             searchText: $searchText,
@@ -30,57 +105,10 @@ struct ContentView: View {
             settingsSheetVisible: $settingsSheetVisible,
             showOnlineSongs: $showOnlineSongs
         )
-        .inspector(isPresented: $queueVisible) {
-            #if os(macOS)
-            rightSidebarQueue
-            #else
-            if UIDevice.current.userInterfaceIdiom == .phone {
-                PhonePlayerDrawer()
-            } else {
-                rightSidebarQueue.navigationTitle("Queue")
-            }
-            #endif
-        }
-        .overlay(alignment: .bottom) {
-            #if os(iOS)
-            if UIDevice.current.userInterfaceIdiom == .phone {
-                FloatingCurrentSongView()
-                    .safeAreaPadding([.leading, .trailing, .bottom], UIMeasurements.largePadding)
-                    .frame(alignment: .bottom)
-                    .background {
-                        GeometryReader { proxy in
-                            Rectangle()
-                                .foregroundStyle(.clear)
-                                .onAppear {
-                                    let safeHeight = proxy.size.height + UIMeasurements.largePadding
-                                    floatingBarHeight = safeHeight
-                                }
-                                .onChange(of: proxy.size) {
-                                    let safeHeight = proxy.size.height + UIMeasurements.largePadding
-                                    floatingBarHeight = safeHeight
-                                }
-                        }
-                    }
-                    .onTapGesture {
-                        // Make sure to hide any keyboard currently on screen
-                        let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene
-                        scene?.windows.filter {$0.isKeyWindow}.first?.endEditing(true)
-                        queueVisible.toggle()
-                    }
-            }
-            #endif
-        }
-        #if os(macOS)
-        .searchable(text: $searchText, placement: searchablePlacement) // TODO: Re-add suggestions
-        #endif
-        .toolbar {
-            ControlsToolbar(queueVisible: $queueVisible)
-        }
-        .environment(\.floatingBarHeight, floatingBarHeight)
     }
 
     @ViewBuilder
-    var rightSidebarQueue: some View {
+    private var rightSidebarQueue: some View {
         PlayerQueueView()
             .toolbar {
                 #if os(macOS)

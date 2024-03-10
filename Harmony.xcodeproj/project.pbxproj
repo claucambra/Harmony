@@ -94,6 +94,7 @@
 		53D6666A2B74C53F0042C03D /* UIMeasurements.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D666692B74C53F0042C03D /* UIMeasurements.swift */; };
 		53D6666C2B74D6C80042C03D /* PlayerScrubberView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D6666B2B74D6C80042C03D /* PlayerScrubberView.swift */; };
 		53EA71282B9DAB38008FEB8A /* SplitContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53EA71272B9DAB38008FEB8A /* SplitContentView.swift */; };
+		53EA712A2B9DAF7B008FEB8A /* TabContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53EA71292B9DAF7B008FEB8A /* TabContentView.swift */; };
 		53F4C8AD2B9CDFD80063604E /* SongDownloadStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53F4C8AC2B9CDFD80063604E /* SongDownloadStateView.swift */; };
 		53FE14692B8F8DAA006C4193 /* AlbumsGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53FE14682B8F8DAA006C4193 /* AlbumsGridView.swift */; };
 		53FE146B2B8F9457006C4193 /* Album.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53FE146A2B8F9457006C4193 /* Album.swift */; };
@@ -248,6 +249,7 @@
 		53D666692B74C53F0042C03D /* UIMeasurements.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIMeasurements.swift; sourceTree = "<group>"; };
 		53D6666B2B74D6C80042C03D /* PlayerScrubberView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerScrubberView.swift; sourceTree = "<group>"; };
 		53EA71272B9DAB38008FEB8A /* SplitContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitContentView.swift; sourceTree = "<group>"; };
+		53EA71292B9DAF7B008FEB8A /* TabContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabContentView.swift; sourceTree = "<group>"; };
 		53F4C8AC2B9CDFD80063604E /* SongDownloadStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongDownloadStateView.swift; sourceTree = "<group>"; };
 		53FE14682B8F8DAA006C4193 /* AlbumsGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumsGridView.swift; sourceTree = "<group>"; };
 		53FE146A2B8F9457006C4193 /* Album.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Album.swift; sourceTree = "<group>"; };
@@ -564,6 +566,7 @@
 				535F1BD22B4A8F1400C78D98 /* ContentView.swift */,
 				535F1BD02B4A8F1400C78D98 /* HarmonyApp.swift */,
 				53EA71272B9DAB38008FEB8A /* SplitContentView.swift */,
+				53EA71292B9DAF7B008FEB8A /* TabContentView.swift */,
 				535F1BD42B4A8F1600C78D98 /* Assets.xcassets */,
 				535F1BD62B4A8F1600C78D98 /* Harmony.entitlements */,
 				535053792B5BA65F00D7EAF2 /* Info.plist */,
@@ -939,6 +942,7 @@
 				535053812B5BBDC000D7EAF2 /* SettingsView.swift in Sources */,
 				5350539B2B5D026F00D7EAF2 /* BackendConfigurationUtils.swift in Sources */,
 				53B9796C2B7E8159002DA742 /* PlaceholderArtworkView.swift in Sources */,
+				53EA712A2B9DAF7B008FEB8A /* TabContentView.swift in Sources */,
 				535053862B5BC98B00D7EAF2 /* BackendChoiceView.swift in Sources */,
 				53D6666C2B74D6C80042C03D /* PlayerScrubberView.swift in Sources */,
 				535053A02B5D1CC700D7EAF2 /* BackendsModel.swift in Sources */,
