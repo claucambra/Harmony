@@ -50,7 +50,25 @@ public class SyncController: ObservableObject {
                 let songIdentifier = song.identifier
                 do {
                     let context = container.mainContext
-                    context.insert(song)
+                    let fetchDescriptor = FetchDescriptor<Song>(predicate: #Predicate<Song> {
+                        $0.identifier == songIdentifier
+                    })
+                    let existingSong = try context.fetch(fetchDescriptor).first
+
+                    if let existingSong = existingSong {
+                        let isOutdated = song.versionId != existingSong.versionId
+                        let existingDlState = existingSong.downloadState
+                        var refreshedDlState = DownloadState.notDownloaded
+                        if existingDlState == DownloadState.downloaded.rawValue {
+                            refreshedDlState = isOutdated ? .downloadedOutdated : .downloaded
+                        } else if existingDlState == DownloadState.downloading.rawValue {
+                            refreshedDlState = .downloading
+                        }
+                        let refreshedSong = song.clone(downloadState: refreshedDlState)
+                        context.insert(refreshedSong)
+                    } else {
+                        context.insert(song)
+                    }
                     try context.save()
                     refreshedSongIdentifiers.insert(songIdentifier)
                 } catch let error {
