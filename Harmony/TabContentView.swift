@@ -39,6 +39,15 @@ struct TabContentView: View {
             .tabItem { Label("Albums", systemImage: "rectangle.stack") }
             .tag(Panel.albums)
             .background { tabBarAccessor }
+
+            NavigationStack(path: $path) {
+                SettingsView()
+                    .navigationTitle("Settings")
+                    .safeAreaPadding(.bottom, floatingBarHeight + floatingBarTotalPadding)
+            }
+            .tabItem { Label("Settings", systemImage: "gear") }
+            .tag(Panel.settings)
+            .background { tabBarAccessor }
         }
         .overlay(alignment: .bottom) {
             VStack(spacing: 0) {

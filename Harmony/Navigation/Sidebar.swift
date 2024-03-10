@@ -8,7 +8,7 @@
 import SwiftUI
 
 enum Panel {
-    case songs, albums
+    case songs, albums, settings
 }
 
 struct Sidebar: View {

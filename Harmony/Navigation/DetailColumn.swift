@@ -22,6 +22,8 @@ struct DetailColumn: View {
         case .albums:
             AlbumsGridView(searchText: $searchText, showOnlineSongs: $showOnlineSongs)
                 .navigationTitle("Albums")
+        case .settings:
+            EmptyView()
         }
     }
 }
