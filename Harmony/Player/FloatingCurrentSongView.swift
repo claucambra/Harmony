@@ -45,7 +45,7 @@ struct FloatingCurrentSongView: View {
             playbackControlButton(ChangeSongButton(buttonChangeType: .next))
 
         }
-        .padding(10)
+        .padding(UIMeasurements.smallPadding)
         .background {
             RoundedRectangle(cornerRadius: UIMeasurements.largeCornerRadius, style: .circular)
                 .foregroundStyle(.regularMaterial)
