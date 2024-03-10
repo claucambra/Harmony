@@ -11,7 +11,6 @@ import SwiftUI
 struct ContentView: View {
     @State private var selection: Panel? = Panel.songs
     @State private var path = NavigationPath()
-    @State private var settingsSheetVisible = false
     @State private var queueVisible = false
     @State private var searchText = ""
     @State private var showOnlineSongs = true
@@ -57,7 +56,6 @@ struct ContentView: View {
                 queueVisible: $queueVisible,
                 searchText: $searchText,
                 selection: $selection,
-                settingsSheetVisible: $settingsSheetVisible,
                 showOnlineSongs: $showOnlineSongs
             )
         }
@@ -70,7 +68,6 @@ struct ContentView: View {
             path: $path,
             searchText: $searchText,
             selection: $selection,
-            settingsSheetVisible: $settingsSheetVisible,
             showOnlineSongs: $showOnlineSongs
         )
     }

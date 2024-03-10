@@ -14,7 +14,6 @@ struct TabContentView: View {
     @Binding var queueVisible: Bool
     @Binding var searchText: String
     @Binding var selection: Panel?
-    @Binding var settingsSheetVisible: Bool
     @Binding var showOnlineSongs: Bool
     @State private var floatingBarHeight: CGFloat = 0.0
     @State private var tabBarHeight: CGFloat = 0.0

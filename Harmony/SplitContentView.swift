@@ -11,9 +11,9 @@ struct SplitContentView: View {
     @Binding var path: NavigationPath
     @Binding var searchText: String
     @Binding var selection: Panel?
-    @Binding var settingsSheetVisible: Bool
     @Binding var showOnlineSongs: Bool
     @Environment(\.floatingBarHeight) var floatingBarHeight: CGFloat
+    @State var settingsSheetVisible: Bool = false
 
     var body: some View {
         NavigationSplitView {
