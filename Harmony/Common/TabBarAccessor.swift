@@ -5,6 +5,8 @@
 //  Created by Claudio Cambra on 10/3/24.
 //
 
+#if os(iOS)
+
 import SwiftUI
 
 struct TabBarAccessor: UIViewControllerRepresentable {
@@ -36,3 +38,5 @@ struct TabBarAccessor: UIViewControllerRepresentable {
         }
     }
 }
+
+#endif
