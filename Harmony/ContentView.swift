@@ -35,39 +35,6 @@ struct ContentView: View {
                 }
                 #endif
             }
-            .overlay(alignment: .bottom) {
-                #if os(iOS)
-                if UIDevice.current.userInterfaceIdiom == .phone {
-                    FloatingCurrentSongView()
-                        .safeAreaPadding(
-                            [.leading, .trailing, .bottom], UIMeasurements.largePadding
-                        )
-                        .frame(alignment: .bottom)
-                        .background {
-                            GeometryReader { proxy in
-                                Rectangle()
-                                    .foregroundStyle(.clear)
-                                    .onAppear {
-                                        let barHeight = proxy.size.height
-                                        let safeHeight = barHeight + UIMeasurements.largePadding
-                                        floatingBarHeight = safeHeight
-                                    }
-                                    .onChange(of: proxy.size) {
-                                        let barHeight = proxy.size.height
-                                        let safeHeight = barHeight + UIMeasurements.largePadding
-                                        floatingBarHeight = safeHeight
-                                    }
-                            }
-                        }
-                        .onTapGesture {
-                            // Make sure to hide any keyboard currently on screen
-                            let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene
-                            scene?.windows.filter {$0.isKeyWindow}.first?.endEditing(true)
-                            queueVisible.toggle()
-                        }
-                }
-                #endif
-            }
             #if os(macOS)
             .searchable(text: $searchText, placement: searchablePlacement)
             #endif
@@ -87,6 +54,7 @@ struct ContentView: View {
         } else {
             TabContentView(
                 path: $path,
+                queueVisible: $queueVisible,
                 searchText: $searchText,
                 selection: $selection,
                 settingsSheetVisible: $settingsSheetVisible,
