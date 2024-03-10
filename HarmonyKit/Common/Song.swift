@@ -156,10 +156,16 @@ public final class Song: ObservableObject {
         grouping: String,
         peformer: String,
         duration: TimeInterval,
+        year: Int,
+        trackNumber: Int,
+        discNumber: Int,
+        discTotal: Int,
+        parentAlbum: Album?,
         artwork: Data?,
-        local: Bool = false,
-        downloadState: DownloadState = .notDownloaded,
-        versionId: String = ""
+        local: Bool,
+        downloadState: DownloadState,
+        downloadProgress: Double,
+        versionId: String
     ) {
         self.identifier = identifier
         self.backendId = backendId
@@ -172,9 +178,15 @@ public final class Song: ObservableObject {
         self.grouping = grouping
         self.performer = peformer
         self.duration = duration
+        self.year = year
+        self.trackNumber = trackNumber
+        self.discNumber = discNumber
+        self.discTotal = discTotal
+        self.parentAlbum = parentAlbum
         self.artwork = artwork
         self.local = local
         self.downloadState = downloadState.rawValue
+        self.downloadProgress = downloadProgress
         self.versionId = versionId
     }
 
@@ -191,9 +203,15 @@ public final class Song: ObservableObject {
             grouping: grouping,
             peformer: performer,
             duration: duration,
+            year: year,
+            trackNumber: trackNumber,
+            discNumber: discNumber,
+            discTotal: discTotal,
+            parentAlbum: parentAlbum,
             artwork: artwork,
             local: local,
             downloadState: DownloadState(rawValue: downloadState) ?? .notDownloaded,
+            downloadProgress: downloadProgress,
             versionId: versionId
         )
     }
