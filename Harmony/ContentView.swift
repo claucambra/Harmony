@@ -23,41 +23,13 @@ struct ContentView: View {
     #endif
 
     var body: some View {
-        NavigationSplitView {
-            Sidebar(selection: $selection, showOnlineSongs: $showOnlineSongs)
-                .toolbar {
-                    ToolbarItemGroup {
-                        Button {
-                            Task {
-                                await SyncController.shared.sync()
-                            }
-                        } label: {
-                            Image(systemName: "arrow.triangle.2.circlepath.circle")
-                        }
-                        #if !os(macOS)
-                        Button(action: {
-                            settingsSheetVisible.toggle()
-                        }) {
-                            Label("Settings", systemImage: "gear")
-                        }
-                        .sheet(isPresented: $settingsSheetVisible) {
-                            SettingsSheet()
-                        }
-                        #endif
-                    }
-                }
-                .safeAreaPadding([.bottom], floatingBarHeight)
-        } detail: {
-            NavigationStack(path: $path) {
-                DetailColumn(
-                    selection: $selection, 
-                    searchText: $searchText,
-                    showOnlineSongs: $showOnlineSongs
-                )
-            }
-            .safeAreaPadding([.bottom], floatingBarHeight)
-            .environment(\.floatingBarHeight, floatingBarHeight)
-        }
+        SplitContentView(
+            path: $path,
+            searchText: $searchText,
+            selection: $selection,
+            settingsSheetVisible: $settingsSheetVisible,
+            showOnlineSongs: $showOnlineSongs
+        )
         .inspector(isPresented: $queueVisible) {
             #if os(macOS)
             rightSidebarQueue
@@ -104,6 +76,7 @@ struct ContentView: View {
         .toolbar {
             ControlsToolbar(queueVisible: $queueVisible)
         }
+        .environment(\.floatingBarHeight, floatingBarHeight)
     }
 
     @ViewBuilder
