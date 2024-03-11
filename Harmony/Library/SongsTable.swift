@@ -15,7 +15,7 @@ struct SongsTable: View {
     @Binding var searchText: String
     @Binding var showOnlineSongs: Bool
     @State var selection: Set<Song.ID> = []
-    @State private var sortOrder = [KeyPathComparator(\Song.title, order: .reverse)]
+    @State private var sortOrder = [KeyPathComparator(\Song.title)]
     @State private var sortedSongs: [Song] = []
 
     #if os(iOS)
@@ -76,14 +76,26 @@ struct SongsTable: View {
         }
         .onAppear { sortedSongs = songs }
         .onChange(of: songs) { sortedSongs = songs }
-        .onChange(of: sortOrder) { // HACK: This is very slow.
-            // When it is possible to sort the query directly, do that.
-            Task.detached(priority: .userInitiated) {
-                sortedSongs = songs.sorted(using: sortOrder)
-            }
-        }
+        .onChange(of: sortOrder) { sortedSongs = songs.sorted(using: sortOrder) } // HACK: slow.
         #if !os(macOS)
         .searchable(text: $searchText)
+        .toolbar {
+            if UIDevice.current.userInterfaceIdiom == .phone {
+                ToolbarItem {
+                    Menu {
+                        Toggle(isOn: $showOnlineSongs) {
+                            Label("Undownloaded songs", systemImage: "cloud")
+                        }
+                        Button("Title") { sortOrder = [KeyPathComparator(\Song.title)] }
+                        Button("Album") { sortOrder = [KeyPathComparator(\Song.album)] }
+                        Button("Artist") { sortOrder = [KeyPathComparator(\Song.artist)] }
+                        Button("Year") { sortOrder = [KeyPathComparator(\Song.year)] }
+                    } label: {
+                        Label("Sort and filter", systemImage: "line.3.horizontal.decrease.circle")
+                    }
+                }
+            }
+        }
         #endif
     }
 
