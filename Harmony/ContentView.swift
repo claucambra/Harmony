@@ -14,6 +14,7 @@ struct ContentView: View {
     @State private var queueVisible = false
     @State private var searchText = ""
     @State private var showOnlineSongs = true
+    @State private var albumSort = SortDescriptor(\Album.title)
     @State private var floatingBarHeight = 0.0
     #if os(macOS)
     let searchablePlacement = SearchFieldPlacement.sidebar
@@ -56,7 +57,8 @@ struct ContentView: View {
                 queueVisible: $queueVisible,
                 searchText: $searchText,
                 selection: $selection,
-                showOnlineSongs: $showOnlineSongs
+                showOnlineSongs: $showOnlineSongs,
+                albumSort: $albumSort
             )
         }
         #endif
@@ -68,7 +70,8 @@ struct ContentView: View {
             path: $path,
             searchText: $searchText,
             selection: $selection,
-            showOnlineSongs: $showOnlineSongs
+            showOnlineSongs: $showOnlineSongs,
+            albumSort: $albumSort
         )
     }
 

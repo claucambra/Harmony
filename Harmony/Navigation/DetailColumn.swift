@@ -12,6 +12,7 @@ struct DetailColumn: View {
     @Binding var selection: Panel?
     @Binding var searchText: String
     @Binding var showOnlineSongs: Bool
+    @Binding var albumSort: SortDescriptor<Album>
     @State var secondaryToolbarHeight: CGFloat = 0.0
 
     var body: some View {
@@ -23,7 +24,7 @@ struct DetailColumn: View {
             AlbumsGridView(
                 searchText: $searchText,
                 showOnlineSongs: $showOnlineSongs,
-                sortOrder: .constant(.init(\.title))
+                sortOrder: $albumSort
             )
             .navigationTitle("Albums")
         case .settings:
@@ -40,7 +41,10 @@ struct DetailColumn_Previews: PreviewProvider {
 
         var body: some View {
             DetailColumn(
-                selection: $selection, searchText: $searchText, showOnlineSongs: $showOnlineSongs
+                selection: $selection, 
+                searchText: $searchText,
+                showOnlineSongs: $showOnlineSongs,
+                albumSort: .constant(.init(\Album.title))
             )
         }
     }

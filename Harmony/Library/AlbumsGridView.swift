@@ -109,6 +109,9 @@ struct AlbumsGridView: View {
                         Toggle(isOn: $showOnlineSongs) {
                             Label("Undownloaded songs", systemImage: "cloud")
                         }
+                        Button("Title") { sortOrder = SortDescriptor(\Album.title) }
+                        Button("Artist") { sortOrder = SortDescriptor(\Album.artist) }
+                        Button("Year") { sortOrder = SortDescriptor(\Album.year) }
                     } label: {
                         Label("Sort and filter", systemImage: "line.3.horizontal.decrease.circle")
                     }

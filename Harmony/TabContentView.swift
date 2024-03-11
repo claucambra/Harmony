@@ -7,6 +7,7 @@
 
 #if os(iOS)
 
+import HarmonyKit
 import SwiftUI
 
 struct TabContentView: View {
@@ -15,6 +16,7 @@ struct TabContentView: View {
     @Binding var searchText: String
     @Binding var selection: Panel?
     @Binding var showOnlineSongs: Bool
+    @Binding var albumSort: SortDescriptor<Album>
     @State private var floatingBarHeight: CGFloat = 0.0
     @State private var tabBarHeight: CGFloat = 0.0
     private let floatingBarPadding = UIMeasurements.mediumPadding
@@ -32,9 +34,13 @@ struct TabContentView: View {
             .background { tabBarAccessor }
 
             NavigationStack(path: $path) {
-                AlbumsGridView(searchText: $searchText, showOnlineSongs: $showOnlineSongs)
-                    .navigationTitle("Albums")
-                    .safeAreaPadding(.bottom, floatingBarHeight + floatingBarTotalPadding)
+                AlbumsGridView(
+                    searchText: $searchText,
+                    showOnlineSongs: $showOnlineSongs,
+                    sortOrder: $albumSort
+                )
+                .navigationTitle("Albums")
+                .safeAreaPadding(.bottom, floatingBarHeight + floatingBarTotalPadding)
             }
             .tabItem { Label("Albums", systemImage: "rectangle.stack") }
             .tag(Panel.albums)

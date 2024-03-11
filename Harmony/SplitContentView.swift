@@ -5,6 +5,7 @@
 //  Created by Claudio Cambra on 10/3/24.
 //
 
+import HarmonyKit
 import SwiftUI
 
 struct SplitContentView: View {
@@ -12,6 +13,7 @@ struct SplitContentView: View {
     @Binding var searchText: String
     @Binding var selection: Panel?
     @Binding var showOnlineSongs: Bool
+    @Binding var albumSort: SortDescriptor<Album>
     @Environment(\.floatingBarHeight) var floatingBarHeight: CGFloat
     @State var settingsSheetVisible: Bool = false
 
@@ -45,7 +47,8 @@ struct SplitContentView: View {
                 DetailColumn(
                     selection: $selection,
                     searchText: $searchText,
-                    showOnlineSongs: $showOnlineSongs
+                    showOnlineSongs: $showOnlineSongs,
+                    albumSort: $albumSort
                 )
             }
             .safeAreaPadding([.bottom], floatingBarHeight)
