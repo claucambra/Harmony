@@ -20,8 +20,12 @@ struct DetailColumn: View {
             SongsTable(searchText: $searchText, showOnlineSongs: $showOnlineSongs)
                 .navigationTitle("Songs")
         case .albums:
-            AlbumsGridView(searchText: $searchText, showOnlineSongs: $showOnlineSongs)
-                .navigationTitle("Albums")
+            AlbumsGridView(
+                searchText: $searchText,
+                showOnlineSongs: $showOnlineSongs,
+                sortOrder: .constant(.init(\.title))
+            )
+            .navigationTitle("Albums")
         case .settings:
             EmptyView()
         }

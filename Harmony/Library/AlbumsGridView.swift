@@ -14,9 +14,11 @@ struct AlbumsGridView: View {
     @Environment(\.floatingBarHeight) var floatingBarHeight
     @Binding var searchText: String
     @Binding var showOnlineSongs: Bool
-    @State var selection: Set<Album.ID> = []
-    @State var albumDetailVisible = false
-    @State var detailAlbum: Album?
+    @Binding var sortOrder: SortDescriptor<Album>
+
+    @State private var albumDetailVisible = false
+    @State private var detailAlbum: Album?
+    @State private var selection: Set<Album.ID> = []
 
     #if os(macOS)
     let columns = [
@@ -32,11 +34,17 @@ struct AlbumsGridView: View {
     let verticalPadding = UIMeasurements.largePadding
     let interItemPadding = UIMeasurements.largePadding
 
-    init(searchText: Binding<String>, showOnlineSongs: Binding<Bool>) {
+    init(
+        searchText: Binding<String>,
+        showOnlineSongs: Binding<Bool>,
+        sortOrder: Binding<SortDescriptor<Album>>
+    ) {
         _searchText = searchText
-        _showOnlineSongs  = showOnlineSongs
+        _showOnlineSongs = showOnlineSongs
+        _sortOrder = sortOrder
         let searchTextVal = searchText.wrappedValue
         let showOnlineSongsVal = showOnlineSongs.wrappedValue
+        let sortOrderVal = sortOrder.wrappedValue
         let downloadedState = DownloadState.downloaded.rawValue
         let outdatedDownloadedState = DownloadState.downloadedOutdated.rawValue
         var predicate: Predicate<Album>
@@ -60,7 +68,7 @@ struct AlbumsGridView: View {
                 })
             }
         }
-        _albums = Query(filter: predicate, sort: \Album.title)
+        _albums = Query(filter: predicate, sort: [sortOrderVal])
     }
 
     var body: some View {
