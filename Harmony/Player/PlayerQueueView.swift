@@ -15,8 +15,6 @@ struct PlayerQueueView: View {
     @State var rowBackground: Color?
 
     private let currentSongSectionId = "current-song-section"
-    private let futureSongsSectionId = "future-songs-section"
-    private let playNextSongsSectionId = "play-next-songs-section"
 
     var body: some View {
         ScrollViewReader { proxy in
@@ -47,7 +45,6 @@ struct PlayerQueueView: View {
                         }
                         .onDelete(perform: { indexSet in queue.removePlayNextSongs(indexSet) })
                     }
-                    .id(playNextSongsSectionId)
                 }
                 if !queue.futureSongs.isEmpty {
                     Section("Upcoming songs") {
@@ -60,7 +57,6 @@ struct PlayerQueueView: View {
                         }
                         .onDelete(perform: { indexSet in queue.removeFutureSongs(indexSet) })
                     }
-                    .id(futureSongsSectionId)
                 }
             }
             .contextMenu(forSelectionType: Song.ID.self) { ids in
