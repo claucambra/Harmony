@@ -21,12 +21,24 @@ struct PlayerQueueView: View {
             List(selection: $selection) {
                 #if os(macOS) // TODO: iPadOS?
                 if !queue.pastSongs.isEmpty {
-                    Section("Previously played") {
+                    Section {
                         ForEach(queue.pastSongs) { song in
                             PlayerQueueListItemView(song: song, isCurrentSong: false)
                                 .listRowBackground(rowBackground)
                         }
                         .onDelete(perform: { indexSet in queue.removePastSongs(indexSet) })
+                    } header: {
+                        HStack {
+                            Text("Previously played")
+                            Spacer()
+                            Button {
+                                queue.clearPastSongs()
+                            } label: {
+                                Label("Clear played songs", systemImage: "trash.fill")
+                            }
+                            .buttonStyle(.borderless)
+                            .labelStyle(.iconOnly)
+                        }
                     }
                 }
                 #endif
@@ -47,7 +59,7 @@ struct PlayerQueueView: View {
                     }
                 }
                 if !queue.futureSongs.isEmpty {
-                    Section("Upcoming songs") {
+                    Section {
                         ForEach(queue.futureSongs) { song in
                             PlayerQueueListItemView(song: song, isCurrentSong: false)
                                 .listRowBackground(rowBackground)
@@ -56,6 +68,18 @@ struct PlayerQueueView: View {
                                 }
                         }
                         .onDelete(perform: { indexSet in queue.removeFutureSongs(indexSet) })
+                    } header: {
+                        HStack {
+                            Text("Upcoming songs")
+                            Spacer()
+                            Button {
+                                queue.clearSongsAfterCurrent()
+                            } label: {
+                                Label("Clear upcoming songs", systemImage: "trash.fill")
+                            }
+                            .buttonStyle(.borderless)
+                            .labelStyle(.iconOnly)
+                        }
                     }
                 }
             }
@@ -71,19 +95,6 @@ struct PlayerQueueView: View {
                 #if os(macOS) // TODO: iPadOS?
                 proxy.scrollTo(currentSongSectionId, anchor: .top)
                 #endif
-            }
-        }
-        .toolbar {
-            Button {
-                queue.clearPastSongs()
-            } label: {
-                Label("Clear played songs", systemImage: "text.badge.minus")
-            }
-
-            Button {
-                queue.clear()
-            } label: {
-                Label("Clear queue", systemImage: "trash.fill")
             }
         }
     }
