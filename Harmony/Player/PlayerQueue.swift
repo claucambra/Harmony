@@ -215,6 +215,15 @@ class PlayerQueue: ObservableObject {
         }
     }
 
+    func returnToStart() {
+        if let currentSong = currentSong {
+            futureSongs.prepend(currentSong)
+            self.currentSong = nil
+        }
+        futureSongs.prepend(contentsOf: pastSongs)
+        pastSongsRepeatStartIndex = nil
+    }
+
     func insertNextSong(_ song: Song) {
         song.isPlayNext = true
         playNextSongs.append(song)

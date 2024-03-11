@@ -367,7 +367,12 @@ class PlayerController: NSObject, ObservableObject  {
 
 
     @objc func playerDidFinishPlayingItemToEnd(notification: Notification) {
-        playNextSong()
+        let nextResult = playNextSong()
+        if nextResult == .noActionableNowPlayingItem {
+            pause()
+            currentSong = nil
+            queue.returnToStart()
+        }
     }
 
     override func observeValue(
