@@ -95,6 +95,17 @@ struct AlbumsGridView: View {
                         #endif
                 }
             }
+            .toolbar {
+                ToolbarItem {
+                    Menu {
+                        Toggle(isOn: $showOnlineSongs) {
+                            Label("Undownloaded songs", systemImage: "cloud")
+                        }
+                    } label: {
+                        Label("Sort and filter", systemImage: "line.3.horizontal.decrease.circle")
+                    }
+                }
+            }
         }
         .background(.background)
     }
