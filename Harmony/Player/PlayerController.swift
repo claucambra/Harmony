@@ -262,7 +262,7 @@ class PlayerController: NSObject, ObservableObject  {
     #endif
 
     @discardableResult func play() -> MPRemoteCommandHandlerStatus {
-        guard let avPlayer = avPlayer else { return .noActionableNowPlayingItem }
+        guard let avPlayer = avPlayer else { return playNextSong() }
         #if os(macOS)
         nowPlayingInfoCenter.playbackState = .playing
         #else

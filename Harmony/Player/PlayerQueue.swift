@@ -134,8 +134,6 @@ class PlayerQueue: ObservableObject {
     }
 
     func forward() -> Song? {
-        guard let currentSong = currentSong else { return nil }
-
         var nextSong: Song?
         if playNextSongs.isEmpty {
             nextSong = futureSongs.popFirst()
@@ -144,7 +142,9 @@ class PlayerQueue: ObservableObject {
         }
         guard let nextSong = nextSong else { return nil }
 
-        pastSongs.append(currentSong)
+        if let currentSong = currentSong {
+            pastSongs.append(currentSong)
+        }
         self.currentSong = nextSong
 
         if loadRequired {
