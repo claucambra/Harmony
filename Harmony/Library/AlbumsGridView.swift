@@ -103,6 +103,9 @@ struct AlbumsGridView: View {
                         #endif
                 }
             }
+            #if !os(macOS)
+            .searchable(text: $searchText, placement: .navigationBarDrawer)
+            #endif
             .toolbar {
                 ToolbarItem {
                     Menu {
