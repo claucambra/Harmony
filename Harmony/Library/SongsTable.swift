@@ -78,7 +78,7 @@ struct SongsTable: View {
         .onChange(of: songs) { sortedSongs = songs }
         .onChange(of: sortOrder) { sortedSongs = songs.sorted(using: sortOrder) } // HACK: slow.
         #if !os(macOS)
-        .searchable(text: $searchText)
+        .searchable(text: $searchText, placement: .navigationBarDrawer)
         .toolbar {
             if UIDevice.current.userInterfaceIdiom == .phone {
                 ToolbarItem {
