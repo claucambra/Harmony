@@ -50,6 +50,7 @@ struct SongsTable: View {
             }
         }
         _songs = Query(filter: predicate, sort: \Song.title)
+        sortedSongs = songs.sorted(using: sortOrder)
     }
 
     var body: some View {
@@ -74,8 +75,8 @@ struct SongsTable: View {
         } primaryAction: { ids in
             playSongsFromIds(ids, songs: songs)
         }
-        .onAppear { sortedSongs = songs }
-        .onChange(of: songs) { sortedSongs = songs }
+        .onAppear { sortedSongs = songs.sorted(using: sortOrder) }
+        .onChange(of: songs) { sortedSongs = songs.sorted(using: sortOrder) }
         .onChange(of: sortOrder) { sortedSongs = songs.sorted(using: sortOrder) } // HACK: slow.
         #if !os(macOS)
         .searchable(text: $searchText, placement: .navigationBarDrawer)
