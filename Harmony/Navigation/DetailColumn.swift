@@ -21,7 +21,7 @@ struct DetailColumn: View {
             SongsTable(searchText: $searchText, showOnlineSongs: $showOnlineSongs)
                 .navigationTitle("Songs")
         case .albums:
-            AlbumsGridView(
+            AlbumsView(
                 searchText: $searchText,
                 showOnlineSongs: $showOnlineSongs,
                 sortOrder: $albumSort

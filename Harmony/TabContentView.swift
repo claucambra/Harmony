@@ -34,7 +34,7 @@ struct TabContentView: View {
             .background { tabBarAccessor }
 
             NavigationStack(path: $path) {
-                AlbumsGridView(
+                AlbumsView(
                     searchText: $searchText,
                     showOnlineSongs: $showOnlineSongs,
                     sortOrder: $albumSort
