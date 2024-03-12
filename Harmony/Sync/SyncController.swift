@@ -12,7 +12,7 @@ import SwiftData
 
 public class SyncController: ObservableObject {
     static let shared = SyncController()
-    let container = try! ModelContainer(for: Song.self, Album.self)
+    let container = try! ModelContainer(for: Song.self, Album.self, Artist.self)
     @Published var currentlySyncingFully: Bool = false
     @Published var poll: Bool = false {
         didSet {
@@ -75,7 +75,7 @@ public class SyncController: ObservableObject {
                     Logger.sync.error("Could not save song to data: \(error)")
                 }
             }
-            refreshAlbums()
+            refreshGroupings()
             return refreshedSongIdentifiers
         }
 
@@ -117,21 +117,31 @@ public class SyncController: ObservableObject {
     }
 
     @MainActor
-    func refreshAlbums() {
-        Logger.sync.info("Refreshing albums.")
+    func refreshGroupings() {
+        Logger.sync.info("Refreshing albums and artists.")
         let context = container.mainContext
         let fetchDescriptor = FetchDescriptor<Song>()
         
         do {
             let songs = try context.fetch(fetchDescriptor)
+            var artistDict: Dictionary<String, [Song]> = [:]
             var albumDict: Dictionary<String, [Song]> = [:]
             for song in songs {
                 let album = song.album
+                let artist = song.artist
+
                 if var existingSongs = albumDict[album] {
                     existingSongs.append(song)
                     albumDict[album] = existingSongs
                 } else {
                     albumDict[album] = [song]
+                }
+
+                if var existingSongs = artistDict[artist] {
+                    existingSongs.append(song)
+                    artistDict[artist] = existingSongs
+                } else {
+                    artistDict[artist] = [song]
                 }
             }
 
@@ -139,6 +149,11 @@ public class SyncController: ObservableObject {
             for songs in albumDict.values {
                 guard let album = Album(songs: songs) else { continue }
                 context.insert(album)
+            }
+            Logger.sync.info("About to insert \(artistDict.count) artists.")
+            for songs in artistDict.values {
+                guard let artist = Artist(songs: songs) else { continue }
+                context.insert(artist)
             }
             try context.save()
         } catch let error {
