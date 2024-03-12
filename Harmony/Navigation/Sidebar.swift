@@ -8,7 +8,7 @@
 import SwiftUI
 
 enum Panel {
-    case songs, albums, settings
+    case songs, albums, artists, settings
 }
 
 struct Sidebar: View {
@@ -23,6 +23,9 @@ struct Sidebar: View {
                 }
                 NavigationLink(value: Panel.albums) {
                     Label("Albums", systemImage: "rectangle.stack")
+                }
+                NavigationLink(value: Panel.artists) {
+                    Label("Artists", systemImage: "music.mic")
                 }
             }
             Section("Filters") {

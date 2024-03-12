@@ -27,6 +27,8 @@ struct DetailColumn: View {
                 sortOrder: $albumSort
             )
             .navigationTitle("Albums")
+        case .artists:
+            ArtistsListView()
         case .settings:
             EmptyView()
         }
