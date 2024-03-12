@@ -11,12 +11,14 @@ import SwiftUI
 
 struct ArtistsListView: View {
     @Query(sort: \Artist.name) var artists: [Artist]
-    @State var selection: Set<Song.ID> = []
+    @Binding var selection: Artist?
 
     var body: some View {
         List(selection: $selection) {
             ForEach(artists) { artist in
-                Text(artist.name)
+                NavigationLink(value: artist) {
+                    Text(artist.name)
+                }
             }
         }
         .listStyle(.plain)

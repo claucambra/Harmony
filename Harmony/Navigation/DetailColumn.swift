@@ -28,7 +28,12 @@ struct DetailColumn: View {
             )
             .navigationTitle("Albums")
         case .artists:
-            ArtistsListView()
+            ArtistsSplitView(
+                searchText: $searchText,
+                showOnlineSongs: $showOnlineSongs,
+                albumSortOrder: $albumSort
+            )
+            .navigationTitle("Artists")
         case .settings:
             EmptyView()
         }

@@ -46,11 +46,11 @@ struct TabContentView: View {
             .tag(Panel.albums)
             .background { tabBarAccessor }
 
-            NavigationStack(path: $path) {
-                ArtistsListView()
-                    .navigationTitle("Artists")
-                    .safeAreaPadding(.bottom, floatingBarHeight + floatingBarTotalPadding)
-            }
+            ArtistsSplitView(
+                searchText: $searchText,
+                showOnlineSongs: $showOnlineSongs,
+                albumSortOrder: $albumSort
+            )
             .tabItem { Label("Artists", systemImage: "music.mic") }
             .tag(Panel.artists)
             .background { tabBarAccessor }

@@ -10,6 +10,7 @@
 		5315227B2B8BC936002E31BE /* KeychainUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5315227A2B8BC936002E31BE /* KeychainUtils.swift */; };
 		5315227D2B8CF235002E31BE /* CurrentlyPlayingSongIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5315227C2B8CF235002E31BE /* CurrentlyPlayingSongIndicatorView.swift */; };
 		534F81292BA078A70068D145 /* ArtistsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534F81282BA078A70068D145 /* ArtistsListView.swift */; };
+		534F812B2BA082D90068D145 /* ArtistsSplitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534F812A2BA082D90068D145 /* ArtistsSplitView.swift */; };
 		534F812D2BA08B330068D145 /* AlbumsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534F812C2BA08B330068D145 /* AlbumsView.swift */; };
 		535053332B5955C900D7EAF2 /* HarmonyKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 535053292B5955C800D7EAF2 /* HarmonyKit.framework */; };
 		5350533E2B5955C900D7EAF2 /* HarmonyKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 535053292B5955C800D7EAF2 /* HarmonyKit.framework */; };
@@ -167,6 +168,7 @@
 		5315227A2B8BC936002E31BE /* KeychainUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainUtils.swift; sourceTree = "<group>"; };
 		5315227C2B8CF235002E31BE /* CurrentlyPlayingSongIndicatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentlyPlayingSongIndicatorView.swift; sourceTree = "<group>"; };
 		534F81282BA078A70068D145 /* ArtistsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtistsListView.swift; sourceTree = "<group>"; };
+		534F812A2BA082D90068D145 /* ArtistsSplitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtistsSplitView.swift; sourceTree = "<group>"; };
 		534F812C2BA08B330068D145 /* AlbumsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumsView.swift; sourceTree = "<group>"; };
 		535053292B5955C800D7EAF2 /* HarmonyKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = HarmonyKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		535053322B5955C800D7EAF2 /* HarmonyKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HarmonyKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -412,6 +414,7 @@
 				53FE14682B8F8DAA006C4193 /* AlbumsGridView.swift */,
 				534F812C2BA08B330068D145 /* AlbumsView.swift */,
 				534F81282BA078A70068D145 /* ArtistsListView.swift */,
+				534F812A2BA082D90068D145 /* ArtistsSplitView.swift */,
 				53FE14742B90E064006C4193 /* ControlsToolbar.swift */,
 				53D6665C2B6F34CC0042C03D /* SongContextMenuItems.swift */,
 				53D666662B73EAD40042C03D /* SongListItemView.swift */,
@@ -963,6 +966,7 @@
 				535053A02B5D1CC700D7EAF2 /* BackendsModel.swift in Sources */,
 				535F1BD12B4A8F1400C78D98 /* HarmonyApp.swift in Sources */,
 				53FE14772B90F030006C4193 /* AlbumDetailView.swift in Sources */,
+				534F812B2BA082D90068D145 /* ArtistsSplitView.swift in Sources */,
 				53B979752B833AA9002DA742 /* LoadingIndicatorOverlayView.swift in Sources */,
 				535054172B63A3F500D7EAF2 /* RepeatButton.swift in Sources */,
 				535053982B5CF4C900D7EAF2 /* BackendConfigurationFieldView.swift in Sources */,
