@@ -57,6 +57,7 @@
 		5350542B2B64293600D7EAF2 /* SyncController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5350535F2B59581600D7EAF2 /* SyncController.swift */; };
 		5350542F2B64E48600D7EAF2 /* OrderedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = 5350542E2B64E48600D7EAF2 /* OrderedCollections */; };
 		535054322B66248C00D7EAF2 /* ConfiguredBackendsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535054312B66248C00D7EAF2 /* ConfiguredBackendsListView.swift */; };
+		535DAFC72B9F7AC100C94B62 /* Artist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535DAFC62B9F7AC100C94B62 /* Artist.swift */; };
 		535F1BD12B4A8F1400C78D98 /* HarmonyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535F1BD02B4A8F1400C78D98 /* HarmonyApp.swift */; };
 		535F1BD32B4A8F1400C78D98 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535F1BD22B4A8F1400C78D98 /* ContentView.swift */; };
 		535F1BD52B4A8F1600C78D98 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 535F1BD42B4A8F1600C78D98 /* Assets.xcassets */; };
@@ -210,6 +211,7 @@
 		5350541A2B63BBC500D7EAF2 /* ConfiguredBackendsListItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfiguredBackendsListItemView.swift; sourceTree = "<group>"; };
 		5350541C2B63C71400D7EAF2 /* BackendPresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendPresentable.swift; sourceTree = "<group>"; };
 		535054312B66248C00D7EAF2 /* ConfiguredBackendsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfiguredBackendsListView.swift; sourceTree = "<group>"; };
+		535DAFC62B9F7AC100C94B62 /* Artist.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Artist.swift; sourceTree = "<group>"; };
 		535F1BCD2B4A8F1400C78D98 /* Harmony.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Harmony.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		535F1BD02B4A8F1400C78D98 /* HarmonyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HarmonyApp.swift; sourceTree = "<group>"; };
 		535F1BD22B4A8F1400C78D98 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -338,6 +340,7 @@
 			isa = PBXGroup;
 			children = (
 				53FE146A2B8F9457006C4193 /* Album.swift */,
+				535DAFC62B9F7AC100C94B62 /* Artist.swift */,
 				535053492B5955F900D7EAF2 /* Song.swift */,
 			);
 			path = Common;
@@ -896,6 +899,7 @@
 				535053552B5955F900D7EAF2 /* FilesBackend.swift in Sources */,
 				535053622B5975A100D7EAF2 /* Logger+Extension.swift in Sources */,
 				53D666562B6E9C300042C03D /* NextcloudBackend.swift in Sources */,
+				535DAFC72B9F7AC100C94B62 /* Artist.swift in Sources */,
 				537632EF2B887AA90026BFAB /* FLACRemoteMetadataFetcher.swift in Sources */,
 				537632D62B86643E0026BFAB /* FLACMetadata.swift in Sources */,
 				537632E22B8674F80026BFAB /* FLACApplicationMetadataBlock.swift in Sources */,
