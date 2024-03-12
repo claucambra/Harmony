@@ -9,6 +9,7 @@ import HarmonyKit
 import SwiftUI
 
 struct ArtistsSplitView: View {
+    @Environment(\.floatingBarHeight) var floatingBarHeight
     @Binding var searchText: String
     @Binding var showOnlineSongs: Bool
     @Binding var albumSortOrder: SortDescriptor<Album>
@@ -18,6 +19,7 @@ struct ArtistsSplitView: View {
         NavigationSplitView {
             ArtistsListView(selection: $selection)
                 .navigationTitle("Artists")
+                .safeAreaPadding(.bottom, floatingBarHeight)
         } detail: {
             NavigationStack {
                 if let artist = selection {
@@ -30,6 +32,7 @@ struct ArtistsSplitView: View {
                     .navigationTitle(artist.name)
                 }
             }
+            .safeAreaPadding(.bottom, floatingBarHeight)
         }
     }
 }
