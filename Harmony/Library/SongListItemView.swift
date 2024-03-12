@@ -20,7 +20,6 @@ struct SongListItemView: View {
             if displayTrackNumber {
                 Text("\(song.trackNumber)")
                     .foregroundStyle(.secondary)
-                    .onAppear { print(song.trackNumber) }
             }
             if displayArtwork {
                 BorderedArtworkView(artwork: song.artwork)
