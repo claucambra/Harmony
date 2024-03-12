@@ -47,6 +47,15 @@ struct TabContentView: View {
             .background { tabBarAccessor }
 
             NavigationStack(path: $path) {
+                ArtistsListView()
+                    .navigationTitle("Artists")
+                    .safeAreaPadding(.bottom, floatingBarHeight + floatingBarTotalPadding)
+            }
+            .tabItem { Label("Artists", systemImage: "music.mic") }
+            .tag(Panel.artists)
+            .background { tabBarAccessor }
+
+            NavigationStack(path: $path) {
                 SettingsView()
                     .navigationTitle("Settings")
                     .safeAreaPadding(.bottom, floatingBarHeight + floatingBarTotalPadding)
