@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		5315227B2B8BC936002E31BE /* KeychainUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5315227A2B8BC936002E31BE /* KeychainUtils.swift */; };
 		5315227D2B8CF235002E31BE /* CurrentlyPlayingSongIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5315227C2B8CF235002E31BE /* CurrentlyPlayingSongIndicatorView.swift */; };
-		534F81292BA078A70068D145 /* ArtistListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534F81282BA078A70068D145 /* ArtistListView.swift */; };
+		534F81292BA078A70068D145 /* ArtistsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534F81282BA078A70068D145 /* ArtistsListView.swift */; };
 		535053332B5955C900D7EAF2 /* HarmonyKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 535053292B5955C800D7EAF2 /* HarmonyKit.framework */; };
 		5350533E2B5955C900D7EAF2 /* HarmonyKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 535053292B5955C800D7EAF2 /* HarmonyKit.framework */; };
 		5350533F2B5955C900D7EAF2 /* HarmonyKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 535053292B5955C800D7EAF2 /* HarmonyKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -165,7 +165,7 @@
 /* Begin PBXFileReference section */
 		5315227A2B8BC936002E31BE /* KeychainUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainUtils.swift; sourceTree = "<group>"; };
 		5315227C2B8CF235002E31BE /* CurrentlyPlayingSongIndicatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentlyPlayingSongIndicatorView.swift; sourceTree = "<group>"; };
-		534F81282BA078A70068D145 /* ArtistListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtistListView.swift; sourceTree = "<group>"; };
+		534F81282BA078A70068D145 /* ArtistsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtistsListView.swift; sourceTree = "<group>"; };
 		535053292B5955C800D7EAF2 /* HarmonyKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = HarmonyKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		535053322B5955C800D7EAF2 /* HarmonyKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HarmonyKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		535053472B5955F900D7EAF2 /* HarmonyKit.docc */ = {isa = PBXFileReference; lastKnownFileType = folder.documentationcatalog; path = HarmonyKit.docc; sourceTree = "<group>"; };
@@ -408,7 +408,7 @@
 				53FE14762B90F030006C4193 /* AlbumDetailView.swift */,
 				53FE146C2B9054A9006C4193 /* AlbumGridItemView.swift */,
 				53FE14682B8F8DAA006C4193 /* AlbumsGridView.swift */,
-				534F81282BA078A70068D145 /* ArtistListView.swift */,
+				534F81282BA078A70068D145 /* ArtistsListView.swift */,
 				53FE14742B90E064006C4193 /* ControlsToolbar.swift */,
 				53D6665C2B6F34CC0042C03D /* SongContextMenuItems.swift */,
 				53D666662B73EAD40042C03D /* SongListItemView.swift */,
@@ -947,7 +947,7 @@
 				535053732B5AA61A00D7EAF2 /* SongsTable.swift in Sources */,
 				53D666672B73EAD40042C03D /* SongListItemView.swift in Sources */,
 				5350537C2B5BB1FE00D7EAF2 /* Sidebar.swift in Sources */,
-				534F81292BA078A70068D145 /* ArtistListView.swift in Sources */,
+				534F81292BA078A70068D145 /* ArtistsListView.swift in Sources */,
 				535054192B63A4AA00D7EAF2 /* QueueButton.swift in Sources */,
 				53802A3A2B66AF2B0066208D /* PhonePlayerDrawer.swift in Sources */,
 				535053812B5BBDC000D7EAF2 /* SettingsView.swift in Sources */,
