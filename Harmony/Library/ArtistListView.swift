@@ -19,5 +19,6 @@ struct ArtistsListView: View {
                 Text(artist.name)
             }
         }
+        .listStyle(.plain)
     }
 }
