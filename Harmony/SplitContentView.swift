@@ -15,6 +15,7 @@ struct SplitContentView: View {
     @Binding var showOnlineSongs: Bool
     @Binding var albumSort: SortDescriptor<Album>
     @Environment(\.floatingBarHeight) var floatingBarHeight: CGFloat
+    @ObservedObject var syncController = SyncController.shared
     @State var settingsSheetVisible: Bool = false
 
     var body: some View {
@@ -24,11 +25,12 @@ struct SplitContentView: View {
                     ToolbarItemGroup {
                         Button {
                             Task {
-                                await SyncController.shared.sync()
+                                await syncController.sync()
                             }
                         } label: {
                             Image(systemName: "arrow.triangle.2.circlepath.circle")
                         }
+                        .disabled(syncController.currentlySyncingFully)
                         #if !os(macOS)
                         Button(action: {
                             settingsSheetVisible.toggle()
