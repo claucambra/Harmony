@@ -15,9 +15,8 @@ public final class Artist {
     @Attribute(.unique) public var name: String
     public var downloaded: Bool = false
 
-    public init?(songs: [Song]) {
-        guard let artistName = songs.first?.artist else { return nil }
-        name = artistName
+    public init?(name: String, songs: [Song]) {
+        self.name = name
         setSongs(songs)
     }
 

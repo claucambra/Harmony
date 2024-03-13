@@ -128,7 +128,7 @@ public class SyncController: ObservableObject {
             var albumDict: Dictionary<String, [Song]> = [:]
             for song in songs {
                 let album = song.album
-                let artist = song.artist
+                let artists = song.artist.components(separatedBy: "; ")
 
                 if var existingSongs = albumDict[album] {
                     existingSongs.append(song)
@@ -137,11 +137,13 @@ public class SyncController: ObservableObject {
                     albumDict[album] = [song]
                 }
 
-                if var existingSongs = artistDict[artist] {
-                    existingSongs.append(song)
-                    artistDict[artist] = existingSongs
-                } else {
-                    artistDict[artist] = [song]
+                for artist in artists {
+                    if var existingSongs = artistDict[artist] {
+                        existingSongs.append(song)
+                        artistDict[artist] = existingSongs
+                    } else {
+                        artistDict[artist] = [song]
+                    }
                 }
             }
 
@@ -151,8 +153,8 @@ public class SyncController: ObservableObject {
                 context.insert(album)
             }
             Logger.sync.info("About to insert \(artistDict.count) artists.")
-            for songs in artistDict.values {
-                guard let artist = Artist(songs: songs) else { continue }
+            for (artistName, songs) in artistDict {
+                guard let artist = Artist(name: artistName, songs: songs) else { continue }
                 context.insert(artist)
             }
             clearAlbums(withExceptions: Set(albumDict.keys))
