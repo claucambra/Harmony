@@ -75,13 +75,13 @@ public class SyncController: ObservableObject {
                     Logger.sync.error("Could not save song to data: \(error)")
                 }
             }
-            refreshGroupings()
             return refreshedSongIdentifiers
         }
 
         do {
             let retrievedIdentifiers = try await ingestTask.result.get()
             await clearSongs(backendId: backend.id, withExceptions: retrievedIdentifiers)
+            await refreshGroupings()
         } catch let error {
             Logger.sync.error("Could not get result from ingestion task: \(error)")
             return
@@ -155,6 +155,8 @@ public class SyncController: ObservableObject {
                 guard let artist = Artist(songs: songs) else { continue }
                 context.insert(artist)
             }
+            clearAlbums(withExceptions: Set(albumDict.keys))
+            clearArtists(withExceptions: Set(artistDict.keys))
             try context.save()
         } catch let error {
             Logger.sync.error("Could not refresh albums: \(error)")
