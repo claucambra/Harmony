@@ -180,4 +180,24 @@ public class SyncController: ObservableObject {
             Logger.sync.error("Could not clear albums: \(error)")
         }
     }
+
+    @MainActor
+    func clearArtists(withExceptions exceptions: Set<String>) {
+        let context = container.mainContext
+        let fetchDescriptor = FetchDescriptor<Artist>()
+
+        do {
+            let artists = try context.fetch(fetchDescriptor)
+            let artistsToRemove = try artists.filter(
+                #Predicate { !exceptions.contains($0.name) }
+            )
+            for artistToRemove in artistsToRemove {
+                Logger.sync.debug("Removing artist: \(artistToRemove.name)")
+                context.delete(artistToRemove)
+            }
+            try context.save()
+        } catch let error {
+            Logger.sync.error("Could not clear albums: \(error)")
+        }
+    }
 }
