@@ -103,16 +103,16 @@ public class SyncController: ObservableObject {
 
         do {
             let backendSongs = try context.fetch(fetchDescriptor)
-            let staleSongs = try backendSongs.filter(
+            let songsForRemoval = try backendSongs.filter(
                 #Predicate { !exceptions.contains($0.identifier) }
             )
-            for staleSong in staleSongs {
-                Logger.sync.debug("Removing stale song: \(staleSong.url)")
-                context.delete(staleSong)
+            for songToRemove in songsForRemoval {
+                Logger.sync.debug("Removing song: \(songToRemove.url)")
+                context.delete(songToRemove)
             }
             try context.save()
         } catch let error {
-            Logger.sync.error("Could not clear stale songs for \(backendId): \(error)")
+            Logger.sync.error("Could not clear songs for \(backendId): \(error)")
         }
     }
 
