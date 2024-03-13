@@ -22,17 +22,43 @@ struct ArtistsSplitView: View {
                 .safeAreaPadding(.bottom, floatingBarHeight)
         } detail: {
             NavigationStack {
-                if let artist = selection {
-                    AlbumsGridView(
-                        albums: artist.albums,
-                        searchText: $searchText,
-                        showOnlineSongs: $showOnlineSongs,
-                        sortOrder: $albumSortOrder
-                    )
-                    .navigationTitle(artist.name)
+                #if os(macOS)
+                albumsList
+                #else
+                if UIDevice.current.userInterfaceIdiom == .pad {
+                    albumsList
+                } else {
+                    albumsGrid
                 }
+                #endif
             }
             .safeAreaPadding(.bottom, floatingBarHeight)
+        }
+    }
+
+    @ViewBuilder
+    private var albumsGrid: some View {
+        if let artist = selection {
+            AlbumsGridView(
+                albums: artist.albums,
+                searchText: $searchText,
+                showOnlineSongs: $showOnlineSongs,
+                sortOrder: $albumSortOrder
+            )
+            .navigationTitle(artist.name)
+        }
+    }
+
+    @ViewBuilder
+    private var albumsList: some View {
+        if let artist = selection {
+            AlbumsListView(
+                albums: artist.albums,
+                searchText: $searchText,
+                showOnlineSongs: $showOnlineSongs,
+                sortOrder: $albumSortOrder
+            )
+            .navigationTitle(artist.name)
         }
     }
 }
