@@ -25,13 +25,20 @@ struct AlbumHeaderView: View {
     private let albumArtistFont: Font = UIDevice.current.userInterfaceIdiom == .phone ? .title3 : .title2
     #endif
 
+    @State var minArtworkWidth = 0.0
+    @State var maxArtworkWidth = UIMeasurements.largeArtworkHeight
     @State private var artworkWidth: CGFloat = 0.0
 
     var body: some View {
         VStack(spacing: UIMeasurements.largePadding) {
             HStack(spacing: UIMeasurements.largePadding) {
                 ColouredShadowArtworkView(artwork: album.artwork)
-                    .frame(maxWidth: .infinity, maxHeight: UIMeasurements.largeArtworkHeight)
+                    .frame(
+                        minWidth: minArtworkWidth,
+                        maxWidth: maxArtworkWidth,
+                        minHeight: minArtworkWidth,
+                        maxHeight: maxArtworkWidth
+                    )
                     .aspectRatio(1, contentMode: .fit)
                     .background {
                         GeometryReader { proxy in
