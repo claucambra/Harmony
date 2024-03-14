@@ -71,6 +71,7 @@ struct AlbumHeaderView: View {
                     if buttonsAlongsideArtwork {
                         HStack {
                             playButton
+                            Spacer()
                             downloadButton
                         }
                         .frame(maxWidth: .infinity)
@@ -104,8 +105,9 @@ struct AlbumHeaderView: View {
                 .foregroundStyle(.primary)
             #if os(macOS)
                 .padding([.leading, .trailing], UIMeasurements.largePadding)
-            #endif
+            #else
                 .frame(maxWidth: .infinity)
+            #endif
         }
         .buttonStyle(.borderedProminent)
         .controlSize(.large)
