@@ -29,7 +29,6 @@ public class SyncController: ObservableObject {
     }
     private var pollTimer: Timer? = nil
     private var currentSyncsFoundSongs: [String: String] = [:]  // song id, backend id
-    private var currentSyncsFinalSongs: Set<Song> = []
 
     init() {
         Task.detached(priority: .background) {
@@ -53,28 +52,19 @@ public class SyncController: ObservableObject {
     func syncBackend(_ backend: any Backend) async {
         let backendId = backend.id
         await backend.scan(containerScanApprover: { containerId, containerVersionId in
-            return true  // TODO
+            return true  // TODO: Do not approve if versionId is same
         }, songScanApprover: { songId, songVersionId in
             self.currentSyncsFoundSongs[songId] = backendId
-            return true  // TODO
+            return true  // TODO: Do not approve if versionId is same
         }, finalisedSongHandler: { song in
-            self.currentSyncsFinalSongs.insert(song)
+            await self.ingestSong(song)
         }, finalisedContainerHandler: { container in
             // TODO
             // Needs to wait for songs to be finalised; that way we do not register a container
             // as up to date if the sync procedure is cut off half-way
         })
 
-        let ingestTask = Task { @MainActor in
-            for song in self.currentSyncsFinalSongs {
-                guard song.backendId == backend.id else { continue } // TODO
-                defer { self.currentSyncsFinalSongs.remove(song) }
-                ingestSong(song)
-            }
-        }
-
         do {
-            try await ingestTask.result.get()
             let retrievedIdentifiers = try currentSyncsFoundSongs.filter(
                 #Predicate { $0.value == backendId }
             ).map { $0.key }
