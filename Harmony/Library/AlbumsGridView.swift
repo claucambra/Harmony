@@ -6,7 +6,6 @@
 //
 
 import HarmonyKit
-import SwiftData
 import SwiftUI
 
 struct AlbumsGridView: View {
