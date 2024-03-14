@@ -38,7 +38,7 @@ struct UIMeasurements {
 
     static let smallArtworkHeight = 48.0
     static let mediumArtworkHeight = 64.0
-    static let mediumLargeArtworkHeight = 200.0
+    static let mediumLargeArtworkHeight = 128.0
     static let largeArtworkHeight = 300.0
 
     static let smallWindowWidth = 320.0
