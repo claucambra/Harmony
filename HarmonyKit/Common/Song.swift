@@ -17,6 +17,7 @@ public enum DownloadState: Int {
 @Model
 public final class Song: ObservableObject {
     @Attribute(.unique) public let identifier: String
+    public let parentContainerId: String
     public let backendId: String
     public let url: URL
     public var isPlayNext = false
@@ -47,6 +48,7 @@ public final class Song: ObservableObject {
         url: URL,
         asset: AVAsset,
         identifier: String,
+        parentContainerId: String,
         backendId: String,
         local: Bool = false,
         downloadState: DownloadState = .notDownloaded,
@@ -56,6 +58,7 @@ public final class Song: ObservableObject {
     ) async {
         self.url = url
         self.identifier = identifier
+        self.parentContainerId = parentContainerId
         self.backendId = backendId
         self.local = local
         self.downloadState = downloadState.rawValue
@@ -147,6 +150,7 @@ public final class Song: ObservableObject {
 
     private init(
         identifier: String,
+        parentContainerId: String,
         backendId: String,
         url: URL,
         title: String,
@@ -169,6 +173,7 @@ public final class Song: ObservableObject {
         versionId: String
     ) {
         self.identifier = identifier
+        self.parentContainerId = parentContainerId
         self.backendId = backendId
         self.url = url
         self.title = title
@@ -197,6 +202,7 @@ public final class Song: ObservableObject {
         let dlState = downloadState ?? DownloadState(rawValue: self.downloadState) ?? .notDownloaded
         return Song(
             identifier: identifier,
+            parentContainerId: parentContainerId,
             backendId: backendId,
             url: url,
             title: title,

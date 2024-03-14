@@ -78,8 +78,10 @@ public class FilesBackend: NSObject, Backend {
         }
     }
 
-    func songsFromLocalUrls(_ urls: [URL]) async -> [Song] {
-        var songs: [Song] = []
+    func songsFromLocalUrls(
+        _ urls: [URL],
+        finalisedSongHandler: @Sendable @escaping (Song) async -> Void
+    ) async {
         for url in urls {
             let asset = AVAsset(url: url)
             var song: Song?
@@ -92,6 +94,7 @@ public class FilesBackend: NSObject, Backend {
                     url: url,
                     asset: asset,
                     identifier: url.absoluteString,  // TODO
+                    parentContainerId: path.path,
                     backendId: id,
                     local: false,
                     downloadState: isDownloaded ? .downloaded : .notDownloaded,
@@ -103,6 +106,7 @@ public class FilesBackend: NSObject, Backend {
                     url: url,
                     asset: asset,
                     identifier: csum,
+                    parentContainerId: path.path,
                     backendId: id,
                     local: true,
                     downloadState: .downloaded,
@@ -110,29 +114,49 @@ public class FilesBackend: NSObject, Backend {
                 )
             }
             guard let song = song else { continue }
-            songs.append(song)
+            await finalisedSongHandler(song)
         }
-        return songs
     }
 
-    public func scan() async -> [Song] {
+    public func scan(
+        containerScanApprover: @Sendable @escaping (String, String) async -> Bool,
+        songScanApprover: @Sendable @escaping (String, String) async -> Bool,
+        finalisedSongHandler: @Sendable @escaping (Song) async -> Void,
+        finalisedContainerHandler: @Sendable @escaping (Container) async -> Void
+    ) async {
         Logger.filesBackend.info("Starting full scan of \(self.path)")
-        DispatchQueue.main.async {
+        Task { @MainActor in
             self.presentation.scanning = true
             self.presentation.state = "Starting full scan..."
         }
-        let urls = await recursiveScan(path: path)
-        let songs = await songsFromLocalUrls(urls)
-        DispatchQueue.main.async {
+        let urls = await recursiveScan(
+            path: path,
+            containerScanApprover: containerScanApprover,
+            songScanApprover: songScanApprover,
+            finalisedContainerHandler: finalisedContainerHandler
+        )
+        await songsFromLocalUrls(urls, finalisedSongHandler: finalisedSongHandler)
+        Task { @MainActor in
             self.presentation.scanning = false
             self.presentation.state = "Finished full scan at " + Date().formatted()
         }
-        return songs
     }
 
-    func recursiveScan(path: URL) async -> [URL] {
-        Logger.filesBackend.info("Scanning \(path)")
+    // TODO: Make better use of containerScanApprover and songScanApprover
+    func recursiveScan(
+        path: URL,
+        containerScanApprover: @Sendable @escaping (String, String) async -> Bool,
+        songScanApprover: @Sendable @escaping (String, String) async -> Bool,
+        finalisedContainerHandler: @Sendable @escaping (Container) async -> Void
+    ) async -> [URL] {
+        var containerMd5: String?
+        containerMd5 = calculateMD5Checksum(forFileAtLocalURL: path)
+        if let containerMd5 = containerMd5, await !containerScanApprover(path.path, containerMd5) {
+            Logger.defaultLog.info("Skipping \(path)")
+            return []
+        }
 
+        Logger.filesBackend.info("Scanning \(path)")
         Task { @MainActor in
             self.presentation.state = "Scanning " + path.path + "…"
         }
@@ -157,11 +181,16 @@ public class FilesBackend: NSObject, Backend {
                    !isDirectory.boolValue,
                    filePlayability(fileURL: file) == .filePlayable 
                 {
+                    // TODO: Use song scanner here?
                     audioFiles.append(file)
                 }
             }
         }
 
+        if let containerMd5 = containerMd5 {
+            let container = Container(identifier: path.path, versionId: containerMd5)
+            await finalisedContainerHandler(container)
+        }
         return audioFiles
     }
 

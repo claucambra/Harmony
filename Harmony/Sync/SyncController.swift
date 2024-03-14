@@ -28,25 +28,45 @@ public class SyncController: ObservableObject {
         }
     }
     private var pollTimer: Timer? = nil
+    private var currentSyncsFoundSongs: [String: String] = [:]
+    private var currentSyncsFinalSongs: Set<Song> = []
+
+    init() {
+        Task.detached(priority: .background) {
+            await self.sync()
+        }
+    }
 
     public func sync() async {
         currentlySyncingFully = true
-
         let backends = BackendsModel.shared.backends.values
-        // TODO: Run concurrently
-        for backend in backends {
-            await self.syncBackend(backend)
+        await withDiscardingTaskGroup { group in
+            for backend in backends {
+                group.addTask {
+                    await self.syncBackend(backend)
+                }
+            }
         }
-
         currentlySyncingFully = false
     }
 
     func syncBackend(_ backend: any Backend) async {
-        let refreshedSongs = await runSyncForBackend(backend)
+        await backend.scan(containerScanApprover: { containerId, containerVersionId in
+            return true  // TODO
+        }, songScanApprover: { songId, songVersionId in
+            self.currentSyncsFoundSongs[songId] = backend.id
+            return true  // TODO
+        }, finalisedSongHandler: { song in
+            self.currentSyncsFinalSongs.insert(song)
+        }, finalisedContainerHandler: { container in
+
+        })
 
         let ingestTask = Task { @MainActor in
             var refreshedSongIdentifiers: Set<String> = []
-            for song in refreshedSongs {
+            for song in self.currentSyncsFinalSongs {
+                guard song.backendId == backend.id else { continue } // TODO
+                defer { self.currentSyncsFinalSongs.remove(song) }
                 let songIdentifier = song.identifier
                 do {
                     let context = container.mainContext
@@ -86,12 +106,6 @@ public class SyncController: ObservableObject {
             Logger.sync.error("Could not get result from ingestion task: \(error)")
             return
         }
-    }
-
-    private func runSyncForBackend(_ backend: any Backend) async -> [Song] {
-        guard !backend.presentation.scanning else { return [] }
-        let songs = await backend.scan()
-        return songs
     }
 
     @MainActor  // Remove songs. Exceptions should contain song ids

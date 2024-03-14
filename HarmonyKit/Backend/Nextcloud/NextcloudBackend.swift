@@ -8,6 +8,7 @@
 import AVFoundation
 import NextcloudKit
 import OSLog
+import SwiftData
 
 extension Logger {
     static let ncBackend = Logger(subsystem: subsystem, category: "ncBackend")
@@ -58,20 +59,38 @@ public class NextcloudBackend: NSObject, Backend {
         )
     }
 
-    public func scan() async -> [Song] {
+    public func scan(
+        containerScanApprover: @Sendable @escaping (String, String) async -> Bool,
+        songScanApprover: @Sendable @escaping (String, String) async -> Bool,
+        finalisedSongHandler: @Sendable @escaping (Song) async -> Void,
+        finalisedContainerHandler: @Sendable @escaping (Container) async -> Void
+    ) async {
         Task { @MainActor in
             self.presentation.scanning = true
             self.presentation.state = "Starting full scan..."
         }
-        let songs = await recursiveScanRemotePath(filesPath)
+        await recursiveScanRemotePath(
+            filesPath,
+            containerScanApprover: containerScanApprover,
+            songScanApprover: songScanApprover,
+            finalisedSongHandler: finalisedSongHandler,
+            finalisedContainerHandler: finalisedContainerHandler,
+            root: true
+        )
         Task { @MainActor in
             self.presentation.scanning = false
             self.presentation.state = "Finished full scan at \(Date().formatted())"
         }
-        return songs
     }
 
-    private func recursiveScanRemotePath(_ path: String) async -> [Song] {
+    private func recursiveScanRemotePath(
+        _ path: String,
+        containerScanApprover: @Sendable @escaping (String, String) async -> Bool,
+        songScanApprover: @Sendable @escaping (String, String) async -> Bool,
+        finalisedSongHandler: @Sendable @escaping (Song) async -> Void,
+        finalisedContainerHandler: @Sendable @escaping (Container) async -> Void,
+        root: Bool = false
+    ) async {
         logger.debug("Starting read of: \(path)")
         Task { @MainActor in
             self.presentation.state = "Scanning \(path)..."
@@ -90,25 +109,29 @@ public class NextcloudBackend: NSObject, Backend {
 
         guard error == .success else {
             logger.error("Could not scan \(path): \(error.errorDescription)")
-            return []
+            return
         }
 
-        guard !files.isEmpty else {
+        guard !files.isEmpty, let scannedDir = files.first else {
             logger.warning("Received no items from readFileOrFolder of \(path)")
-            return []
+            return
         }
 
-        let fileCount = files.count
-        var songs: [Song] = []
+        if root, await !containerScanApprover(scannedDir.ocId, scannedDir.etag) {
+            logger.info("Not scanning root path")
+            return
+        }
 
-        await withTaskGroup(of: [Song].self) { group in
+        let container = Container(identifier: scannedDir.ocId, versionId: scannedDir.etag)
+        let fileCount = files.count
+
+        await withTaskGroup(of: Int.self) { group in
             for i in 1..<fileCount { // First song is always the subject of the scan, not child
                 // When we have submitted the maximum concurrent scans in the first burst, wait for
                 // a task to finish off before submitting the next scan, thus limiting concurrent
                 // tasks.
                 if i >= self.maxConcurrentScans - 1 {
                     guard let scanResult = await group.next() else { continue }
-                    songs.append(contentsOf: scanResult)
                 }
 
                 let file = files[i]
@@ -119,30 +142,38 @@ public class NextcloudBackend: NSObject, Backend {
 
                 group.addTask(priority: .userInitiated) {
                     if file.directory {
-                        return await self.recursiveScanRemotePath(receivedFileUrl)
+                        guard await containerScanApprover(file.ocId, file.etag) else { return 0 }
+                        await self.recursiveScanRemotePath(
+                            receivedFileUrl,
+                            containerScanApprover: containerScanApprover,
+                            songScanApprover: songScanApprover,
+                            finalisedSongHandler: finalisedSongHandler,
+                            finalisedContainerHandler: finalisedContainerHandler
+                        )
                     } else if let song = await self.handleReadFile(
-                        receivedFileUrl, ocId: file.ocId, etag: file.etag
+                        receivedFileUrl, 
+                        ocId: file.ocId,
+                        etag: file.etag,
+                        parentContainer: container,
+                        songScanApprover: songScanApprover
                     ) {
-                        return [song]
-                    } else {
-                        return []
+                        await finalisedSongHandler(song)
                     }
+                    return 0
                 }
-            }
-
-            // Collects the remaining tasks not waited for in the in-loop throttling section (this
-            // should only be the last task, which is not covered by the await group.next())
-            for await scanResult in group {
-                songs.append(contentsOf: scanResult)
             }
         }
 
         logger.info("Finished scan of \(path)")
-        return songs
+        await finalisedContainerHandler(container)
     }
 
     private func handleReadFile(
-        _ receivedFileUrl: String, ocId: String, etag: String
+        _ receivedFileUrl: String, 
+        ocId: String,
+        etag: String,
+        parentContainer: Container,
+        songScanApprover: @Sendable @escaping (String, String) async -> Bool
     ) async -> Song? {
         // Process received file
         guard let songUrl = URL(string: receivedFileUrl) else {
@@ -155,6 +186,11 @@ public class NextcloudBackend: NSObject, Backend {
             return nil
         }
 
+        guard await songScanApprover(ocId, etag) else {
+            logger.info("Not scanning song: \(ocId)")
+            return nil
+        }
+
         let asset = AVURLAsset(url: songUrl)
         asset.resourceLoader.setDelegate(assetResourceLoaderDelegate, queue: DispatchQueue.global())
 
@@ -162,6 +198,7 @@ public class NextcloudBackend: NSObject, Backend {
             url: songUrl, 
             asset: asset,
             identifier: ocId,
+            parentContainerId: parentContainer.identifier,
             backendId: self.id,
             local: false,
             versionId: etag,

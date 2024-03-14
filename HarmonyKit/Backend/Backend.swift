@@ -14,7 +14,13 @@ public protocol Backend: Identifiable, Hashable, ObservableObject {
     var presentation: BackendPresentable { get }
     var configValues: BackendConfiguration { get }
 
-    func scan() async -> [Song]
+    func scan(
+        containerScanApprover: @Sendable @escaping (String, String) async -> Bool,  // ID, VersionID
+        songScanApprover: @Sendable @escaping (String, String) async -> Bool,  // ID, VersionID
+        finalisedSongHandler: @Sendable @escaping (Song) async -> Void,
+        finalisedContainerHandler: @Sendable @escaping (Container) async -> Void
+    ) async
+    
     func assetForSong(_ song: Song) -> AVAsset?
     func fetchSong(_ song: Song) async
     func evictSong(_ song: Song) async
