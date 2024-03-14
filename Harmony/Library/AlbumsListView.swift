@@ -14,13 +14,28 @@ struct AlbumsListView: View {
     @Binding var searchText: String
     @Binding var showOnlineSongs: Bool
     @Binding var sortOrder: SortDescriptor<Album>
-
-    @State private var selection: Set<Album.ID> = []
+    @State private var selection: Set<Song.ID> = []
 
     var body: some View {
         List(selection: $selection) {
             ForEach(albums) { album in
-                Text(album.title)
+                Section {
+                    ForEach(album.songs) { song in
+                        SongListItemView(
+                            song: song,
+                            displayArtwork: false,
+                            displayArtist: false,
+                            displayTrackNumber: true
+                        )
+                    }
+                } header: {
+                    AlbumHeaderView(
+                        album: album,
+                        minArtworkWidth: UIMeasurements.mediumLargeArtworkHeight,
+                        maxArtworkWidth: UIMeasurements.mediumLargeArtworkHeight
+                    )
+                    .foregroundStyle(.foreground)
+                }
             }
         }
         #if !os(macOS)
