@@ -55,6 +55,8 @@ struct SplitContentView: View {
             navSideBar
         } content: {
             ArtistsListView(selection: $artistSelection)
+                .navigationTitle("Artists")
+                .safeAreaPadding([.bottom], floatingBarHeight)
         } detail: {
             NavigationStack(path: $path) {
                 if let artist = artistSelection {
