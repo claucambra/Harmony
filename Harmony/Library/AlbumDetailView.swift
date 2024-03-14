@@ -60,6 +60,7 @@ struct AlbumDetailView: View {
                 .listRowSeparator(.hidden)
                 .selectionDisabled()
                 .frame(maxWidth: .infinity)
+                .contextMenu { AlbumContextMenuItems(album: album) }
 
             ForEach(sortedSongs) { song in
                 SongListItemView(

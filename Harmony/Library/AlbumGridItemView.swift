@@ -70,8 +70,7 @@ struct AlbumGridItemView: View {
                 .foregroundStyle(.secondary)
                 .frame(maxWidth: .infinity)
         }
-        .onHover { inside in
-            hoveredArtwork = inside
-        }
+        .onHover { inside in hoveredArtwork = inside }
+        .contextMenu { AlbumContextMenuItems(album: album) }
     }
 }
