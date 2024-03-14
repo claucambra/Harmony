@@ -22,3 +22,11 @@ func playAlbum(_ album: Album) {
     let sortedSongs = sortedAlbumSongs(album)
     PlayerController.shared.playSong(firstSong, withinSongs: sortedSongs)
 }
+
+@MainActor
+func playNextAlbum(_ album: Album) {
+    let sortedSongs = sortedAlbumSongs(album)
+    for song in sortedSongs {
+        PlayerController.shared.queue.insertNextSong(song)
+    }
+}

@@ -109,13 +109,7 @@ struct AlbumHeaderView: View {
     @ViewBuilder @MainActor
     private var playNextButton: some View {
         Button {
-            let sortedSongs = album.songs.sorted {
-                guard $0.trackNumber != 0, $1.trackNumber != 0 else { return $0.title < $1.title }
-                return $0.trackNumber < $1.trackNumber
-            }
-            for song in sortedSongs {
-                PlayerController.shared.queue.insertNextSong(song)
-            }
+            playNextAlbum(album)
         } label: {
             Label("Play next", systemImage: "text.line.first.and.arrowtriangle.forward")
                 .padding([.leading, .trailing], UIMeasurements.largePadding)

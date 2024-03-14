@@ -14,10 +14,7 @@ struct AlbumContextMenuItems: View {
 
     var body: some View {
         Button {
-            let sortedSongs = sortedAlbumSongs(album)
-            for song in sortedSongs {
-                queue.insertNextSong(song)
-            }
+            playNextAlbum(album)
         } label: {
             Label("Play next", systemImage: "text.line.first.and.arrowtriangle.forward")
         }
