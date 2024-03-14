@@ -28,7 +28,7 @@ public class SyncController: ObservableObject {
         }
     }
     private var pollTimer: Timer? = nil
-    private var currentSyncsFoundSongs: [String: String] = [:]
+    private var currentSyncsFoundSongs: [String: String] = [:]  // song id, backend id
     private var currentSyncsFinalSongs: Set<Song> = []
 
     init() {
@@ -51,19 +51,21 @@ public class SyncController: ObservableObject {
     }
 
     func syncBackend(_ backend: any Backend) async {
+        let backendId = backend.id
         await backend.scan(containerScanApprover: { containerId, containerVersionId in
             return true  // TODO
         }, songScanApprover: { songId, songVersionId in
-            self.currentSyncsFoundSongs[songId] = backend.id
+            self.currentSyncsFoundSongs[songId] = backendId
             return true  // TODO
         }, finalisedSongHandler: { song in
             self.currentSyncsFinalSongs.insert(song)
         }, finalisedContainerHandler: { container in
-
+            // TODO
+            // Needs to wait for songs to be finalised; that way we do not register a container
+            // as up to date if the sync procedure is cut off half-way
         })
 
         let ingestTask = Task { @MainActor in
-            var refreshedSongIdentifiers: Set<String> = []
             for song in self.currentSyncsFinalSongs {
                 guard song.backendId == backend.id else { continue } // TODO
                 defer { self.currentSyncsFinalSongs.remove(song) }
@@ -90,17 +92,18 @@ public class SyncController: ObservableObject {
                         context.insert(song)
                     }
                     try context.save()
-                    refreshedSongIdentifiers.insert(songIdentifier)
                 } catch let error {
                     Logger.sync.error("Could not save song to data: \(error)")
                 }
             }
-            return refreshedSongIdentifiers
         }
 
         do {
-            let retrievedIdentifiers = try await ingestTask.result.get()
-            await clearSongs(backendId: backend.id, withExceptions: retrievedIdentifiers)
+            try await ingestTask.result.get()
+            let retrievedIdentifiers = try currentSyncsFoundSongs.filter(
+                #Predicate { $0.value == backendId }
+            ).map { $0.key }
+            await clearSongs(backendId: backend.id, withExceptions: Set(retrievedIdentifiers))
             await refreshGroupings()
         } catch let error {
             Logger.sync.error("Could not get result from ingestion task: \(error)")
