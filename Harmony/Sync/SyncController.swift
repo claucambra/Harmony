@@ -69,32 +69,7 @@ public class SyncController: ObservableObject {
             for song in self.currentSyncsFinalSongs {
                 guard song.backendId == backend.id else { continue } // TODO
                 defer { self.currentSyncsFinalSongs.remove(song) }
-                let songIdentifier = song.identifier
-                do {
-                    let context = container.mainContext
-                    let fetchDescriptor = FetchDescriptor<Song>(predicate: #Predicate<Song> {
-                        $0.identifier == songIdentifier
-                    })
-                    let existingSong = try context.fetch(fetchDescriptor).first
-
-                    if let existingSong = existingSong {
-                        let isOutdated = song.versionId != existingSong.versionId
-                        let existingDlState = existingSong.downloadState
-                        var refreshedDlState = DownloadState.notDownloaded
-                        if existingDlState == DownloadState.downloaded.rawValue {
-                            refreshedDlState = isOutdated ? .downloadedOutdated : .downloaded
-                        } else if existingDlState == DownloadState.downloading.rawValue {
-                            refreshedDlState = .downloading
-                        }
-                        let refreshedSong = song.clone(downloadState: refreshedDlState)
-                        context.insert(refreshedSong)
-                    } else {
-                        context.insert(song)
-                    }
-                    try context.save()
-                } catch let error {
-                    Logger.sync.error("Could not save song to data: \(error)")
-                }
+                ingestSong(song)
             }
         }
 
@@ -108,6 +83,36 @@ public class SyncController: ObservableObject {
         } catch let error {
             Logger.sync.error("Could not get result from ingestion task: \(error)")
             return
+        }
+    }
+
+    @MainActor
+    func ingestSong(_ song: Song) {
+        let songIdentifier = song.identifier
+        do {
+            let context = container.mainContext
+            let fetchDescriptor = FetchDescriptor<Song>(predicate: #Predicate<Song> {
+                $0.identifier == songIdentifier
+            })
+            let existingSong = try context.fetch(fetchDescriptor).first
+
+            if let existingSong = existingSong {
+                let isOutdated = song.versionId != existingSong.versionId
+                let existingDlState = existingSong.downloadState
+                var refreshedDlState = DownloadState.notDownloaded
+                if existingDlState == DownloadState.downloaded.rawValue {
+                    refreshedDlState = isOutdated ? .downloadedOutdated : .downloaded
+                } else if existingDlState == DownloadState.downloading.rawValue {
+                    refreshedDlState = .downloading
+                }
+                let refreshedSong = song.clone(downloadState: refreshedDlState)
+                context.insert(refreshedSong)
+            } else {
+                context.insert(song)
+            }
+            try context.save()
+        } catch let error {
+            Logger.sync.error("Could not save song to data: \(error)")
         }
     }
 
