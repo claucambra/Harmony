@@ -16,6 +16,7 @@
 		534F81352BA2AAD60068D145 /* AlbumHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534F81342BA2AAD60068D145 /* AlbumHeaderView.swift */; };
 		534F81372BA2EC1A0068D145 /* AlbumContextMenuItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534F81362BA2EC1A0068D145 /* AlbumContextMenuItems.swift */; };
 		534F81392BA2EF0E0068D145 /* UIAlbumUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534F81382BA2EF0E0068D145 /* UIAlbumUtils.swift */; };
+		534F813D2BA311E00068D145 /* Container.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534F813C2BA311E00068D145 /* Container.swift */; };
 		535053332B5955C900D7EAF2 /* HarmonyKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 535053292B5955C800D7EAF2 /* HarmonyKit.framework */; };
 		5350533E2B5955C900D7EAF2 /* HarmonyKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 535053292B5955C800D7EAF2 /* HarmonyKit.framework */; };
 		5350533F2B5955C900D7EAF2 /* HarmonyKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 535053292B5955C800D7EAF2 /* HarmonyKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -178,6 +179,7 @@
 		534F81342BA2AAD60068D145 /* AlbumHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumHeaderView.swift; sourceTree = "<group>"; };
 		534F81362BA2EC1A0068D145 /* AlbumContextMenuItems.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumContextMenuItems.swift; sourceTree = "<group>"; };
 		534F81382BA2EF0E0068D145 /* UIAlbumUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIAlbumUtils.swift; sourceTree = "<group>"; };
+		534F813C2BA311E00068D145 /* Container.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Container.swift; sourceTree = "<group>"; };
 		535053292B5955C800D7EAF2 /* HarmonyKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = HarmonyKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		535053322B5955C800D7EAF2 /* HarmonyKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HarmonyKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		535053472B5955F900D7EAF2 /* HarmonyKit.docc */ = {isa = PBXFileReference; lastKnownFileType = folder.documentationcatalog; path = HarmonyKit.docc; sourceTree = "<group>"; };
@@ -355,6 +357,7 @@
 			children = (
 				53FE146A2B8F9457006C4193 /* Album.swift */,
 				535DAFC62B9F7AC100C94B62 /* Artist.swift */,
+				534F813C2BA311E00068D145 /* Container.swift */,
 				535053492B5955F900D7EAF2 /* Song.swift */,
 			);
 			path = Common;
@@ -914,6 +917,7 @@
 				537632DA2B8673E90026BFAB /* FLACStreamInfoMetadataBlock.swift in Sources */,
 				535053512B5955F900D7EAF2 /* Song.swift in Sources */,
 				537632E02B86749B0026BFAB /* FLACPictureMetadataBlock.swift in Sources */,
+				534F813D2BA311E00068D145 /* Container.swift in Sources */,
 				535053922B5BD41200D7EAF2 /* AvailableBackends.swift in Sources */,
 				535053FF2B62892500D7EAF2 /* AVPlayer+Extension.swift in Sources */,
 				53B979732B80274C002DA742 /* NextcloudAVAssetResourceLoaderDelegate.swift in Sources */,
