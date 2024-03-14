@@ -57,7 +57,7 @@ public class SyncController: ObservableObject {
             self.currentSyncsFoundSongs[songId] = backendId
             return true  // TODO: Do not approve if versionId is same
         }, finalisedSongHandler: { song in
-            await self.ingestSong(song)
+            self.ingestSong(song)
         }, finalisedContainerHandler: { container in
             // TODO
             // Needs to wait for songs to be finalised; that way we do not register a container
@@ -68,19 +68,18 @@ public class SyncController: ObservableObject {
             let retrievedIdentifiers = try currentSyncsFoundSongs.filter(
                 #Predicate { $0.value == backendId }
             ).map { $0.key }
-            await clearSongs(backendId: backend.id, withExceptions: Set(retrievedIdentifiers))
-            await refreshGroupings()
+            clearSongs(backendId: backend.id, withExceptions: Set(retrievedIdentifiers))
+            refreshGroupings()
         } catch let error {
             Logger.sync.error("Could not get result from ingestion task: \(error)")
             return
         }
     }
 
-    @MainActor
     func ingestSong(_ song: Song) {
         let songIdentifier = song.identifier
         do {
-            let context = container.mainContext
+            let context = ModelContext(container)
             let fetchDescriptor = FetchDescriptor<Song>(predicate: #Predicate<Song> {
                 $0.identifier == songIdentifier
             })
@@ -106,9 +105,9 @@ public class SyncController: ObservableObject {
         }
     }
 
-    @MainActor  // Remove songs. Exceptions should contain song ids
+    // Remove songs. Exceptions should contain song ids
     func clearSongs(backendId: String, withExceptions exceptions: Set<String>) {
-        let context = container.mainContext
+        let context = ModelContext(container)
         let fetchDescriptor = FetchDescriptor<Song>(
             predicate: #Predicate { $0.backendId == backendId }
         )
@@ -128,10 +127,10 @@ public class SyncController: ObservableObject {
         }
     }
 
-    @MainActor
+    // TODO: Make progressive on each song ingest
     func refreshGroupings() {
         Logger.sync.info("Refreshing albums and artists.")
-        let context = container.mainContext
+        let context = ModelContext(container)
         let fetchDescriptor = FetchDescriptor<Song>()
         
         do {
@@ -177,9 +176,8 @@ public class SyncController: ObservableObject {
         }
     }
 
-    @MainActor
     func clearAlbums(withExceptions exceptions: Set<String>) {
-        let context = container.mainContext
+        let context = ModelContext(container)
         let fetchDescriptor = FetchDescriptor<Album>()
 
         do {
@@ -197,9 +195,8 @@ public class SyncController: ObservableObject {
         }
     }
 
-    @MainActor
     func clearArtists(withExceptions exceptions: Set<String>) {
-        let context = container.mainContext
+        let context = ModelContext(container)
         let fetchDescriptor = FetchDescriptor<Artist>()
 
         do {
