@@ -12,7 +12,7 @@ import SwiftData
 
 public class SyncController: ObservableObject {
     static let shared = SyncController()
-    let container = try! ModelContainer(for: Song.self, Album.self, Artist.self)
+    let container = try! ModelContainer(for: Song.self, Album.self, Artist.self, Container.self)
     @Published var currentlySyncingFully: Bool = false
     @Published var poll: Bool = false {
         didSet {
