@@ -35,10 +35,7 @@ struct AlbumGridItemView: View {
                 if hoveredArtwork {
                     HStack {
                         Button {
-                            guard let firstSong = album.songs.first else { return }
-                            let controller = PlayerController.shared
-                            let sortedSongs = sortedAlbumSongs(album)
-                            controller.playSong(firstSong, withinSongs: sortedSongs)
+                            playAlbum(album)
                         } label: {
                             let primaryColor: Color = hoveredPlayButton ? .accentColor : .white
                             let renderMode: SymbolRenderingMode = hoveredPlayButton

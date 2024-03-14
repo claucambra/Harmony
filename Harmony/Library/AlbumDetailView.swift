@@ -97,9 +97,7 @@ struct AlbumDetailView: View {
     @ViewBuilder @MainActor
     var playButton: some View {
         Button {
-            guard let firstSong = album.songs.first else { return }
-            let controller = PlayerController.shared
-            controller.playSong(firstSong, withinSongs: sortedSongs)
+            playAlbum(album)
         } label: {
             Label("Play", systemImage: "play.fill")
                 .foregroundStyle(.primary)

@@ -94,10 +94,7 @@ struct AlbumHeaderView: View {
     @ViewBuilder @MainActor
     private var playButton: some View {
         Button {
-            guard let firstSong = album.songs.first else { return }
-            let controller = PlayerController.shared
-            let sortedSongs = sortedAlbumSongs(album)
-            controller.playSong(firstSong, withinSongs: sortedSongs)
+            playAlbum(album)
         } label: {
             Label("Play", systemImage: "play.fill")
                 .foregroundStyle(.primary)

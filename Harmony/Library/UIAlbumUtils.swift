@@ -14,3 +14,11 @@ func sortedAlbumSongs(_ album: Album) -> [Song] {
         return $0.trackNumber < $1.trackNumber
     }
 }
+
+@MainActor
+func playAlbum(_ album: Album) {
+    guard let firstSong = album.songs.first else { return }
+    let controller = PlayerController.shared
+    let sortedSongs = sortedAlbumSongs(album)
+    PlayerController.shared.playSong(firstSong, withinSongs: sortedSongs)
+}
