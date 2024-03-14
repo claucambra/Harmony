@@ -20,8 +20,7 @@ struct SongContextMenuItems: View {
         }
         if !song.local, song.downloadState != DownloadState.downloaded.rawValue {
             Button {
-                let backend = BackendsModel.shared.backends[song.backendId]
-                Task { await backend?.fetchSong(song) }
+                fetchSong(song)
             } label: {
                 Label("Keep available offline", systemImage: "square.and.arrow.down")
             }
@@ -30,8 +29,7 @@ struct SongContextMenuItems: View {
                     song.downloadState == DownloadState.downloadedOutdated.rawValue
         {
             Button(role: .destructive) {
-                let backend = BackendsModel.shared.backends[song.backendId]
-                Task { await backend?.evictSong(song) }
+                evictSong(song)
             } label: {
                 Label("Remove offline copy", systemImage: "trash")
             }

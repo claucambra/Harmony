@@ -33,14 +33,12 @@ func playNextAlbum(_ album: Album) {
 
 func fetchAlbum(_ album: Album) {
     for song in album.songs {
-        let backend = BackendsModel.shared.backends[song.backendId]
-        Task { await backend?.fetchSong(song) }
+        fetchSong(song)
     }
 }
 
 func evictAlbum(_ album: Album) {
     for song in album.songs {
-        let backend = BackendsModel.shared.backends[song.backendId]
-        Task { await backend?.evictSong(song) }
+        evictSong(song)
     }
 }

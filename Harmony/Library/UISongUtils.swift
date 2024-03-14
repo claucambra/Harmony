@@ -23,7 +23,8 @@ func contextMenuItemsForSong(id: Song.ID, songs: [Song]) -> some View {
     }
 }
 
-@MainActor func playSongsFromIds(_ ids: Set<Song.ID>, songs: [Song]) {
+@MainActor
+func playSongsFromIds(_ ids: Set<Song.ID>, songs: [Song]) {
     for id in ids {
         guard let song = songs.filter({ $0.id == id }).first else {
             Logger.songsTable.error("Could not find song with id")
@@ -31,4 +32,14 @@ func contextMenuItemsForSong(id: Song.ID, songs: [Song]) -> some View {
         }
         PlayerController.shared.playSong(song, withinSongs: songs)
     }
+}
+
+func fetchSong(_ song: Song) {
+    let backend = BackendsModel.shared.backends[song.backendId]
+    Task { await backend?.fetchSong(song) }
+}
+
+func evictSong(_ song: Song) {
+    let backend = BackendsModel.shared.backends[song.backendId]
+    Task { await backend?.evictSong(song) }
 }
