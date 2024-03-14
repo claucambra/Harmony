@@ -1,0 +1,124 @@
+//
+//  AlbumHeaderView.swift
+//  Harmony
+//
+//  Created by Claudio Cambra on 14/3/24.
+//
+
+import HarmonyKit
+import SwiftUI
+
+struct AlbumHeaderView: View {
+    let album: Album
+
+    #if os(macOS)
+    private let horizontalPadding = UIMeasurements.ultraLargePadding
+    private let verticalPadding = UIMeasurements.veryLargePadding
+    private let buttonsAlongsideArtwork = true
+    private let albumTitleFont = Font.largeTitle
+    private let albumArtistFont = Font.title
+    #else
+    private let horizontalPadding = UIMeasurements.largePadding
+    private let verticalPadding = UIMeasurements.largePadding
+    private let buttonsAlongsideArtwork = UIDevice.current.userInterfaceIdiom != .phone
+    private let albumTitleFont: Font = UIDevice.current.userInterfaceIdiom == .phone ? .title2 : .title
+    private let albumArtistFont: Font = UIDevice.current.userInterfaceIdiom == .phone ? .title3 : .title2
+    #endif
+
+    @State private var artworkWidth: CGFloat = 0.0
+
+    var body: some View {
+        VStack(spacing: UIMeasurements.largePadding) {
+            HStack(spacing: UIMeasurements.largePadding) {
+                ColouredShadowArtworkView(artwork: album.artwork)
+                    .frame(maxWidth: .infinity, maxHeight: UIMeasurements.largeArtworkHeight)
+                    .aspectRatio(1, contentMode: .fit)
+                    .background {
+                        GeometryReader { proxy in
+                            Rectangle()
+                                .fill(.clear)
+                                .onAppear { artworkWidth = proxy.size.width }
+                                .onChange(of: proxy.size) { artworkWidth = proxy.size.width }
+                        }
+                    }
+
+                VStack(alignment: .leading) {
+                    Spacer()
+                    Text(album.title.isEmpty ? "Unknown album" : album.title)
+                        .font(albumTitleFont)
+                        .bold()
+                        .multilineTextAlignment(.leading)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    Text(album.artist ?? "Unknown artist")
+                        .font(albumArtistFont)
+                        .multilineTextAlignment(.leading)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    Text(album.genre == nil || album.genre!.isEmpty
+                         ? "Unknown genre"
+                         : album.genre ?? "Unknown genre")
+                    .font(.subheadline)
+                    .multilineTextAlignment(.leading)
+                    .foregroundStyle(.secondary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    Spacer()
+                    if buttonsAlongsideArtwork {
+                        HStack {
+                            playButton
+                            downloadButton
+                        }
+                        .frame(maxWidth: .infinity)
+                    }
+                }
+                .frame(maxHeight: artworkWidth)
+            }
+            if !buttonsAlongsideArtwork {
+                HStack {
+                    playButton
+                        .frame(width: artworkWidth)
+                    Spacer()
+                    downloadButton
+                }
+            }
+        }
+    }
+
+    @ViewBuilder @MainActor
+    private var playButton: some View {
+        Button {
+            guard let firstSong = album.songs.first else { return }
+            let controller = PlayerController.shared
+            let sortedSongs = album.songs.sorted {
+                guard $0.trackNumber != 0, $1.trackNumber != 0 else { return $0.title < $1.title }
+                return $0.trackNumber < $1.trackNumber
+            }
+            controller.playSong(firstSong, withinSongs: sortedSongs)
+        } label: {
+            Label("Play", systemImage: "play.fill")
+                .foregroundStyle(.primary)
+            #if os(macOS)
+                .padding([.leading, .trailing], UIMeasurements.largePadding)
+            #endif
+                .frame(maxWidth: .infinity)
+        }
+        .buttonStyle(.borderedProminent)
+        .controlSize(.large)
+    }
+
+    @ViewBuilder
+    private var downloadButton: some View {
+        Button {
+            let songs = album.songs
+            for song in songs {
+                let backend = BackendsModel.shared.backends[song.backendId]
+                Task { await backend?.fetchSong(song) }
+            }
+        } label: {
+            DownloadStateLabelView(
+                state: album.downloaded
+                    ? DownloadState.downloaded.rawValue
+                    : DownloadState.notDownloaded.rawValue
+            )
+        }
+        .buttonStyle(.borderless)
+    }
+}

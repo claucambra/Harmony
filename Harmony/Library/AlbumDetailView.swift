@@ -50,67 +50,16 @@ struct AlbumDetailView: View {
             .formatted(.time(pattern: .minuteSecond))
 
         List(selection: $selection) {
-            VStack(spacing: UIMeasurements.largePadding) {
-                HStack(spacing: UIMeasurements.largePadding) {
-                    ColouredShadowArtworkView(artwork: album.artwork)
-                        .frame(maxWidth: .infinity, maxHeight: UIMeasurements.largeArtworkHeight)
-                        .aspectRatio(1, contentMode: .fit)
-                        .background {
-                            GeometryReader { proxy in
-                                Rectangle()
-                                    .fill(.clear)
-                                    .onAppear { artworkWidth = proxy.size.width }
-                                    .onChange(of: proxy.size) { artworkWidth = proxy.size.width }
-                            }
-                        }
-
-                    VStack(alignment: .leading) {
-                        Spacer()
-                        Text(album.title.isEmpty ? "Unknown album" : album.title)
-                            .font(albumTitleFont)
-                            .bold()
-                            .multilineTextAlignment(.leading)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                        Text(album.artist ?? "Unknown artist")
-                            .font(albumArtistFont)
-                            .multilineTextAlignment(.leading)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                        Text(album.genre == nil || album.genre!.isEmpty
-                             ? "Unknown genre"
-                             : album.genre ?? "Unknown genre")
-                        .font(.subheadline)
-                        .multilineTextAlignment(.leading)
-                        .foregroundStyle(.secondary)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        Spacer()
-                        if buttonsAlongsideArtwork {
-                            HStack {
-                                playButton
-                                downloadButton
-                            }
-                            .frame(maxWidth: .infinity)
-                        }
-                    }
-                    .frame(maxHeight: artworkWidth)
-                }
-                if !buttonsAlongsideArtwork {
-                    HStack {
-                        playButton
-                            .frame(width: artworkWidth)
-                        Spacer()
-                        downloadButton
-                    }
-                }
-            }
-            .listRowInsets(.init(
-                top: verticalPadding,
-                leading: horizontalPadding,
-                bottom: verticalPadding,
-                trailing: horizontalPadding
-            ))
-            .listRowSeparator(.hidden)
-            .selectionDisabled()
-            .frame(maxWidth: .infinity)
+            AlbumHeaderView(album: album)
+                .listRowInsets(.init(
+                    top: verticalPadding,
+                    leading: horizontalPadding,
+                    bottom: verticalPadding,
+                    trailing: horizontalPadding
+                ))
+                .listRowSeparator(.hidden)
+                .selectionDisabled()
+                .frame(maxWidth: .infinity)
 
             ForEach(sortedSongs) { song in
                 SongListItemView(
