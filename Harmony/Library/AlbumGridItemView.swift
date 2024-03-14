@@ -37,7 +37,8 @@ struct AlbumGridItemView: View {
                         Button {
                             guard let firstSong = album.songs.first else { return }
                             let controller = PlayerController.shared
-                            controller.playSong(firstSong, withinSongs: album.songs) // SORT
+                            let sortedSongs = sortedAlbumSongs(album)
+                            controller.playSong(firstSong, withinSongs: sortedSongs)
                         } label: {
                             let primaryColor: Color = hoveredPlayButton ? .accentColor : .white
                             let renderMode: SymbolRenderingMode = hoveredPlayButton

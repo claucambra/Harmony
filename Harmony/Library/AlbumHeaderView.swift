@@ -96,10 +96,7 @@ struct AlbumHeaderView: View {
         Button {
             guard let firstSong = album.songs.first else { return }
             let controller = PlayerController.shared
-            let sortedSongs = album.songs.sorted {
-                guard $0.trackNumber != 0, $1.trackNumber != 0 else { return $0.title < $1.title }
-                return $0.trackNumber < $1.trackNumber
-            }
+            let sortedSongs = sortedAlbumSongs(album)
             controller.playSong(firstSong, withinSongs: sortedSongs)
         } label: {
             Label("Play", systemImage: "play.fill")

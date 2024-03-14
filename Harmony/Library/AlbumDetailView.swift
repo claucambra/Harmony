@@ -31,10 +31,7 @@ struct AlbumDetailView: View {
 
     init(album: Album) {
         self.album = album
-        sortedSongs = album.songs.sorted {
-            guard $0.trackNumber != 0, $1.trackNumber != 0 else { return $0.title < $1.title }
-            return $0.trackNumber < $1.trackNumber
-        }
+        sortedSongs = sortedAlbumSongs(album)
     }
 
     var body: some View {

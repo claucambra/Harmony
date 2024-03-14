@@ -27,12 +27,7 @@ struct AlbumsListView: View {
     var body: some View {
         List(selection: $selection) {
             ForEach(albums) { album in
-                let sortedSongs = album.songs.sorted {
-                    guard $0.trackNumber != 0, $1.trackNumber != 0 else {
-                        return $0.title < $1.title
-                    }
-                    return $0.trackNumber < $1.trackNumber
-                }
+                let sortedSongs = sortedAlbumSongs(album)
                 Section {
                     ForEach(sortedSongs) { song in
                         SongListItemView(
