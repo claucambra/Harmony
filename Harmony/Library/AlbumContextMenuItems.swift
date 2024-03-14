@@ -20,19 +20,13 @@ struct AlbumContextMenuItems: View {
         }
         if !album.downloaded {
             Button {
-                for song in album.songs {
-                    let backend = BackendsModel.shared.backends[song.backendId]
-                    Task { await backend?.fetchSong(song) }
-                }
+                fetchAlbum(album)
             } label: {
                 Label("Keep available offline", systemImage: "square.and.arrow.down")
             }
         } else if album.downloaded {
             Button(role: .destructive) {
-                for song in album.songs {
-                    let backend = BackendsModel.shared.backends[song.backendId]
-                    Task { await backend?.evictSong(song) }
-                }
+                evictAlbum(album)
             } label: {
                 Label("Remove offline copy", systemImage: "trash")
             }

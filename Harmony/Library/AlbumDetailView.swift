@@ -113,11 +113,7 @@ struct AlbumDetailView: View {
     @ViewBuilder
     var downloadButton: some View {
         Button {
-            let songs = album.songs
-            for song in songs {
-                let backend = BackendsModel.shared.backends[song.backendId]
-                Task { await backend?.fetchSong(song) }
-            }
+            fetchAlbum(album)
         } label: {
             DownloadStateLabelView(
                 state: album.downloaded

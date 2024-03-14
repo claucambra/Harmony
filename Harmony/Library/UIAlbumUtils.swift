@@ -30,3 +30,17 @@ func playNextAlbum(_ album: Album) {
         PlayerController.shared.queue.insertNextSong(song)
     }
 }
+
+func fetchAlbum(_ album: Album) {
+    for song in album.songs {
+        let backend = BackendsModel.shared.backends[song.backendId]
+        Task { await backend?.fetchSong(song) }
+    }
+}
+
+func evictAlbum(_ album: Album) {
+    for song in album.songs {
+        let backend = BackendsModel.shared.backends[song.backendId]
+        Task { await backend?.evictSong(song) }
+    }
+}
