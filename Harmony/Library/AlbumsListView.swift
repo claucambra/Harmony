@@ -16,6 +16,14 @@ struct AlbumsListView: View {
     @Binding var sortOrder: SortDescriptor<Album>
     @State private var selection: Set<Song.ID> = []
 
+    #if os(macOS)
+    private let horizontalPadding = UIMeasurements.veryLargePadding
+    private let verticalPadding = UIMeasurements.veryLargePadding
+    #else
+    private let horizontalPadding = UIMeasurements.largePadding
+    private let verticalPadding = UIMeasurements.largePadding
+    #endif
+
     var body: some View {
         List(selection: $selection) {
             ForEach(albums) { album in
@@ -27,6 +35,12 @@ struct AlbumsListView: View {
                             displayArtist: false,
                             displayTrackNumber: true
                         )
+                        .listRowInsets(.init(
+                            top: UIMeasurements.smallPadding,
+                            leading: horizontalPadding,
+                            bottom: UIMeasurements.smallPadding,
+                            trailing: horizontalPadding
+                        ))
                     }
                 } header: {
                     AlbumHeaderView(
@@ -35,9 +49,16 @@ struct AlbumsListView: View {
                         maxArtworkWidth: UIMeasurements.mediumLargeArtworkHeight
                     )
                     .foregroundStyle(.foreground)
+                    .padding(.init(
+                        top: verticalPadding,
+                        leading: horizontalPadding,
+                        bottom: verticalPadding,
+                        trailing: horizontalPadding
+                    ))
                 }
             }
         }
+        .listStyle(.plain)
         #if !os(macOS)
         .searchable(text: $searchText, placement: .navigationBarDrawer)
         #endif
