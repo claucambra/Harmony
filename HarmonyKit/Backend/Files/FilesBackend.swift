@@ -13,6 +13,7 @@ extension Logger {
     static let filesBackend = Logger(subsystem: subsystem, category: "filesBackend")
 }
 
+// TODO: Find a way to do container versioning?
 public class FilesBackend: NSObject, Backend {
     public let typeDescription = filesBackendTypeDescription
     public let id: String
@@ -80,8 +81,7 @@ public class FilesBackend: NSObject, Backend {
 
     func songsFromLocalUrls(
         _ urls: [URL],
-        finalisedSongHandler: @Sendable @escaping (Song) async -> Void,
-        finalisedContainerHandler: @Sendable @escaping (Container) async -> Void
+        finalisedSongHandler: @Sendable @escaping (Song) async -> Void
     ) async {
         var containerUrls: Set<URL> = []
         for url in urls {
@@ -121,29 +121,6 @@ public class FilesBackend: NSObject, Backend {
             guard let song = song else { continue }
             await finalisedSongHandler(song)
         }
-
-        // First build all the containers
-        var containers: [URL: Container] = [:]
-        for containerUrl in containerUrls {
-            guard let md5 = calculateMD5Checksum(forFileAtLocalURL: containerUrl) else {
-                Logger.filesBackend.warning("Could not get MD5 for \(containerUrl), skipping")
-                continue
-            }
-            let container = Container(
-                identifier: containerUrl.path,
-                backendId: id,
-                versionId: md5,
-                parentContainer: nil
-            )
-            containers[containerUrl] = container
-        }
-
-        // Then we associate them, and can finalise them
-        for (url, container) in containers {
-            let parentContainerId = url.deletingLastPathComponent()
-            container.parentContainer = containers[parentContainerId]
-            await finalisedContainerHandler(container)
-        }
     }
 
     public func scan(
@@ -159,13 +136,11 @@ public class FilesBackend: NSObject, Backend {
         }
         let urls = await recursiveScan(
             path: path,
-            containerScanApprover: containerScanApprover,
             songScanApprover: songScanApprover
         )
         await songsFromLocalUrls(
             urls,
-            finalisedSongHandler: finalisedSongHandler,
-            finalisedContainerHandler: finalisedContainerHandler
+            finalisedSongHandler: finalisedSongHandler
         )
         Task { @MainActor in
             self.presentation.scanning = false
@@ -176,16 +151,8 @@ public class FilesBackend: NSObject, Backend {
     // TODO: Make better use of containerScanApprover and songScanApprover
     func recursiveScan(
         path: URL,
-        containerScanApprover: @Sendable @escaping (String, String) async -> Bool,
         songScanApprover: @Sendable @escaping (String, String) async -> Bool
     ) async -> [URL] {
-        if let containerMd5 = calculateMD5Checksum(forFileAtLocalURL: path), 
-            await !containerScanApprover(path.path, containerMd5)
-        {
-            Logger.filesBackend.info("Skipping \(path)")
-            return []
-        }
-
         Logger.filesBackend.info("Scanning \(path)")
         Task { @MainActor in
             self.presentation.state = "Scanning " + path.path + "…"
