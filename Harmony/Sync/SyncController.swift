@@ -29,12 +29,7 @@ public class SyncController: ObservableObject {
     }
     private var pollTimer: Timer? = nil
     private var currentSyncsFoundSongs: [String: String] = [:]  // song id, backend id
-
-    init() {
-        Task.detached(priority: .background) {
-            await self.sync()
-        }
-    }
+    private var currentSyncsFoundContainers: [String: String] = [:]  // container id, backend id
 
     public func sync() async {
         currentlySyncingFully = true
@@ -50,8 +45,11 @@ public class SyncController: ObservableObject {
     }
 
     func syncBackend(_ backend: any Backend) async {
+        guard !backend.presentation.scanning else { return }
+
         let backendId = backend.id
         await backend.scan(containerScanApprover: { containerId, containerVersionId in
+            self.currentSyncsFoundContainers[containerId] = backendId
             return self.approvalForSongContainerScan(id: containerId, versionId: containerVersionId)
         }, songScanApprover: { songId, songVersionId in
             self.currentSyncsFoundSongs[songId] = backendId
@@ -63,10 +61,19 @@ public class SyncController: ObservableObject {
         })
 
         do {
-            let retrievedIdentifiers = try currentSyncsFoundSongs.filter(
+            let retrievedSongIdentifiers = try currentSyncsFoundSongs.filter(
                 #Predicate { $0.value == backendId }
             ).map { $0.key }
-            clearSongs(backendId: backend.id, withExceptions: Set(retrievedIdentifiers))
+            let retrievedContainerIdentifiers = try currentSyncsFoundContainers.filter(
+                #Predicate { $0.value == backendId }
+            ).map { $0.key }
+            for songId in retrievedSongIdentifiers {
+                currentSyncsFoundSongs.removeValue(forKey: songId)
+            }
+            let exceptionSet = Set(retrievedSongIdentifiers)
+            let skippedContainers = Set(retrievedContainerIdentifiers)
+            // Clear all stale songs (i.e. those that no longer exist in backend)
+            clearSongs(backendId: backend.id, withExceptions: exceptionSet, avoidingContainers: skippedContainers)
             refreshGroupings()
         } catch let error {
             Logger.sync.error("Could not get result from ingestion task: \(error)")
@@ -147,7 +154,11 @@ public class SyncController: ObservableObject {
     }
 
     // Remove songs. Exceptions should contain song ids
-    func clearSongs(backendId: String, withExceptions exceptions: Set<String>) {
+    func clearSongs(
+        backendId: String,
+        withExceptions exceptions: Set<String>,
+        avoidingContainers songContainers: Set<String>
+    ) {
         let context = ModelContext(container)
         let fetchDescriptor = FetchDescriptor<Song>(
             predicate: #Predicate { $0.backendId == backendId }
@@ -156,7 +167,10 @@ public class SyncController: ObservableObject {
         do {
             let backendSongs = try context.fetch(fetchDescriptor)
             let songsForRemoval = try backendSongs.filter(
-                #Predicate { !exceptions.contains($0.identifier) }
+                #Predicate {
+                    !exceptions.contains($0.identifier) &&
+                    !songContainers.contains($0.parentContainerId)
+                }
             )
             for songToRemove in songsForRemoval {
                 Logger.sync.debug("Removing song: \(songToRemove.url)")

@@ -9,8 +9,8 @@ import SwiftData
 
 @Model
 final public class Container {
-    var identifier = ""
-    var versionId = ""
+    @Attribute(.unique) public var identifier = ""
+    public var versionId = ""
 
     init(identifier: String = "", versionId: String = "") {
         self.identifier = identifier
