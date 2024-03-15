@@ -55,7 +55,7 @@ public class SyncController: ObservableObject {
             return self.approvalForSongContainerScan(id: containerId, versionId: containerVersionId)
         }, songScanApprover: { songId, songVersionId in
             self.currentSyncsFoundSongs[songId] = backendId
-            return true  // TODO: Do not approve if versionId is same
+            return self.approvalForSongScan(id: songId, versionId: songVersionId)
         }, finalisedSongHandler: { song in
             self.ingestSong(song)
         }, finalisedContainerHandler: { songContainer in
@@ -71,6 +71,23 @@ public class SyncController: ObservableObject {
         } catch let error {
             Logger.sync.error("Could not get result from ingestion task: \(error)")
             return
+        }
+    }
+
+    // TODO: Deduplicate approval methods with use of generics/protocol
+    func approvalForSongScan(id: String, versionId: String) -> Bool {
+        do {
+            let context = ModelContext(container)
+            let fetchDescriptor = FetchDescriptor<Song>(predicate: #Predicate<Song> {
+                $0.identifier == id
+            })
+            guard let existingSong = try context.fetch(fetchDescriptor).first else {
+                return true
+            }
+            return existingSong.versionId == versionId
+        } catch let error {
+            Logger.sync.error("Could not get accurate approval for container, approving")
+            return true
         }
     }
 
