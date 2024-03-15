@@ -68,7 +68,7 @@ class BackendsModel: ObservableObject {
                 try FileManager.default.removeItem(at: backendStorageUrl)
                 Logger.backendsModel.debug("Cleared up storage for \(backendId)")
             } catch let error {
-                Logger.backendsModel.error("Could not clean up storage for \(backendId)")
+                Logger.backendsModel.error("Could not clean up storage for \(backendId): \(error)")
             }
         } else {
             Logger.backendsModel.warning("Can't clear inexistent storage for \(backendId)")
