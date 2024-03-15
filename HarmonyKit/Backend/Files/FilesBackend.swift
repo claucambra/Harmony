@@ -81,6 +81,7 @@ public class FilesBackend: NSObject, Backend {
 
     func songsFromLocalUrls(
         _ urls: [URL],
+        songScanApprover: @Sendable @escaping (String, String) async -> Bool,
         finalisedSongHandler: @Sendable @escaping (Song) async -> Void
     ) async {
         var containerUrls: Set<URL> = []
@@ -94,28 +95,41 @@ public class FilesBackend: NSObject, Backend {
             if FileManager.default.isUbiquitousItem(at: url) {  // This is an iCloud file
                 Logger.defaultLog.debug("Found an iCloud file: \(url)")
                 let isDownloaded = ubiquitousFileIsDownloaded(url: url)
+                let identifier = url.absoluteString // TODO
+                let versionId = url.absoluteString  // TODO
 
+                guard await songScanApprover(identifier, versionId) else {
+                    Logger.filesBackend.debug("Skipping \(url) scan, not approved")
+                    continue
+                }
                 song = await Song(
                     url: url,
                     asset: asset,
-                    identifier: url.absoluteString,  // TODO
+                    identifier: identifier,
                     parentContainerId: path.path,
                     backendId: id,
                     local: false,
                     downloadState: isDownloaded ? .downloaded : .notDownloaded,
-                    versionId: url.absoluteString  // TODO
+                    versionId: versionId
                 )
             } else {
-                guard let csum = calculateMD5Checksum(forFileAtLocalURL: url) else { continue }
+                let attributes = try? FileManager.default.attributesOfItem(atPath: url.path)
+                guard let songId = (attributes as? NSDictionary)?.fileSystemFileNumber().description,
+                      let versionId = calculateMD5Checksum(forFileAtLocalURL: url),
+                      await songScanApprover(songId, versionId)
+                else {
+                    Logger.filesBackend.debug("Skipping \(url) scan")
+                    continue
+                }
                 song = await Song(
                     url: url,
                     asset: asset,
-                    identifier: csum,
+                    identifier: songId,
                     parentContainerId: path.path,
                     backendId: id,
                     local: true,
                     downloadState: .downloaded,
-                    versionId: csum
+                    versionId: versionId
                 )
             }
             guard let song = song else { continue }
@@ -134,12 +148,10 @@ public class FilesBackend: NSObject, Backend {
             self.presentation.scanning = true
             self.presentation.state = "Starting full scan..."
         }
-        let urls = await recursiveScan(
-            path: path,
-            songScanApprover: songScanApprover
-        )
+        let urls = await recursiveScan(path: path)
         await songsFromLocalUrls(
             urls,
+            songScanApprover: songScanApprover,
             finalisedSongHandler: finalisedSongHandler
         )
         Task { @MainActor in
@@ -148,11 +160,7 @@ public class FilesBackend: NSObject, Backend {
         }
     }
 
-    // TODO: Make better use of containerScanApprover and songScanApprover
-    func recursiveScan(
-        path: URL,
-        songScanApprover: @Sendable @escaping (String, String) async -> Bool
-    ) async -> [URL] {
+    func recursiveScan(path: URL) async -> [URL] {
         Logger.filesBackend.info("Scanning \(path)")
         Task { @MainActor in
             self.presentation.state = "Scanning " + path.path + "…"
