@@ -115,9 +115,8 @@ public class FilesBackend: NSObject, Backend {
             } else {
                 let fm = FileManager.default
                 let attributes = try? fm.attributesOfItem(atPath: url.path) as NSDictionary
-                guard let songId = attributes?.fileSystemFileNumber().description,
-                      let versionId = attributes?.fileModificationDate()?.description,
-                      await songScanApprover(songId, versionId)
+                guard let versionId = attributes?.fileModificationDate()?.description,
+                      await songScanApprover(url.path, versionId)
                 else {
                     Logger.filesBackend.debug("Skipping \(url) scan")
                     continue
@@ -125,7 +124,7 @@ public class FilesBackend: NSObject, Backend {
                 song = await Song(
                     url: url,
                     asset: asset,
-                    identifier: songId,
+                    identifier: url.path,
                     parentContainerId: path.path,
                     backendId: id,
                     local: true,
