@@ -73,7 +73,12 @@ public class SyncController: ObservableObject {
             let exceptionSet = Set(retrievedSongIdentifiers)
             let skippedContainers = Set(retrievedContainerIdentifiers)
             // Clear all stale songs (i.e. those that no longer exist in backend)
-            clearSongs(backendId: backend.id, withExceptions: exceptionSet, avoidingContainers: skippedContainers)
+            clearSongs(
+                backendId: backend.id,
+                withExceptions: exceptionSet,
+                avoidingContainers: skippedContainers
+            )
+            clearSongContainers(backendId: backend.id, withExceptions: skippedContainers)
             refreshGroupings()
         } catch let error {
             Logger.sync.error("Could not get result from ingestion task: \(error)")
@@ -179,6 +184,30 @@ public class SyncController: ObservableObject {
             try context.save()
         } catch let error {
             Logger.sync.error("Could not clear songs for \(backendId): \(error)")
+        }
+    }
+
+    func clearSongContainers(
+        backendId: String,
+        withExceptions exceptions: Set<String>
+    ) {
+        let context = ModelContext(container)
+        let fetchDescriptor = FetchDescriptor<Container>(
+            predicate: #Predicate { $0.backendId == backendId }
+        )
+
+        do {
+            let backendSongContainers = try context.fetch(fetchDescriptor)
+            let songContainersForRemoval = try backendSongContainers.filter(
+                #Predicate { !exceptions.contains($0.identifier) }
+            )
+            for songContainerToRemove in songContainersForRemoval {
+                Logger.sync.debug("Removing container: \(songContainerToRemove.identifier)")
+                context.delete(songContainerToRemove)
+            }
+            try context.save()
+        } catch let error {
+            Logger.sync.error("Could not clear container for \(backendId): \(error)")
         }
     }
 
