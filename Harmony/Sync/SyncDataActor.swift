@@ -74,9 +74,28 @@ actor SyncDataActor {
         }
     }
 
-    func ingestContainer(_ songContainer: Container) {
+    func ingestContainer(_ songContainer: Container, parentContainer: Container?) {
         do {
             context.insert(songContainer)
+            if let parentContainer = parentContainer {
+                let parentId = parentContainer.identifier
+                let childId = songContainer.identifier
+                let fetchDescriptor = FetchDescriptor<Container>(
+                    predicate: #Predicate { $0.identifier == parentId }
+                )
+                var parentContainerToUse: Container
+                if let result = try? context.fetch(fetchDescriptor).first {
+                    parentContainerToUse = result
+                } else {
+                    context.insert(parentContainer)
+                    parentContainerToUse = parentContainer
+                }
+                if !parentContainerToUse.childContainers.contains(
+                    where: { $0.identifier == childId }
+                ) {
+                    parentContainerToUse.childContainers.append(songContainer)
+                }
+            }
             try context.save()
         } catch let error {
             Logger.sync.error("Could not save container to data: \(error)")

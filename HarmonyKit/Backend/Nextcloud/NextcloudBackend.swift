@@ -63,7 +63,7 @@ public class NextcloudBackend: NSObject, Backend {
         containerScanApprover: @Sendable @escaping (String, String) async -> Bool,
         songScanApprover: @Sendable @escaping (String, String) async -> Bool,
         finalisedSongHandler: @Sendable @escaping (Song) async -> Void,
-        finalisedContainerHandler: @Sendable @escaping (Container) async -> Void
+        finalisedContainerHandler: @Sendable @escaping (Container, Container?) async -> Void
     ) async {
         Task { @MainActor in
             self.presentation.scanning = true
@@ -88,7 +88,7 @@ public class NextcloudBackend: NSObject, Backend {
         containerScanApprover: @Sendable @escaping (String, String) async -> Bool,
         songScanApprover: @Sendable @escaping (String, String) async -> Bool,
         finalisedSongHandler: @Sendable @escaping (Song) async -> Void,
-        finalisedContainerHandler: @Sendable @escaping (Container) async -> Void,
+        finalisedContainerHandler: @Sendable @escaping (Container, Container?) async -> Void,
         parentContainer: Container?
     ) async {
         logger.debug("Starting read of: \(path)")
@@ -126,8 +126,7 @@ public class NextcloudBackend: NSObject, Backend {
         let container = Container(
             identifier: scannedDir.ocId,
             backendId: id,
-            versionId: scannedDir.etag,
-            parentContainer: parentContainer
+            versionId: scannedDir.etag
         )
         let fileCount = files.count
 
@@ -172,7 +171,7 @@ public class NextcloudBackend: NSObject, Backend {
         }
 
         logger.info("Finished scan of \(path)")
-        await finalisedContainerHandler(container)
+        await finalisedContainerHandler(container, parentContainer)
     }
 
     private func handleReadFile(

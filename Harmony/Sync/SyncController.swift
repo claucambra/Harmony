@@ -72,8 +72,8 @@ public class SyncController: ObservableObject {
             return await self.dataActor.approvalForSongScan(id: songId, versionId: songVersionId)
         }, finalisedSongHandler: { song in
             await self.dataActor.ingestSong(song)
-        }, finalisedContainerHandler: { songContainer in
-            await self.dataActor.ingestContainer(songContainer)
+        }, finalisedContainerHandler: { songContainer, parentContainer in
+            await self.dataActor.ingestContainer(songContainer, parentContainer: parentContainer)
         })
 
         do {

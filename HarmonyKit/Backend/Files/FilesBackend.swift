@@ -142,7 +142,7 @@ public class FilesBackend: NSObject, Backend {
         containerScanApprover: @Sendable @escaping (String, String) async -> Bool,
         songScanApprover: @Sendable @escaping (String, String) async -> Bool,
         finalisedSongHandler: @Sendable @escaping (Song) async -> Void,
-        finalisedContainerHandler: @Sendable @escaping (Container) async -> Void
+        finalisedContainerHandler: @Sendable @escaping (Container, Container?) async -> Void
     ) async {
         Logger.filesBackend.info("Starting full scan of \(self.path)")
         Task { @MainActor in

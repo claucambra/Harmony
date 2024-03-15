@@ -26,14 +26,10 @@ final public class Container {
     init(
         identifier: String,
         backendId: String,
-        versionId: String,
-        parentContainer: Container?,
-        childContainers: [Container] = []
+        versionId: String
     ) {
         self.identifier = identifier
         self.backendId = backendId
         self.versionId = versionId
-        self.parentContainer = parentContainer
-        self.childContainers = childContainers
     }
 }
