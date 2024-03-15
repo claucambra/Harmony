@@ -46,16 +46,18 @@ class BackendsModel: ObservableObject {
         for remainingBackend in currentBackends {
             backends.removeValue(forKey: remainingBackend)
             clearBackendStorage(remainingBackend)
-            Task { @MainActor in
+            Task {
                 let syncController = SyncController.shared
-                syncController.clearSongs(
+                await syncController.dataActor.clearSongs(
                     backendId: remainingBackend,
                     withExceptions: [],
                     avoidingContainers: []
                 )
-                syncController.clearSongContainers(backendId: remainingBackend, withExceptions: [])
-                syncController.clearAlbums(withExceptions: [])
-                syncController.clearArtists(withExceptions: [])
+                await syncController.dataActor.clearSongContainers(
+                    backendId: remainingBackend, withExceptions: []
+                )
+                await syncController.dataActor.clearAlbums(withExceptions: [])
+                await syncController.dataActor.clearArtists(withExceptions: [])
             }
         }
     }
