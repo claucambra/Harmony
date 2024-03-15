@@ -227,16 +227,23 @@ public final class Song: ObservableObject {
     }
 
     private func setupArtwork(asset: AVAsset) async {
-        guard let metadata = try? await asset.load(.metadata) else { return }
+        guard let metadata = try? await asset.load(.metadata) else {
+            Logger.defaultLog.error("Could not load metadata \(self.url)")
+            return
+        }
         guard let artworkItem = AVMetadataItem.metadataItems(
             from: metadata,
             filteredByIdentifier: .commonIdentifierArtwork
-        ).first else { return }
-        guard let artworkData = try? await artworkItem.load(.value) as? Data else { return }
-
-        Task { @MainActor in
-            artwork = artworkData
+        ).first else {
+            Logger.defaultLog.error("Could not load artwork \(self.url)")
+            return
         }
+        guard let artworkData = try? await artworkItem.load(.value) as? Data else {
+            Logger.defaultLog.error("Could not load artowrk data \(self.url)")
+            return
+        }
+
+        artwork = artworkData
     }
 
     private func ingestLocalFlacProperties() {
