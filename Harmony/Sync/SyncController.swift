@@ -112,7 +112,7 @@ public class SyncController: ObservableObject {
             guard let existingSongContainer = try context.fetch(fetchDescriptor).first else {
                 return true
             }
-            return existingSongContainer.versionId == versionId
+            return existingSongContainer.versionId != versionId
         } catch let error {
             Logger.sync.error("Could not get accurate approval for container, approving")
             return true
