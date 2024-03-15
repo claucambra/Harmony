@@ -30,6 +30,7 @@ public class SyncController: ObservableObject {
     private var pollTimer: Timer? = nil
     private var currentSyncsFoundSongs: [String: String] = [:]  // song id, backend id
     private var currentSyncsFoundContainers: [String: String] = [:]  // container id, backend id
+    private var currentSyncsSkippedContainers: [String: String] = [:]  // container id, backend id
 
     init() {
         Task.detached(priority: .background) {
@@ -62,9 +63,15 @@ public class SyncController: ObservableObject {
             Task { @MainActor in
                 self.currentSyncsFoundContainers[containerId] = backendId
             }
-            return await self.dataActor.approvalForSongContainerScan(
+            let approved = await self.dataActor.approvalForSongContainerScan(
                 id: containerId, versionId: containerVersionId
             )
+            if !approved {
+                Task { @MainActor in
+                    self.currentSyncsSkippedContainers[containerId] = backendId
+                }
+            }
+            return approved
         }, songScanApprover: { songId, songVersionId in
             Task { @MainActor in
                 self.currentSyncsFoundSongs[songId] = backendId
@@ -83,11 +90,21 @@ public class SyncController: ObservableObject {
             let retrievedContainerIdentifiers = try currentSyncsFoundContainers.filter(
                 #Predicate { $0.value == backendId }
             ).map { $0.key }
+            let skippedContainerIdentifiers = try currentSyncsSkippedContainers.filter(
+                #Predicate { $0.value == backendId }
+            ).map { $0.key }
             for songId in retrievedSongIdentifiers {
                 currentSyncsFoundSongs.removeValue(forKey: songId)
             }
+            for retrievedContainerId in retrievedContainerIdentifiers {
+                currentSyncsFoundContainers.removeValue(forKey: retrievedContainerId)
+            }
+            for skippedContainerId in skippedContainerIdentifiers {
+                currentSyncsSkippedContainers.removeValue(forKey: skippedContainerId)
+            }
             let exceptionSet = Set(retrievedSongIdentifiers)
-            let skippedContainers = Set(retrievedContainerIdentifiers)
+            let foundContainers = Set(retrievedContainerIdentifiers)
+            let skippedContainers = Set(skippedContainerIdentifiers)
             // Clear all stale songs (i.e. those that no longer exist in backend)
             await self.dataActor.clearSongs(
                 backendId: backend.id,
@@ -95,7 +112,9 @@ public class SyncController: ObservableObject {
                 avoidingContainers: skippedContainers
             )
             await self.dataActor.clearSongContainers(
-                backendId: backend.id, withExceptions: skippedContainers
+                backendId: backend.id,
+                withExceptions: foundContainers,
+                withProtectedParents: skippedContainers
             )
             await self.dataActor.refreshGroupings()
         } catch let error {

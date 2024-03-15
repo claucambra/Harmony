@@ -54,7 +54,7 @@ class BackendsModel: ObservableObject {
                     avoidingContainers: []
                 )
                 await syncController.dataActor.clearSongContainers(
-                    backendId: remainingBackend, withExceptions: []
+                    backendId: remainingBackend, withExceptions: [], withProtectedParents: []
                 )
                 await syncController.dataActor.clearAlbums(withExceptions: [])
                 await syncController.dataActor.clearArtists(withExceptions: [])

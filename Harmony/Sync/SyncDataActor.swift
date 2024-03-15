@@ -132,7 +132,8 @@ actor SyncDataActor {
 
     func clearSongContainers(
         backendId: String,
-        withExceptions exceptions: Set<String>
+        withExceptions exceptions: Set<String>,
+        withProtectedParents protectedParents: Set<String>
     ) {
         let fetchDescriptor = FetchDescriptor<Container>(
             predicate: #Predicate { $0.backendId == backendId }
@@ -143,9 +144,33 @@ actor SyncDataActor {
             let songContainersForRemoval = try backendSongContainers.filter(
                 #Predicate { !exceptions.contains($0.identifier) }
             )
+            var validChildren: Set<String> = protectedParents
             for songContainerToRemove in songContainersForRemoval {
-                Logger.sync.debug("Removing container: \(songContainerToRemove.identifier)")
-                context.delete(songContainerToRemove)
+                let songContainerId = songContainerToRemove.identifier
+                guard !validChildren.contains(songContainerId) else { continue }
+                var hierarchy: Set<String> = [songContainerId]
+                var validParent = false
+                var nextParent = songContainerToRemove.parentContainer
+                while let scanningParent = nextParent {
+                    let scanningParentId = scanningParent.identifier
+                    guard !validChildren.contains(scanningParentId) else {
+                        validParent = true
+                        break
+                    }
+                    hierarchy.insert(scanningParentId)
+                    if protectedParents.contains(scanningParentId) {
+                        validParent = true
+                        validChildren.formUnion(hierarchy)
+                        break
+                    } else {
+                        nextParent = scanningParent.parentContainer
+                    }
+                }
+
+                if !validParent {
+                    Logger.sync.debug("Removing container: \(songContainerToRemove.identifier)")
+                    context.delete(songContainerToRemove)
+                }
             }
             try context.save()
         } catch let error {
