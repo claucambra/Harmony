@@ -52,7 +52,7 @@ public class SyncController: ObservableObject {
     func syncBackend(_ backend: any Backend) async {
         let backendId = backend.id
         await backend.scan(containerScanApprover: { containerId, containerVersionId in
-            return true  // TODO: Do not approve if versionId is same
+            return self.approvalForSongContainerScan(id: containerId, versionId: containerVersionId)
         }, songScanApprover: { songId, songVersionId in
             self.currentSyncsFoundSongs[songId] = backendId
             return true  // TODO: Do not approve if versionId is same
@@ -71,6 +71,22 @@ public class SyncController: ObservableObject {
         } catch let error {
             Logger.sync.error("Could not get result from ingestion task: \(error)")
             return
+        }
+    }
+
+    func approvalForSongContainerScan(id: String, versionId: String) -> Bool {
+        do {
+            let context = ModelContext(container)
+            let fetchDescriptor = FetchDescriptor<Container>(predicate: #Predicate<Container> {
+                $0.identifier == id
+            })
+            guard let existingSongContainer = try context.fetch(fetchDescriptor).first else {
+                return true
+            }
+            return existingSongContainer.versionId == versionId
+        } catch let error {
+            Logger.sync.error("Could not get accurate approval for container, approving")
+            return true
         }
     }
 
