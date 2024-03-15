@@ -31,6 +31,12 @@ public class SyncController: ObservableObject {
     private var currentSyncsFoundSongs: [String: String] = [:]  // song id, backend id
     private var currentSyncsFoundContainers: [String: String] = [:]  // container id, backend id
 
+    init() {
+        Task.detached(priority: .background) {
+            await self.sync()
+        }
+    }
+
     public func sync() async {
         currentlySyncingFully = true
         let backends = BackendsModel.shared.backends.values
