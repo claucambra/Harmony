@@ -12,11 +12,11 @@ import SwiftData
 
 actor SyncDataActor {
     let container = try! ModelContainer(for: Song.self, Album.self, Artist.self, Container.self)
+    lazy var context = ModelContext(container)
 
     // TODO: Deduplicate approval methods with use of generics/protocol
     func approvalForSongScan(id: String, versionId: String) -> Bool {
         do {
-            let context = ModelContext(container)
             let fetchDescriptor = FetchDescriptor<Song>(predicate: #Predicate<Song> {
                 $0.identifier == id
             })
@@ -32,7 +32,6 @@ actor SyncDataActor {
 
     func approvalForSongContainerScan(id: String, versionId: String) -> Bool {
         do {
-            let context = ModelContext(container)
             let fetchDescriptor = FetchDescriptor<Container>(predicate: #Predicate<Container> {
                 $0.identifier == id
             })
@@ -77,7 +76,6 @@ actor SyncDataActor {
 
     func ingestContainer(_ songContainer: Container) {
         do {
-            let context = ModelContext(container)
             context.insert(songContainer)
             try context.save()
         } catch let error {
@@ -91,7 +89,6 @@ actor SyncDataActor {
         withExceptions exceptions: Set<String>,
         avoidingContainers songContainers: Set<String>
     ) {
-        let context = ModelContext(container)
         let fetchDescriptor = FetchDescriptor<Song>(
             predicate: #Predicate { $0.backendId == backendId }
         )
@@ -118,7 +115,6 @@ actor SyncDataActor {
         backendId: String,
         withExceptions exceptions: Set<String>
     ) {
-        let context = ModelContext(container)
         let fetchDescriptor = FetchDescriptor<Container>(
             predicate: #Predicate { $0.backendId == backendId }
         )
@@ -141,7 +137,6 @@ actor SyncDataActor {
     // TODO: Make progressive on each song ingest
     func refreshGroupings() {
         Logger.sync.info("Refreshing albums and artists.")
-        let context = ModelContext(container)
         let fetchDescriptor = FetchDescriptor<Song>()
 
         do {
@@ -188,7 +183,6 @@ actor SyncDataActor {
     }
 
     func clearAlbums(withExceptions exceptions: Set<String>) {
-        let context = ModelContext(container)
         let fetchDescriptor = FetchDescriptor<Album>()
 
         do {
@@ -207,7 +201,6 @@ actor SyncDataActor {
     }
 
     func clearArtists(withExceptions exceptions: Set<String>) {
-        let context = ModelContext(container)
         let fetchDescriptor = FetchDescriptor<Artist>()
 
         do {
