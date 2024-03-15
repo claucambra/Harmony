@@ -58,10 +58,8 @@ public class SyncController: ObservableObject {
             return true  // TODO: Do not approve if versionId is same
         }, finalisedSongHandler: { song in
             self.ingestSong(song)
-        }, finalisedContainerHandler: { container in
-            // TODO
-            // Needs to wait for songs to be finalised; that way we do not register a container
-            // as up to date if the sync procedure is cut off half-way
+        }, finalisedContainerHandler: { songContainer in
+            self.ingestContainer(songContainer)
         })
 
         do {
@@ -102,6 +100,16 @@ public class SyncController: ObservableObject {
             try context.save()
         } catch let error {
             Logger.sync.error("Could not save song to data: \(error)")
+        }
+    }
+
+    func ingestContainer(_ songContainer: Container) {
+        do {
+            let context = ModelContext(container)
+            context.insert(songContainer)
+            try context.save()
+        } catch let error {
+            Logger.sync.error("Could not save container to data: \(error)")
         }
     }
 
