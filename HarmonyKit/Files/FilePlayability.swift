@@ -8,21 +8,16 @@
 import AVFoundation
 import CryptoKit
 
+let avTypes = AVURLAsset.audiovisualTypes()
+let playableFileExtensions = avTypes.compactMap({ UTType($0.rawValue)?.preferredFilenameExtension })
+
 public enum FilePlayable {
     case fileNotPlayable, fileMaybePlayable, filePlayable
 }
 
-func playableFileExtensions() -> [String] {
-    let avTypes = AVURLAsset.audiovisualTypes()
-    let avExtensions = avTypes
-        .compactMap({ UTType($0.rawValue)?.preferredFilenameExtension })
-        .sorted()
-    return avExtensions
-}
-
 public func fileHasPlayableExtension(fileURL: URL) -> Bool {
     let fileExtension = fileURL.pathExtension.lowercased()
-    return playableFileExtensions().contains(fileExtension)
+    return playableFileExtensions.contains(fileExtension)
 }
 
 public func filePlayability(fileURL: URL) -> FilePlayable {
