@@ -75,7 +75,7 @@ public class NextcloudBackend: NSObject, Backend {
             songScanApprover: songScanApprover,
             finalisedSongHandler: finalisedSongHandler,
             finalisedContainerHandler: finalisedContainerHandler,
-            root: true
+            parentContainer: nil
         )
         Task { @MainActor in
             self.presentation.scanning = false
@@ -89,7 +89,7 @@ public class NextcloudBackend: NSObject, Backend {
         songScanApprover: @Sendable @escaping (String, String) async -> Bool,
         finalisedSongHandler: @Sendable @escaping (Song) async -> Void,
         finalisedContainerHandler: @Sendable @escaping (Container) async -> Void,
-        root: Bool = false
+        parentContainer: Container?
     ) async {
         logger.debug("Starting read of: \(path)")
         Task { @MainActor in
@@ -117,12 +117,18 @@ public class NextcloudBackend: NSObject, Backend {
             return
         }
 
-        if root, await !containerScanApprover(scannedDir.ocId, scannedDir.etag) {
+        // This is the root scan
+        if parentContainer == nil, await !containerScanApprover(scannedDir.ocId, scannedDir.etag) {
             logger.info("Not scanning root path")
             return
         }
 
-        let container = Container(identifier: scannedDir.ocId, versionId: scannedDir.etag)
+        let container = Container(
+            identifier: scannedDir.ocId,
+            backendId: id,
+            versionId: scannedDir.etag,
+            parentContainer: parentContainer
+        )
         let fileCount = files.count
 
         await withTaskGroup(of: Int.self) { group in
@@ -148,7 +154,8 @@ public class NextcloudBackend: NSObject, Backend {
                             containerScanApprover: containerScanApprover,
                             songScanApprover: songScanApprover,
                             finalisedSongHandler: finalisedSongHandler,
-                            finalisedContainerHandler: finalisedContainerHandler
+                            finalisedContainerHandler: finalisedContainerHandler,
+                            parentContainer: container
                         )
                     } else if let song = await self.handleReadFile(
                         receivedFileUrl, 

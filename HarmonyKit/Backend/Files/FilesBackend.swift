@@ -122,12 +122,26 @@ public class FilesBackend: NSObject, Backend {
             await finalisedSongHandler(song)
         }
 
+        // First build all the containers
+        var containers: [URL: Container] = [:]
         for containerUrl in containerUrls {
             guard let md5 = calculateMD5Checksum(forFileAtLocalURL: containerUrl) else {
                 Logger.filesBackend.warning("Could not get MD5 for \(containerUrl), skipping")
                 continue
             }
-            let container = Container(identifier: containerUrl.path, versionId: md5)
+            let container = Container(
+                identifier: containerUrl.path,
+                backendId: id,
+                versionId: md5,
+                parentContainer: nil
+            )
+            containers[containerUrl] = container
+        }
+
+        // Then we associate them, and can finalise them
+        for (url, container) in containers {
+            let parentContainerId = url.deletingLastPathComponent()
+            container.parentContainer = containers[parentContainerId]
             await finalisedContainerHandler(container)
         }
     }

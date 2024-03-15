@@ -15,11 +15,25 @@ import SwiftData
 
 @Model
 final public class Container {
-    @Attribute(.unique) public var identifier = ""
-    public var versionId = ""
+    @Attribute(.unique) public let identifier: String
+    public let backendId: String
+    public let versionId: String
+    public var parentContainer: Container?
+    @Relationship(
+        deleteRule: .cascade, inverse: \Container.parentContainer
+    ) public var childContainers: [Container] = []
 
-    init(identifier: String = "", versionId: String = "") {
+    init(
+        identifier: String,
+        backendId: String,
+        versionId: String,
+        parentContainer: Container?,
+        childContainers: [Container] = []
+    ) {
         self.identifier = identifier
+        self.backendId = backendId
         self.versionId = versionId
+        self.parentContainer = parentContainer
+        self.childContainers = childContainers
     }
 }
