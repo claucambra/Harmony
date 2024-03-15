@@ -152,7 +152,7 @@ public class FilesBackend: NSObject, Backend {
         var containerMd5: String?
         containerMd5 = calculateMD5Checksum(forFileAtLocalURL: path)
         if let containerMd5 = containerMd5, await !containerScanApprover(path.path, containerMd5) {
-            Logger.defaultLog.info("Skipping \(path)")
+            Logger.filesBackend.info("Skipping \(path)")
             return []
         }
 
@@ -169,7 +169,7 @@ public class FilesBackend: NSObject, Backend {
             guard let fileList = FileManager.default.enumerator(
                 at: url, includingPropertiesForKeys: [.isDirectoryKey]
             ) else {
-                Swift.debugPrint("*** Unable to access the contents of \(url.path) ***\n")
+                Logger.filesBackend.error("Unable to access the contents of \(url.path)")
                 return
             }
 
@@ -196,22 +196,22 @@ public class FilesBackend: NSObject, Backend {
 
     public func fetchSong(_ song: Song) async {
         guard song.downloadState != DownloadState.downloaded.rawValue else {
-            Logger.defaultLog.info("Not downloading already downloaded song \(song.url)")
+            Logger.filesBackend.info("Not downloading already downloaded song \(song.url)")
             return
         }
         guard song.downloadState != DownloadState.downloaded.rawValue else {
-            Logger.ncBackend.info("Song already downloading \(song.url)")
+            Logger.filesBackend.info("Song already downloading \(song.url)")
             return
         }
         let fileManager = FileManager.default
         guard fileManager.isUbiquitousItem(at: song.url) else { return }
         do {
-            Logger.defaultLog.debug("Fetching iCloud song: \(song.url)")
+            Logger.filesBackend.debug("Fetching iCloud song: \(song.url)")
             song.downloadState = DownloadState.downloading.rawValue
             await startPollingDownloadState(forSong: song, endState: .downloaded)
             try fileManager.startDownloadingUbiquitousItem(at: song.url)
         } catch let error {
-            Logger.defaultLog.error("Could not fetch iCloud song: \(error)")
+            Logger.filesBackend.error("Could not fetch iCloud song: \(error)")
         }
     }
     
@@ -219,11 +219,11 @@ public class FilesBackend: NSObject, Backend {
         let fileManager = FileManager.default
         guard fileManager.isUbiquitousItem(at: song.url) else { return }
         do {
-            Logger.defaultLog.debug("Evicting iCloud song: \(song.url)")
+            Logger.filesBackend.debug("Evicting iCloud song: \(song.url)")
             await startPollingDownloadState(forSong: song, endState: .notDownloaded)
             try fileManager.evictUbiquitousItem(at: song.url)
         } catch let error {
-            Logger.defaultLog.error("Could not evict iCloud song: \(error)")
+            Logger.filesBackend.error("Could not evict iCloud song: \(error)")
         }
     }
 
@@ -240,7 +240,7 @@ public class FilesBackend: NSObject, Backend {
                 &downloadedStatusValue, forKey: URLResourceKey.ubiquitousItemDownloadingStatusKey
             )
         } catch {
-            Logger.defaultLog.error("Could not get iCloud download status of \(url)")
+            Logger.filesBackend.error("Could not get iCloud download status of \(url)")
         }
 
         let downloadedStatus = downloadedStatusValue as! String
