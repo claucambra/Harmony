@@ -80,9 +80,14 @@ public class FilesBackend: NSObject, Backend {
 
     func songsFromLocalUrls(
         _ urls: [URL],
-        finalisedSongHandler: @Sendable @escaping (Song) async -> Void
+        finalisedSongHandler: @Sendable @escaping (Song) async -> Void,
+        finalisedContainerHandler: @Sendable @escaping (Container) async -> Void
     ) async {
+        var containerUrls: Set<URL> = []
         for url in urls {
+            let containerUrl = url.deletingLastPathComponent()
+            containerUrls.insert(containerUrl)
+
             let asset = AVAsset(url: url)
             var song: Song?
 
@@ -116,6 +121,15 @@ public class FilesBackend: NSObject, Backend {
             guard let song = song else { continue }
             await finalisedSongHandler(song)
         }
+
+        for containerUrl in containerUrls {
+            guard let md5 = calculateMD5Checksum(forFileAtLocalURL: containerUrl) else {
+                Logger.filesBackend.warning("Could not get MD5 for \(containerUrl), skipping")
+                continue
+            }
+            let container = Container(identifier: containerUrl.path, versionId: md5)
+            await finalisedContainerHandler(container)
+        }
     }
 
     public func scan(
@@ -132,10 +146,13 @@ public class FilesBackend: NSObject, Backend {
         let urls = await recursiveScan(
             path: path,
             containerScanApprover: containerScanApprover,
-            songScanApprover: songScanApprover,
+            songScanApprover: songScanApprover
+        )
+        await songsFromLocalUrls(
+            urls,
+            finalisedSongHandler: finalisedSongHandler,
             finalisedContainerHandler: finalisedContainerHandler
         )
-        await songsFromLocalUrls(urls, finalisedSongHandler: finalisedSongHandler)
         Task { @MainActor in
             self.presentation.scanning = false
             self.presentation.state = "Finished full scan at " + Date().formatted()
@@ -146,12 +163,11 @@ public class FilesBackend: NSObject, Backend {
     func recursiveScan(
         path: URL,
         containerScanApprover: @Sendable @escaping (String, String) async -> Bool,
-        songScanApprover: @Sendable @escaping (String, String) async -> Bool,
-        finalisedContainerHandler: @Sendable @escaping (Container) async -> Void
+        songScanApprover: @Sendable @escaping (String, String) async -> Bool
     ) async -> [URL] {
-        var containerMd5: String?
-        containerMd5 = calculateMD5Checksum(forFileAtLocalURL: path)
-        if let containerMd5 = containerMd5, await !containerScanApprover(path.path, containerMd5) {
+        if let containerMd5 = calculateMD5Checksum(forFileAtLocalURL: path), 
+            await !containerScanApprover(path.path, containerMd5)
+        {
             Logger.filesBackend.info("Skipping \(path)")
             return []
         }
@@ -185,11 +201,6 @@ public class FilesBackend: NSObject, Backend {
                     audioFiles.append(file)
                 }
             }
-        }
-
-        if let containerMd5 = containerMd5 {
-            let container = Container(identifier: path.path, versionId: containerMd5)
-            await finalisedContainerHandler(container)
         }
         return audioFiles
     }
