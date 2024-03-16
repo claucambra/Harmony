@@ -34,7 +34,7 @@ public final class Song: ObservableObject {
     public private(set) var discNumber: Int = 1
     public private(set) var discTotal: Int = 1
     public private(set) var parentAlbum: Album?
-    public private(set) var parentArtist: Artist?
+    public private(set) var parentArtists: [Artist] = []
     @Attribute(.externalStorage) public var artwork: Data?
     public internal(set) var local: Bool = false
     public internal(set) var downloadState = DownloadState.notDownloaded.rawValue {

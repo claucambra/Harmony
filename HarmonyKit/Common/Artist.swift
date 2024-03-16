@@ -10,7 +10,7 @@ import SwiftData
 
 @Model
 public final class Artist {
-    @Relationship(deleteRule: .cascade, inverse: \Song.parentArtist) public var songs: [Song] = []
+    @Relationship(deleteRule: .cascade, inverse: \Song.parentArtists) public var songs: [Song] = []
     @Relationship(inverse: \Album.parentArtists) public var albums: [Album] = []
     @Attribute(.unique) public var name: String
     public var downloaded: Bool = false
