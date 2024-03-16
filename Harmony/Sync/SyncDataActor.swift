@@ -45,6 +45,7 @@ actor SyncDataActor {
 
     func ingestSong(_ song: Song) {
         let songIdentifier = song.identifier
+        Logger.sync.info("Ingesting song: \(song.title) \(song.identifier)")
         do {
             let fetchDescriptor = FetchDescriptor<Song>(
                 predicate: #Predicate<Song> { $0.identifier == songIdentifier }
@@ -65,7 +66,18 @@ actor SyncDataActor {
             } else {
                 modelContext.insert(song)
             }
+            try modelContext.save()
 
+            let album = processSongAlbum(song)
+            processSongArtist(song, inAlbum: album)
+        } catch let error {
+            Logger.sync.error("Could not save song to data: \(error)")
+        }
+    }
+
+    private func processSongAlbum(_ song: Song) -> Album? {
+        let songIdentifier = song.identifier
+        do {
             let albumTitle = song.album
             let albumFetchDescriptor = FetchDescriptor<Album>(
                 predicate: #Predicate { $0.title == albumTitle }
@@ -80,7 +92,17 @@ actor SyncDataActor {
                 modelContext.insert(newAlbum)
                 album = newAlbum
             }
+            try modelContext.save()
+            return album
+        } catch let error {
+            Logger.sync.error("Could not process album: \(error)")
+            return nil
+        }
+    }
 
+    func processSongArtist(_ song: Song, inAlbum album: Album?) {
+        let songIdentifier = song.identifier
+        do {
             let artistNames = song.artist.components(separatedBy: "; ")
             for artistName in artistNames {
                 let artistFetchDescriptor = FetchDescriptor<Artist>(
@@ -90,7 +112,7 @@ actor SyncDataActor {
                     if !artist.songs.contains(where: { $0.identifier == songIdentifier }) {
                         artist.songs.append(song)
                     }
-                    if let album = album, 
+                    if let album = album,
                         !artist.albums.contains(where: { $0.title == album.title })
                     {
                         artist.albums.append(album)
@@ -98,11 +120,10 @@ actor SyncDataActor {
                 } else if let artist = Artist(name: artistName, songs: [song]) {
                     modelContext.insert(artist)
                 }
+                try modelContext.save()
             }
-
-            try modelContext.save()
         } catch let error {
-            Logger.sync.error("Could not save song to data: \(error)")
+            Logger.sync.error("Could not process artist for song \(songIdentifier): \(error)")
         }
     }
 
@@ -237,7 +258,7 @@ actor SyncDataActor {
                 #Predicate { !exceptions.contains($0.name) }
             )
             for artistToRemove in artistsToRemove {
-                Logger.sync.debug("Removing artist: \(artistToRemove.name)")
+                Logger.sync.debug("Removing artist: \(artistToRemove.name): \(artistToRemove.songs)")
                 modelContext.delete(artistToRemove)
             }
             try modelContext.save()
@@ -257,7 +278,7 @@ actor SyncDataActor {
             let staleAlbums = try modelContext.fetch(albumsFetchDescriptor)
             let staleArtists = try modelContext.fetch(artistsFetchDescriptor)
             for staleAlbum in staleAlbums {
-                Logger.sync.info("Removing stale artist \(staleAlbum.title)")
+                Logger.sync.info("Removing stale album \(staleAlbum.title)")
                 modelContext.delete(staleAlbum)
             }
             for staleArtist in staleArtists {
