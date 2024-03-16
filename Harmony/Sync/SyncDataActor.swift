@@ -246,4 +246,25 @@ actor SyncDataActor {
             Logger.sync.error("Could not clear albums: \(error)")
         }
     }
+
+    func clearStaleGroupings() {
+        let albumsFetchDescriptor = FetchDescriptor<Album> (
+            predicate: #Predicate { $0.songs.isEmpty }
+        )
+        let artistsFetchDescriptor = FetchDescriptor<Artist> (
+            predicate: #Predicate { $0.songs.isEmpty }
+        )
+        do {
+            let staleAlbums = try context.fetch(albumsFetchDescriptor)
+            let staleArtists = try context.fetch(artistsFetchDescriptor)
+            for staleAlbum in staleAlbums {
+                context.delete(staleAlbum)
+            }
+            for staleArtist in staleArtists {
+                context.delete(staleArtist)
+            }
+        } catch let error {
+            Logger.sync.error("Could not delete stale groupings: \(error)")
+        }
+    }
 }
