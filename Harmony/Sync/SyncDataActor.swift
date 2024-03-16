@@ -10,17 +10,15 @@ import HarmonyKit
 import OSLog
 import SwiftData
 
+@ModelActor
 actor SyncDataActor {
-    let container = try! ModelContainer(for: Song.self, Album.self, Artist.self, Container.self)
-    lazy var context = ModelContext(container)
-
     // TODO: Deduplicate approval methods with use of generics/protocol
     func approvalForSongScan(id: String, versionId: String) -> Bool {
         do {
             let fetchDescriptor = FetchDescriptor<Song>(predicate: #Predicate<Song> {
                 $0.identifier == id
             })
-            guard let existingSong = try context.fetch(fetchDescriptor).first else {
+            guard let existingSong = try modelContext.fetch(fetchDescriptor).first else {
                 return true
             }
             return existingSong.versionId != versionId
@@ -35,7 +33,7 @@ actor SyncDataActor {
             let fetchDescriptor = FetchDescriptor<Container>(predicate: #Predicate<Container> {
                 $0.identifier == id
             })
-            guard let existingSongContainer = try context.fetch(fetchDescriptor).first else {
+            guard let existingSongContainer = try modelContext.fetch(fetchDescriptor).first else {
                 return true
             }
             return existingSongContainer.versionId != versionId
@@ -48,11 +46,10 @@ actor SyncDataActor {
     func ingestSong(_ song: Song) {
         let songIdentifier = song.identifier
         do {
-            let context = ModelContext(container)
             let fetchDescriptor = FetchDescriptor<Song>(
                 predicate: #Predicate<Song> { $0.identifier == songIdentifier }
             )
-            let existingSong = try context.fetch(fetchDescriptor).first
+            let existingSong = try modelContext.fetch(fetchDescriptor).first
 
             if let existingSong = existingSong {
                 let isOutdated = song.versionId != existingSong.versionId
@@ -64,9 +61,9 @@ actor SyncDataActor {
                     refreshedDlState = .downloading
                 }
                 let refreshedSong = song.clone(downloadState: refreshedDlState)
-                context.insert(refreshedSong)
+                modelContext.insert(refreshedSong)
             } else {
-                context.insert(song)
+                modelContext.insert(song)
             }
 
             let albumTitle = song.album
@@ -74,13 +71,13 @@ actor SyncDataActor {
                 predicate: #Predicate { $0.title == albumTitle }
             )
             var album: Album?
-            if let existingAlbum = try context.fetch(albumFetchDescriptor).first {
+            if let existingAlbum = try modelContext.fetch(albumFetchDescriptor).first {
                 if !existingAlbum.songs.contains(where: { $0.identifier == songIdentifier }) {
                     existingAlbum.songs.append(song)
                 }
                 album = existingAlbum
             } else if let newAlbum = Album(songs: [song]) {
-                context.insert(newAlbum)
+                modelContext.insert(newAlbum)
                 album = newAlbum
             }
 
@@ -89,7 +86,7 @@ actor SyncDataActor {
                 let artistFetchDescriptor = FetchDescriptor<Artist>(
                     predicate: #Predicate { $0.name == artistName }
                 )
-                if let artist = try context.fetch(artistFetchDescriptor).first {
+                if let artist = try modelContext.fetch(artistFetchDescriptor).first {
                     if !artist.songs.contains(where: { $0.identifier == songIdentifier }) {
                         artist.songs.append(song)
                     }
@@ -101,7 +98,7 @@ actor SyncDataActor {
                 }
             }
 
-            try context.save()
+            try modelContext.save()
         } catch let error {
             Logger.sync.error("Could not save song to data: \(error)")
         }
@@ -109,7 +106,7 @@ actor SyncDataActor {
 
     func ingestContainer(_ songContainer: Container, parentContainer: Container?) {
         do {
-            context.insert(songContainer)
+            modelContext.insert(songContainer)
             if let parentContainer = parentContainer {
                 let parentId = parentContainer.identifier
                 let childId = songContainer.identifier
@@ -117,10 +114,10 @@ actor SyncDataActor {
                     predicate: #Predicate { $0.identifier == parentId }
                 )
                 var parentContainerToUse: Container
-                if let result = try? context.fetch(fetchDescriptor).first {
+                if let result = try? modelContext.fetch(fetchDescriptor).first {
                     parentContainerToUse = result
                 } else {
-                    context.insert(parentContainer)
+                    modelContext.insert(parentContainer)
                     parentContainerToUse = parentContainer
                 }
                 if !parentContainerToUse.childContainers.contains(
@@ -129,7 +126,7 @@ actor SyncDataActor {
                     parentContainerToUse.childContainers.append(songContainer)
                 }
             }
-            try context.save()
+            try modelContext.save()
         } catch let error {
             Logger.sync.error("Could not save container to data: \(error)")
         }
@@ -146,7 +143,7 @@ actor SyncDataActor {
         )
 
         do {
-            let backendSongs = try context.fetch(fetchDescriptor)
+            let backendSongs = try modelContext.fetch(fetchDescriptor)
             let songsForRemoval = try backendSongs.filter(
                 #Predicate {
                     !exceptions.contains($0.identifier) &&
@@ -155,9 +152,9 @@ actor SyncDataActor {
             )
             for songToRemove in songsForRemoval {
                 Logger.sync.debug("Removing song: \(songToRemove.url)")
-                context.delete(songToRemove)
+                modelContext.delete(songToRemove)
             }
-            try context.save()
+            try modelContext.save()
         } catch let error {
             Logger.sync.error("Could not clear songs for \(backendId): \(error)")
         }
@@ -173,7 +170,7 @@ actor SyncDataActor {
         )
 
         do {
-            let backendSongContainers = try context.fetch(fetchDescriptor)
+            let backendSongContainers = try modelContext.fetch(fetchDescriptor)
             let songContainersForRemoval = try backendSongContainers.filter(
                 #Predicate { !exceptions.contains($0.identifier) }
             )
@@ -202,10 +199,10 @@ actor SyncDataActor {
 
                 if !validParent {
                     Logger.sync.debug("Removing container: \(songContainerToRemove.identifier)")
-                    context.delete(songContainerToRemove)
+                    modelContext.delete(songContainerToRemove)
                 }
             }
-            try context.save()
+            try modelContext.save()
         } catch let error {
             Logger.sync.error("Could not clear container for \(backendId): \(error)")
         }
@@ -215,15 +212,15 @@ actor SyncDataActor {
         let fetchDescriptor = FetchDescriptor<Album>()
 
         do {
-            let albums = try context.fetch(fetchDescriptor)
+            let albums = try modelContext.fetch(fetchDescriptor)
             let albumsToRemove = try albums.filter(
                 #Predicate { !exceptions.contains($0.title) }
             )
             for albumToRemove in albumsToRemove {
                 Logger.sync.debug("Removing album: \(albumToRemove.title)")
-                context.delete(albumToRemove)
+                modelContext.delete(albumToRemove)
             }
-            try context.save()
+            try modelContext.save()
         } catch let error {
             Logger.sync.error("Could not clear albums: \(error)")
         }
@@ -233,15 +230,15 @@ actor SyncDataActor {
         let fetchDescriptor = FetchDescriptor<Artist>()
 
         do {
-            let artists = try context.fetch(fetchDescriptor)
+            let artists = try modelContext.fetch(fetchDescriptor)
             let artistsToRemove = try artists.filter(
                 #Predicate { !exceptions.contains($0.name) }
             )
             for artistToRemove in artistsToRemove {
                 Logger.sync.debug("Removing artist: \(artistToRemove.name)")
-                context.delete(artistToRemove)
+                modelContext.delete(artistToRemove)
             }
-            try context.save()
+            try modelContext.save()
         } catch let error {
             Logger.sync.error("Could not clear albums: \(error)")
         }
@@ -255,13 +252,15 @@ actor SyncDataActor {
             predicate: #Predicate { $0.songs.isEmpty }
         )
         do {
-            let staleAlbums = try context.fetch(albumsFetchDescriptor)
-            let staleArtists = try context.fetch(artistsFetchDescriptor)
+            let staleAlbums = try modelContext.fetch(albumsFetchDescriptor)
+            let staleArtists = try modelContext.fetch(artistsFetchDescriptor)
             for staleAlbum in staleAlbums {
-                context.delete(staleAlbum)
+                Logger.sync.info("Removing stale artist \(staleAlbum.title)")
+                modelContext.delete(staleAlbum)
             }
             for staleArtist in staleArtists {
-                context.delete(staleArtist)
+                Logger.sync.info("Removing stale artist \(staleArtist.name)")
+                modelContext.delete(staleArtist)
             }
         } catch let error {
             Logger.sync.error("Could not delete stale groupings: \(error)")
