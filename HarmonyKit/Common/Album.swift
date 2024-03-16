@@ -26,15 +26,11 @@ public final class Album {
         genre = referenceSong.genre
         year = referenceSong.year
         artwork = referenceSong.artwork
-        setSongs(songs)
+        self.songs = songs
+        updateDownloaded()
     }
 
     func updateDownloaded() {
         downloaded = songs.filter { $0.downloadState != DownloadState.downloaded.rawValue }.isEmpty
-    }
-
-    private func setSongs(_ songs: [Song]) {
-        self.songs = songs
-        updateDownloaded()
     }
 }
