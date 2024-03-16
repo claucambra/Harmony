@@ -95,6 +95,8 @@ actor SyncDataActor {
                     {
                         artist.albums.append(album)
                     }
+                } else if let artist = Artist(name: artistName, songs: [song]) {
+                    modelContext.insert(artist)
                 }
             }
 
