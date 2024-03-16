@@ -17,12 +17,8 @@ public final class Artist {
 
     public init?(name: String, songs: [Song]) {
         self.name = name
-        setSongs(songs)
-    }
-
-    private func setSongs(_ songs: [Song]) {
         self.songs = songs
-        
+
         var albumDict: [String: Album] = [:]
         for song in songs {
             guard albumDict[song.album] == nil, let album = song.parentAlbum else { continue }
