@@ -158,13 +158,7 @@ public class FilesBackend: NSObject, Backend {
             }
         }
 
-        urlsTask = Task { return await recursiveScan(path: path) }
-        let urlsResult = await urlsTask!.result
-        urlsTask = nil
-        guard let urls = try? urlsResult.get() else {
-            Logger.defaultLog.error("Could not get urls!")
-            return
-        }
+        let urls = await recursiveScan(path: path)
         scanTask = Task { await songsFromLocalUrls(
             urls,
             songScanApprover: songScanApprover,
@@ -180,32 +174,45 @@ public class FilesBackend: NSObject, Backend {
             self.presentation.state = "Scanning " + path.path + "…"
         }
 
-        // Use file coordination for reading and writing any of the URL’s content.
-        var audioFiles: [URL] = []
-        var error: NSError? = nil
-        NSFileCoordinator().coordinate(readingItemAt: path, error: &error) { url in
-            // Get an enumerator for the directory's content.
-            guard let fileList = FileManager.default.enumerator(
-                at: url, includingPropertiesForKeys: [.isDirectoryKey]
-            ) else {
-                Logger.filesBackend.error("Unable to access the contents of \(url.path)")
-                return
-            }
+        urlsTask = Task {
+            // Use file coordination for reading and writing any of the URL’s content.
+            var audioFiles: [URL] = []
+            var error: NSError? = nil
+            NSFileCoordinator().coordinate(readingItemAt: path, error: &error) { url in
+                // Get an enumerator for the directory's content.
+                guard let fileList = FileManager.default.enumerator(
+                    at: url, includingPropertiesForKeys: [.isDirectoryKey]
+                ) else {
+                    Logger.filesBackend.error("Unable to access the contents of \(url.path)")
+                    return
+                }
 
-            for case let file as URL in fileList {
-                Logger.filesBackend.debug("Found \(file) in \(path)")
+                for case let file as URL in fileList {
+                    Logger.filesBackend.debug("Found \(file) in \(path)")
 
-                var isDirectory: ObjCBool = false
-                if FileManager.default.fileExists(atPath: file.path, isDirectory: &isDirectory),
-                   !isDirectory.boolValue,
-                   filePlayability(fileURL: file) == .filePlayable 
-                {
-                    // TODO: Use song scanner here?
-                    audioFiles.append(file)
+                    var isDirectory: ObjCBool = false
+                    if FileManager.default.fileExists(atPath: file.path, isDirectory: &isDirectory),
+                       !isDirectory.boolValue,
+                       filePlayability(fileURL: file) == .filePlayable
+                    {
+                        // TODO: Use song scanner here?
+                        audioFiles.append(file)
+                    }
                 }
             }
+            return audioFiles
         }
-        return audioFiles
+        defer { urlsTask = nil }
+        guard let result = await urlsTask?.result else {
+            Logger.filesBackend.error("Could not get result for urlTask!")
+            return []
+        }
+        do {
+            return try result.get()
+        } catch let error {
+            Logger.filesBackend.error("Could not get result: \(error)")
+            return []
+        }
     }
 
     public func fetchSong(_ song: Song) async {
