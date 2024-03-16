@@ -116,7 +116,6 @@ public class SyncController: ObservableObject {
                 withExceptions: foundContainers,
                 withProtectedParents: skippedContainers
             )
-            await self.dataActor.refreshGroupings()
         } catch let error {
             Logger.sync.error("Could not get result from ingestion task: \(error)")
             return

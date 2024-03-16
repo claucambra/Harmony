@@ -49,9 +49,9 @@ actor SyncDataActor {
         let songIdentifier = song.identifier
         do {
             let context = ModelContext(container)
-            let fetchDescriptor = FetchDescriptor<Song>(predicate: #Predicate<Song> {
-                $0.identifier == songIdentifier
-            })
+            let fetchDescriptor = FetchDescriptor<Song>(
+                predicate: #Predicate<Song> { $0.identifier == songIdentifier }
+            )
             let existingSong = try context.fetch(fetchDescriptor).first
 
             if let existingSong = existingSong {
@@ -68,6 +68,39 @@ actor SyncDataActor {
             } else {
                 context.insert(song)
             }
+
+            let albumTitle = song.album
+            let albumFetchDescriptor = FetchDescriptor<Album>(
+                predicate: #Predicate { $0.title == albumTitle }
+            )
+            var album: Album?
+            if let existingAlbum = try context.fetch(albumFetchDescriptor).first {
+                if !existingAlbum.songs.contains(where: { $0.identifier == songIdentifier }) {
+                    existingAlbum.songs.append(song)
+                }
+                album = existingAlbum
+            } else if let newAlbum = Album(songs: [song]) {
+                context.insert(newAlbum)
+                album = newAlbum
+            }
+
+            let artistNames = song.artist.components(separatedBy: "; ")
+            for artistName in artistNames {
+                let artistFetchDescriptor = FetchDescriptor<Artist>(
+                    predicate: #Predicate { $0.name == artistName }
+                )
+                if let artist = try context.fetch(artistFetchDescriptor).first {
+                    if !artist.songs.contains(where: { $0.identifier == songIdentifier }) {
+                        artist.songs.append(song)
+                    }
+                    if let album = album, 
+                        !artist.albums.contains(where: { $0.title == album.title })
+                    {
+                        artist.albums.append(album)
+                    }
+                }
+            }
+
             try context.save()
         } catch let error {
             Logger.sync.error("Could not save song to data: \(error)")
@@ -175,54 +208,6 @@ actor SyncDataActor {
             try context.save()
         } catch let error {
             Logger.sync.error("Could not clear container for \(backendId): \(error)")
-        }
-    }
-
-    // TODO: Make progressive on each song ingest
-    func refreshGroupings() {
-        Logger.sync.info("Refreshing albums and artists.")
-        let fetchDescriptor = FetchDescriptor<Song>()
-
-        do {
-            let songs = try context.fetch(fetchDescriptor)
-            var artistDict: Dictionary<String, [Song]> = [:]
-            var albumDict: Dictionary<String, [Song]> = [:]
-            for song in songs {
-                let album = song.album
-                let artists = song.artist.components(separatedBy: "; ")
-
-                if var existingSongs = albumDict[album] {
-                    existingSongs.append(song)
-                    albumDict[album] = existingSongs
-                } else {
-                    albumDict[album] = [song]
-                }
-
-                for artist in artists {
-                    if var existingSongs = artistDict[artist] {
-                        existingSongs.append(song)
-                        artistDict[artist] = existingSongs
-                    } else {
-                        artistDict[artist] = [song]
-                    }
-                }
-            }
-
-            Logger.sync.info("About to insert \(albumDict.count) albums.")
-            for songs in albumDict.values {
-                guard let album = Album(songs: songs) else { continue }
-                context.insert(album)
-            }
-            Logger.sync.info("About to insert \(artistDict.count) artists.")
-            for (artistName, songs) in artistDict {
-                guard let artist = Artist(name: artistName, songs: songs) else { continue }
-                context.insert(artist)
-            }
-            clearAlbums(withExceptions: Set(albumDict.keys))
-            clearArtists(withExceptions: Set(artistDict.keys))
-            try context.save()
-        } catch let error {
-            Logger.sync.error("Could not refresh albums: \(error)")
         }
     }
 
