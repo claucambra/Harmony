@@ -44,6 +44,8 @@ class BackendsModel: ObservableObject {
         }
 
         for remainingBackend in currentBackends {
+            let backend = backends[remainingBackend]
+            backend?.cancelScan()
             backends.removeValue(forKey: remainingBackend)
             clearBackendStorage(remainingBackend)
             Task {
