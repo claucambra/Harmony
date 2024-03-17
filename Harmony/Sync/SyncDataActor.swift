@@ -231,42 +231,6 @@ actor SyncDataActor {
         }
     }
 
-    func clearAlbums(withExceptions exceptions: Set<String>) {
-        let fetchDescriptor = FetchDescriptor<Album>()
-
-        do {
-            let albums = try modelContext.fetch(fetchDescriptor)
-            let albumsToRemove = try albums.filter(
-                #Predicate { !exceptions.contains($0.title) }
-            )
-            for albumToRemove in albumsToRemove {
-                Logger.sync.debug("Removing album: \(albumToRemove.title)")
-                modelContext.delete(albumToRemove)
-            }
-            try modelContext.save()
-        } catch let error {
-            Logger.sync.error("Could not clear albums: \(error)")
-        }
-    }
-
-    func clearArtists(withExceptions exceptions: Set<String>) {
-        let fetchDescriptor = FetchDescriptor<Artist>()
-
-        do {
-            let artists = try modelContext.fetch(fetchDescriptor)
-            let artistsToRemove = try artists.filter(
-                #Predicate { !exceptions.contains($0.name) }
-            )
-            for artistToRemove in artistsToRemove {
-                Logger.sync.debug("Removing artist: \(artistToRemove.name): \(artistToRemove.songs)")
-                modelContext.delete(artistToRemove)
-            }
-            try modelContext.save()
-        } catch let error {
-            Logger.sync.error("Could not clear albums: \(error)")
-        }
-    }
-
     func clearStaleGroupings() {
         let albumsFetchDescriptor = FetchDescriptor<Album> (
             predicate: #Predicate { $0.songs.isEmpty }
