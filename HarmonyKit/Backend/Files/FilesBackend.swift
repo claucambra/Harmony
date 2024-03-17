@@ -86,61 +86,57 @@ public class FilesBackend: NSObject, Backend {
         songScanApprover: @Sendable @escaping (String, String) async -> Bool,
         finalisedSongHandler: @Sendable @escaping (Song) async -> Void
     ) async {
-        scanTask = Task {
-            var containerUrls: Set<URL> = []
-            for url in urls {
-                let containerUrl = url.deletingLastPathComponent()
-                containerUrls.insert(containerUrl)
+        var containerUrls: Set<URL> = []
+        for url in urls {
+            let containerUrl = url.deletingLastPathComponent()
+            containerUrls.insert(containerUrl)
 
-                let asset = AVAsset(url: url)
-                var song: Song?
+            let asset = AVAsset(url: url)
+            var song: Song?
 
-                if FileManager.default.isUbiquitousItem(at: url) {  // This is an iCloud file
-                    Logger.defaultLog.debug("Found an iCloud file: \(url)")
-                    let isDownloaded = ubiquitousFileIsDownloaded(url: url)
-                    let identifier = url.absoluteString // TODO
-                    let versionId = url.absoluteString  // TODO
+            if FileManager.default.isUbiquitousItem(at: url) {  // This is an iCloud file
+                Logger.defaultLog.debug("Found an iCloud file: \(url)")
+                let isDownloaded = ubiquitousFileIsDownloaded(url: url)
+                let identifier = url.absoluteString // TODO
+                let versionId = url.absoluteString  // TODO
 
-                    guard await songScanApprover(identifier, versionId) else {
-                        Logger.filesBackend.debug("Skipping \(url) scan, not approved")
-                        continue
-                    }
-                    song = await Song(
-                        url: url,
-                        asset: asset,
-                        identifier: identifier,
-                        parentContainerId: path.path,
-                        backendId: id,
-                        local: false,
-                        downloadState: isDownloaded ? .downloaded : .notDownloaded,
-                        versionId: versionId
-                    )
-                } else {
-                    let fm = FileManager.default
-                    let attributes = try? fm.attributesOfItem(atPath: url.path) as NSDictionary
-                    guard let versionId = attributes?.fileModificationDate()?.description,
-                          await songScanApprover(url.path, versionId)
-                    else {
-                        Logger.filesBackend.debug("Skipping \(url) scan")
-                        continue
-                    }
-                    song = await Song(
-                        url: url,
-                        asset: asset,
-                        identifier: url.path,
-                        parentContainerId: path.path,
-                        backendId: id,
-                        local: true,
-                        downloadState: .downloaded,
-                        versionId: versionId
-                    )
+                guard await songScanApprover(identifier, versionId) else {
+                    Logger.filesBackend.debug("Skipping \(url) scan, not approved")
+                    continue
                 }
-                guard let song = song else { continue }
-                await finalisedSongHandler(song)
+                song = await Song(
+                    url: url,
+                    asset: asset,
+                    identifier: identifier,
+                    parentContainerId: path.path,
+                    backendId: id,
+                    local: false,
+                    downloadState: isDownloaded ? .downloaded : .notDownloaded,
+                    versionId: versionId
+                )
+            } else {
+                let fm = FileManager.default
+                let attributes = try? fm.attributesOfItem(atPath: url.path) as NSDictionary
+                guard let versionId = attributes?.fileModificationDate()?.description,
+                      await songScanApprover(url.path, versionId)
+                else {
+                    Logger.filesBackend.debug("Skipping \(url) scan")
+                    continue
+                }
+                song = await Song(
+                    url: url,
+                    asset: asset,
+                    identifier: url.path,
+                    parentContainerId: path.path,
+                    backendId: id,
+                    local: true,
+                    downloadState: .downloaded,
+                    versionId: versionId
+                )
             }
+            guard let song = song else { continue }
+            await finalisedSongHandler(song)
         }
-        defer { scanTask = nil }
-        _ = await scanTask?.result
     }
 
     public func scan(
@@ -163,11 +159,13 @@ public class FilesBackend: NSObject, Backend {
         }
 
         let urls = await recursiveScan(path: path)
-        await songsFromLocalUrls(
+        scanTask = Task { await songsFromLocalUrls(
             urls,
             songScanApprover: songScanApprover,
             finalisedSongHandler: finalisedSongHandler
-        )
+        )}
+        _ = await scanTask?.result
+        scanTask = nil
     }
 
     func recursiveScan(path: URL) async -> [URL] {
