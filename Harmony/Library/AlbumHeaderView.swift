@@ -96,14 +96,24 @@ struct AlbumHeaderView: View {
         Button {
             playAlbum(album)
         } label: {
-            Label("Play", systemImage: "play.fill")
-                .foregroundStyle(.primary)
             #if os(macOS)
-                .padding([.leading, .trailing], UIMeasurements.largePadding)
+                playButtonLabel.padding([.leading, .trailing], UIMeasurements.largePadding)
+            #else
+            if UIDevice.current.userInterfaceIdiom == .phone {
+                playButtonLabel.frame(maxWidth: .infinity)
+            } else {
+                playButtonLabel
+            }
             #endif
         }
         .buttonStyle(.borderedProminent)
         .controlSize(.large)
+    }
+
+    @ViewBuilder
+    private var playButtonLabel: some View {
+        Label("Play", systemImage: "play.fill")
+            .foregroundStyle(.primary)
     }
 
     @ViewBuilder @MainActor
