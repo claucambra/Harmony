@@ -28,17 +28,29 @@ func saveBackendConfig(
     var preexistingConfigIndex: Int?
     var fullConfig = configValues
     if let configId = configValues[BackendConfigurationIdFieldKey] as? String,
-        let configIndex = existingConfigs?.firstIndex(where: { config in
-            let config = config as! BackendConfiguration
-            return config[BackendConfigurationIdFieldKey] as? String == configId
-        }) {
+       let configIndex = existingConfigs?.firstIndex(where: { config in
+           let config = config as! BackendConfiguration
+           return config[BackendConfigurationIdFieldKey] as? String == configId
+       })
+    {
         preexistingConfigIndex = configIndex
         if let existingConfig = existingConfigs?[configIndex] as? BackendConfiguration {
             // Keep the values already in fullConfig, which are the received new ones
             fullConfig.merge(existingConfig) { current, _ in current }
         }
     } else {
-        fullConfig[BackendConfigurationIdFieldKey] = descriptionId + String(existingConfigsCount)
+        var suffixNumber = existingConfigsCount
+        var proposedId = descriptionId + String(existingConfigsCount)
+        if let existingConfigs = existingConfigs {
+            while existingConfigs.contains(where: { configAny in
+                let config = configAny as! BackendConfiguration
+                return config[BackendConfigurationIdFieldKey] as? String == proposedId
+            }) {
+                suffixNumber += 1
+                proposedId = descriptionId + String(existingConfigsCount)
+            }
+        }
+        fullConfig[BackendConfigurationIdFieldKey] = proposedId
     }
 
     let backendId = fullConfig[BackendConfigurationIdFieldKey] as! String
