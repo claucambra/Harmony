@@ -259,7 +259,7 @@ public class NextcloudBackend: NSObject, Backend {
             Logger.ncBackend.info("Not downloading already downloaded song \(song.url)")
             return
         }
-        guard song.downloadState != DownloadState.downloaded.rawValue else {
+        guard song.downloadState != DownloadState.downloading.rawValue else {
             Logger.ncBackend.info("Song already downloading \(song.url)")
             return
         }
