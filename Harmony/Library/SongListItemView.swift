@@ -41,5 +41,25 @@ struct SongListItemView: View {
             SongDownloadStateView(song: song)
                 .foregroundStyle(.tertiary)
         }
+        .swipeActions(edge: .trailing) {  // TODO: Deduplicate this and context menu
+            Button {
+                if !song.local,
+                   song.downloadState == DownloadState.downloaded.rawValue ||
+                   song.downloadState == DownloadState.downloadedOutdated.rawValue
+                {
+                    evictSong(song)
+                } else if !song.local {
+                    fetchSong(song)
+                }
+            } label: {
+                if song.downloadState == DownloadState.downloaded.rawValue ||
+                   song.downloadState == DownloadState.downloadedOutdated.rawValue
+                {
+                    Label("Remove offline copy", systemImage: "trash")
+                } else {
+                    Label("Keep available offline", systemImage: "square.and.arrow.down")
+                }
+            }
+        }
     }
 }
