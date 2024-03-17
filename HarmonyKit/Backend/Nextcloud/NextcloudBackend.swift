@@ -236,6 +236,11 @@ public class NextcloudBackend: NSObject, Backend {
         return song
     }
 
+    public func cancelScan() {
+        Logger.ncBackend.info("Cancelling scan for \(self.id)")
+        scanTask?.cancel()
+    }
+
     public func assetForSong(_ song: Song) -> AVAsset? {
         var url = song.url
         if song.downloadState == DownloadState.downloaded.rawValue,

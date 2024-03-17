@@ -215,6 +215,11 @@ public class FilesBackend: NSObject, Backend {
         return audioFiles
     }
 
+    public func cancelScan() {
+        Logger.filesBackend.info("Cancelling scan for \(self.id)")
+        scanTask?.cancel()
+    }
+
     public func fetchSong(_ song: Song) async {
         guard song.downloadState != DownloadState.downloaded.rawValue else {
             Logger.filesBackend.info("Not downloading already downloaded song \(song.url)")
