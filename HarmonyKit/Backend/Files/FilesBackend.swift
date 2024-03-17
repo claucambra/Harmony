@@ -22,8 +22,6 @@ public class FilesBackend: NSObject, Backend {
     public private(set) var path: URL {
         didSet { DispatchQueue.main.async { self.presentation.config = self.path.path } }
     }
-    private var urlsTask: Task<[URL], Never>?
-    private var scanTask: Task<(), Never>?
 
     static func getPathFromConfig(_ config: BackendConfiguration) -> URL {
         let pathConfigFieldId = FilesBackendFieldId.pathConfig.rawValue
@@ -150,28 +148,16 @@ public class FilesBackend: NSObject, Backend {
             self.presentation.scanning = true
             self.presentation.state = "Starting full scan..."
         }
-        defer {
-            Logger.filesBackend.info("Finished full scan of \(self.path)")
-            Task { @MainActor in
-                self.presentation.scanning = false
-                self.presentation.state = "Finished full scan at " + Date().formatted()
-            }
-        }
-
-        urlsTask = Task { return await recursiveScan(path: path) }
-        let urlsResult = await urlsTask!.result
-        urlsTask = nil
-        guard let urls = try? urlsResult.get() else {
-            Logger.defaultLog.error("Could not get urls!")
-            return
-        }
-        scanTask = Task { await songsFromLocalUrls(
+        let urls = await recursiveScan(path: path)
+        await songsFromLocalUrls(
             urls,
             songScanApprover: songScanApprover,
             finalisedSongHandler: finalisedSongHandler
-        )}
-        _ = await scanTask?.result
-        scanTask = nil
+        )
+        Task { @MainActor in
+            self.presentation.scanning = false
+            self.presentation.state = "Finished full scan at " + Date().formatted()
+        }
     }
 
     func recursiveScan(path: URL) async -> [URL] {
