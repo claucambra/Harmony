@@ -54,9 +54,13 @@ struct SplitContentView: View {
         NavigationSplitView(columnVisibility: $columnVisibility) {
             navSideBar
         } content: {
-            ArtistsListView(selection: $artistSelection)
-                .navigationTitle("Artists")
-                .safeAreaPadding([.bottom], floatingBarHeight)
+            ArtistsListView(
+                searchText: $searchText,
+                selection: $artistSelection,
+                showOnlineSongs: $showOnlineSongs
+            )
+            .navigationTitle("Artists")
+            .safeAreaPadding([.bottom], floatingBarHeight)
         } detail: {
             NavigationStack(path: $path) {
                 if let artist = artistSelection {

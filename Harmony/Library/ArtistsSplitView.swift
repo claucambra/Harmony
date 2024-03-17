@@ -17,9 +17,13 @@ struct ArtistsSplitView: View {
 
     var body: some View {
         NavigationSplitView {
-            ArtistsListView(selection: $selection)
-                .navigationTitle("Artists")
-                .safeAreaPadding(.bottom, floatingBarHeight)
+            ArtistsListView(
+                searchText: $searchText,
+                selection: $selection,
+                showOnlineSongs: $showOnlineSongs
+            )
+            .navigationTitle("Artists")
+            .safeAreaPadding(.bottom, floatingBarHeight)
         } detail: {
             NavigationStack {
                 #if os(macOS)
