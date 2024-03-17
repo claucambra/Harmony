@@ -152,7 +152,7 @@ public class NextcloudBackend: NSObject, Backend {
                 // tasks.
                 try Task.checkCancellation()
                 if i >= self.maxConcurrentScans - 1 {
-                    guard let scanResult = try await group.next() else { continue }
+                    guard let _ = try await group.next() else { continue }
                 }
 
                 let file = files[i]
