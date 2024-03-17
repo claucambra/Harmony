@@ -22,6 +22,7 @@ public class FilesBackend: NSObject, Backend {
     public private(set) var path: URL {
         didSet { DispatchQueue.main.async { self.presentation.config = self.path.path } }
     }
+    private var scanTask: Task<(), Error>?
 
     static func getPathFromConfig(_ config: BackendConfiguration) -> URL {
         let pathConfigFieldId = FilesBackendFieldId.pathConfig.rawValue
@@ -79,7 +80,7 @@ public class FilesBackend: NSObject, Backend {
         }
     }
 
-    func songsFromLocalUrls(
+    private func songsFromLocalUrls(
         _ urls: [URL],
         songScanApprover: @Sendable @escaping (String, String) async -> Bool,
         finalisedSongHandler: @Sendable @escaping (Song) async -> Void
@@ -148,12 +149,15 @@ public class FilesBackend: NSObject, Backend {
             self.presentation.scanning = true
             self.presentation.state = "Starting full scan..."
         }
-        let urls = await recursiveScan(path: path)
-        await songsFromLocalUrls(
-            urls,
-            songScanApprover: songScanApprover,
-            finalisedSongHandler: finalisedSongHandler
-        )
+        scanTask = Task {
+            let urls = await recursiveScan(path: path)
+            await songsFromLocalUrls(
+                urls,
+                songScanApprover: songScanApprover,
+                finalisedSongHandler: finalisedSongHandler
+            )
+        }
+        await _ = scanTask!.result
         Task { @MainActor in
             self.presentation.scanning = false
             self.presentation.state = "Finished full scan at " + Date().formatted()
