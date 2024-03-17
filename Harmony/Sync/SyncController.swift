@@ -61,67 +61,71 @@ public class SyncController: ObservableObject {
         guard !backend.presentation.scanning else { return }
 
         let backendId = backend.id
-        await backend.scan(containerScanApprover: { containerId, containerVersionId in
-            Task { @MainActor in
-                self.currentSyncsFoundContainers[containerId] = backendId
-            }
-            let approved = await self.dataActor.approvalForSongContainerScan(
-                id: containerId, versionId: containerVersionId
-            )
-            if !approved {
-                Task { @MainActor in
-                    self.currentSyncsSkippedContainers[containerId] = backendId
-                }
-            }
-            return approved
-        }, songScanApprover: { songId, songVersionId in
-            Task { @MainActor in
-                self.currentSyncsFoundSongs[songId] = backendId
-            }
-            return await self.dataActor.approvalForSongScan(id: songId, versionId: songVersionId)
-        }, finalisedSongHandler: { song in
-            await self.dataActor.ingestSong(song)
-        }, finalisedContainerHandler: { songContainer, parentContainer in
-            await self.dataActor.ingestContainer(songContainer, parentContainer: parentContainer)
-        })
-
         do {
-            let retrievedSongIdentifiers = try currentSyncsFoundSongs.filter(
-                #Predicate { $0.value == backendId }
-            ).map { $0.key }
-            let retrievedContainerIdentifiers = try currentSyncsFoundContainers.filter(
-                #Predicate { $0.value == backendId }
-            ).map { $0.key }
-            let skippedContainerIdentifiers = try currentSyncsSkippedContainers.filter(
-                #Predicate { $0.value == backendId }
-            ).map { $0.key }
-            for songId in retrievedSongIdentifiers {
-                currentSyncsFoundSongs.removeValue(forKey: songId)
+            try await backend.scan(containerScanApprover: { containerId, containerVersionId in
+                Task { @MainActor in
+                    self.currentSyncsFoundContainers[containerId] = backendId
+                }
+                let approved = await self.dataActor.approvalForSongContainerScan(
+                    id: containerId, versionId: containerVersionId
+                )
+                if !approved {
+                    Task { @MainActor in
+                        self.currentSyncsSkippedContainers[containerId] = backendId
+                    }
+                }
+                return approved
+            }, songScanApprover: { songId, songVersionId in
+                Task { @MainActor in
+                    self.currentSyncsFoundSongs[songId] = backendId
+                }
+                return await self.dataActor.approvalForSongScan(id: songId, versionId: songVersionId)
+            }, finalisedSongHandler: { song in
+                await self.dataActor.ingestSong(song)
+            }, finalisedContainerHandler: { songContainer, parentContainer in
+                await self.dataActor.ingestContainer(songContainer, parentContainer: parentContainer)
+            })
+
+            do {
+                let retrievedSongIdentifiers = try currentSyncsFoundSongs.filter(
+                    #Predicate { $0.value == backendId }
+                ).map { $0.key }
+                let retrievedContainerIdentifiers = try currentSyncsFoundContainers.filter(
+                    #Predicate { $0.value == backendId }
+                ).map { $0.key }
+                let skippedContainerIdentifiers = try currentSyncsSkippedContainers.filter(
+                    #Predicate { $0.value == backendId }
+                ).map { $0.key }
+                for songId in retrievedSongIdentifiers {
+                    currentSyncsFoundSongs.removeValue(forKey: songId)
+                }
+                for retrievedContainerId in retrievedContainerIdentifiers {
+                    currentSyncsFoundContainers.removeValue(forKey: retrievedContainerId)
+                }
+                for skippedContainerId in skippedContainerIdentifiers {
+                    currentSyncsSkippedContainers.removeValue(forKey: skippedContainerId)
+                }
+                let exceptionSet = Set(retrievedSongIdentifiers)
+                let foundContainers = Set(retrievedContainerIdentifiers)
+                let skippedContainers = Set(skippedContainerIdentifiers)
+                // Clear all stale songs (i.e. those that no longer exist in backend)
+                await self.dataActor.clearSongs(
+                    backendId: backend.id,
+                    withExceptions: exceptionSet,
+                    avoidingContainers: skippedContainers
+                )
+                await self.dataActor.clearSongContainers(
+                    backendId: backend.id,
+                    withExceptions: foundContainers,
+                    withProtectedParents: skippedContainers
+                )
+                await self.dataActor.clearStaleGroupings()
+            } catch let error {
+                Logger.sync.error("Could not get result from ingestion task: \(error)")
+                return
             }
-            for retrievedContainerId in retrievedContainerIdentifiers {
-                currentSyncsFoundContainers.removeValue(forKey: retrievedContainerId)
-            }
-            for skippedContainerId in skippedContainerIdentifiers {
-                currentSyncsSkippedContainers.removeValue(forKey: skippedContainerId)
-            }
-            let exceptionSet = Set(retrievedSongIdentifiers)
-            let foundContainers = Set(retrievedContainerIdentifiers)
-            let skippedContainers = Set(skippedContainerIdentifiers)
-            // Clear all stale songs (i.e. those that no longer exist in backend)
-            await self.dataActor.clearSongs(
-                backendId: backend.id,
-                withExceptions: exceptionSet,
-                avoidingContainers: skippedContainers
-            )
-            await self.dataActor.clearSongContainers(
-                backendId: backend.id,
-                withExceptions: foundContainers,
-                withProtectedParents: skippedContainers
-            )
-            await self.dataActor.clearStaleGroupings()
         } catch let error {
-            Logger.sync.error("Could not get result from ingestion task: \(error)")
-            return
+            Logger.sync.error("Sync for backend \(backendId) did not complete: \(error)")
         }
     }
 }
