@@ -84,9 +84,10 @@ public class FilesBackend: NSObject, Backend {
         _ urls: [URL],
         songScanApprover: @Sendable @escaping (String, String) async -> Bool,
         finalisedSongHandler: @Sendable @escaping (Song) async -> Void
-    ) async {
+    ) async throws {
         var containerUrls: Set<URL> = []
         for url in urls {
+            try Task.checkCancellation()
             let containerUrl = url.deletingLastPathComponent()
             containerUrls.insert(containerUrl)
 
@@ -143,28 +144,41 @@ public class FilesBackend: NSObject, Backend {
         songScanApprover: @Sendable @escaping (String, String) async -> Bool,
         finalisedSongHandler: @Sendable @escaping (Song) async -> Void,
         finalisedContainerHandler: @Sendable @escaping (Container, Container?) async -> Void
-    ) async {
+    ) async throws {
         Logger.filesBackend.info("Starting full scan of \(self.path)")
         Task { @MainActor in
             self.presentation.scanning = true
             self.presentation.state = "Starting full scan..."
         }
         scanTask = Task {
-            let urls = await recursiveScan(path: path)
-            await songsFromLocalUrls(
-                urls,
-                songScanApprover: songScanApprover,
-                finalisedSongHandler: finalisedSongHandler
-            )
+            do {
+                let urls = try await recursiveScan(path: path)
+                try Task.checkCancellation()
+                try await songsFromLocalUrls(
+                    urls,
+                    songScanApprover: songScanApprover,
+                    finalisedSongHandler: finalisedSongHandler
+                )
+                try Task.checkCancellation()
+            }
         }
         await _ = scanTask!.result
         Task { @MainActor in
             self.presentation.scanning = false
-            self.presentation.state = "Finished full scan at " + Date().formatted()
+        }
+
+        if scanTask?.isCancelled == true {
+            Task { @MainActor in
+                self.presentation.state = "Full scan cancelled at " + Date().formatted()
+            }
+        } else {
+            Task { @MainActor in
+                self.presentation.state = "Finished full scan at " + Date().formatted()
+            }
         }
     }
 
-    func recursiveScan(path: URL) async -> [URL] {
+    private func recursiveScan(path: URL) async throws -> [URL] {
         Logger.filesBackend.info("Scanning \(path)")
         Task { @MainActor in
             self.presentation.state = "Scanning " + path.path + "…"
@@ -174,6 +188,7 @@ public class FilesBackend: NSObject, Backend {
         var audioFiles: [URL] = []
         var error: NSError? = nil
         NSFileCoordinator().coordinate(readingItemAt: path, error: &error) { url in
+            guard !Task.isCancelled else { return }
             // Get an enumerator for the directory's content.
             guard let fileList = FileManager.default.enumerator(
                 at: url, includingPropertiesForKeys: [.isDirectoryKey]
@@ -183,6 +198,7 @@ public class FilesBackend: NSObject, Backend {
             }
 
             for case let file as URL in fileList {
+                guard !Task.isCancelled else { return }
                 Logger.filesBackend.debug("Found \(file) in \(path)")
 
                 var isDirectory: ObjCBool = false
@@ -195,6 +211,7 @@ public class FilesBackend: NSObject, Backend {
                 }
             }
         }
+        try Task.checkCancellation()
         return audioFiles
     }
 

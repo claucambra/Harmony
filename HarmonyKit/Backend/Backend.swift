@@ -19,7 +19,7 @@ public protocol Backend: Identifiable, Hashable, ObservableObject {
         songScanApprover: @Sendable @escaping (String, String) async -> Bool,  // ID, VersionID
         finalisedSongHandler: @Sendable @escaping (Song) async -> Void,
         finalisedContainerHandler: @Sendable @escaping (Container, Container?) async -> Void
-    ) async  // Container, ParentContainer | finalised container handler must run after all songs
+    ) async throws  // Container, ParentContainer | final container handler must run after all songs
 
     func assetForSong(_ song: Song) -> AVAsset?
     func fetchSong(_ song: Song) async

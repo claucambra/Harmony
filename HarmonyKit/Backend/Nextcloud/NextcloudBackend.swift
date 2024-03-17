@@ -27,6 +27,7 @@ public class NextcloudBackend: NSObject, Backend {
     private let filesPath: String
     private let logger = Logger.ncBackend
     private let maxConcurrentScans = 4
+    private var scanTask: Task<(), Error>?
 
     public required init(config: BackendConfiguration) {
         configValues = config
@@ -64,22 +65,34 @@ public class NextcloudBackend: NSObject, Backend {
         songScanApprover: @Sendable @escaping (String, String) async -> Bool,
         finalisedSongHandler: @Sendable @escaping (Song) async -> Void,
         finalisedContainerHandler: @Sendable @escaping (Container, Container?) async -> Void
-    ) async {
+    ) async throws {
         Task { @MainActor in
             self.presentation.scanning = true
             self.presentation.state = "Starting full scan..."
         }
-        await recursiveScanRemotePath(
-            filesPath,
-            containerScanApprover: containerScanApprover,
-            songScanApprover: songScanApprover,
-            finalisedSongHandler: finalisedSongHandler,
-            finalisedContainerHandler: finalisedContainerHandler,
-            parentContainer: nil
-        )
+        scanTask = Task {
+            try await recursiveScanRemotePath(
+                filesPath,
+                containerScanApprover: containerScanApprover,
+                songScanApprover: songScanApprover,
+                finalisedSongHandler: finalisedSongHandler,
+                finalisedContainerHandler: finalisedContainerHandler,
+                parentContainer: nil
+            )
+        }
+        _ = await scanTask!.result
         Task { @MainActor in
             self.presentation.scanning = false
-            self.presentation.state = "Finished full scan at \(Date().formatted())"
+        }
+
+        if scanTask?.isCancelled == true {
+            Task { @MainActor in
+                self.presentation.state = "Full scan cancelled at " + Date().formatted()
+            }
+        } else {
+            Task { @MainActor in
+                self.presentation.state = "Finished full scan at " + Date().formatted()
+            }
         }
     }
 
@@ -90,12 +103,13 @@ public class NextcloudBackend: NSObject, Backend {
         finalisedSongHandler: @Sendable @escaping (Song) async -> Void,
         finalisedContainerHandler: @Sendable @escaping (Container, Container?) async -> Void,
         parentContainer: Container?
-    ) async {
+    ) async throws {
         logger.debug("Starting read of: \(path)")
         Task { @MainActor in
             self.presentation.state = "Scanning \(path)..."
         }
 
+        try Task.checkCancellation()
         let readResult = await withCheckedContinuation { continuation in
             ncKit.readFileOrFolder(
                 serverUrlFileName: path, depth: "1"
@@ -103,6 +117,7 @@ public class NextcloudBackend: NSObject, Backend {
                 continuation.resume(returning: (files, error))
             }
         }
+        try Task.checkCancellation()
 
         let files = readResult.0
         let error = readResult.1
@@ -130,13 +145,14 @@ public class NextcloudBackend: NSObject, Backend {
         )
         let fileCount = files.count
 
-        await withTaskGroup(of: Int.self) { group in
+        try await withThrowingTaskGroup(of: Int.self) { group in
             for i in 1..<fileCount { // First song is always the subject of the scan, not child
                 // When we have submitted the maximum concurrent scans in the first burst, wait for
                 // a task to finish off before submitting the next scan, thus limiting concurrent
                 // tasks.
+                try Task.checkCancellation()
                 if i >= self.maxConcurrentScans - 1 {
-                    guard let scanResult = await group.next() else { continue }
+                    guard let scanResult = try await group.next() else { continue }
                 }
 
                 let file = files[i]
@@ -148,7 +164,7 @@ public class NextcloudBackend: NSObject, Backend {
                 group.addTask(priority: .userInitiated) {
                     if file.directory {
                         guard await containerScanApprover(file.ocId, file.etag) else { return 0 }
-                        await self.recursiveScanRemotePath(
+                        try await self.recursiveScanRemotePath(
                             receivedFileUrl,
                             containerScanApprover: containerScanApprover,
                             songScanApprover: songScanApprover,
@@ -156,7 +172,7 @@ public class NextcloudBackend: NSObject, Backend {
                             finalisedContainerHandler: finalisedContainerHandler,
                             parentContainer: container
                         )
-                    } else if let song = await self.handleReadFile(
+                    } else if let song = try await self.handleReadFile(
                         receivedFileUrl, 
                         ocId: file.ocId,
                         etag: file.etag,
@@ -180,7 +196,7 @@ public class NextcloudBackend: NSObject, Backend {
         etag: String,
         parentContainer: Container,
         songScanApprover: @Sendable @escaping (String, String) async -> Bool
-    ) async -> Song? {
+    ) async throws -> Song? {
         // Process received file
         guard let songUrl = URL(string: receivedFileUrl) else {
             logger.error("Received serverUrl for \(receivedFileUrl) is invalid")
@@ -197,6 +213,7 @@ public class NextcloudBackend: NSObject, Backend {
             return nil
         }
 
+        try Task.checkCancellation()
         let asset = AVURLAsset(url: songUrl)
         asset.resourceLoader.setDelegate(assetResourceLoaderDelegate, queue: DispatchQueue.global())
 
