@@ -18,6 +18,7 @@
 		534F81392BA2EF0E0068D145 /* UIAlbumUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534F81382BA2EF0E0068D145 /* UIAlbumUtils.swift */; };
 		534F813D2BA311E00068D145 /* Container.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534F813C2BA311E00068D145 /* Container.swift */; };
 		534F813F2BA47F990068D145 /* SyncDataActor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534F813E2BA47F990068D145 /* SyncDataActor.swift */; };
+		534F81412BA7082F0068D145 /* PlayerQueueItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534F81402BA7082F0068D145 /* PlayerQueueItem.swift */; };
 		535053332B5955C900D7EAF2 /* HarmonyKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 535053292B5955C800D7EAF2 /* HarmonyKit.framework */; };
 		5350533E2B5955C900D7EAF2 /* HarmonyKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 535053292B5955C800D7EAF2 /* HarmonyKit.framework */; };
 		5350533F2B5955C900D7EAF2 /* HarmonyKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 535053292B5955C800D7EAF2 /* HarmonyKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -182,6 +183,7 @@
 		534F81382BA2EF0E0068D145 /* UIAlbumUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIAlbumUtils.swift; sourceTree = "<group>"; };
 		534F813C2BA311E00068D145 /* Container.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Container.swift; sourceTree = "<group>"; };
 		534F813E2BA47F990068D145 /* SyncDataActor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncDataActor.swift; sourceTree = "<group>"; };
+		534F81402BA7082F0068D145 /* PlayerQueueItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerQueueItem.swift; sourceTree = "<group>"; };
 		535053292B5955C800D7EAF2 /* HarmonyKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = HarmonyKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		535053322B5955C800D7EAF2 /* HarmonyKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HarmonyKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		535053472B5955F900D7EAF2 /* HarmonyKit.docc */ = {isa = PBXFileReference; lastKnownFileType = folder.documentationcatalog; path = HarmonyKit.docc; sourceTree = "<group>"; };
@@ -512,6 +514,7 @@
 				53802A392B66AF2B0066208D /* PhonePlayerDrawer.swift */,
 				535053F62B625AB100D7EAF2 /* PlayerController.swift */,
 				535054002B62D98200D7EAF2 /* PlayerQueue.swift */,
+				534F81402BA7082F0068D145 /* PlayerQueueItem.swift */,
 				53D6664C2B6B7E3E0042C03D /* PlayerQueueListItemView.swift */,
 				535054092B63939C00D7EAF2 /* PlayerQueueView.swift */,
 				53D6666B2B74D6C80042C03D /* PlayerScrubberView.swift */,
@@ -998,6 +1001,7 @@
 				53D6664D2B6B7E3E0042C03D /* PlayerQueueListItemView.swift in Sources */,
 				535053F02B62186F00D7EAF2 /* SettingsSheet.swift in Sources */,
 				53FE14712B906C68006C4193 /* BorderedArtworkView.swift in Sources */,
+				534F81412BA7082F0068D145 /* PlayerQueueItem.swift in Sources */,
 				5350540A2B63939C00D7EAF2 /* PlayerQueueView.swift in Sources */,
 				534F813F2BA47F990068D145 /* SyncDataActor.swift in Sources */,
 				5350542B2B64293600D7EAF2 /* SyncController.swift in Sources */,
