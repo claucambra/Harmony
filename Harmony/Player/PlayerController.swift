@@ -296,10 +296,10 @@ class PlayerController: NSObject, ObservableObject  {
             Logger.player.error("No current song in queue")
             return
         }
-        currentSong = queueCurrentSong
+        currentSong = queueCurrentSong.song
     }
 
-    func playSongFromQueue(instanceId: PersistentIdentifier) {
+    func playSongFromQueue(instanceId: ObjectIdentifier) {
         Task {
             await queue.moveToSong(instanceId: instanceId)
             guard let queueCurrentSong = queue.currentSong else {
@@ -307,7 +307,7 @@ class PlayerController: NSObject, ObservableObject  {
                 return
             }
             Task { @MainActor in
-                currentSong = queueCurrentSong
+                currentSong = queueCurrentSong.song
                 play()
             }
         }

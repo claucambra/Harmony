@@ -11,7 +11,7 @@ import SwiftUI
 struct PlayerQueueView: View {
     @ObservedObject var playerController = PlayerController.shared
     @ObservedObject var queue = PlayerController.shared.queue
-    @State private var selection: Set<Song.ID> = []
+    @State private var selection: Set<PlayerQueueItem.ID> = []
     @State var rowBackground: Color?
 
     private let currentSongSectionId = "current-song-section"
@@ -83,7 +83,7 @@ struct PlayerQueueView: View {
                     }
                 }
             }
-            .contextMenu(forSelectionType: Song.ID.self) { ids in
+            .contextMenu(forSelectionType: PlayerQueueItem.ID.self) { ids in
                 // TODO
             } primaryAction: { ids in
                 for id in ids {
