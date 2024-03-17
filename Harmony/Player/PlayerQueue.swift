@@ -25,7 +25,7 @@ class PlayerQueue: ObservableObject {
     @Published var results: [Song]? {
         // TODO: Listen to changes to this and upd. songs
         didSet {
-            shuffledIdentifiers = [] // Shuffle freshly
+            loadedIdentifiers = [] // Shuffle freshly
             pastSongsRepeatStartIndex = nil // Repeat freshly
             repeatIndex = nil
             futureSongs.removeAll()
@@ -62,7 +62,7 @@ class PlayerQueue: ObservableObject {
     /// not repeat already-added songs during the random sampling of results. This is only relevant
     /// when loading in songs prior to having loaded all relevant results; when repeating the queue,
     /// we simply add new instances of past songs and do not re-shuffle.
-    private var shuffledIdentifiers: Set<String> = []
+    private var loadedIdentifiers: Set<String> = []
     /// This property tracks at which index, relative to the past songs deque's index 0, we have
     /// loaded all results into the queue's deques. This is used to in two ways; first, if it is not
     /// nil, then we have an easy way of knowing that all of the relevant results have been loaded.
@@ -243,6 +243,7 @@ class PlayerQueue: ObservableObject {
             }
             currentSong = PlayerQueueItem(song: song)
         }
+        loadedIdentifiers.insert(song.identifier)
 
         loadNextPage()
     }
@@ -270,7 +271,7 @@ class PlayerQueue: ObservableObject {
         playNextSongs.removeAll()
         futureSongs.removeAll()
 
-        shuffledIdentifiers.removeAll()
+        loadedIdentifiers.removeAll()
         repeatIndex = nil
         pastSongsRepeatStartIndex = nil
     }
@@ -327,7 +328,7 @@ class PlayerQueue: ObservableObject {
     private func reloadFutureSongs() {
         let removedIdentifiers = futureSongs.map { $0.identifier }
         futureSongs.removeAll()
-        removedIdentifiers.forEach { identifier in shuffledIdentifiers.remove(identifier) }
+        removedIdentifiers.forEach { identifier in loadedIdentifiers.remove(identifier) }
         pastSongsRepeatStartIndex = nil
         repeatIndex = nil
         loadNextPage()
@@ -362,8 +363,6 @@ class PlayerQueue: ObservableObject {
         let totalQueueCount = pastSongs.count + currentSongCount + futureSongs.count
         if repeatIndex == nil {
             repeatIndex = totalQueueCount
-        } else {
-            repeatIndex? += 1
         }
         guard let repeatIndex = repeatIndex else { return }
 
@@ -383,6 +382,7 @@ class PlayerQueue: ObservableObject {
         let lastIndexToLoad = repeatIndex + nextPageSize - 1
 
         for unboundedIndex in repeatIndex...lastIndexToLoad {
+            self.repeatIndex? += 1
             let boundedIndex = unboundedIndex.remainderReportingOverflow(
                 dividingBy: indexBoundary
             ).partialValue
@@ -403,27 +403,38 @@ class PlayerQueue: ObservableObject {
         }
     }
 
-    private func loadNextPageFromResultsShuffled(nextPageSize: Int) {
+    private func loadNextPageFromResults(nextPageSize: Int) {
         guard nextPageSize > 0,
-              let addedSongResultsIndex = addedSongResultsIndex,
               let results = results,
               !results.isEmpty
         else { return }
 
-        let afterAddedSongCount = results.count - (addedSongResultsIndex + 1)
-        var remainingResults = afterAddedSongCount - shuffledIdentifiers.count
+        var remainingResults = results.count - loadedIdentifiers.count
         guard remainingResults > 0 else { return }
-
-        let eligibleRange = addedSongResultsIndex + 1...results.count - 1
+        let eligibleRange = 0...results.count - 1
         var insertedCount = 0
 
-        while remainingResults > 0, insertedCount < nextPageSize  {
-            guard let randomIndex = eligibleRange.randomElement() else { continue }
-            let randomSong = PlayerQueueItem(song: results[randomIndex])
-            let randomSongIdentifier = randomSong.identifier
-            guard !shuffledIdentifiers.contains(randomSongIdentifier) else { continue }
-            futureSongs.append(randomSong)
-            shuffledIdentifiers.insert(randomSongIdentifier)
+        var index = eligibleRange.lowerBound
+        if !shuffleEnabled,
+           let lastLoadedSong = lastLoadedSong?.song,
+            let lastLoadedIndex = results.firstIndex(of: lastLoadedSong)
+        {
+            // Pick up from where the last load left off
+            index = lastLoadedIndex
+        }
+
+        while remainingResults > 0, insertedCount < nextPageSize {
+            if shuffleEnabled {
+                guard let randomIndex = eligibleRange.randomElement() else { continue }
+                index = randomIndex
+            } else {
+                index = (index + 1).remainderReportingOverflow(dividingBy: results.count).partialValue
+            }
+            let nextSong = PlayerQueueItem(song: results[index])
+            let nextSongIdentifier = nextSong.identifier
+            guard !loadedIdentifiers.contains(nextSongIdentifier) else { continue }
+            futureSongs.append(nextSong)
+            loadedIdentifiers.insert(nextSongIdentifier)
             remainingResults -= 1
             insertedCount += 1
         }
@@ -432,78 +443,6 @@ class PlayerQueue: ObservableObject {
             pastSongsRepeatStartIndex = proposedPastSongsRepeatStartIndex
         } else {
             pastSongsRepeatStartIndex = nil
-        }
-    }
-
-    private func loadNextPageFromResultsOrdered(nextPageSize: Int) {
-        guard nextPageSize > 0,
-              let results = results,
-              !results.isEmpty,
-              let lastLoadedSong = lastLoadedSong
-        else {
-            Logger.queue.error("Could not load next page of ordered results.")
-            return
-        }
-
-        // If the shuffle/repeat state has changed we want to load items from results based on the
-        // pre-play next items
-        var songToBuildQueueFrom = lastLoadedSong
-        if songToBuildQueueFrom.isPlayNext, !pastSongs.isEmpty {
-            var index = pastSongs.count - 1
-            var candidateSong: PlayerQueueItem?
-            while index >= 0 {
-                let song = pastSongs[index]
-                if !song.isPlayNext {
-                    candidateSong = song
-                    break
-                }
-                index -= 1
-            }
-
-            if let candidateSong = candidateSong {
-                songToBuildQueueFrom = candidateSong
-            }
-        }
-
-        guard let lastQueueSongIndex = results.firstIndex(where: {
-            $0.identifier == songToBuildQueueFrom.identifier
-        }) else {
-            Logger.queue.error("Couldn't load next page of ordered results no last queue song idx.")
-            return
-        }
-
-        let nextResultIndex = results.index(after: lastQueueSongIndex)
-        let finalResultIndex = results.count - 1
-        guard nextResultIndex <= finalResultIndex else {
-            Logger.queue.error("""
-                               Received higher next result index \(nextResultIndex)
-                               than final index \(finalResultIndex).
-                               Could not load next page of ordered results.
-                               """)
-            return
-        }
-
-        let firstResultIndex = min(nextResultIndex, finalResultIndex)
-        let lastResultIndex = min(nextResultIndex + nextPageSize - 1, finalResultIndex)
-
-        for i in firstResultIndex...lastResultIndex {
-            let song = PlayerQueueItem(song: results[i])
-            futureSongs.append(song)
-            pastSongsRepeatStartIndex = nil  // We have added new songs, can't be at end index now
-        }
-
-        if lastResultIndex == finalResultIndex {
-            pastSongsRepeatStartIndex = proposedPastSongsRepeatStartIndex
-        }
-
-        Logger.queue.debug("Loaded \((lastResultIndex - firstResultIndex) + 1) ordered results")
-    }
-
-    private func loadNextPageFromResults(nextPageSize: Int) {
-        if shuffleEnabled {
-            loadNextPageFromResultsShuffled(nextPageSize: nextPageSize)
-        } else {
-            loadNextPageFromResultsOrdered(nextPageSize: nextPageSize)
         }
     }
 }
