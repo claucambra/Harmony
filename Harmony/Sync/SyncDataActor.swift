@@ -50,9 +50,8 @@ actor SyncDataActor {
             let fetchDescriptor = FetchDescriptor<Song>(
                 predicate: #Predicate<Song> { $0.identifier == songIdentifier }
             )
-            let existingSong = try modelContext.fetch(fetchDescriptor).first
 
-            if let existingSong = existingSong {
+            if let existingSong = try modelContext.fetch(fetchDescriptor).first {
                 let isOutdated = song.versionId != existingSong.versionId
                 let existingDlState = existingSong.downloadState
                 var refreshedDlState = DownloadState.notDownloaded
@@ -61,11 +60,9 @@ actor SyncDataActor {
                 } else if existingDlState == DownloadState.downloading.rawValue {
                     refreshedDlState = .downloading
                 }
-                let refreshedSong = song.clone(downloadState: refreshedDlState)
-                modelContext.insert(refreshedSong)
-            } else {
-                modelContext.insert(song)
+                song.downloadState = refreshedDlState.rawValue
             }
+            modelContext.insert(song)
             try modelContext.save()
 
             let album = processSongAlbum(song)

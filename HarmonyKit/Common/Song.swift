@@ -37,7 +37,7 @@ public final class Song: ObservableObject {
     public private(set) var parentArtists: [Artist] = []
     @Attribute(.externalStorage) public var artwork: Data?
     public internal(set) var local: Bool = false
-    public internal(set) var downloadState = DownloadState.notDownloaded.rawValue {
+    public var downloadState = DownloadState.notDownloaded.rawValue {
         didSet { parentAlbum?.updateDownloaded() }
     }
     @Transient public internal(set) var downloadProgress: Double = 0.0
@@ -146,84 +146,6 @@ public final class Song: ObservableObject {
         default:
             return
         }
-    }
-
-    private init(
-        identifier: String,
-        parentContainerId: String,
-        backendId: String,
-        url: URL,
-        title: String,
-        artist: String,
-        album: String,
-        genre: String,
-        composer: String,
-        grouping: String,
-        peformer: String,
-        duration: TimeInterval,
-        year: Int,
-        trackNumber: Int,
-        discNumber: Int,
-        discTotal: Int,
-        parentAlbum: Album?,
-        artwork: Data?,
-        local: Bool,
-        downloadState: DownloadState,
-        downloadProgress: Double,
-        versionId: String
-    ) {
-        self.identifier = identifier
-        self.parentContainerId = parentContainerId
-        self.backendId = backendId
-        self.url = url
-        self.title = title
-        self.artist = artist
-        self.album = album
-        self.genre = genre
-        self.composer = composer
-        self.grouping = grouping
-        self.performer = peformer
-        self.duration = duration
-        self.year = year
-        self.trackNumber = trackNumber
-        self.discNumber = discNumber
-        self.discTotal = discTotal
-        self.parentAlbum = parentAlbum
-        self.artwork = artwork
-        self.local = local
-        self.downloadState = downloadState.rawValue
-        self.downloadProgress = downloadProgress
-        self.versionId = versionId
-    }
-
-    public func clone(
-        downloadState: DownloadState? = nil
-    ) -> Song {
-        let dlState = downloadState ?? DownloadState(rawValue: self.downloadState) ?? .notDownloaded
-        return Song(
-            identifier: identifier,
-            parentContainerId: parentContainerId,
-            backendId: backendId,
-            url: url,
-            title: title,
-            artist: artist,
-            album: album,
-            genre: genre,
-            composer: composer,
-            grouping: grouping,
-            peformer: performer,
-            duration: duration,
-            year: year,
-            trackNumber: trackNumber,
-            discNumber: discNumber,
-            discTotal: discTotal,
-            parentAlbum: parentAlbum,
-            artwork: artwork,
-            local: local,
-            downloadState: dlState,
-            downloadProgress: downloadProgress,
-            versionId: versionId
-        )
     }
 
     private func setupArtwork(asset: AVAsset) async {
