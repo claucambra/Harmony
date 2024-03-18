@@ -44,6 +44,7 @@ public class SyncController: ObservableObject {
         Task { @MainActor in
             currentlySyncingFully = true
         }
+        await self.dataActor.cleanup()
         let backends = BackendsModel.shared.backends.values
         await withDiscardingTaskGroup { group in
             for backend in backends {
@@ -58,7 +59,7 @@ public class SyncController: ObservableObject {
     }
 
     func syncBackend(_ backend: any Backend) async {
-        guard !backend.presentation.scanning else { return }
+        guard !currentlySyncingFully, !backend.presentation.scanning else { return }
 
         let backendId = backend.id
         do {

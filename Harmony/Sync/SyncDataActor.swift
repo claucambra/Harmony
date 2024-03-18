@@ -12,6 +12,21 @@ import SwiftData
 
 @ModelActor
 actor SyncDataActor {
+    func cleanup() {
+        let dlState = DownloadState.downloading.rawValue
+        let fetchDsc = FetchDescriptor<Song>( predicate: #Predicate { $0.downloadState == dlState })
+        do {
+            let downloadingSongs = try modelContext.fetch(fetchDsc)
+            for song in downloadingSongs {
+                song.downloadState = DownloadState.notDownloaded.rawValue
+            }
+            try modelContext.save()
+        } catch let error {
+            Logger.sync.error("Could not run init cleanup: \(error)")
+            return
+        }
+    }
+
     // TODO: Deduplicate approval methods with use of generics/protocol
     func approvalForSongScan(id: String, versionId: String) -> Bool {
         do {
@@ -246,6 +261,7 @@ actor SyncDataActor {
                 Logger.sync.info("Removing stale artist \(staleArtist.name)")
                 modelContext.delete(staleArtist)
             }
+            try modelContext.save()
         } catch let error {
             Logger.sync.error("Could not delete stale groupings: \(error)")
         }
