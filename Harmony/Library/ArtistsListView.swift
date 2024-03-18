@@ -60,6 +60,8 @@ struct ArtistsListView: View {
             }
         }
         .listStyle(.plain)
+        #if !os(macOS)
         .searchable(text: $searchText, placement: .navigationBarDrawer)
+        #endif
     }
 }
