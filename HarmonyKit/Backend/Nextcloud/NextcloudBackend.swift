@@ -239,6 +239,10 @@ public class NextcloudBackend: NSObject, Backend {
     public func cancelScan() {
         Logger.ncBackend.info("Cancelling scan for \(self.id)")
         scanTask?.cancel()
+        ncKit.sessionManager.session.getTasksWithCompletionHandler {
+            (dataTasks, uploadTasks, downloadTasks) in
+            dataTasks.forEach { $0.cancel() }
+        }
     }
 
     public func assetForSong(_ song: Song) -> AVAsset? {
