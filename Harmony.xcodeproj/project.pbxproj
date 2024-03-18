@@ -19,6 +19,7 @@
 		534F813D2BA311E00068D145 /* Container.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534F813C2BA311E00068D145 /* Container.swift */; };
 		534F813F2BA47F990068D145 /* SyncDataActor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534F813E2BA47F990068D145 /* SyncDataActor.swift */; };
 		534F81412BA7082F0068D145 /* PlayerQueueItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534F81402BA7082F0068D145 /* PlayerQueueItem.swift */; };
+		534F81432BA824920068D145 /* KeepOfflineButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534F81422BA824920068D145 /* KeepOfflineButton.swift */; };
 		535053332B5955C900D7EAF2 /* HarmonyKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 535053292B5955C800D7EAF2 /* HarmonyKit.framework */; };
 		5350533E2B5955C900D7EAF2 /* HarmonyKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 535053292B5955C800D7EAF2 /* HarmonyKit.framework */; };
 		5350533F2B5955C900D7EAF2 /* HarmonyKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 535053292B5955C800D7EAF2 /* HarmonyKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -184,6 +185,7 @@
 		534F813C2BA311E00068D145 /* Container.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Container.swift; sourceTree = "<group>"; };
 		534F813E2BA47F990068D145 /* SyncDataActor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncDataActor.swift; sourceTree = "<group>"; };
 		534F81402BA7082F0068D145 /* PlayerQueueItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerQueueItem.swift; sourceTree = "<group>"; };
+		534F81422BA824920068D145 /* KeepOfflineButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeepOfflineButton.swift; sourceTree = "<group>"; };
 		535053292B5955C800D7EAF2 /* HarmonyKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = HarmonyKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		535053322B5955C800D7EAF2 /* HarmonyKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HarmonyKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		535053472B5955F900D7EAF2 /* HarmonyKit.docc */ = {isa = PBXFileReference; lastKnownFileType = folder.documentationcatalog; path = HarmonyKit.docc; sourceTree = "<group>"; };
@@ -537,6 +539,7 @@
 			children = (
 				53B979762B834EA4002DA742 /* AirPlayButton.swift */,
 				535054102B63A1EB00D7EAF2 /* ChangeSongButton.swift */,
+				534F81422BA824920068D145 /* KeepOfflineButton.swift */,
 				5350540E2B63A12800D7EAF2 /* PlayButton.swift */,
 				535054182B63A4AA00D7EAF2 /* QueueButton.swift */,
 				535054162B63A3F500D7EAF2 /* RepeatButton.swift */,
@@ -1017,6 +1020,7 @@
 				535053F72B625AB100D7EAF2 /* PlayerController.swift in Sources */,
 				53B979772B834EA4002DA742 /* AirPlayButton.swift in Sources */,
 				53EA71282B9DAB38008FEB8A /* SplitContentView.swift in Sources */,
+				534F81432BA824920068D145 /* KeepOfflineButton.swift in Sources */,
 				5350537E2B5BB39000D7EAF2 /* DetailColumn.swift in Sources */,
 				53FE146F2B905D16006C4193 /* ArtworkView.swift in Sources */,
 				5350541B2B63BBC500D7EAF2 /* ConfiguredBackendsListItemView.swift in Sources */,
