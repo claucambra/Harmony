@@ -509,7 +509,6 @@
 		535053F52B625A9D00D7EAF2 /* Player */ = {
 			isa = PBXGroup;
 			children = (
-				5350540D2B63A10B00D7EAF2 /* Buttons */,
 				53D666622B7285120042C03D /* FloatingCurrentSongView.swift */,
 				53802A392B66AF2B0066208D /* PhonePlayerDrawer.swift */,
 				535053F62B625AB100D7EAF2 /* PlayerController.swift */,
@@ -590,6 +589,7 @@
 		535F1BCF2B4A8F1400C78D98 /* Harmony */ = {
 			isa = PBXGroup;
 			children = (
+				5350540D2B63A10B00D7EAF2 /* Buttons */,
 				53D666682B74C51B0042C03D /* Common */,
 				535054022B6356E400D7EAF2 /* Extensions */,
 				535053742B5AA63500D7EAF2 /* Library */,
