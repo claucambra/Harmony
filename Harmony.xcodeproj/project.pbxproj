@@ -233,6 +233,14 @@
 		5350541A2B63BBC500D7EAF2 /* ConfiguredBackendsListItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfiguredBackendsListItemView.swift; sourceTree = "<group>"; };
 		5350541C2B63C71400D7EAF2 /* BackendPresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendPresentable.swift; sourceTree = "<group>"; };
 		535054312B66248C00D7EAF2 /* ConfiguredBackendsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfiguredBackendsListView.swift; sourceTree = "<group>"; };
+		5358F2BA2BAADAB700E3C729 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		5358F2BC2BAADBE700E3C729 /* desktop-albums.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "desktop-albums.png"; sourceTree = "<group>"; };
+		5358F2BD2BAADBE700E3C729 /* desktop-album-detail.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "desktop-album-detail.png"; sourceTree = "<group>"; };
+		5358F2BE2BAADBE700E3C729 /* desktop-artists.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "desktop-artists.png"; sourceTree = "<group>"; };
+		5358F2BF2BAADBE700E3C729 /* phone-album-detail.PNG */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "phone-album-detail.PNG"; sourceTree = "<group>"; };
+		5358F2C02BAADBE700E3C729 /* phone-albums.PNG */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "phone-albums.PNG"; sourceTree = "<group>"; };
+		5358F2C12BAADBE700E3C729 /* phone-songs.PNG */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "phone-songs.PNG"; sourceTree = "<group>"; };
+		5358F2C22BAADBE700E3C729 /* desktop-songs.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "desktop-songs.png"; sourceTree = "<group>"; };
 		535DAFC62B9F7AC100C94B62 /* Artist.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Artist.swift; sourceTree = "<group>"; };
 		535F1BCD2B4A8F1400C78D98 /* Harmony.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Harmony.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		535F1BD02B4A8F1400C78D98 /* HarmonyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HarmonyApp.swift; sourceTree = "<group>"; };
@@ -548,13 +556,6 @@
 			path = Buttons;
 			sourceTree = "<group>";
 		};
-		5350542D2B64E48600D7EAF2 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
 		535054302B64EF5300D7EAF2 /* Sync */ = {
 			isa = PBXGroup;
 			children = (
@@ -564,16 +565,31 @@
 			path = Sync;
 			sourceTree = "<group>";
 		};
+		5358F2BB2BAADBE700E3C729 /* Screenshots */ = {
+			isa = PBXGroup;
+			children = (
+				5358F2BC2BAADBE700E3C729 /* desktop-albums.png */,
+				5358F2BD2BAADBE700E3C729 /* desktop-album-detail.png */,
+				5358F2BE2BAADBE700E3C729 /* desktop-artists.png */,
+				5358F2BF2BAADBE700E3C729 /* phone-album-detail.PNG */,
+				5358F2C02BAADBE700E3C729 /* phone-albums.PNG */,
+				5358F2C12BAADBE700E3C729 /* phone-songs.PNG */,
+				5358F2C22BAADBE700E3C729 /* desktop-songs.png */,
+			);
+			path = Screenshots;
+			sourceTree = "<group>";
+		};
 		535F1BC42B4A8F1400C78D98 = {
 			isa = PBXGroup;
 			children = (
+				5358F2BA2BAADAB700E3C729 /* README.md */,
 				535F1BCF2B4A8F1400C78D98 /* Harmony */,
 				535F1BE12B4A8F1600C78D98 /* HarmonyTests */,
 				535F1BEB2B4A8F1600C78D98 /* HarmonyUITests */,
 				5350532A2B5955C800D7EAF2 /* HarmonyKit */,
 				535053382B5955C900D7EAF2 /* HarmonyKitTests */,
 				535F1BCE2B4A8F1400C78D98 /* Products */,
-				5350542D2B64E48600D7EAF2 /* Frameworks */,
+				5358F2BB2BAADBE700E3C729 /* Screenshots */,
 			);
 			sourceTree = "<group>";
 		};
