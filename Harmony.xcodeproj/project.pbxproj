@@ -241,6 +241,8 @@
 		5358F2C02BAADBE700E3C729 /* phone-albums.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "phone-albums.png"; sourceTree = "<group>"; };
 		5358F2C12BAADBE700E3C729 /* phone-songs.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "phone-songs.png"; sourceTree = "<group>"; };
 		5358F2C22BAADBE700E3C729 /* desktop-songs.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "desktop-songs.png"; sourceTree = "<group>"; };
+		5358F2C32BAAE38900E3C729 /* phone-song-drawer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "phone-song-drawer.png"; sourceTree = "<group>"; };
+		5358F2C42BAAE39900E3C729 /* phone-queue-drawer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "phone-queue-drawer.png"; sourceTree = "<group>"; };
 		535DAFC62B9F7AC100C94B62 /* Artist.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Artist.swift; sourceTree = "<group>"; };
 		535F1BCD2B4A8F1400C78D98 /* Harmony.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Harmony.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		535F1BD02B4A8F1400C78D98 /* HarmonyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HarmonyApp.swift; sourceTree = "<group>"; };
@@ -574,6 +576,8 @@
 				5358F2BF2BAADBE700E3C729 /* phone-album-detail.png */,
 				5358F2C02BAADBE700E3C729 /* phone-albums.png */,
 				5358F2C12BAADBE700E3C729 /* phone-songs.png */,
+				5358F2C32BAAE38900E3C729 /* phone-song-drawer.png */,
+				5358F2C42BAAE39900E3C729 /* phone-queue-drawer.png */,
 				5358F2C22BAADBE700E3C729 /* desktop-songs.png */,
 			);
 			path = Screenshots;

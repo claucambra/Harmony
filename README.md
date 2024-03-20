@@ -9,12 +9,21 @@ Currently supports local playback, and streaming from:
 
 (more coming)
 
+Other features:
+
+- Fast scanning of remote sources
+- Keep remote songs available offline
+- Full FLAC support (including metadata, even for streamed files)
+- and more coming!
+
 **Still in alpha!**
 
 <p float="left">
-    <img src="Screenshots/phone-songs.png" alt="iPhone songs view" width="33%">
-    <img src="Screenshots/phone-albums.png" alt="iPhone albums view" width="33%">
-    <img src="Screenshots/phone-album-detail.png" alt="iPhone album view" width="33%>
+    <img src="Screenshots/phone-song-drawer.png" alt="iPhone songs view" width="19%">
+    <img src="Screenshots/phone-queue-drawer.png" alt="iPhone songs view" width="19%">
+    <img src="Screenshots/phone-songs.png" alt="iPhone songs view" width="19%">
+    <img src="Screenshots/phone-albums.png" alt="iPhone albums view" width="19%">
+    <img src="Screenshots/phone-album-detail.png" alt="iPhone album view" width="19%>
 </p>
 
 <p float="left">
