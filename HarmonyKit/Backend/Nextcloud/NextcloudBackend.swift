@@ -100,20 +100,6 @@ public class NextcloudBackend: NSObject, Backend, URLSessionDelegate, URLSession
         webSocketTask = webSocketUrlSession?.webSocketTask(with: websocketEndpointUrl)
         webSocketTask?.resume()
         Logger.ncBackend.info("Successfully configured push notifications for \(self.id)")
-        readSocket()
-        sendWebsocketPing()
-    }
-
-    private func sendWebsocketPing() {  // Keep the socket connection alive
-        webSocketTask?.sendPing { error in
-            if let error = error {
-                Logger.ncBackend.warning("Sending websocket PING failed: \(error)")
-            }
-
-            DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
-                self.sendWebsocketPing()
-            }
-        }
     }
 
     public func urlSession(
