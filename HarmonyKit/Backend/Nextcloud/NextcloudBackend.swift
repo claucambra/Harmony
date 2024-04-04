@@ -17,7 +17,7 @@ extension Logger {
 
 fileprivate let NextcloudWebDavFilesUrlSuffix: String = "/remote.php/dav/files/"
 
-public class NextcloudBackend: NSObject, Backend {
+public class NextcloudBackend: NSObject, Backend, URLSessionDelegate, URLSessionWebSocketDelegate {
     public let typeDescription: BackendDescription = ncBackendTypeDescription
     public let id: String
     public var presentation: BackendPresentable
@@ -101,6 +101,35 @@ public class NextcloudBackend: NSObject, Backend {
         webSocketTask?.resume()
         Logger.ncBackend.info("Successfully configured push notifications for \(self.id)")
         readSocket()
+
+    public func urlSession(
+        _ session: URLSession,
+        didReceive challenge: URLAuthenticationChallenge,
+        completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
+    ) {
+        let authMethod = challenge.protectionSpace.authenticationMethod
+        Logger.ncBackend.debug("Received authentication challenge with method: \(authMethod)")
+        if authMethod == NSURLAuthenticationMethodHTTPBasic {
+            let credential = URLCredential(
+                user: ncKit.nkCommonInstance.userId,
+                password: ncKit.nkCommonInstance.password,
+                persistence: .forSession
+            )
+            completionHandler(.useCredential, credential)
+        } else if authMethod == NSURLAuthenticationMethodServerTrust {
+            // TODO: Validate the server trust
+            guard let serverTrust = challenge.protectionSpace.serverTrust else {
+                Logger.ncBackend.warning("Received server trust auth challenge but no trust avail")
+                completionHandler(.cancelAuthenticationChallenge, nil)
+                return
+            }
+            let credential = URLCredential(trust: serverTrust)
+            completionHandler(.useCredential, credential)
+        } else {
+            Logger.ncBackend.warning("Unhandled auth method: \(authMethod)")
+            // Handle other authentication methods or cancel the challenge
+            completionHandler(.cancelAuthenticationChallenge, nil)
+        }
     }
 
     private func readSocket() {
