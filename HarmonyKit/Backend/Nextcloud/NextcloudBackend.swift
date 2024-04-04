@@ -6,6 +6,7 @@
 //
 
 import AVFoundation
+import NextcloudCapabilitiesKit
 import NextcloudKit
 import OSLog
 import SwiftData
@@ -27,6 +28,7 @@ public class NextcloudBackend: NSObject, Backend {
     private let filesPath: String
     private let logger = Logger.ncBackend
     private let maxConcurrentScans = 4
+    private var capabilities: Capabilities?
     private var scanTask: Task<(), Error>?
 
     public required init(config: BackendConfiguration) {
@@ -58,6 +60,30 @@ public class NextcloudBackend: NSObject, Backend {
             secondary: typeDescription.description,
             config: "URL: \(filesPath)"
         )
+
+        super.init()
+        Task { await self.configureNotifyPush() }
+    }
+
+    // MARK: - NotifyPush WebSocket handling
+    private func configureNotifyPush() async {
+        let capabilitiesData: Data? = await withCheckedContinuation { continuation in
+            ncKit.getCapabilities { account, data, error in
+                guard error == .success else {
+                    Logger.ncBackend.error("Could not get \(self.id) capabilities: \(error)")
+                    continuation.resume(returning: nil)
+                    return
+                }
+                continuation.resume(returning: data)
+            }
+        }
+        guard let capabilitiesData = capabilitiesData,
+              let capabilities = Capabilities(data: capabilitiesData),
+              let websocketEndpoint = capabilities.notifyPush?.endpoints?.websocket
+        else {
+            Logger.ncBackend.error("Could not get notifyPush websocket \(self.id)")
+            return
+        }
     }
 
     public func scan(
