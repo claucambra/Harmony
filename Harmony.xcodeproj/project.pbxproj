@@ -68,6 +68,7 @@
 		5350542B2B64293600D7EAF2 /* SyncController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5350535F2B59581600D7EAF2 /* SyncController.swift */; };
 		5350542F2B64E48600D7EAF2 /* OrderedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = 5350542E2B64E48600D7EAF2 /* OrderedCollections */; };
 		535054322B66248C00D7EAF2 /* ConfiguredBackendsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535054312B66248C00D7EAF2 /* ConfiguredBackendsListView.swift */; };
+		5358F2B62BAA01DC00E3C729 /* NextcloudCapabilitiesKit in Frameworks */ = {isa = PBXBuildFile; productRef = 5358F2B52BAA01DC00E3C729 /* NextcloudCapabilitiesKit */; };
 		535DAFC72B9F7AC100C94B62 /* Artist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535DAFC62B9F7AC100C94B62 /* Artist.swift */; };
 		535F1BD12B4A8F1400C78D98 /* HarmonyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535F1BD02B4A8F1400C78D98 /* HarmonyApp.swift */; };
 		535F1BD32B4A8F1400C78D98 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535F1BD22B4A8F1400C78D98 /* ContentView.swift */; };
@@ -303,6 +304,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5358F2B62BAA01DC00E3C729 /* NextcloudCapabilitiesKit in Frameworks */,
 				53B9796F2B7F6D55002DA742 /* NextcloudKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -749,6 +751,7 @@
 			name = HarmonyKit;
 			packageProductDependencies = (
 				53B9796E2B7F6D55002DA742 /* NextcloudKit */,
+				5358F2B52BAA01DC00E3C729 /* NextcloudCapabilitiesKit */,
 			);
 			productName = HarmonyKit;
 			productReference = 535053292B5955C800D7EAF2 /* HarmonyKit.framework */;
@@ -874,6 +877,7 @@
 			packageReferences = (
 				5350541F2B64142200D7EAF2 /* XCRemoteSwiftPackageReference "swift-collections" */,
 				53B9796D2B7F6D55002DA742 /* XCRemoteSwiftPackageReference "NextcloudKit" */,
+				5358F2B42BAA01DC00E3C729 /* XCRemoteSwiftPackageReference "NextcloudCapabilitiesKit" */,
 			);
 			productRefGroup = 535F1BCE2B4A8F1400C78D98 /* Products */;
 			projectDirPath = "";
@@ -1583,6 +1587,14 @@
 				minimumVersion = 1.0.6;
 			};
 		};
+		5358F2B42BAA01DC00E3C729 /* XCRemoteSwiftPackageReference "NextcloudCapabilitiesKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/claucambra/NextcloudCapabilitiesKit.git";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
 		53B9796D2B7F6D55002DA742 /* XCRemoteSwiftPackageReference "NextcloudKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/nextcloud/NextcloudKit.git";
@@ -1603,6 +1615,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 5350541F2B64142200D7EAF2 /* XCRemoteSwiftPackageReference "swift-collections" */;
 			productName = OrderedCollections;
+		};
+		5358F2B52BAA01DC00E3C729 /* NextcloudCapabilitiesKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5358F2B42BAA01DC00E3C729 /* XCRemoteSwiftPackageReference "NextcloudCapabilitiesKit" */;
+			productName = NextcloudCapabilitiesKit;
 		};
 		53B9796E2B7F6D55002DA742 /* NextcloudKit */ = {
 			isa = XCSwiftPackageProductDependency;
