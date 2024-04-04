@@ -17,6 +17,7 @@ extension Logger {
 
 fileprivate let NextcloudWebDavFilesUrlSuffix: String = "/remote.php/dav/files/"
 fileprivate let NotifyPushWebSocketPingIntervalNanoseconds: UInt64 = 30 * 1_000_000
+fileprivate let NotifyPushWebSocketPingFailLimit = 8
 
 public class NextcloudBackend: NSObject, Backend, URLSessionDelegate, URLSessionWebSocketDelegate {
     public let typeDescription: BackendDescription = ncBackendTypeDescription
@@ -33,6 +34,7 @@ public class NextcloudBackend: NSObject, Backend, URLSessionDelegate, URLSession
     private var webSocketUrlSession: URLSession?
     private var webSocketTask: URLSessionWebSocketTask?
     private var webSocketOperationQueue = OperationQueue()
+    private var webSocketPingFailCount = 0
     private var scanTask: Task<(), Error>?
 
     public required init(config: BackendConfiguration) {
@@ -80,6 +82,7 @@ public class NextcloudBackend: NSObject, Backend, URLSessionDelegate, URLSession
         webSocketTask = nil
         webSocketOperationQueue.cancelAllOperations()
         webSocketOperationQueue.isSuspended = true
+        webSocketPingFailCount = 0
     }
 
     private func configureNotifyPush() async {
@@ -184,7 +187,13 @@ public class NextcloudBackend: NSObject, Backend, URLSessionDelegate, URLSession
             webSocketTask?.sendPing { error in continuation.resume(returning: error) }
         }) {
             Logger.ncBackend.warning("Websocket ping failed: \(error)")
+            webSocketPingFailCount += 1
+            if webSocketPingFailCount > NotifyPushWebSocketPingFailLimit {
+                reconnectWebSocket()
+            } else {
+                Task.detached { await self.pingWebSocket() }
             }
+            return
         }
 
         do {
@@ -243,6 +252,7 @@ public class NextcloudBackend: NSObject, Backend, URLSessionDelegate, URLSession
         }
     }
 
+    // MARK: - Standard Backend protocol implementation
     public func scan(
         containerScanApprover: @Sendable @escaping (String, String) async -> Bool,
         songScanApprover: @Sendable @escaping (String, String) async -> Bool,
