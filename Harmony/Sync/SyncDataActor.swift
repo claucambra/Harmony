@@ -179,10 +179,13 @@ actor SyncDataActor {
 
         do {
             let backendSongs = try modelContext.fetch(fetchDescriptor)
+            let protectedContainerHierarchy = try containersWithChildren(
+                parents: songContainers, backendId: backendId
+            )
             let songsForRemoval = try backendSongs.filter(
                 #Predicate {
                     !exceptions.contains($0.identifier) &&
-                    !songContainers.contains($0.parentContainerId)
+                    !protectedContainerHierarchy.contains($0.parentContainerId)
                 }
             )
             for songToRemove in songsForRemoval {
