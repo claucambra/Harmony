@@ -29,6 +29,9 @@ public class NextcloudBackend: NSObject, Backend {
     private let logger = Logger.ncBackend
     private let maxConcurrentScans = 4
     private var capabilities: Capabilities?
+    private var webSocketUrlSession: URLSession?
+    private var webSocketTask: URLSessionWebSocketTask?
+    private var webSocketOperationQueue = OperationQueue()
     private var scanTask: Task<(), Error>?
 
     public required init(config: BackendConfiguration) {
@@ -84,6 +87,19 @@ public class NextcloudBackend: NSObject, Backend {
             Logger.ncBackend.error("Could not get notifyPush websocket \(self.id)")
             return
         }
+
+        guard let websocketEndpointUrl = URL(string: websocketEndpoint) else {
+            Logger.ncBackend.error("Received notifyPush endpoint is invalid: \(websocketEndpoint)")
+            return
+        }
+        webSocketUrlSession = URLSession(
+            configuration: URLSessionConfiguration.default,
+            delegate: self, 
+            delegateQueue: webSocketOperationQueue
+        )
+        webSocketTask = webSocketUrlSession?.webSocketTask(with: websocketEndpointUrl)
+        webSocketTask?.resume()
+        Logger.ncBackend.info("Successfully configured push notifications for \(self.id)")
     }
 
     public func scan(
