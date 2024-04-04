@@ -23,24 +23,7 @@ struct ConfiguredBackendsListView: View {
                     let presentable = backendPresentable.wrappedValue
                     listItemView(presentable: presentable)
                         .swipeActions(edge: .leading) {
-                            Button {
-                                guard let backend = backendsModel.backends[presentable.id] else {
-                                    return
-                                }
-                                Task {
-                                    if presentable.scanning {
-                                        backend.cancelScan()
-                                    } else {
-                                        await SyncController.shared.syncBackend(backend)
-                                    }
-                                }
-                            } label: {
-                                if presentable.scanning {
-                                    Label("Cancel sync", systemImage: "stop")
-                                } else {
-                                    Label("Sync", systemImage: "arrow.triangle.2.circlepath")
-                                }
-                            }
+                            SyncBackendButton(backendPresentable: presentable)
                         }
                 }
                 .onDelete(perform: { indexSet in
