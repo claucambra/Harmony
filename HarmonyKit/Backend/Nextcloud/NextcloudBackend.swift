@@ -189,18 +189,42 @@ public class NextcloudBackend: NSObject, Backend, URLSessionDelegate, URLSession
             case .success(let message):
                 switch message {
                 case .data(let data):
-                    Logger.ncBackend.debug(
-                        "Received websocket data: \(String(data: data, encoding: .utf8) ?? "")"
-                    )
+                    self.processWebsocket(data: data)
                 case .string(let string):
-                    Logger.ncBackend.debug(
-                        "Received websocket string: \(string)"
-                    )
+                    self.processWebsocket(string: string)
                 @unknown default:
                     Logger.ncBackend.error("Unknown case encountered while reading websocket!")
                 }
                 self.readWebSocket()
             }
+        }
+    }
+
+    private func processWebsocket(data: Data) {
+        guard let string = String(data: data, encoding: .utf8) else {
+            Logger.ncBackend.error("Could not convert websocket data to string for id: \(self.id)")
+            return
+        }
+        processWebsocket(string: string)
+    }
+
+    private func processWebsocket(string: String) {
+        Logger.ncBackend.debug("Received websocket string: \(string)")
+        if string == "notify_file" {
+            Logger.ncBackend.debug("Received file notification for \(self.id)")
+            NotificationCenter.default.post(name: BackendNewScanRequiredNotification, object: self)
+        } else if string == "notify_activity" {
+            Logger.ncBackend.debug("Received activity notification, ignoring: \(self.id)")
+        } else if string == "notify_notification" {
+            Logger.ncBackend.debug("Received notification notification, ignoring: \(self.id)")
+        } else if string == "authenticated" {
+            Logger.ncBackend.debug("Correctly authenticated websocket for \(self.id), pinging")
+            Task.detached { await self.pingWebSocket() }
+        } else if string == "err: Invalid credentials" {
+            Logger.ncBackend.debug("Invalid creds for websocket for \(self.id), reconfiguring")
+            Task { await self.configureNotifyPush() }  // TODO: Limit attempts
+        } else {
+            Logger.ncBackend.warning("Received unknown string from websocket \(self.id): \(string)")
         }
     }
 

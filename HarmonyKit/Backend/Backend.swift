@@ -8,6 +8,8 @@
 import AVFoundation
 import Foundation
 
+public let BackendNewScanRequiredNotification = Notification.Name("BackendNewScanRequired")
+
 public protocol Backend: Identifiable, Hashable, ObservableObject {
     var typeDescription: BackendDescription { get }
     var id: String { get }
