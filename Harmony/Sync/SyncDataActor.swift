@@ -251,36 +251,21 @@ actor SyncDataActor {
 
     func containersWithChildren(parents: Set<String>, backendId: String) throws -> Set<String> {
         let fetchDescriptor = FetchDescriptor<Container>(
-            predicate: #Predicate { $0.backendId == backendId }
+            predicate: #Predicate { parents.contains($0.identifier) && $0.backendId == backendId }
         )
-        let backendSongContainers = try modelContext.fetch(fetchDescriptor)
-        let directChildren = Set(try backendSongContainers.filter(
-            #Predicate { parents.contains($0.identifier) }
-        ))
-        let potentialNonChildren = try backendSongContainers.filter(
-            #Predicate { !parents.contains($0.identifier) }
-        )
-        var validChildren = parents.union(directChildren.map { $0.identifier })
-        for container in potentialNonChildren {
-            let songContainerId = container.identifier
-            guard !validChildren.contains(songContainerId) else { continue }
-            var hierarchy: Set<String> = [songContainerId]
-            var nextParent = container.parentContainer
-            while let scanningParent = nextParent {
-                let scanningParentId = scanningParent.identifier
-                guard !validChildren.contains(scanningParentId) else {
-                    validChildren.formUnion(hierarchy)
-                    break
-                }
-                hierarchy.insert(scanningParentId)
-                if parents.contains(scanningParentId) {
-                    validChildren.formUnion(hierarchy)
-                    break
-                } else {
-                    nextParent = scanningParent.parentContainer
-                }
+        let parentContainers = try modelContext.fetch(fetchDescriptor)
+        var hierarchy = parents
+        var queue: [Container] = parentContainers
+
+        while !queue.isEmpty {
+            var newQueue: [Container] = []
+            queue.forEach {
+                hierarchy.insert($0.identifier)
+                newQueue += $0.childContainers
             }
+            queue = newQueue
         }
-        return validChildren
+
+        return hierarchy
     }
 }
