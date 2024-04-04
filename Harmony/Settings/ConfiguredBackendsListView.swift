@@ -25,6 +25,9 @@ struct ConfiguredBackendsListView: View {
                         .swipeActions(edge: .leading) {
                             SyncBackendButton(backendPresentable: presentable)
                         }
+                        .contextMenu {
+                            SyncBackendButton(backendPresentable: presentable)
+                        }
                 }
                 .onDelete(perform: { indexSet in
                     for index in indexSet {
