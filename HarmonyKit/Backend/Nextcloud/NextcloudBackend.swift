@@ -137,7 +137,8 @@ public class NextcloudBackend: NSObject, Backend, URLSessionDelegate, URLSession
         webSocketTask: URLSessionWebSocketTask,
         didOpenWithProtocol protocol: String?
     ) {
-        Logger.ncBackend.debug("We have a websocket connection for \(self.id)")
+        Logger.ncBackend.debug("Websocket connected for \(self.id), sending auth details")
+        Task { await authenticateWebSocket() }
     }
 
     public func urlSession(
@@ -154,7 +155,27 @@ public class NextcloudBackend: NSObject, Backend, URLSessionDelegate, URLSession
         Task { await configureNotifyPush() }
     }
 
-    private func readSocket() {
+    private func authenticateWebSocket() async {
+        do {
+            try await webSocketTask?.send(.string(ncKit.nkCommonInstance.userId))
+            try await webSocketTask?.send(.string(ncKit.nkCommonInstance.password))
+        } catch let error {
+            Logger.ncBackend.error("Error authenticating websocket for \(self.id): \(error)")
+        }
+        readWebSocket()
+    }
+
+    private func pingWebSocket() async {  // Keep the socket connection alive
+        if let error = await withCheckedContinuation({ continuation in
+            webSocketTask?.sendPing { error in continuation.resume(returning: error) }
+        }) {
+            Logger.ncBackend.warning("Websocket ping failed: \(error)")
+        } else {
+            Task.detached { await self.pingWebSocket() }
+        }
+    }
+
+    private func readWebSocket() {
         webSocketTask?.receive { result in
             switch result {
             case .failure:
@@ -172,7 +193,7 @@ public class NextcloudBackend: NSObject, Backend, URLSessionDelegate, URLSession
                 @unknown default:
                     Logger.ncBackend.error("Unknown case encountered while reading websocket!")
                 }
-                self.readSocket()
+                self.readWebSocket()
             }
         }
     }
