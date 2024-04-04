@@ -100,6 +100,30 @@ public class NextcloudBackend: NSObject, Backend {
         webSocketTask = webSocketUrlSession?.webSocketTask(with: websocketEndpointUrl)
         webSocketTask?.resume()
         Logger.ncBackend.info("Successfully configured push notifications for \(self.id)")
+        readSocket()
+    }
+
+    private func readSocket() {
+        webSocketTask?.receive { result in
+            switch result {
+            case .failure:
+                Logger.ncBackend.debug("Failed to read websocket for \(self.id)")
+            case .success(let message):
+                switch message {
+                case .data(let data):
+                    Logger.ncBackend.debug(
+                        "Received websocket data: \(String(data: data, encoding: .utf8) ?? "")"
+                    )
+                case .string(let string):
+                    Logger.ncBackend.debug(
+                        "Received websocket string: \(string)"
+                    )
+                @unknown default:
+                    Logger.ncBackend.error("Unknown case encountered while reading websocket!")
+                }
+                self.readSocket()
+            }
+        }
     }
 
     public func scan(
