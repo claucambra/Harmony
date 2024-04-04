@@ -200,6 +200,7 @@ public class NextcloudBackend: NSObject, Backend, URLSessionDelegate, URLSession
             switch result {
             case .failure:
                 Logger.ncBackend.debug("Failed to read websocket for \(self.id)")
+                self.reconnectWebSocket()
             case .success(let message):
                 switch message {
                 case .data(let data):
