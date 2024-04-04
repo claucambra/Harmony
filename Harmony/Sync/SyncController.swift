@@ -10,36 +10,6 @@ import HarmonyKit
 import OSLog
 import SwiftData
 
-actor CurrentSyncActor {
-    var foundSongs: [String: String] = [:]  // song id, backend id
-    var foundContainers: [String: String] = [:]  // container id, backend id
-    var skippedContainers: [String: String] = [:]  // container id, backend id
-
-    func addFound(songId: String, backendId: String) {
-        foundSongs[songId] = backendId
-    }
-
-    func addFound(containerId: String, backendId: String) {
-        foundContainers[containerId] = backendId
-    }
-
-    func addSkipped(containerId: String, backendId: String) {
-        skippedContainers[containerId] = backendId
-    }
-
-    func removeFound(songIds: [String]) {
-        songIds.forEach { foundSongs.removeValue(forKey: $0) }
-    }
-
-    func removeFound(containerIds: [String]) {
-        containerIds.forEach { foundContainers.removeValue(forKey: $0) }
-    }
-
-    func removeSkipped(containerIds: [String]) {
-        containerIds.forEach { skippedContainers.removeValue(forKey: $0) }
-    }
-}
-
 public class SyncController: ObservableObject {
     static let shared = SyncController()
     let dataActor = SyncDataActor(
@@ -63,7 +33,7 @@ public class SyncController: ObservableObject {
 
     init() {
         Task.detached(priority: .background) {
-            await self.sync()
+            //await self.sync()
         }
         
         NotificationCenter.default.addObserver(
@@ -86,12 +56,8 @@ public class SyncController: ObservableObject {
         }
         await self.dataActor.cleanup()
         let backends = BackendsModel.shared.backends.values
-        await withDiscardingTaskGroup { group in
-            for backend in backends {
-                group.addTask {
-                    await self.syncBackend(backend)
-                }
-            }
+        for backend in backends {
+            await self.syncBackend(backend)
         }
         Task { @MainActor in
             currentlySyncingFully = false
@@ -147,6 +113,7 @@ public class SyncController: ObservableObject {
                 let foundContainers = Set(retrievedContainerIdentifiers)
                 let skippedContainers = Set(skippedContainerIdentifiers)
                 // Clear all stale songs (i.e. those that no longer exist in backend)
+                print("foundContainers", foundContainers, "skippedContianers", skippedContainers)
                 await self.dataActor.clearSongs(
                     backendId: backend.id,
                     withExceptions: songExceptionSet,

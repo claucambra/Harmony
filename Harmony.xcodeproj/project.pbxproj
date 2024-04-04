@@ -90,6 +90,7 @@
 		537632EF2B887AA90026BFAB /* FLACRemoteMetadataFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 537632EE2B887AA90026BFAB /* FLACRemoteMetadataFetcher.swift */; };
 		53802A3A2B66AF2B0066208D /* PhonePlayerDrawer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53802A392B66AF2B0066208D /* PhonePlayerDrawer.swift */; };
 		53802A3E2B6790330066208D /* ToolbarVolumeSliderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53802A3D2B6790330066208D /* ToolbarVolumeSliderView.swift */; };
+		539C54E72BBF0F97005C9F9A /* CurrentSyncDataActor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 539C54E62BBF0F97005C9F9A /* CurrentSyncDataActor.swift */; };
 		53B19BE42B9A0EBA00FE53E4 /* DownloadStateLabelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53B19BE32B9A0EBA00FE53E4 /* DownloadStateLabelView.swift */; };
 		53B9796C2B7E8159002DA742 /* PlaceholderArtworkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53B9796B2B7E8159002DA742 /* PlaceholderArtworkView.swift */; };
 		53B9796F2B7F6D55002DA742 /* NextcloudKit in Frameworks */ = {isa = PBXBuildFile; productRef = 53B9796E2B7F6D55002DA742 /* NextcloudKit */; };
@@ -269,6 +270,7 @@
 		537632EE2B887AA90026BFAB /* FLACRemoteMetadataFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FLACRemoteMetadataFetcher.swift; sourceTree = "<group>"; };
 		53802A392B66AF2B0066208D /* PhonePlayerDrawer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhonePlayerDrawer.swift; sourceTree = "<group>"; };
 		53802A3D2B6790330066208D /* ToolbarVolumeSliderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolbarVolumeSliderView.swift; sourceTree = "<group>"; };
+		539C54E62BBF0F97005C9F9A /* CurrentSyncDataActor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentSyncDataActor.swift; sourceTree = "<group>"; };
 		53B19BE32B9A0EBA00FE53E4 /* DownloadStateLabelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadStateLabelView.swift; sourceTree = "<group>"; };
 		53B9796B2B7E8159002DA742 /* PlaceholderArtworkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceholderArtworkView.swift; sourceTree = "<group>"; };
 		53B979722B80274C002DA742 /* NextcloudAVAssetResourceLoaderDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NextcloudAVAssetResourceLoaderDelegate.swift; sourceTree = "<group>"; };
@@ -563,6 +565,7 @@
 		535054302B64EF5300D7EAF2 /* Sync */ = {
 			isa = PBXGroup;
 			children = (
+				539C54E62BBF0F97005C9F9A /* CurrentSyncDataActor.swift */,
 				5350535F2B59581600D7EAF2 /* SyncController.swift */,
 				534F813E2BA47F990068D145 /* SyncDataActor.swift */,
 			);
@@ -1027,6 +1030,7 @@
 				534F81312BA20FE20068D145 /* AlbumsListView.swift in Sources */,
 				53D6664D2B6B7E3E0042C03D /* PlayerQueueListItemView.swift in Sources */,
 				535053F02B62186F00D7EAF2 /* SettingsSheet.swift in Sources */,
+				539C54E72BBF0F97005C9F9A /* CurrentSyncDataActor.swift in Sources */,
 				53FE14712B906C68006C4193 /* BorderedArtworkView.swift in Sources */,
 				534F81412BA7082F0068D145 /* PlayerQueueItem.swift in Sources */,
 				5350540A2B63939C00D7EAF2 /* PlayerQueueView.swift in Sources */,
