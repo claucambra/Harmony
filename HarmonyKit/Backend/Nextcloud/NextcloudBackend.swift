@@ -66,10 +66,22 @@ public class NextcloudBackend: NSObject, Backend, URLSessionDelegate, URLSession
         )
 
         super.init()
-        Task { await self.configureNotifyPush() }
+        reconnectWebSocket()
     }
 
     // MARK: - NotifyPush WebSocket handling
+    private func reconnectWebSocket() {
+        resetWebSocket()
+        Task { await self.configureNotifyPush() }
+    }
+
+    private func resetWebSocket() {
+        webSocketUrlSession = nil
+        webSocketTask = nil
+        webSocketOperationQueue.cancelAllOperations()
+        webSocketOperationQueue.isSuspended = true
+    }
+
     private func configureNotifyPush() async {
         let capabilitiesData: Data? = await withCheckedContinuation { continuation in
             ncKit.getCapabilities { account, data, error in
@@ -93,6 +105,7 @@ public class NextcloudBackend: NSObject, Backend, URLSessionDelegate, URLSession
             Logger.ncBackend.error("Received notifyPush endpoint is invalid: \(websocketEndpoint)")
             return
         }
+        webSocketOperationQueue.isSuspended = false
         webSocketUrlSession = URLSession(
             configuration: URLSessionConfiguration.default,
             delegate: self, 
@@ -153,7 +166,7 @@ public class NextcloudBackend: NSObject, Backend, URLSessionDelegate, URLSession
             Logger.ncBackend.debug("Reason: \(String(data: reason, encoding: .utf8) ?? "unknown")")
         }
         Logger.ncBackend.debug("Retrying websocket connection for \(self.id).")
-        Task { await configureNotifyPush() }
+        reconnectWebSocket()
     }
 
     private func authenticateWebSocket() async {
@@ -171,14 +184,15 @@ public class NextcloudBackend: NSObject, Backend, URLSessionDelegate, URLSession
             webSocketTask?.sendPing { error in continuation.resume(returning: error) }
         }) {
             Logger.ncBackend.warning("Websocket ping failed: \(error)")
-        } else {
-            do {
-                try await Task.sleep(nanoseconds: NotifyPushWebSocketPingIntervalNanoseconds)
-            } catch let error {
-                Logger.ncBackend.error("Could not sleep websocket ping for \(self.id): \(error)")
             }
-            Task.detached { await self.pingWebSocket() }
         }
+
+        do {
+            try await Task.sleep(nanoseconds: NotifyPushWebSocketPingIntervalNanoseconds)
+        } catch let error {
+            Logger.ncBackend.error("Could not sleep websocket ping for \(self.id): \(error)")
+        }
+        Task.detached { await self.pingWebSocket() }
     }
 
     private func readWebSocket() {
