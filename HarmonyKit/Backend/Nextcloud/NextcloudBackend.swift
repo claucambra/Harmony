@@ -18,6 +18,7 @@ extension Logger {
 fileprivate let NextcloudWebDavFilesUrlSuffix: String = "/remote.php/dav/files/"
 fileprivate let NotifyPushWebSocketPingIntervalNanoseconds: UInt64 = 30 * 1_000_000
 fileprivate let NotifyPushWebSocketPingFailLimit = 8
+fileprivate let NotifyPushWebSocketAuthenticationFailLimit = 3
 
 public class NextcloudBackend: NSObject, Backend, URLSessionDelegate, URLSessionWebSocketDelegate {
     public let typeDescription: BackendDescription = ncBackendTypeDescription
@@ -35,6 +36,7 @@ public class NextcloudBackend: NSObject, Backend, URLSessionDelegate, URLSession
     private var webSocketTask: URLSessionWebSocketTask?
     private var webSocketOperationQueue = OperationQueue()
     private var webSocketPingFailCount = 0
+    private var webSocketAuthenticationFailCount = 0
     private var scanTask: Task<(), Error>?
 
     public required init(config: BackendConfiguration) {
@@ -74,6 +76,12 @@ public class NextcloudBackend: NSObject, Backend, URLSessionDelegate, URLSession
     // MARK: - NotifyPush WebSocket handling
     private func reconnectWebSocket() {
         resetWebSocket()
+        guard webSocketAuthenticationFailCount < NotifyPushWebSocketAuthenticationFailLimit else {
+            Logger.ncBackend.error(
+                "Exceeded authentication failures for notify push websocket \(self.id)"
+            )
+            return
+        }
         Task { await self.configureNotifyPush() }
     }
 
@@ -245,8 +253,9 @@ public class NextcloudBackend: NSObject, Backend, URLSessionDelegate, URLSession
             Logger.ncBackend.debug("Correctly authenticated websocket for \(self.id), pinging")
             Task.detached { await self.pingWebSocket() }
         } else if string == "err: Invalid credentials" {
-            Logger.ncBackend.debug("Invalid creds for websocket for \(self.id), reconfiguring")
-            Task { await self.configureNotifyPush() }  // TODO: Limit attempts
+            Logger.ncBackend.debug("Invalid creds for websocket for \(self.id), reattempting auth")
+            webSocketAuthenticationFailCount += 1
+            reconnectWebSocket()
         } else {
             Logger.ncBackend.warning("Received unknown string from websocket \(self.id): \(string)")
         }
