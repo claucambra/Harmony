@@ -10,6 +10,36 @@ import HarmonyKit
 import OSLog
 import SwiftData
 
+actor CurrentSyncActor {
+    var foundSongs: [String: String] = [:]  // song id, backend id
+    var foundContainers: [String: String] = [:]  // container id, backend id
+    var skippedContainers: [String: String] = [:]  // container id, backend id
+
+    func addFound(songId: String, backendId: String) {
+        foundSongs[songId] = backendId
+    }
+
+    func addFound(containerId: String, backendId: String) {
+        foundContainers[containerId] = backendId
+    }
+
+    func addSkipped(containerId: String, backendId: String) {
+        skippedContainers[containerId] = backendId
+    }
+
+    func removeFound(songIds: [String]) {
+        songIds.forEach { foundSongs.removeValue(forKey: $0) }
+    }
+
+    func removeFound(containerIds: [String]) {
+        containerIds.forEach { foundContainers.removeValue(forKey: $0) }
+    }
+
+    func removeSkipped(containerIds: [String]) {
+        containerIds.forEach { skippedContainers.removeValue(forKey: $0) }
+    }
+}
+
 public class SyncController: ObservableObject {
     static let shared = SyncController()
     let dataActor = SyncDataActor(
@@ -30,9 +60,6 @@ public class SyncController: ObservableObject {
         }
     }
     private var pollTimer: Timer? = nil
-    private var currentSyncsFoundSongs: [String: String] = [:]  // song id, backend id
-    private var currentSyncsFoundContainers: [String: String] = [:]  // container id, backend id
-    private var currentSyncsSkippedContainers: [String: String] = [:]  // container id, backend id
 
     init() {
         Task.detached(priority: .background) {
@@ -75,57 +102,54 @@ public class SyncController: ObservableObject {
         guard !currentlySyncingFully, !backend.presentation.scanning else { return }
 
         let backendId = backend.id
+        let currentSyncActor = CurrentSyncActor()
         do {
             try await backend.scan(containerScanApprover: { containerId, containerVersionId in
-                Task { @MainActor in
-                    self.currentSyncsFoundContainers[containerId] = backendId
-                }
+                await currentSyncActor.addFound(containerId: containerId, backendId: backendId)
                 let approved = await self.dataActor.approvalForSongContainerScan(
                     id: containerId, versionId: containerVersionId
                 )
                 if !approved {
-                    Task { @MainActor in
-                        self.currentSyncsSkippedContainers[containerId] = backendId
-                    }
+                    await currentSyncActor.addSkipped(
+                        containerId: containerId, backendId: backendId
+                    )
                 }
                 return approved
             }, songScanApprover: { songId, songVersionId in
-                Task { @MainActor in
-                    self.currentSyncsFoundSongs[songId] = backendId
-                }
-                return await self.dataActor.approvalForSongScan(id: songId, versionId: songVersionId)
+                await currentSyncActor.addFound(songId: songId, backendId: backendId)
+                return await self.dataActor.approvalForSongScan(
+                    id: songId, versionId: songVersionId
+                )
             }, finalisedSongHandler: { song in
                 await self.dataActor.ingestSong(song)
             }, finalisedContainerHandler: { songContainer, parentContainer in
-                await self.dataActor.ingestContainer(songContainer, parentContainer: parentContainer)
+                await self.dataActor.ingestContainer(
+                    songContainer, parentContainer: parentContainer
+                )
             })
 
             do {
-                let retrievedSongIdentifiers = try currentSyncsFoundSongs.filter(
+                let retrievedSongIdentifiers = try await currentSyncActor.foundSongs.filter(
                     #Predicate { $0.value == backendId }
                 ).map { $0.key }
-                let retrievedContainerIdentifiers = try currentSyncsFoundContainers.filter(
+                let retrievedContainerIdentifiers = try await currentSyncActor.foundContainers.filter(
                     #Predicate { $0.value == backendId }
                 ).map { $0.key }
-                let skippedContainerIdentifiers = try currentSyncsSkippedContainers.filter(
+                let skippedContainerIdentifiers = try await currentSyncActor.skippedContainers.filter(
                     #Predicate { $0.value == backendId }
                 ).map { $0.key }
-                for songId in retrievedSongIdentifiers {
-                    currentSyncsFoundSongs.removeValue(forKey: songId)
-                }
-                for retrievedContainerId in retrievedContainerIdentifiers {
-                    currentSyncsFoundContainers.removeValue(forKey: retrievedContainerId)
-                }
-                for skippedContainerId in skippedContainerIdentifiers {
-                    currentSyncsSkippedContainers.removeValue(forKey: skippedContainerId)
-                }
-                let exceptionSet = Set(retrievedSongIdentifiers)
+
+                await currentSyncActor.removeFound(songIds: retrievedSongIdentifiers)
+                await currentSyncActor.removeFound(containerIds: retrievedContainerIdentifiers)
+                await currentSyncActor.removeSkipped(containerIds: skippedContainerIdentifiers)
+
+                let songExceptionSet = Set(retrievedSongIdentifiers)
                 let foundContainers = Set(retrievedContainerIdentifiers)
                 let skippedContainers = Set(skippedContainerIdentifiers)
                 // Clear all stale songs (i.e. those that no longer exist in backend)
                 await self.dataActor.clearSongs(
                     backendId: backend.id,
-                    withExceptions: exceptionSet,
+                    withExceptions: songExceptionSet,
                     avoidingContainers: skippedContainers
                 )
                 await self.dataActor.clearSongContainers(
