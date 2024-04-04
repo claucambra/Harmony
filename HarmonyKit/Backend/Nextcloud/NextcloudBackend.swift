@@ -16,6 +16,7 @@ extension Logger {
 }
 
 fileprivate let NextcloudWebDavFilesUrlSuffix: String = "/remote.php/dav/files/"
+fileprivate let NotifyPushWebSocketPingIntervalNanoseconds: UInt64 = 30 * 1_000_000
 
 public class NextcloudBackend: NSObject, Backend, URLSessionDelegate, URLSessionWebSocketDelegate {
     public let typeDescription: BackendDescription = ncBackendTypeDescription
@@ -171,6 +172,11 @@ public class NextcloudBackend: NSObject, Backend, URLSessionDelegate, URLSession
         }) {
             Logger.ncBackend.warning("Websocket ping failed: \(error)")
         } else {
+            do {
+                try await Task.sleep(nanoseconds: NotifyPushWebSocketPingIntervalNanoseconds)
+            } catch let error {
+                Logger.ncBackend.error("Could not sleep websocket ping for \(self.id): \(error)")
+            }
             Task.detached { await self.pingWebSocket() }
         }
     }
