@@ -132,6 +132,28 @@ public class NextcloudBackend: NSObject, Backend, URLSessionDelegate, URLSession
         }
     }
 
+    public func urlSession(
+        _ session: URLSession, 
+        webSocketTask: URLSessionWebSocketTask,
+        didOpenWithProtocol protocol: String?
+    ) {
+        Logger.ncBackend.debug("We have a websocket connection for \(self.id)")
+    }
+
+    public func urlSession(
+        _ session: URLSession,
+        webSocketTask: URLSessionWebSocketTask,
+        didCloseWith closeCode: URLSessionWebSocketTask.CloseCode,
+        reason: Data?
+    ) {
+        Logger.ncBackend.debug("Socket connection closed for \(self.id).")
+        if let reason = reason {
+            Logger.ncBackend.debug("Reason: \(String(data: reason, encoding: .utf8) ?? "unknown")")
+        }
+        Logger.ncBackend.debug("Retrying websocket connection for \(self.id).")
+        Task { await configureNotifyPush() }
+    }
+
     private func readSocket() {
         webSocketTask?.receive { result in
             switch result {
