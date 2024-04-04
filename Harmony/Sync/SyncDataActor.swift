@@ -206,36 +206,18 @@ actor SyncDataActor {
 
         do {
             let backendSongContainers = try modelContext.fetch(fetchDescriptor)
-            let songContainersForRemoval = try backendSongContainers.filter(
-                #Predicate { !exceptions.contains($0.identifier) }
+            let protectedContainers = try containersWithChildren(
+                parents: protectedParents, backendId: backendId
             )
-            var validChildren: Set<String> = protectedParents
-            for songContainerToRemove in songContainersForRemoval {
-                let songContainerId = songContainerToRemove.identifier
-                guard !validChildren.contains(songContainerId) else { continue }
-                var hierarchy: Set<String> = [songContainerId]
-                var validParent = false
-                var nextParent = songContainerToRemove.parentContainer
-                while let scanningParent = nextParent {
-                    let scanningParentId = scanningParent.identifier
-                    guard !validChildren.contains(scanningParentId) else {
-                        validParent = true
-                        break
-                    }
-                    hierarchy.insert(scanningParentId)
-                    if protectedParents.contains(scanningParentId) {
-                        validParent = true
-                        validChildren.formUnion(hierarchy)
-                        break
-                    } else {
-                        nextParent = scanningParent.parentContainer
-                    }
+            let songContainersForRemoval = try backendSongContainers.filter(
+                #Predicate {
+                    !exceptions.contains($0.identifier) &&
+                    !protectedContainers.contains($0.identifier)
                 }
-
-                if !validParent {
-                    Logger.sync.debug("Removing container: \(songContainerToRemove.identifier)")
-                    modelContext.delete(songContainerToRemove)
-                }
+            )
+            songContainersForRemoval.forEach {
+                Logger.sync.debug("Removing container: \($0.identifier)")
+                modelContext.delete($0)
             }
             try modelContext.save()
         } catch let error {
@@ -265,5 +247,40 @@ actor SyncDataActor {
         } catch let error {
             Logger.sync.error("Could not delete stale groupings: \(error)")
         }
+    }
+
+    func containersWithChildren(parents: Set<String>, backendId: String) throws -> Set<String> {
+        let fetchDescriptor = FetchDescriptor<Container>(
+            predicate: #Predicate { $0.backendId == backendId }
+        )
+        let backendSongContainers = try modelContext.fetch(fetchDescriptor)
+        let directChildren = Set(try backendSongContainers.filter(
+            #Predicate { parents.contains($0.identifier) }
+        ))
+        let potentialNonChildren = try backendSongContainers.filter(
+            #Predicate { !parents.contains($0.identifier) }
+        )
+        var validChildren = parents.union(directChildren.map { $0.identifier })
+        for container in potentialNonChildren {
+            let songContainerId = container.identifier
+            guard !validChildren.contains(songContainerId) else { continue }
+            var hierarchy: Set<String> = [songContainerId]
+            var nextParent = container.parentContainer
+            while let scanningParent = nextParent {
+                let scanningParentId = scanningParent.identifier
+                guard !validChildren.contains(scanningParentId) else {
+                    validChildren.formUnion(hierarchy)
+                    break
+                }
+                hierarchy.insert(scanningParentId)
+                if parents.contains(scanningParentId) {
+                    validChildren.formUnion(hierarchy)
+                    break
+                } else {
+                    nextParent = scanningParent.parentContainer
+                }
+            }
+        }
+        return validChildren
     }
 }
