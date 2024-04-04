@@ -38,6 +38,19 @@ public class SyncController: ObservableObject {
         Task.detached(priority: .background) {
             await self.sync()
         }
+        
+        NotificationCenter.default.addObserver(
+            forName: BackendNewScanRequiredNotification,
+            object: nil,
+            queue: .current,
+            using: { notification in
+                guard let backend = notification.object as? any Backend else {
+                    Logger.sync.error("New scan required notification but object isn't backend")
+                    return
+                }
+                Task { await self.syncBackend(backend) }
+            }
+        )
     }
 
     public func sync() async {
