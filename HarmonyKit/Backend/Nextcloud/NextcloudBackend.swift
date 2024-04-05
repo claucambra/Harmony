@@ -20,7 +20,9 @@ fileprivate let NotifyPushWebSocketPingIntervalNanoseconds: UInt64 = 30 * 1_000_
 fileprivate let NotifyPushWebSocketPingFailLimit = 8
 fileprivate let NotifyPushWebSocketAuthenticationFailLimit = 3
 
-public class NextcloudBackend: NSObject, Backend, URLSessionDelegate, URLSessionWebSocketDelegate {
+public class NextcloudBackend: 
+    NSObject, Backend, NKCommonDelegate, URLSessionDelegate, URLSessionWebSocketDelegate
+{
     public let typeDescription: BackendDescription = ncBackendTypeDescription
     public let id: String
     public var presentation: BackendPresentable
@@ -38,6 +40,16 @@ public class NextcloudBackend: NSObject, Backend, URLSessionDelegate, URLSession
     private var webSocketPingFailCount = 0
     private var webSocketAuthenticationFailCount = 0
     private var scanTask: Task<(), Error>?
+    private var networkReachability: NKCommon.TypeReachability = .unknown {
+        didSet {
+            if oldValue == .notReachable {
+                reconnectWebSocket()
+                NotificationCenter.default.post(
+                    name: BackendNewScanRequiredNotification, object: self
+                )
+            }
+        }
+    }
 
     public required init(config: BackendConfiguration) {
         configValues = config
@@ -73,6 +85,11 @@ public class NextcloudBackend: NSObject, Backend, URLSessionDelegate, URLSession
         reconnectWebSocket()
     }
 
+    // MARK: - NKCommonDelegate implementation
+    @objc public func networkReachabilityObserver(_ typeReachability: NKCommon.TypeReachability) {
+        networkReachability = typeReachability
+    }
+
     // MARK: - NotifyPush WebSocket handling
     private func reconnectWebSocket() {
         resetWebSocket()
@@ -80,6 +97,10 @@ public class NextcloudBackend: NSObject, Backend, URLSessionDelegate, URLSession
             Logger.ncBackend.error(
                 "Exceeded authentication failures for notify push websocket \(self.id)"
             )
+            return
+        }
+        guard networkReachability != .notReachable else {
+            Logger.ncBackend.error("Network unreachable, will retry when reconnected")
             return
         }
         Task { await self.configureNotifyPush() }
@@ -191,6 +212,11 @@ public class NextcloudBackend: NSObject, Backend, URLSessionDelegate, URLSession
     }
 
     private func pingWebSocket() async {  // Keep the socket connection alive
+        guard networkReachability != .notReachable else {
+            Logger.ncBackend.error("Not pinging \(self.id) as network is unreachable")
+            return
+        }
+        
         if let error = await withCheckedContinuation({ continuation in
             webSocketTask?.sendPing { error in continuation.resume(returning: error) }
         }) {
