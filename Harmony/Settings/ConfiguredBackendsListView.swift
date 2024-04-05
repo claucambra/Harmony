@@ -87,7 +87,7 @@ struct ConfiguredBackendsListView: View {
         .buttonStyle(.plain)
         #else
         NavigationLink {
-            if let backend = backendsModel.backends[presentable.id] {
+            if let backend = backendsModel.backends[presentable.backendId] {
                 BackendConfigurationView(
                     backendDescription: backend.typeDescription,
                     configValues: backend.configValues
