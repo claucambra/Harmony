@@ -16,7 +16,7 @@ struct HarmonyApp: App {
         WindowGroup {
             ContentView()
         }
-        .modelContainer(SyncController.shared.dataActor.modelContainer)
+        .modelContainer(SyncDataActor.shared.modelContainer)
         #if os(macOS)
         .windowToolbarStyle(.unified(showsTitle: false))
         #endif

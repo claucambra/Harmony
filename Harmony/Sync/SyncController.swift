@@ -10,11 +10,9 @@ import HarmonyKit
 import OSLog
 import SwiftData
 
+@MainActor
 public class SyncController: ObservableObject {
     static let shared = SyncController()
-    let dataActor = SyncDataActor(
-        modelContainer: try! ModelContainer(for: Song.self, Album.self, Artist.self, Container.self)
-    )
     @Published var currentlySyncingFully: Bool = false
     @Published var poll: Bool = false {
         didSet {
@@ -54,7 +52,7 @@ public class SyncController: ObservableObject {
         Task { @MainActor in
             currentlySyncingFully = true
         }
-        await self.dataActor.cleanup()
+        await SyncDataActor.shared.cleanup()
         let backends = BackendsModel.shared.backends.values
         for backend in backends {
             await self.syncBackend(backend)
@@ -72,7 +70,7 @@ public class SyncController: ObservableObject {
         do {
             try await backend.scan(containerScanApprover: { containerId, containerVersionId in
                 await currentSyncActor.addFound(containerId: containerId, backendId: backendId)
-                let approved = await self.dataActor.approvalForSongContainerScan(
+                let approved = await SyncDataActor.shared.approvalForSongContainerScan(
                     id: containerId, versionId: containerVersionId
                 )
                 if !approved {
@@ -83,13 +81,13 @@ public class SyncController: ObservableObject {
                 return approved
             }, songScanApprover: { songId, songVersionId in
                 await currentSyncActor.addFound(songId: songId, backendId: backendId)
-                return await self.dataActor.approvalForSongScan(
+                return await SyncDataActor.shared.approvalForSongScan(
                     id: songId, versionId: songVersionId
                 )
             }, finalisedSongHandler: { song in
-                await self.dataActor.ingestSong(song)
+                await SyncDataActor.shared.ingestSong(song)
             }, finalisedContainerHandler: { songContainer, parentContainer in
-                await self.dataActor.ingestContainer(
+                await SyncDataActor.shared.ingestContainer(
                     songContainer, parentContainer: parentContainer
                 )
             })
@@ -114,17 +112,17 @@ public class SyncController: ObservableObject {
                 let skippedContainers = Set(skippedContainerIdentifiers)
                 // Clear all stale songs (i.e. those that no longer exist in backend)
                 print("foundContainers", foundContainers, "skippedContianers", skippedContainers)
-                await self.dataActor.clearSongs(
+                await SyncDataActor.shared.clearSongs(
                     backendId: backend.backendId,
                     withExceptions: songExceptionSet,
                     avoidingContainers: skippedContainers
                 )
-                await self.dataActor.clearSongContainers(
+                await SyncDataActor.shared.clearSongContainers(
                     backendId: backend.backendId,
                     withExceptions: foundContainers,
                     withProtectedParents: skippedContainers
                 )
-                await self.dataActor.clearStaleGroupings()
+                await SyncDataActor.shared.clearStaleGroupings()
             } catch let error {
                 Logger.sync.error("Could not get result from ingestion task: \(error)")
                 return

@@ -12,6 +12,10 @@ import SwiftData
 
 @ModelActor
 actor SyncDataActor {
+    static let shared = SyncDataActor(
+        modelContainer: try! ModelContainer(for: Song.self, Album.self, Artist.self, Container.self)
+    )
+
     func cleanup() {
         let dlState = DownloadState.downloading.rawValue
         let fetchDsc = FetchDescriptor<Song>( predicate: #Predicate { $0.downloadState == dlState })
