@@ -65,9 +65,9 @@ public class SyncController: ObservableObject {
     }
 
     func syncBackend(_ backend: any Backend) async {
-        guard !currentlySyncingFully, !backend.presentation.scanning else { return }
-
-        let backendId = backend.id
+        guard !backend.presentation.scanning else { return }
+        
+        let backendId = backend.backendId
         let currentSyncActor = CurrentSyncActor()
         do {
             try await backend.scan(containerScanApprover: { containerId, containerVersionId in
@@ -115,12 +115,12 @@ public class SyncController: ObservableObject {
                 // Clear all stale songs (i.e. those that no longer exist in backend)
                 print("foundContainers", foundContainers, "skippedContianers", skippedContainers)
                 await self.dataActor.clearSongs(
-                    backendId: backend.id,
+                    backendId: backend.backendId,
                     withExceptions: songExceptionSet,
                     avoidingContainers: skippedContainers
                 )
                 await self.dataActor.clearSongContainers(
-                    backendId: backend.id,
+                    backendId: backend.backendId,
                     withExceptions: foundContainers,
                     withProtectedParents: skippedContainers
                 )

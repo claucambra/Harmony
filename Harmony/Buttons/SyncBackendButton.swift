@@ -14,7 +14,7 @@ struct SyncBackendButton: View {
 
     var body: some View {
         Button {
-            guard let backend = BackendsModel.shared.backends[backendPresentable.id] else {
+            guard let backend = BackendsModel.shared.backends[backendPresentable.backendId] else {
                 return
             }
             Task {

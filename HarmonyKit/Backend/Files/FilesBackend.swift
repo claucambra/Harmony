@@ -16,7 +16,7 @@ extension Logger {
 // TODO: Find a way to do container versioning?
 public class FilesBackend: NSObject, Backend {
     public let typeDescription = filesBackendTypeDescription
-    public let id: String
+    public let backendId: String
     public var configValues: BackendConfiguration = [:]
     public private(set) var presentation: BackendPresentable
     public private(set) var path: URL {
@@ -40,9 +40,9 @@ public class FilesBackend: NSObject, Backend {
         configValues = config
         let localPath = FilesBackend.getPathFromConfig(config)
         path = localPath
-        id = config[BackendConfigurationIdFieldKey] as! String
+        backendId = config[BackendConfigurationIdFieldKey] as! String
         presentation = BackendPresentable(
-            backendId: id,
+            backendId: backendId,
             typeId: filesBackendTypeDescription.id,
             systemImage: filesBackendTypeDescription.systemImageName,
             primary: filesBackendTypeDescription.name,
@@ -53,11 +53,11 @@ public class FilesBackend: NSObject, Backend {
         configurePath()
     }
 
-    public init(path: URL, id: String) {
+    public init(path: URL, backendId: String) {
         self.path = path
-        self.id = id
+        self.backendId = backendId
         presentation = BackendPresentable(
-            backendId: id,
+            backendId: backendId,
             typeId: filesBackendTypeDescription.id,
             systemImage: filesBackendTypeDescription.systemImageName,
             primary: filesBackendTypeDescription.name,
@@ -109,7 +109,7 @@ public class FilesBackend: NSObject, Backend {
                     asset: asset,
                     identifier: identifier,
                     parentContainerId: path.path,
-                    backendId: id,
+                    backendId: backendId,
                     local: false,
                     downloadState: isDownloaded ? .downloaded : .notDownloaded,
                     versionId: versionId
@@ -128,7 +128,7 @@ public class FilesBackend: NSObject, Backend {
                     asset: asset,
                     identifier: url.path,
                     parentContainerId: path.path,
-                    backendId: id,
+                    backendId: backendId,
                     local: true,
                     downloadState: .downloaded,
                     versionId: versionId
@@ -216,7 +216,7 @@ public class FilesBackend: NSObject, Backend {
     }
 
     public func cancelScan() {
-        Logger.filesBackend.info("Cancelling scan for \(self.id)")
+        Logger.filesBackend.info("Cancelling scan for \(self.backendId)")
         scanTask?.cancel()
     }
 

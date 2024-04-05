@@ -12,7 +12,7 @@ public let BackendNewScanRequiredNotification = Notification.Name("BackendNewSca
 
 public protocol Backend: Identifiable, Hashable, ObservableObject {
     var typeDescription: BackendDescription { get }
-    var id: String { get }
+    var backendId: String { get }
     var presentation: BackendPresentable { get }
     var configValues: BackendConfiguration { get }
 

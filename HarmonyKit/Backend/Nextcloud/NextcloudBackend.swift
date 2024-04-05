@@ -24,7 +24,7 @@ public class NextcloudBackend:
     NSObject, Backend, NKCommonDelegate, URLSessionDelegate, URLSessionWebSocketDelegate
 {
     public let typeDescription: BackendDescription = ncBackendTypeDescription
-    public let id: String
+    public let backendId: String
     public var presentation: BackendPresentable
     public var configValues: BackendConfiguration
     private let assetResourceLoaderDelegate: NextcloudAVAssetResourceLoaderDelegate
@@ -53,7 +53,7 @@ public class NextcloudBackend:
 
     public required init(config: BackendConfiguration) {
         configValues = config
-        id = config[BackendConfigurationIdFieldKey] as! String
+        backendId = config[BackendConfigurationIdFieldKey] as! String
 
         let user = config[NextcloudBackendFieldId.username.rawValue] as! String
         let password = config[NextcloudBackendFieldId.password.rawValue] as! String
@@ -73,7 +73,7 @@ public class NextcloudBackend:
         )
 
         presentation = BackendPresentable(
-            backendId: id,
+            backendId: backendId,
             typeId: typeDescription.id,
             systemImage: typeDescription.systemImageName,
             primary: typeDescription.name,
@@ -95,7 +95,7 @@ public class NextcloudBackend:
         resetWebSocket()
         guard webSocketAuthenticationFailCount < NotifyPushWebSocketAuthenticationFailLimit else {
             Logger.ncBackend.error(
-                "Exceeded authentication failures for notify push websocket \(self.id)"
+                "Exceeded authentication failures for notify push websocket \(self.backendId)"
             )
             return
         }
@@ -118,7 +118,7 @@ public class NextcloudBackend:
         let capabilitiesData: Data? = await withCheckedContinuation { continuation in
             ncKit.getCapabilities { account, data, error in
                 guard error == .success else {
-                    Logger.ncBackend.error("Could not get \(self.id) capabilities: \(error)")
+                    Logger.ncBackend.error("Could not get \(self.backendId) capabilities: \(error)")
                     continuation.resume(returning: nil)
                     return
                 }
@@ -129,7 +129,7 @@ public class NextcloudBackend:
               let capabilities = Capabilities(data: capabilitiesData),
               let websocketEndpoint = capabilities.notifyPush?.endpoints?.websocket
         else {
-            Logger.ncBackend.error("Could not get notifyPush websocket \(self.id)")
+            Logger.ncBackend.error("Could not get notifyPush websocket \(self.backendId)")
             return
         }
 
@@ -145,7 +145,7 @@ public class NextcloudBackend:
         )
         webSocketTask = webSocketUrlSession?.webSocketTask(with: websocketEndpointUrl)
         webSocketTask?.resume()
-        Logger.ncBackend.info("Successfully configured push notifications for \(self.id)")
+        Logger.ncBackend.info("Successfully configured push notifications for \(self.backendId)")
     }
 
     public func urlSession(
@@ -183,7 +183,7 @@ public class NextcloudBackend:
         webSocketTask: URLSessionWebSocketTask,
         didOpenWithProtocol protocol: String?
     ) {
-        Logger.ncBackend.debug("Websocket connected for \(self.id), sending auth details")
+        Logger.ncBackend.debug("Websocket connected for \(self.backendId), sending auth details")
         Task { await authenticateWebSocket() }
     }
 
@@ -193,11 +193,11 @@ public class NextcloudBackend:
         didCloseWith closeCode: URLSessionWebSocketTask.CloseCode,
         reason: Data?
     ) {
-        Logger.ncBackend.debug("Socket connection closed for \(self.id).")
+        Logger.ncBackend.debug("Socket connection closed for \(self.backendId).")
         if let reason = reason {
             Logger.ncBackend.debug("Reason: \(String(data: reason, encoding: .utf8) ?? "unknown")")
         }
-        Logger.ncBackend.debug("Retrying websocket connection for \(self.id).")
+        Logger.ncBackend.debug("Retrying websocket connection for \(self.backendId).")
         reconnectWebSocket()
     }
 
@@ -206,14 +206,14 @@ public class NextcloudBackend:
             try await webSocketTask?.send(.string(ncKit.nkCommonInstance.userId))
             try await webSocketTask?.send(.string(ncKit.nkCommonInstance.password))
         } catch let error {
-            Logger.ncBackend.error("Error authenticating websocket for \(self.id): \(error)")
+            Logger.ncBackend.error("Error authenticating websocket for \(self.backendId): \(error)")
         }
         readWebSocket()
     }
 
     private func pingWebSocket() async {  // Keep the socket connection alive
         guard networkReachability != .notReachable else {
-            Logger.ncBackend.error("Not pinging \(self.id) as network is unreachable")
+            Logger.ncBackend.error("Not pinging \(self.backendId) as network is unreachable")
             return
         }
         
@@ -230,10 +230,11 @@ public class NextcloudBackend:
             return
         }
 
+        // TODO: Stop on auth change
         do {
             try await Task.sleep(nanoseconds: NotifyPushWebSocketPingIntervalNanoseconds)
         } catch let error {
-            Logger.ncBackend.error("Could not sleep websocket ping for \(self.id): \(error)")
+            Logger.ncBackend.error("Could not sleep websocket ping for \(self.backendId): \(error)")
         }
         Task.detached { await self.pingWebSocket() }
     }
@@ -242,7 +243,7 @@ public class NextcloudBackend:
         webSocketTask?.receive { result in
             switch result {
             case .failure:
-                Logger.ncBackend.debug("Failed to read websocket for \(self.id)")
+                Logger.ncBackend.debug("Failed to read websocket for \(self.backendId)")
                 self.reconnectWebSocket()
             case .success(let message):
                 switch message {
@@ -260,7 +261,7 @@ public class NextcloudBackend:
 
     private func processWebsocket(data: Data) {
         guard let string = String(data: data, encoding: .utf8) else {
-            Logger.ncBackend.error("Could not convert websocket data to string for id: \(self.id)")
+            Logger.ncBackend.error("Could not convert websocket data to string for id: \(self.backendId)")
             return
         }
         processWebsocket(string: string)
@@ -269,21 +270,21 @@ public class NextcloudBackend:
     private func processWebsocket(string: String) {
         Logger.ncBackend.debug("Received websocket string: \(string)")
         if string == "notify_file" {
-            Logger.ncBackend.debug("Received file notification for \(self.id)")
+            Logger.ncBackend.debug("Received file notification for \(self.backendId)")
             NotificationCenter.default.post(name: BackendNewScanRequiredNotification, object: self)
         } else if string == "notify_activity" {
-            Logger.ncBackend.debug("Received activity notification, ignoring: \(self.id)")
+            Logger.ncBackend.debug("Received activity notification, ignoring: \(self.backendId)")
         } else if string == "notify_notification" {
-            Logger.ncBackend.debug("Received notification notification, ignoring: \(self.id)")
+            Logger.ncBackend.debug("Received notification notification, ignoring: \(self.backendId)")
         } else if string == "authenticated" {
-            Logger.ncBackend.debug("Correctly authenticated websocket for \(self.id), pinging")
+            Logger.ncBackend.debug("Correctly authenticated websocket for \(self.backendId), pinging")
             Task.detached { await self.pingWebSocket() }
         } else if string == "err: Invalid credentials" {
-            Logger.ncBackend.debug("Invalid creds for websocket for \(self.id), reattempting auth")
+            Logger.ncBackend.debug("Invalid creds for websocket for \(self.backendId), reattempting auth")
             webSocketAuthenticationFailCount += 1
             reconnectWebSocket()
         } else {
-            Logger.ncBackend.warning("Received unknown string from websocket \(self.id): \(string)")
+            Logger.ncBackend.warning("Received unknown string from websocket \(self.backendId): \(string)")
         }
     }
 
@@ -368,7 +369,7 @@ public class NextcloudBackend:
 
         let container = Container(
             identifier: scannedDir.ocId,
-            backendId: id,
+            backendId: self.backendId,
             versionId: scannedDir.etag
         )
         let fileCount = files.count
@@ -450,7 +451,7 @@ public class NextcloudBackend:
             asset: asset,
             identifier: ocId,
             parentContainerId: parentContainer.identifier,
-            backendId: self.id,
+            backendId: self.backendId,
             local: false,
             versionId: etag,
             fetchSession: ncKit.sessionManager,
@@ -465,7 +466,7 @@ public class NextcloudBackend:
     }
 
     public func cancelScan() {
-        Logger.ncBackend.info("Cancelling scan for \(self.id)")
+        Logger.ncBackend.info("Cancelling scan for \(self.backendId)")
         scanTask?.cancel()
         ncKit.sessionManager.session.getTasksWithCompletionHandler {
             (dataTasks, uploadTasks, downloadTasks) in

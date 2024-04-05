@@ -9,7 +9,7 @@ import Combine
 import Foundation
 
 public class BackendPresentable: ObservableObject, Hashable, Identifiable {
-    public let id: String // The backend's id
+    public let backendId: String // The backend's id
     public let typeId: String
     @Published public var systemImage: String
     @Published public var primary: String
@@ -32,7 +32,7 @@ public class BackendPresentable: ObservableObject, Hashable, Identifiable {
         state: String = "Idle",
         scanning: Bool = false
     ) {
-        id = backendId
+        self.backendId = backendId
         self.typeId = typeId
         self.systemImage = systemImage
         self.primary = primary

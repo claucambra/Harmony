@@ -33,7 +33,7 @@ struct ConfiguredBackendsListView: View {
                     for index in indexSet {
                         let backend = backendsModel.backends.values[index]
                         deleteBackendConfig(
-                            id: backend.id, withBackendDescriptionId: backend.typeDescription.id
+                            id: backend.backendId, withBackendDescriptionId: backend.typeDescription.id
                         )
                     }
                 })
@@ -79,7 +79,7 @@ struct ConfiguredBackendsListView: View {
     private func listItemView(presentable: BackendPresentable) -> some View {
         #if os(macOS)
         Button {
-            guard let backend = backendsModel.backends[presentable.id] else { return }
+            guard let backend = backendsModel.backends[presentable.backendId] else { return }
             openConfigWindowForBackend(backend)
         } label: {
             ConfiguredBackendsListItemView(backendPresentation: presentable)
