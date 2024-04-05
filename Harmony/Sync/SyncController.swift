@@ -49,17 +49,13 @@ public class SyncController: ObservableObject {
     }
 
     public func sync() async {
-        Task { @MainActor in
-            currentlySyncingFully = true
-        }
+        currentlySyncingFully = true
         await SyncDataActor.shared.cleanup()
         let backends = BackendsModel.shared.backends.values
         for backend in backends {
             await self.syncBackend(backend)
         }
-        Task { @MainActor in
-            currentlySyncingFully = false
-        }
+        currentlySyncingFully = false
     }
 
     func syncBackend(_ backend: any Backend) async {
