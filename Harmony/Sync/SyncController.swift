@@ -31,7 +31,7 @@ public class SyncController: ObservableObject {
 
     init() {
         Task.detached(priority: .background) {
-            //await self.sync()
+            await self.sync()
         }
         
         NotificationCenter.default.addObserver(
