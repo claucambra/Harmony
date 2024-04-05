@@ -81,7 +81,9 @@ public class SyncController: ObservableObject {
                     id: songId, versionId: songVersionId
                 )
             }, finalisedSongHandler: { song in
-                await SyncDataActor.shared.ingestSong(song)
+                guard let ingestedSong = await SyncDataActor.shared.ingestSong(song) else { return }
+                let album = await SyncDataActor.shared.processSongAlbum(ingestedSong)
+                await SyncDataActor.shared.processSongArtist(ingestedSong, inAlbum: album)
             }, finalisedContainerHandler: { songContainer, parentContainer in
                 await SyncDataActor.shared.ingestContainer(
                     songContainer, parentContainer: parentContainer

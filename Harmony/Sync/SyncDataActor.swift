@@ -62,10 +62,10 @@ actor SyncDataActor {
         }
     }
 
-    func ingestSong(_ song: Song) {
-        let songIdentifier = song.identifier
-        Logger.sync.info("Ingesting song: \(song.title) \(song.identifier)")
+    func ingestSong(_ song: Song) -> Song? {
         do {
+            let songIdentifier = song.identifier
+            Logger.sync.info("Ingesting song: \(song.title) \(song.identifier)")
             let fetchDescriptor = FetchDescriptor<Song>(
                 predicate: #Predicate<Song> { $0.identifier == songIdentifier }
             )
@@ -83,15 +83,16 @@ actor SyncDataActor {
             }
             modelContext.insert(song)
             try modelContext.save()
-
-            let album = processSongAlbum(song)
-            processSongArtist(song, inAlbum: album)
+            return try modelContext.fetch(
+                FetchDescriptor<Song>(predicate: #Predicate { $0.identifier == songIdentifier })
+            ).first
         } catch let error {
             Logger.sync.error("Could not save song to data: \(error)")
         }
+        return nil
     }
 
-    private func processSongAlbum(_ song: Song) -> Album? {
+    func processSongAlbum(_ song: Song) -> Album? {
         let songIdentifier = song.identifier
         do {
             let albumTitle = song.album
