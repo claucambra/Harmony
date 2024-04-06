@@ -218,7 +218,10 @@ public class NextcloudBackend:
         }
         
         if let error = await withCheckedContinuation({ continuation in
-            webSocketTask?.sendPing { error in continuation.resume(returning: error) }
+            webSocketTask?.sendPing { error in
+                continuation.resume(returning: error)
+                return
+            }
         }) {
             Logger.ncBackend.warning("Websocket ping failed: \(error)")
             webSocketPingFailCount += 1
