@@ -10,6 +10,10 @@ import Foundation
 
 public let BackendNewScanRequiredNotification = Notification.Name("BackendNewScanRequired")
 
+public enum ScanError: Error {
+    case generalError(String)
+}
+
 public protocol Backend: Identifiable, Hashable, ObservableObject {
     var typeDescription: BackendDescription { get }
     var backendId: String { get }

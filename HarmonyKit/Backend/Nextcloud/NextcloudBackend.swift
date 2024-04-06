@@ -353,7 +353,7 @@ public class NextcloudBackend:
 
         guard error == .success else {
             logger.error("Could not scan \(path): \(error.errorDescription)")
-            return
+            throw ScanError.generalError(error.errorDescription)
         }
 
         guard !files.isEmpty, let scannedDir = files.first else {
