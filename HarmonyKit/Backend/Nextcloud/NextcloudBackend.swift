@@ -312,7 +312,7 @@ public class NextcloudBackend:
                 parentContainer: nil
             )
         }
-        _ = await scanTask!.result
+        _ = try await scanTask!.value
         Task { @MainActor in
             self.presentation.scanning = false
         }
