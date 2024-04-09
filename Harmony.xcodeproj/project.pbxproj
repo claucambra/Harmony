@@ -29,7 +29,7 @@
 		535053532B5955F900D7EAF2 /* HarmonyKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 5350534B2B5955F900D7EAF2 /* HarmonyKit.h */; };
 		535053542B5955F900D7EAF2 /* Backend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5350534D2B5955F900D7EAF2 /* Backend.swift */; };
 		535053552B5955F900D7EAF2 /* FilesBackend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5350534F2B5955F900D7EAF2 /* FilesBackend.swift */; };
-		5350535B2B59565400D7EAF2 /* LocalBackendTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535053582B59565400D7EAF2 /* LocalBackendTests.swift */; };
+		5350535B2B59565400D7EAF2 /* FilesBackendTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535053582B59565400D7EAF2 /* FilesBackendTests.swift */; };
 		5350535C2B59565400D7EAF2 /* FilePlayabilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5350535A2B59565400D7EAF2 /* FilePlayabilityTests.swift */; };
 		535053622B5975A100D7EAF2 /* Logger+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535053612B5975A100D7EAF2 /* Logger+Extension.swift */; };
 		535053712B5A9A7500D7EAF2 /* Free_Test_Data_1MB_MP3.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 535053702B5A9A7500D7EAF2 /* Free_Test_Data_1MB_MP3.mp3 */; };
@@ -189,7 +189,7 @@
 		5350534B2B5955F900D7EAF2 /* HarmonyKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HarmonyKit.h; sourceTree = "<group>"; };
 		5350534D2B5955F900D7EAF2 /* Backend.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Backend.swift; sourceTree = "<group>"; };
 		5350534F2B5955F900D7EAF2 /* FilesBackend.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilesBackend.swift; sourceTree = "<group>"; };
-		535053582B59565400D7EAF2 /* LocalBackendTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalBackendTests.swift; sourceTree = "<group>"; };
+		535053582B59565400D7EAF2 /* FilesBackendTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilesBackendTests.swift; sourceTree = "<group>"; };
 		5350535A2B59565400D7EAF2 /* FilePlayabilityTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilePlayabilityTests.swift; sourceTree = "<group>"; };
 		5350535F2B59581600D7EAF2 /* SyncController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncController.swift; sourceTree = "<group>"; };
 		535053612B5975A100D7EAF2 /* Logger+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Logger+Extension.swift"; sourceTree = "<group>"; };
@@ -399,17 +399,17 @@
 		535053562B59565400D7EAF2 /* Backend */ = {
 			isa = PBXGroup;
 			children = (
-				535053572B59565400D7EAF2 /* Local */,
+				535053572B59565400D7EAF2 /* Files */,
 			);
 			path = Backend;
 			sourceTree = "<group>";
 		};
-		535053572B59565400D7EAF2 /* Local */ = {
+		535053572B59565400D7EAF2 /* Files */ = {
 			isa = PBXGroup;
 			children = (
-				535053582B59565400D7EAF2 /* LocalBackendTests.swift */,
+				535053582B59565400D7EAF2 /* FilesBackendTests.swift */,
 			);
-			path = Local;
+			path = Files;
 			sourceTree = "<group>";
 		};
 		535053592B59565400D7EAF2 /* Common */ = {
@@ -969,7 +969,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5350535B2B59565400D7EAF2 /* LocalBackendTests.swift in Sources */,
+				5350535B2B59565400D7EAF2 /* FilesBackendTests.swift in Sources */,
 				5350535C2B59565400D7EAF2 /* FilePlayabilityTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
