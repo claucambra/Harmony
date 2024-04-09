@@ -1,0 +1,38 @@
+name: Xcode - Test
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    name: Test default scheme using xcodebuild command
+    runs-on: macos-14
+    strategy:
+        matrix:
+          destination: ['platform=macOS,arch=arm64', 'platform=iOS Simulator,OS=17.2,name=iPhone 15 Pro']
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: List Xcode installations
+        run: sudo ls -1 /Applications | grep "Xcode"
+      - name: Select Xcode 15.2
+        run: sudo xcode-select -s /Applications/Xcode_15.2.app/Contents/Developer
+      - name: Set Default Scheme
+        run: |
+          scheme_list=$(xcodebuild -list -json | tr -d "\n")
+          default=$(echo $scheme_list | ruby -e "require 'json'; puts JSON.parse(STDIN.gets)['project']['targets'][0]")
+          echo $default | cat >default
+          echo Using default scheme: $default
+      - name: Build
+        env:
+          scheme: ${{ 'default' }}
+          destination: ${{ matrix.destination }}
+        run: |
+          if [ $scheme = default ]; then scheme=$(cat default); fi
+          if [ "`ls -A | grep -i \\.xcworkspace\$`" ]; then filetype_parameter="workspace" && file_to_build="`ls -A | grep -i \\.xcworkspace\$`"; else filetype_parameter="project" && file_to_build="`ls -A | grep -i \\.xcodeproj\$`"; fi
+          file_to_build=`echo $file_to_build | awk '{$1=$1;print}'`
+          xcodebuild clean test -scheme "$scheme" -"$filetype_parameter" "$file_to_build" -destination "${destination}" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO ONLY_ACTIVE_ARCH=NO | xcpretty && exit ${PIPESTATUS[0]}
