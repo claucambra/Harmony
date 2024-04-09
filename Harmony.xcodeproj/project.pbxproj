@@ -131,13 +131,6 @@
 			remoteGlobalIDString = 535053282B5955C800D7EAF2;
 			remoteInfo = HarmonyKit;
 		};
-		535053362B5955C900D7EAF2 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 535F1BC52B4A8F1400C78D98 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 535F1BCC2B4A8F1400C78D98;
-			remoteInfo = Harmony;
-		};
 		5350533C2B5955C900D7EAF2 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 535F1BC52B4A8F1400C78D98 /* Project object */;
@@ -753,6 +746,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				539C54E52BBEE1F7005C9F9A /* PBXTargetDependency */,
 			);
 			name = HarmonyKit;
 			packageProductDependencies = (
@@ -775,7 +769,6 @@
 			);
 			dependencies = (
 				535053352B5955C900D7EAF2 /* PBXTargetDependency */,
-				535053372B5955C900D7EAF2 /* PBXTargetDependency */,
 			);
 			name = HarmonyKitTests;
 			productName = HarmonyKitTests;
@@ -1086,11 +1079,6 @@
 			target = 535053282B5955C800D7EAF2 /* HarmonyKit */;
 			targetProxy = 535053342B5955C900D7EAF2 /* PBXContainerItemProxy */;
 		};
-		535053372B5955C900D7EAF2 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 535F1BCC2B4A8F1400C78D98 /* Harmony */;
-			targetProxy = 535053362B5955C900D7EAF2 /* PBXContainerItemProxy */;
-		};
 		5350533D2B5955C900D7EAF2 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 535053282B5955C800D7EAF2 /* HarmonyKit */;
@@ -1105,6 +1093,10 @@
 			isa = PBXTargetDependency;
 			target = 535F1BCC2B4A8F1400C78D98 /* Harmony */;
 			targetProxy = 535F1BE92B4A8F1600C78D98 /* PBXContainerItemProxy */;
+		};
+		539C54E52BBEE1F7005C9F9A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 539C54E42BBEE1F7005C9F9A /* NextcloudKit */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1143,6 +1135,7 @@
 				SKIP_INSTALL = YES;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -1184,6 +1177,7 @@
 				SKIP_INSTALL = YES;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -1355,7 +1349,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = TempAppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Harmony/Harmony.entitlements;
 				CODE_SIGN_STYLE = Automatic;
@@ -1373,6 +1367,7 @@
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = I;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -1396,7 +1391,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = TempAppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Harmony/Harmony.entitlements;
 				CODE_SIGN_STYLE = Automatic;
@@ -1414,6 +1409,7 @@
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = I;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -1607,8 +1603,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/nextcloud/NextcloudKit.git";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.9.5;
+				kind = exactVersion;
+				version = 2.9.5;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -1628,6 +1624,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 5358F2B42BAA01DC00E3C729 /* XCRemoteSwiftPackageReference "NextcloudCapabilitiesKit" */;
 			productName = NextcloudCapabilitiesKit;
+		};
+		539C54E42BBEE1F7005C9F9A /* NextcloudKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 53B9796D2B7F6D55002DA742 /* XCRemoteSwiftPackageReference "NextcloudKit" */;
+			productName = NextcloudKit;
 		};
 		53B9796E2B7F6D55002DA742 /* NextcloudKit */ = {
 			isa = XCSwiftPackageProductDependency;
