@@ -347,6 +347,7 @@
 				537632DB2B8673F00026BFAB /* FLAC */,
 				535053762B5AB22F00D7EAF2 /* Extensions */,
 				535053472B5955F900D7EAF2 /* HarmonyKit.docc */,
+				5335FA0C2BC55ED000AC4596 /* HarmonyKit.xctestplan */,
 				5350534B2B5955F900D7EAF2 /* HarmonyKit.h */,
 			);
 			path = HarmonyKit;
@@ -355,7 +356,6 @@
 		535053382B5955C900D7EAF2 /* HarmonyKitTests */ = {
 			isa = PBXGroup;
 			children = (
-				5335FA0C2BC55ED000AC4596 /* HarmonyKit.xctestplan */,
 				535053562B59565400D7EAF2 /* Backend */,
 				535053592B59565400D7EAF2 /* Common */,
 				5350538E2B5BD28E00D7EAF2 /* Files */,
