@@ -10,6 +10,9 @@ jobs:
   build:
     name: Build default scheme using xcodebuild command
     runs-on: macos-14
+    strategy:
+        matrix:
+          destination: ['platform=macOS,arch=arm64', 'generic/platform=iOS']
     
     steps:
       - name: Checkout
@@ -27,8 +30,9 @@ jobs:
       - name: Build
         env:
           scheme: ${{ 'default' }}
+          destination: ${{ matrix.destination }}
         run: |
           if [ $scheme = default ]; then scheme=$(cat default); fi
           if [ "`ls -A | grep -i \\.xcworkspace\$`" ]; then filetype_parameter="workspace" && file_to_build="`ls -A | grep -i \\.xcworkspace\$`"; else filetype_parameter="project" && file_to_build="`ls -A | grep -i \\.xcodeproj\$`"; fi
           file_to_build=`echo $file_to_build | awk '{$1=$1;print}'`
-          xcodebuild clean build -scheme "$scheme" -"$filetype_parameter" "$file_to_build" -destination "platform=macOS,arch=arm64" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO ONLY_ACTIVE_ARCH=NO
+          xcodebuild clean build -scheme "$scheme" -"$filetype_parameter" "$file_to_build" -destination "${destination}" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO ONLY_ACTIVE_ARCH=NO
