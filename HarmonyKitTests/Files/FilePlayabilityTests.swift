@@ -10,13 +10,13 @@ import XCTest
 
 class FilePlayabilityTests: XCTestCase {
     func testPlayableFileExtensionsNotEmpty() {
-        let extensions = playableFileExtensions()
+        let extensions = playableFileExtensions
         XCTAssertFalse(extensions.isEmpty,
                        "The list of playable file extensions should not be empty.")
     }
 
     func testPlayableFileExtensionsContainCommonFormats() {
-        let extensions = playableFileExtensions()
+        let extensions = playableFileExtensions
         let commonExtensions = ["mp3", "wav", "m4a", "aac", "flac"]
         for ext in commonExtensions {
             XCTAssertTrue(extensions.contains(ext),

@@ -1,5 +1,5 @@
 //
-//  LocalBackendTests.swift
+//  FilesBackendTests.swift
 //  HarmonyTests
 //
 //  Created by Claudio Cambra on 17/1/24.
@@ -8,17 +8,30 @@
 import XCTest
 @testable import HarmonyKit
 
-class LocalBackendTests: XCTestCase {
+class FilesBackendTests: XCTestCase {
     var temporaryDirectory: URL!
+    var testAudioData: Data!
+    var songs: [Song] = []
 
     override func setUp() {
         super.setUp()
         temporaryDirectory = FileManager.default.temporaryDirectory
+        let testBundle = Bundle(for: type(of: self))
+        let testAudioURL = testBundle.url(
+            forResource: "Free_Test_Data_1MB_MP3",
+            withExtension: "mp3"
+        )!
+        testAudioData = try! Data(contentsOf: testAudioURL)
     }
 
     override func tearDown() {
         try? FileManager.default.removeItem(at: temporaryDirectory)
         super.tearDown()
+    }
+
+    override func invokeTest() {
+        songs = []
+        super.invokeTest()
     }
 
     // Create a temporary directory structure with audio and non-audio files
@@ -29,10 +42,10 @@ class LocalBackendTests: XCTestCase {
         )
 
         let audioFile1 = subdirectory1.appendingPathComponent("song1.mp3")
-        try Data().write(to: audioFile1)
+        try testAudioData.write(to: audioFile1)
 
         let nonAudioFile1 = subdirectory1.appendingPathComponent("text1.txt")
-        try Data().write(to: nonAudioFile1)
+        try testAudioData.write(to: nonAudioFile1)
 
         let subdirectory2 = temporaryDirectory.appendingPathComponent("dir2")
         try FileManager.default.createDirectory(
@@ -40,18 +53,23 @@ class LocalBackendTests: XCTestCase {
         )
 
         let audioFile2 = subdirectory2.appendingPathComponent("song2.mp3")
-        try Data().write(to: audioFile2)
+        try testAudioData.write(to: audioFile2)
 
         let nonAudioFile2 = subdirectory2.appendingPathComponent("text2.txt")
-        try Data().write(to: nonAudioFile2)
+        try testAudioData.write(to: nonAudioFile2)
     }
 
     func testRecursiveScanWithAudioFiles() async {
         do {
             try createTemporaryDirectoryStructure()
-            let backend = LocalBackend(path: temporaryDirectory)
-            let audioFiles = await backend.scan()
-            XCTAssertEqual(audioFiles.count, 2, "Expected 2 audio files in the directory structure")
+            let backend = FilesBackend(path: temporaryDirectory, backendId: "test-backend")
+            try await backend.scan(
+                containerScanApprover: { _,_ in return true },
+                songScanApprover: { _,_ in return true }, 
+                finalisedSongHandler: { song in self.songs.append(song) },
+                finalisedContainerHandler: { _,_ in }
+            )
+            XCTAssertEqual(songs.count, 2, "Expected 2 audio files in the directory structure")
         } catch {
             XCTFail("Error creating temporary directory structure: \(error)")
         }
@@ -64,9 +82,14 @@ class LocalBackendTests: XCTestCase {
                 at: emptyDirectory, withIntermediateDirectories: true, attributes: nil
             )
 
-            let backend = LocalBackend(path: temporaryDirectory)
-            let audioFiles = await backend.scan()
-            XCTAssertEqual(audioFiles.count, 0, "Expected no audio files in an empty directory")
+            let backend = FilesBackend(path: temporaryDirectory, backendId: "test-backend")
+            try await backend.scan(
+                containerScanApprover: { _,_ in return true },
+                songScanApprover: { _,_ in return true },
+                finalisedSongHandler: { song in self.songs.append(song) },
+                finalisedContainerHandler: { _,_ in }
+            )
+            XCTAssert(songs.isEmpty, "Expected no audio files in an empty directory")
         } catch {
             XCTFail("Error creating empty directory: \(error)")
         }
@@ -81,25 +104,35 @@ class LocalBackendTests: XCTestCase {
             )
 
             let audioFile3 = nestedDirectory.appendingPathComponent("song3.mp3")
-            try Data().write(to: audioFile3)
+            try testAudioData.write(to: audioFile3)
 
-            let backend = LocalBackend(path: temporaryDirectory)
-            let audioFiles = await backend.scan()
-            XCTAssertEqual(
-                audioFiles.count, 3, "Expected 3 audio files including nested directories"
+            let backend = FilesBackend(path: temporaryDirectory, backendId: "test-backend")
+            try await backend.scan(
+                containerScanApprover: { _,_ in return true },
+                songScanApprover: { _,_ in return true },
+                finalisedSongHandler: { song in self.songs.append(song) },
+                finalisedContainerHandler: { _,_ in }
             )
+            XCTAssertEqual(songs.count, 3, "Expected 3 audio files including nested directories")
         } catch {
             XCTFail("Error creating nested directory structure: \(error)")
         }
     }
 
+    // TODO: Test busted songs
+
     func testRecursiveScanTime() throws {
         try createTemporaryDirectoryStructure()
-        let backend = LocalBackend(path: temporaryDirectory)
+        let backend = FilesBackend(path: temporaryDirectory, backendId: "test-be")
         measure {
             let semaphore = DispatchSemaphore(value: 0)
             Task {
-                let _ = await backend.scan()
+                try await backend.scan(
+                    containerScanApprover: { _,_ in return true },
+                    songScanApprover: { _,_ in return true },
+                    finalisedSongHandler: { _ in },
+                    finalisedContainerHandler: { _,_ in }
+                )
                 semaphore.signal()
             }
             semaphore.wait()
