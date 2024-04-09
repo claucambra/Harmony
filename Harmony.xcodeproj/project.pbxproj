@@ -170,6 +170,7 @@
 		5315227A2B8BC936002E31BE /* KeychainUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainUtils.swift; sourceTree = "<group>"; };
 		5315227C2B8CF235002E31BE /* CurrentlyPlayingSongIndicatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentlyPlayingSongIndicatorView.swift; sourceTree = "<group>"; };
 		5335FA0C2BC55ED000AC4596 /* HarmonyKit.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = HarmonyKit.xctestplan; sourceTree = "<group>"; };
+		5335FA0D2BC5B22000AC4596 /* Harmony.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = Harmony.xctestplan; sourceTree = "<group>"; };
 		534F81282BA078A70068D145 /* ArtistsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtistsListView.swift; sourceTree = "<group>"; };
 		534F812A2BA082D90068D145 /* ArtistsSplitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtistsSplitView.swift; sourceTree = "<group>"; };
 		534F812C2BA08B330068D145 /* AlbumsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumsView.swift; sourceTree = "<group>"; };
@@ -622,6 +623,7 @@
 				53EA71292B9DAF7B008FEB8A /* TabContentView.swift */,
 				535F1BD42B4A8F1600C78D98 /* Assets.xcassets */,
 				535F1BD62B4A8F1600C78D98 /* Harmony.entitlements */,
+				5335FA0D2BC5B22000AC4596 /* Harmony.xctestplan */,
 				535053792B5BA65F00D7EAF2 /* Info.plist */,
 				535F1BD72B4A8F1600C78D98 /* Preview Content */,
 			);

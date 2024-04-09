@@ -1,0 +1,38 @@
+{
+  "configurations" : [
+    {
+      "id" : "335956ED-99FF-4FD2-9D31-9569ED133AA1",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:Harmony.xcodeproj",
+      "identifier" : "535F1BCC2B4A8F1400C78D98",
+      "name" : "Harmony"
+    }
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:Harmony.xcodeproj",
+        "identifier" : "535F1BDD2B4A8F1600C78D98",
+        "name" : "HarmonyTests"
+      }
+    },
+    {
+      "enabled" : false,
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:Harmony.xcodeproj",
+        "identifier" : "535F1BE72B4A8F1600C78D98",
+        "name" : "HarmonyUITests"
+      }
+    }
+  ],
+  "version" : 1
+}
