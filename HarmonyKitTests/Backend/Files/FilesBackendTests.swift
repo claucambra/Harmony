@@ -119,7 +119,24 @@ class FilesBackendTests: XCTestCase {
         }
     }
 
-    // TODO: Test busted songs
+    func testRecursiveScanWithBrokenSong() async {
+        do {
+            try createTemporaryDirectoryStructure()
+            let brokenFile = temporaryDirectory.appendingPathComponent("brokenFile.mp3")
+            try Data().write(to: brokenFile)
+
+            let backend = FilesBackend(path: temporaryDirectory, backendId: "test-backend")
+            try await backend.scan(
+                containerScanApprover: { _,_ in return true },
+                songScanApprover: { _,_ in return true },
+                finalisedSongHandler: { song in self.songs.append(song) },
+                finalisedContainerHandler: { _,_ in }
+            )
+            XCTAssertEqual(songs.count, 2, "Expected 2 audio files, third file is not valid")
+        } catch {
+            XCTFail("Error creating nested directory structure: \(error)")
+        }
+    }
 
     func testRecursiveScanTime() throws {
         try createTemporaryDirectoryStructure()
