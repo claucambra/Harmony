@@ -211,35 +211,36 @@ public class NextcloudBackend:
         readWebSocket()
     }
 
-    private func pingWebSocket() async {  // Keep the socket connection alive
+    private func pingWebSocket() {  // Keep the socket connection alive
         guard networkReachability != .notReachable else {
             Logger.ncBackend.error("Not pinging \(self.backendId) as network is unreachable")
             return
         }
-        
-        if let error = await withCheckedContinuation({ continuation in
-            webSocketTask?.sendPing { error in
-                continuation.resume(returning: error)
+
+        webSocketTask?.sendPing { error in
+            guard error == nil else {
+                Logger.ncBackend.warning("Websocket ping failed: \(error)")
+                self.webSocketPingFailCount += 1
+                if self.webSocketPingFailCount > NotifyPushWebSocketPingFailLimit {
+                    self.reconnectWebSocket()
+                } else {
+                    self.pingWebSocket()
+                }
                 return
             }
-        }) {
-            Logger.ncBackend.warning("Websocket ping failed: \(error)")
-            webSocketPingFailCount += 1
-            if webSocketPingFailCount > NotifyPushWebSocketPingFailLimit {
-                reconnectWebSocket()
-            } else {
-                Task.detached { await self.pingWebSocket() }
+            
+            // TODO: Stop on auth change
+            Task {
+                do {
+                    try await Task.sleep(nanoseconds: NotifyPushWebSocketPingIntervalNanoseconds)
+                } catch let error {
+                    Logger.ncBackend.error(
+                        "Could not sleep websocket ping for \(self.backendId): \(error)"
+                    )
+                }
+                self.pingWebSocket()
             }
-            return
         }
-
-        // TODO: Stop on auth change
-        do {
-            try await Task.sleep(nanoseconds: NotifyPushWebSocketPingIntervalNanoseconds)
-        } catch let error {
-            Logger.ncBackend.error("Could not sleep websocket ping for \(self.backendId): \(error)")
-        }
-        Task.detached { await self.pingWebSocket() }
     }
 
     private func readWebSocket() {
@@ -281,7 +282,7 @@ public class NextcloudBackend:
             Logger.ncBackend.debug("Received notification notification, ignoring: \(self.backendId)")
         } else if string == "authenticated" {
             Logger.ncBackend.debug("Correctly authenticated websocket for \(self.backendId), pinging")
-            Task.detached { await self.pingWebSocket() }
+            pingWebSocket()
         } else if string == "err: Invalid credentials" {
             Logger.ncBackend.debug("Invalid creds for websocket for \(self.backendId), reattempting auth")
             webSocketAuthenticationFailCount += 1
@@ -419,6 +420,7 @@ public class NextcloudBackend:
         }
 
         logger.info("Finished scan of \(path)")
+
         await finalisedContainerHandler(container, parentContainer)
     }
 
