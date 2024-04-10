@@ -75,19 +75,9 @@
 		535F1BE32B4A8F1600C78D98 /* HarmonyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535F1BE22B4A8F1600C78D98 /* HarmonyTests.swift */; };
 		535F1BED2B4A8F1600C78D98 /* HarmonyUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535F1BEC2B4A8F1600C78D98 /* HarmonyUITests.swift */; };
 		535F1BEF2B4A8F1600C78D98 /* HarmonyUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535F1BEE2B4A8F1600C78D98 /* HarmonyUITestsLaunchTests.swift */; };
-		537632D42B8663100026BFAB /* FLACParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 537632D32B8663100026BFAB /* FLACParser.swift */; };
-		537632D62B86643E0026BFAB /* FLACMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = 537632D52B86643E0026BFAB /* FLACMetadata.swift */; };
-		537632DA2B8673E90026BFAB /* FLACStreamInfoMetadataBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 537632D92B8673E90026BFAB /* FLACStreamInfoMetadataBlock.swift */; };
-		537632DE2B86745A0026BFAB /* FLACVorbisCommentsMetadataBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 537632DD2B86745A0026BFAB /* FLACVorbisCommentsMetadataBlock.swift */; };
-		537632E02B86749B0026BFAB /* FLACPictureMetadataBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 537632DF2B86749B0026BFAB /* FLACPictureMetadataBlock.swift */; };
-		537632E22B8674F80026BFAB /* FLACApplicationMetadataBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 537632E12B8674F80026BFAB /* FLACApplicationMetadataBlock.swift */; };
-		537632E42B8675170026BFAB /* FLACSeekTableMetadataBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 537632E32B8675170026BFAB /* FLACSeekTableMetadataBlock.swift */; };
-		537632E62B86752B0026BFAB /* FLACCueSheetMetadataBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 537632E52B86752B0026BFAB /* FLACCueSheetMetadataBlock.swift */; };
-		537632E82B8675450026BFAB /* FLACPaddingMetadataBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 537632E72B8675450026BFAB /* FLACPaddingMetadataBlock.swift */; };
-		537632EA2B8677250026BFAB /* FLACMetadataBlockHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 537632E92B8677250026BFAB /* FLACMetadataBlockHeader.swift */; };
-		537632EF2B887AA90026BFAB /* FLACRemoteMetadataFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 537632EE2B887AA90026BFAB /* FLACRemoteMetadataFetcher.swift */; };
 		53802A3A2B66AF2B0066208D /* PhonePlayerDrawer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53802A392B66AF2B0066208D /* PhonePlayerDrawer.swift */; };
 		53802A3E2B6790330066208D /* ToolbarVolumeSliderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53802A3D2B6790330066208D /* ToolbarVolumeSliderView.swift */; };
+		5388E8992BC67F3800557E8A /* FLACMetadataKit in Frameworks */ = {isa = PBXBuildFile; productRef = 5388E8982BC67F3800557E8A /* FLACMetadataKit */; };
 		539C54E72BBF0F97005C9F9A /* CurrentSyncDataActor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 539C54E62BBF0F97005C9F9A /* CurrentSyncDataActor.swift */; };
 		539C54E92BBF10C8005C9F9A /* SyncBackendButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 539C54E82BBF10C8005C9F9A /* SyncBackendButton.swift */; };
 		53B19BE42B9A0EBA00FE53E4 /* DownloadStateLabelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53B19BE32B9A0EBA00FE53E4 /* DownloadStateLabelView.swift */; };
@@ -248,17 +238,6 @@
 		535F1BE82B4A8F1600C78D98 /* HarmonyUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HarmonyUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		535F1BEC2B4A8F1600C78D98 /* HarmonyUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HarmonyUITests.swift; sourceTree = "<group>"; };
 		535F1BEE2B4A8F1600C78D98 /* HarmonyUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HarmonyUITestsLaunchTests.swift; sourceTree = "<group>"; };
-		537632D32B8663100026BFAB /* FLACParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FLACParser.swift; sourceTree = "<group>"; };
-		537632D52B86643E0026BFAB /* FLACMetadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FLACMetadata.swift; sourceTree = "<group>"; };
-		537632D92B8673E90026BFAB /* FLACStreamInfoMetadataBlock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FLACStreamInfoMetadataBlock.swift; sourceTree = "<group>"; };
-		537632DD2B86745A0026BFAB /* FLACVorbisCommentsMetadataBlock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FLACVorbisCommentsMetadataBlock.swift; sourceTree = "<group>"; };
-		537632DF2B86749B0026BFAB /* FLACPictureMetadataBlock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FLACPictureMetadataBlock.swift; sourceTree = "<group>"; };
-		537632E12B8674F80026BFAB /* FLACApplicationMetadataBlock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FLACApplicationMetadataBlock.swift; sourceTree = "<group>"; };
-		537632E32B8675170026BFAB /* FLACSeekTableMetadataBlock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FLACSeekTableMetadataBlock.swift; sourceTree = "<group>"; };
-		537632E52B86752B0026BFAB /* FLACCueSheetMetadataBlock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FLACCueSheetMetadataBlock.swift; sourceTree = "<group>"; };
-		537632E72B8675450026BFAB /* FLACPaddingMetadataBlock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FLACPaddingMetadataBlock.swift; sourceTree = "<group>"; };
-		537632E92B8677250026BFAB /* FLACMetadataBlockHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FLACMetadataBlockHeader.swift; sourceTree = "<group>"; };
-		537632EE2B887AA90026BFAB /* FLACRemoteMetadataFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FLACRemoteMetadataFetcher.swift; sourceTree = "<group>"; };
 		53802A392B66AF2B0066208D /* PhonePlayerDrawer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhonePlayerDrawer.swift; sourceTree = "<group>"; };
 		53802A3D2B6790330066208D /* ToolbarVolumeSliderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolbarVolumeSliderView.swift; sourceTree = "<group>"; };
 		539C54E62BBF0F97005C9F9A /* CurrentSyncDataActor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentSyncDataActor.swift; sourceTree = "<group>"; };
@@ -300,6 +279,7 @@
 			files = (
 				5358F2B62BAA01DC00E3C729 /* NextcloudCapabilitiesKit in Frameworks */,
 				53B9796F2B7F6D55002DA742 /* NextcloudKit in Frameworks */,
+				5388E8992BC67F3800557E8A /* FLACMetadataKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -344,7 +324,6 @@
 				5350534C2B5955F900D7EAF2 /* Backend */,
 				535053482B5955F900D7EAF2 /* Common */,
 				5350538B2B5BD18B00D7EAF2 /* Files */,
-				537632DB2B8673F00026BFAB /* FLAC */,
 				535053762B5AB22F00D7EAF2 /* Extensions */,
 				535053472B5955F900D7EAF2 /* HarmonyKit.docc */,
 				5335FA0C2BC55ED000AC4596 /* HarmonyKit.xctestplan */,
@@ -655,40 +634,6 @@
 			path = HarmonyUITests;
 			sourceTree = "<group>";
 		};
-		537632DB2B8673F00026BFAB /* FLAC */ = {
-			isa = PBXGroup;
-			children = (
-				537632EB2B8677F60026BFAB /* Metadata */,
-				537632D32B8663100026BFAB /* FLACParser.swift */,
-				537632EE2B887AA90026BFAB /* FLACRemoteMetadataFetcher.swift */,
-			);
-			path = FLAC;
-			sourceTree = "<group>";
-		};
-		537632DC2B8674070026BFAB /* Blocks */ = {
-			isa = PBXGroup;
-			children = (
-				537632E12B8674F80026BFAB /* FLACApplicationMetadataBlock.swift */,
-				537632E52B86752B0026BFAB /* FLACCueSheetMetadataBlock.swift */,
-				537632E72B8675450026BFAB /* FLACPaddingMetadataBlock.swift */,
-				537632DF2B86749B0026BFAB /* FLACPictureMetadataBlock.swift */,
-				537632E32B8675170026BFAB /* FLACSeekTableMetadataBlock.swift */,
-				537632D92B8673E90026BFAB /* FLACStreamInfoMetadataBlock.swift */,
-				537632DD2B86745A0026BFAB /* FLACVorbisCommentsMetadataBlock.swift */,
-			);
-			path = Blocks;
-			sourceTree = "<group>";
-		};
-		537632EB2B8677F60026BFAB /* Metadata */ = {
-			isa = PBXGroup;
-			children = (
-				537632DC2B8674070026BFAB /* Blocks */,
-				537632E92B8677250026BFAB /* FLACMetadataBlockHeader.swift */,
-				537632D52B86643E0026BFAB /* FLACMetadata.swift */,
-			);
-			path = Metadata;
-			sourceTree = "<group>";
-		};
 		53D666542B6E9C1D0042C03D /* Nextcloud */ = {
 			isa = PBXGroup;
 			children = (
@@ -748,6 +693,7 @@
 			packageProductDependencies = (
 				53B9796E2B7F6D55002DA742 /* NextcloudKit */,
 				5358F2B52BAA01DC00E3C729 /* NextcloudCapabilitiesKit */,
+				5388E8982BC67F3800557E8A /* FLACMetadataKit */,
 			);
 			productName = HarmonyKit;
 			productReference = 535053292B5955C800D7EAF2 /* HarmonyKit.framework */;
@@ -873,6 +819,7 @@
 				5350541F2B64142200D7EAF2 /* XCRemoteSwiftPackageReference "swift-collections" */,
 				53B9796D2B7F6D55002DA742 /* XCRemoteSwiftPackageReference "NextcloudKit" */,
 				5358F2B42BAA01DC00E3C729 /* XCRemoteSwiftPackageReference "NextcloudCapabilitiesKit" */,
+				5388E8972BC67F3800557E8A /* XCRemoteSwiftPackageReference "FLACMetadataKit" */,
 			);
 			productRefGroup = 535F1BCE2B4A8F1400C78D98 /* Products */;
 			projectDirPath = "";
@@ -933,18 +880,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				537632E62B86752B0026BFAB /* FLACCueSheetMetadataBlock.swift in Sources */,
 				5350541D2B63C71400D7EAF2 /* BackendPresentable.swift in Sources */,
 				53FE146B2B8F9457006C4193 /* Album.swift in Sources */,
 				535053F42B6239AC00D7EAF2 /* FilePickerRepresentable.swift in Sources */,
 				535053782B5AB24500D7EAF2 /* AVAsset+Extension.swift in Sources */,
 				535053522B5955F900D7EAF2 /* LocalFileUtils.swift in Sources */,
-				537632E82B8675450026BFAB /* FLACPaddingMetadataBlock.swift in Sources */,
 				535053882B5BCD0200D7EAF2 /* BackendDescription.swift in Sources */,
 				5350538D2B5BD1A700D7EAF2 /* FilePlayability.swift in Sources */,
-				537632DA2B8673E90026BFAB /* FLACStreamInfoMetadataBlock.swift in Sources */,
 				535053512B5955F900D7EAF2 /* Song.swift in Sources */,
-				537632E02B86749B0026BFAB /* FLACPictureMetadataBlock.swift in Sources */,
 				534F813D2BA311E00068D145 /* Container.swift in Sources */,
 				535053922B5BD41200D7EAF2 /* AvailableBackends.swift in Sources */,
 				535053FF2B62892500D7EAF2 /* AVPlayer+Extension.swift in Sources */,
@@ -953,16 +896,9 @@
 				535053622B5975A100D7EAF2 /* Logger+Extension.swift in Sources */,
 				53D666562B6E9C300042C03D /* NextcloudBackend.swift in Sources */,
 				535DAFC72B9F7AC100C94B62 /* Artist.swift in Sources */,
-				537632EF2B887AA90026BFAB /* FLACRemoteMetadataFetcher.swift in Sources */,
-				537632D62B86643E0026BFAB /* FLACMetadata.swift in Sources */,
-				537632E22B8674F80026BFAB /* FLACApplicationMetadataBlock.swift in Sources */,
-				537632EA2B8677250026BFAB /* FLACMetadataBlockHeader.swift in Sources */,
 				53D666582B6E9DB60042C03D /* NextcloudBackendDescription.swift in Sources */,
-				537632D42B8663100026BFAB /* FLACParser.swift in Sources */,
 				535053502B5955F900D7EAF2 /* HarmonyKit.docc in Sources */,
-				537632E42B8675170026BFAB /* FLACSeekTableMetadataBlock.swift in Sources */,
 				535053542B5955F900D7EAF2 /* Backend.swift in Sources */,
-				537632DE2B86745A0026BFAB /* FLACVorbisCommentsMetadataBlock.swift in Sources */,
 				53D6665B2B6E9DCF0042C03D /* FilesBackendDescription.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1593,6 +1529,14 @@
 				kind = branch;
 			};
 		};
+		5388E8972BC67F3800557E8A /* XCRemoteSwiftPackageReference "FLACMetadataKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/claucambra/FLACMetadataKit.git";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
 		53B9796D2B7F6D55002DA742 /* XCRemoteSwiftPackageReference "NextcloudKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/nextcloud/NextcloudKit.git";
@@ -1618,6 +1562,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 5358F2B42BAA01DC00E3C729 /* XCRemoteSwiftPackageReference "NextcloudCapabilitiesKit" */;
 			productName = NextcloudCapabilitiesKit;
+		};
+		5388E8982BC67F3800557E8A /* FLACMetadataKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5388E8972BC67F3800557E8A /* XCRemoteSwiftPackageReference "FLACMetadataKit" */;
+			productName = FLACMetadataKit;
 		};
 		539C54E42BBEE1F7005C9F9A /* NextcloudKit */ = {
 			isa = XCSwiftPackageProductDependency;

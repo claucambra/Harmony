@@ -7,6 +7,7 @@
 
 import Alamofire
 import AVFoundation
+import FLACMetadataKit
 import OSLog
 import SwiftData
 
