@@ -34,15 +34,7 @@ final class SyncDataActorTests: XCTestCase {
     }
 
     func testCleanup_ShouldChangeDownloadStateOfDownloadingSongs() async throws {
-        let song1 = Song(
-            identifier: "1",
-            parentContainerId: "1",
-            backendId: "1",
-            url: URL(fileURLWithPath: "1"),
-            local: true,
-            downloadState: .downloading,
-            versionId: "1"
-        )
+        let song1 = Song(identifier: "1", downloadState: .downloading)
         XCTAssertNotNil(song1)
         let mockModelContext = ModelContext(mockModelContainer)
         mockModelContext.insert(song1)
