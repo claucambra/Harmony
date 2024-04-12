@@ -43,4 +43,31 @@ final class SyncDataActorTests: XCTestCase {
         await syncDataActor.cleanup()
         XCTAssertEqual(song1.downloadState, DownloadState.notDownloaded.rawValue)
     }
+
+    func testApprovalForSongScan_WhenSongDoesNotExist() async {
+        let result = await syncDataActor.approvalForSongScan(id: "1", versionId: "new")
+        XCTAssertTrue(result)
+    }
+
+    func testApprovalForSongScan_WhenSongExistsWithDifferentVersion() async throws {
+        let song = Song(identifier: "1", versionId: "old")
+        let mockModelContext = ModelContext(mockModelContainer)
+        mockModelContext.insert(song)
+        try mockModelContext.save()
+
+        let result = await syncDataActor.approvalForSongScan(id: "1", versionId: "new")
+        XCTAssertTrue(result)
+    }
+
+    func testApprovalForSongScan_WhenSongExistsWithSameVersion() async throws {
+        let song = Song(identifier: "1", versionId: "same")
+        let mockModelContext = ModelContext(mockModelContainer)
+        mockModelContext.insert(song)
+        try mockModelContext.save()
+
+        let result = await syncDataActor.approvalForSongScan(
+            id: song.identifier, versionId: song.versionId
+        )
+        XCTAssertFalse(result)
+    }
 }
