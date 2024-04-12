@@ -21,7 +21,7 @@ public final class Song: ObservableObject {
     public let parentContainerId: String
     public let backendId: String
     public let url: URL
-    public var isPlayNext = false
+    @Transient public var isPlayNext = false
     public private(set) var title: String = ""
     public private(set) var artist: String = ""
     public private(set) var album: String = ""
