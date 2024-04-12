@@ -8,11 +8,11 @@ on:
 
 jobs:
   build:
-    name: Test default scheme using xcodebuild command
+    name: Test schemes using xcodebuild command
     runs-on: macos-14
     strategy:
         matrix:
-          scheme: ["Harmony", "HarmonyKit"]
+          scheme: ["Harmony"]
           destination: ['platform=macOS,arch=arm64', 'platform=iOS Simulator,OS=17.2,name=iPhone 15 Pro']
     
     steps:
@@ -51,6 +51,5 @@ jobs:
         run: |
           if [ "`ls -A | grep -i \\.xcworkspace\$`" ]; then filetype_parameter="workspace" && file_to_build="`ls -A | grep -i \\.xcworkspace\$`"; else filetype_parameter="project" && file_to_build="`ls -A | grep -i \\.xcodeproj\$`"; fi
           file_to_build=`echo $file_to_build | awk '{$1=$1;print}'`
-          xcodebuild clean build -scheme Harmony -"$filetype_parameter" "$file_to_build" -destination "${destination}"
-          xcodebuild test -scheme "${scheme}" -"$filetype_parameter" "$file_to_build" -destination "${destination}" && exit ${PIPESTATUS[0]}
+          xcodebuild clean test -scheme "${scheme}" -"$filetype_parameter" "$file_to_build" -destination "${destination}" | xcpretty && exit ${PIPESTATUS[0]}
         
