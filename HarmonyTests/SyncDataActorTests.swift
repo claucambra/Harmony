@@ -32,4 +32,23 @@ final class SyncDataActorTests: XCTestCase {
         mockModelContainer = nil
         super.tearDown()
     }
+
+    func testCleanup_ShouldChangeDownloadStateOfDownloadingSongs() async throws {
+        let song1 = Song(
+            identifier: "1",
+            parentContainerId: "1",
+            backendId: "1",
+            url: URL(fileURLWithPath: "1"),
+            local: true,
+            downloadState: .downloading,
+            versionId: "1"
+        )
+        XCTAssertNotNil(song1)
+        let mockModelContext = ModelContext(mockModelContainer)
+        mockModelContext.insert(song1)
+        try mockModelContext.save()
+
+        await syncDataActor.cleanup()
+        XCTAssertEqual(song1.downloadState, DownloadState.notDownloaded.rawValue)
+    }
 }
