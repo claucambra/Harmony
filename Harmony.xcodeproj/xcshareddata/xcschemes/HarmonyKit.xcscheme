@@ -29,11 +29,8 @@
       shouldUseLaunchSchemeArgsEnv = "YES">
       <TestPlans>
          <TestPlanReference
-            reference = "container:HarmonyKitTests/HarmonyKit.xctestplan"
+            reference = "container:HarmonyKit/HarmonyKit.xctestplan"
             default = "YES">
-         </TestPlanReference>
-         <TestPlanReference
-            reference = "container:HarmonyKit/HarmonyKit.xctestplan">
          </TestPlanReference>
       </TestPlans>
    </TestAction>
