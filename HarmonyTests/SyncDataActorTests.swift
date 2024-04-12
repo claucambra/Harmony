@@ -90,4 +90,36 @@ final class SyncDataActorTests: XCTestCase {
         XCTAssertNotNil(newResult)
         XCTAssertEqual(newResult?.downloadState, DownloadState.downloadedOutdated.rawValue)
     }
+
+    func testProcessSongAlbum_ShouldCreateNewAlbum() async {
+        let song = Song(identifier: "1", album: "Album 1")
+        let ingestedSong = await syncDataActor.ingestSong(song)
+        XCTAssertNotNil(ingestedSong)
+
+        let result = await syncDataActor.processSongAlbum(song)
+
+        XCTAssertNotNil(result)
+        XCTAssertEqual(result?.title, song.album)
+        XCTAssertEqual(result?.songs.first, song)
+    }
+
+    func testProcessSongAlbum_ShouldAddSongToExistingAlbum() async {
+        let song1 = Song(identifier: "1", album: "Album 1")
+        let song2 = Song(identifier: "2", album: "Album 1")
+        let activeSong1 = await syncDataActor.ingestSong(song1)
+        let activeSong2 = await syncDataActor.ingestSong(song2)
+        XCTAssertNotNil(activeSong1)
+        XCTAssertNotNil(activeSong2)
+
+        let originalResult = await syncDataActor.processSongAlbum(song1)
+        let result = await syncDataActor.processSongAlbum(song2)
+
+        XCTAssertNotNil(result)
+        XCTAssertEqual(result?.title, song1.album, "Album titles should match!")
+        XCTAssertEqual(result?.title, song2.album, "Album titles should match!")
+        XCTAssertEqual(result?.title, originalResult?.title, "Album titles should match!")
+        XCTAssertEqual(result?.songs, originalResult?.songs, "Songs should match!")
+        XCTAssertEqual(result?.songs, [activeSong1!, activeSong2!], "Songs should match!")
+    }
+
 }
