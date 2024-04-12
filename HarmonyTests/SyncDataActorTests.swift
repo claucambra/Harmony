@@ -70,4 +70,24 @@ final class SyncDataActorTests: XCTestCase {
         )
         XCTAssertFalse(result)
     }
+
+    func testIngestSong_WhenSongDoesNotExist_ShouldCreateSong() async {
+        let song = Song(identifier: "1", versionId: "new")
+        let result = await syncDataActor.ingestSong(song)
+        XCTAssertNotNil(result)
+        XCTAssertEqual(result?.identifier, song.identifier)
+    }
+
+    func testIngestSong_WhenSongExistsAndIsOutdated_ShouldUpdateDownloadState() async throws {
+        let song = Song(identifier: "1", downloadState: .downloaded, versionId: "old")
+        let newSong = Song(identifier: "1", versionId: "new")
+        
+        let mockModelContext = ModelContext(mockModelContainer)
+        mockModelContext.insert(song)
+        try mockModelContext.save()
+
+        let newResult = await syncDataActor.ingestSong(newSong)
+        XCTAssertNotNil(newResult)
+        XCTAssertEqual(newResult?.downloadState, DownloadState.downloadedOutdated.rawValue)
+    }
 }
