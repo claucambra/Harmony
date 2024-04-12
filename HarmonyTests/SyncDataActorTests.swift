@@ -276,4 +276,28 @@ final class SyncDataActorTests: XCTestCase {
         XCTAssertEqual(activeParent?.childContainers.contains(activeChild2!), true)
         XCTAssertEqual(activeParent?.childContainers.count, 2)
     }
+
+    func testClearSongs_BasicDelete() async throws {
+        let songId = "1"
+        let backendId = "backend1"
+        let song = Song(identifier: songId, parentContainerId: "container1", backendId: backendId)
+        let activeSong = await syncDataActor.ingestSong(song)
+        XCTAssertNotNil(activeSong)
+        XCTAssertFalse(activeSong!.isDeleted)
+
+        let mockModelContext = ModelContext(mockModelContainer)
+        let fetchDescriptor = FetchDescriptor<Song>(predicate: #Predicate {
+            $0.identifier == songId && $0.backendId == backendId
+        })
+
+        let retrievedSong = try mockModelContext.fetch(fetchDescriptor).first
+        XCTAssertNotNil(retrievedSong)
+
+        await syncDataActor.clearSongs(
+            backendId: activeSong!.backendId, withExceptions: [], avoidingContainers: []
+        )
+
+        let postDeleteSong = try mockModelContext.fetch(fetchDescriptor).first
+        XCTAssertNil(postDeleteSong)
+    }
 }
