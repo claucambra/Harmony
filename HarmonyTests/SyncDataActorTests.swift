@@ -71,6 +71,36 @@ final class SyncDataActorTests: XCTestCase {
         XCTAssertFalse(result)
     }
 
+    func testApprovalForSongContainerScan_WhenContainerDoesNotExist() async throws {
+        let result = await syncDataActor.approvalForSongContainerScan(id: "1", versionId: "new")
+        XCTAssertTrue(result)
+    }
+
+    func testApprovalForSongContainerScan_WhenContainerExistsWithDifferentVersion() async throws {
+        let container = Container(identifier: "1", backendId: "backendId", versionId: "old")
+        let mockModelContext = ModelContext(mockModelContainer)
+        mockModelContext.insert(container)
+        try mockModelContext.save()
+
+        let result = await syncDataActor.approvalForSongContainerScan(
+            id: container.identifier, versionId: "new"
+        )
+        XCTAssertTrue(result)
+    }
+
+    func testApprovalForSongContainerScan_WhenContainerExistsWithSameVersion() async throws {
+        let container = Container(identifier: "1", backendId: "backendId", versionId: "old")
+        let mockModelContext = ModelContext(mockModelContainer)
+        mockModelContext.insert(container)
+        try mockModelContext.save()
+
+        let result = await syncDataActor.approvalForSongContainerScan(
+            id: container.identifier, versionId: container.versionId
+        )
+        XCTAssertFalse(result)
+    }
+
+
     func testIngestSong_WhenSongDoesNotExist_ShouldCreateSong() async {
         let song = Song(identifier: "1", versionId: "new")
         let result = await syncDataActor.ingestSong(song)
@@ -193,6 +223,4 @@ final class SyncDataActorTests: XCTestCase {
         XCTAssertEqual(artistsA2?.first?.albums.contains(album2!), true)
         XCTAssertEqual(artistsA3?.first?.albums.contains(album1!), true)
     }
-
-
 }
