@@ -149,6 +149,58 @@ public final class Song: ObservableObject {
         }
     }
 
+    #if DEBUG
+    init(
+        identifier: String,
+        parentContainerId: String,
+        backendId: String,
+        url: URL,
+        title: String = "",
+        artist: String = "",
+        album: String = "",
+        genre: String = "",
+        composer: String = "",
+        grouping: String = "",
+        performer: String = "",
+        duration: TimeInterval = 0,
+        year: Int = 0,
+        trackNumber: Int = 1,
+        discNumber: Int = 1,
+        discTotal: Int = 1,
+        parentAlbum: Album? = nil,
+        parentArtists: [Artist] = [],
+        artwork: Data? = nil,
+        local: Bool,
+        downloadState: DownloadState = .notDownloaded,
+        downloadProgress: Double = 0.0,
+        versionId: String
+    ) {
+        self.identifier = identifier
+        self.parentContainerId = parentContainerId
+        self.backendId = backendId
+        self.url = url
+        self.title = title
+        self.artist = artist
+        self.album = album
+        self.genre = genre
+        self.composer = composer
+        self.grouping = grouping
+        self.performer = performer
+        self.duration = duration
+        self.year = year
+        self.trackNumber = trackNumber
+        self.discNumber = discNumber
+        self.discTotal = discTotal
+        self.parentAlbum = parentAlbum
+        self.parentArtists = parentArtists
+        self.artwork = artwork
+        self.local = local
+        self.downloadState = downloadState.rawValue
+        self.downloadProgress = downloadProgress
+        self.versionId = versionId
+    }
+    #endif
+
     private func setupArtwork(asset: AVAsset) async {
         guard let metadata = try? await asset.load(.metadata) else {
             Logger.defaultLog.error("Could not load metadata \(self.url)")
