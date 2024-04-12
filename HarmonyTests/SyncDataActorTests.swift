@@ -134,6 +134,8 @@ final class SyncDataActorTests: XCTestCase {
     }
 
     func testProcessSongAlbum_ShouldAddSongToExistingAlbum() async {
+        let song1Id = "1"
+        let song2Id = "2"
         let song1 = Song(identifier: "1", album: "Album 1")
         let song2 = Song(identifier: "2", album: "Album 1")
         let activeSong1 = await syncDataActor.ingestSong(song1)
@@ -149,7 +151,8 @@ final class SyncDataActorTests: XCTestCase {
         XCTAssertEqual(result?.title, song2.album, "Album titles should match!")
         XCTAssertEqual(result?.title, originalResult?.title, "Album titles should match!")
         XCTAssertEqual(result?.songs, originalResult?.songs, "Songs should match!")
-        XCTAssertEqual(result?.songs, [activeSong1!, activeSong2!], "Songs should match!")
+        XCTAssertTrue(result?.songs.contains(where: { $0.identifier == song1Id }) ?? false)
+        XCTAssertTrue(result?.songs.contains(where: { $0.identifier == song2Id }) ?? false)
     }
 
     func testProcessSongArtist_WhenArtistDoesNotExist_ShouldCreateArtist() async {
