@@ -333,4 +333,23 @@ final class SyncDataActorTests: XCTestCase {
         XCTAssertNil(retrievedS1)
         XCTAssertNotNil(retrievedS2)
     }
+
+    func testClearSongs_RespectsExceptions() async throws {
+        let songId = "1"
+        let backendId = "backend1"
+        let song = Song(identifier: songId, parentContainerId: "container1", backendId: backendId)
+        let activeSong = await syncDataActor.ingestSong(song)
+        XCTAssertNotNil(activeSong)
+
+        await syncDataActor.clearSongs(
+            backendId: activeSong!.backendId, withExceptions: [songId], avoidingContainers: []
+        )
+
+        let mockModelContext = ModelContext(mockModelContainer)
+        let fetchDescriptor = FetchDescriptor<Song>(predicate: #Predicate {
+            $0.identifier == songId && $0.backendId == backendId
+        })
+        let postDeleteSong = try mockModelContext.fetch(fetchDescriptor).first
+        XCTAssertNotNil(postDeleteSong)
+    }
 }
