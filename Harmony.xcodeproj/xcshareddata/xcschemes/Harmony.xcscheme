@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1520"
+   LastUpgradeVersion = "1530"
    version = "1.7">
    <BuildAction
       parallelizeBuildables = "YES"
-      buildImplicitDependencies = "YES">
+      buildImplicitDependencies = "YES"
+      buildArchitectures = "Automatic">
       <BuildActionEntries>
          <BuildActionEntry
             buildForTesting = "YES"
@@ -14,9 +15,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "535053282B5955C800D7EAF2"
-               BuildableName = "HarmonyKit.framework"
-               BlueprintName = "HarmonyKit"
+               BlueprintIdentifier = "535F1BCC2B4A8F1400C78D98"
+               BuildableName = "Harmony.app"
+               BlueprintName = "Harmony"
                ReferencedContainer = "container:Harmony.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -29,13 +30,34 @@
       shouldUseLaunchSchemeArgsEnv = "YES">
       <TestPlans>
          <TestPlanReference
-            reference = "container:HarmonyKitTests/HarmonyKit.xctestplan"
+            reference = "container:Harmony/Harmony.xctestplan"
             default = "YES">
          </TestPlanReference>
-         <TestPlanReference
-            reference = "container:HarmonyKit/HarmonyKit.xctestplan">
-         </TestPlanReference>
       </TestPlans>
+      <Testables>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "535F1BDD2B4A8F1600C78D98"
+               BuildableName = "HarmonyTests.xctest"
+               BlueprintName = "HarmonyTests"
+               ReferencedContainer = "container:Harmony.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "YES"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "535F1BE72B4A8F1600C78D98"
+               BuildableName = "HarmonyUITests.xctest"
+               BlueprintName = "HarmonyUITests"
+               ReferencedContainer = "container:Harmony.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+      </Testables>
    </TestAction>
    <LaunchAction
       buildConfiguration = "Debug"
@@ -47,6 +69,16 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "535F1BCC2B4A8F1400C78D98"
+            BuildableName = "Harmony.app"
+            BlueprintName = "Harmony"
+            ReferencedContainer = "container:Harmony.xcodeproj">
+         </BuildableReference>
+      </BuildableProductRunnable>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -54,15 +86,16 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <MacroExpansion>
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "535053282B5955C800D7EAF2"
-            BuildableName = "HarmonyKit.framework"
-            BlueprintName = "HarmonyKit"
+            BlueprintIdentifier = "535F1BCC2B4A8F1400C78D98"
+            BuildableName = "Harmony.app"
+            BlueprintName = "Harmony"
             ReferencedContainer = "container:Harmony.xcodeproj">
          </BuildableReference>
-      </MacroExpansion>
+      </BuildableProductRunnable>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">

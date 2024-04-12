@@ -159,7 +159,6 @@
 /* Begin PBXFileReference section */
 		5315227A2B8BC936002E31BE /* KeychainUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainUtils.swift; sourceTree = "<group>"; };
 		5315227C2B8CF235002E31BE /* CurrentlyPlayingSongIndicatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentlyPlayingSongIndicatorView.swift; sourceTree = "<group>"; };
-		5335FA0C2BC55ED000AC4596 /* HarmonyKit.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = HarmonyKit.xctestplan; sourceTree = "<group>"; };
 		5335FA0D2BC5B22000AC4596 /* Harmony.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = Harmony.xctestplan; sourceTree = "<group>"; };
 		534F81282BA078A70068D145 /* ArtistsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtistsListView.swift; sourceTree = "<group>"; };
 		534F812A2BA082D90068D145 /* ArtistsSplitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtistsSplitView.swift; sourceTree = "<group>"; };
@@ -240,6 +239,7 @@
 		535F1BEE2B4A8F1600C78D98 /* HarmonyUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HarmonyUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		53802A392B66AF2B0066208D /* PhonePlayerDrawer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhonePlayerDrawer.swift; sourceTree = "<group>"; };
 		53802A3D2B6790330066208D /* ToolbarVolumeSliderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolbarVolumeSliderView.swift; sourceTree = "<group>"; };
+		5388E89A2BC9357B00557E8A /* HarmonyKit.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = HarmonyKit.xctestplan; sourceTree = "<group>"; };
 		539C54E62BBF0F97005C9F9A /* CurrentSyncDataActor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentSyncDataActor.swift; sourceTree = "<group>"; };
 		539C54E82BBF10C8005C9F9A /* SyncBackendButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncBackendButton.swift; sourceTree = "<group>"; };
 		53B19BE32B9A0EBA00FE53E4 /* DownloadStateLabelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadStateLabelView.swift; sourceTree = "<group>"; };
@@ -326,8 +326,8 @@
 				5350538B2B5BD18B00D7EAF2 /* Files */,
 				535053762B5AB22F00D7EAF2 /* Extensions */,
 				535053472B5955F900D7EAF2 /* HarmonyKit.docc */,
-				5335FA0C2BC55ED000AC4596 /* HarmonyKit.xctestplan */,
 				5350534B2B5955F900D7EAF2 /* HarmonyKit.h */,
+				5388E89A2BC9357B00557E8A /* HarmonyKit.xctestplan */,
 			);
 			path = HarmonyKit;
 			sourceTree = "<group>";
