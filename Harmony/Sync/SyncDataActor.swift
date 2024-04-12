@@ -117,9 +117,10 @@ actor SyncDataActor {
         }
     }
 
-    func processSongArtist(_ song: Song, inAlbum album: Album?) {
+    @discardableResult func processSongArtist(_ song: Song, inAlbum album: Album?) -> Set<Artist>? {
         let songIdentifier = song.identifier
         do {
+            var artists = Set<Artist>()
             let artistNames = song.artist.components(separatedBy: "; ")
             for artistName in artistNames {
                 let artistFetchDescriptor = FetchDescriptor<Artist>(
@@ -134,13 +135,17 @@ actor SyncDataActor {
                     {
                         artist.albums.append(album)
                     }
+                    artists.insert(artist)
                 } else if let artist = Artist(name: artistName, songs: [song]) {
                     modelContext.insert(artist)
+                    artists.insert(artist)
                 }
                 try modelContext.save()
             }
+            return artists.isEmpty ? nil : artists
         } catch let error {
             Logger.sync.error("Could not process artist for song \(songIdentifier): \(error)")
+            return nil
         }
     }
 
