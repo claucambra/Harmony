@@ -30,6 +30,28 @@ public final class Album {
         updateDownloaded()
     }
 
+    #if DEBUG
+    init(
+        songs: [Song],
+        parentArtists: [Artist] = [],
+        title: String,
+        artist: String? = nil,
+        genre: String? = nil,
+        year: Int? = nil,
+        artwork: Data? = nil,
+        downloaded: Bool = false
+    ) {
+        self.songs = songs
+        self.parentArtists = parentArtists
+        self.title = title
+        self.artist = artist
+        self.genre = genre
+        self.year = year
+        self.artwork = artwork
+        self.downloaded = downloaded
+    }
+    #endif
+
     func updateDownloaded() {
         downloaded = songs.filter { $0.downloadState != DownloadState.downloaded.rawValue }.isEmpty
     }
