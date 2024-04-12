@@ -177,7 +177,38 @@ actor SyncDataActor {
         }
     }
 
-    // Remove songs. Exceptions should contain song ids
+    // Remove songs. Importantly, used at the end of a scan to eliminate songs that are no longer
+    // present.
+    //
+    // Exceptions should contain song ids.
+    //
+    // Regarding containers. In this example tree...
+    //
+    // root --> rootChild1 -> rootChild1Child
+    //      \-> rootChild2 -> rootChild2Child
+    //
+    // ...the song in root and the child songs in rootChild2 should be kept.
+    // Why? Because we scan from the root of the tree down.
+    // Missing containers can mean:
+    //
+    // 1. The container was deleted
+    // 2. The container is a child of one of the containers we're avoiding
+    //
+    // In the context of syncing, we ONLY want to delete songs for case 1.
+    // To figure out if a missing container is the result of case 1 or case 2, we need to:
+    //
+    // 1.   Traverse the tree from the root
+    // 2.   Check if any of the children of the root are present in the list of containers we're
+    //      avoiding
+    //
+    // 3a.  If any are, we should clear any children that are not present (as this means a scan of
+    //      the root container has been approved and these children are missing, therefore deleted)
+    // 3ai. Repeat 1->3a for present children
+    //
+    // 3b.  If none are, we should recursively protect all children of the root container (as this
+    //      means that a scan of the root container has not been approved, so we assume the state of
+    //      the children has not changed)
+
     func clearSongs(
         backendId: String,
         withExceptions exceptions: Set<String>,
@@ -189,9 +220,42 @@ actor SyncDataActor {
 
         do {
             let backendSongs = try modelContext.fetch(fetchDescriptor)
-            let protectedContainerHierarchy = try containersWithChildren(
-                parents: songContainers, backendId: backendId
-            )
+            var protectedContainerHierarchy = songContainers
+
+            if !songContainers.isEmpty {
+                // Deal with the container hierarchy here
+                guard let root = try modelContext.fetch(
+                    FetchDescriptor<Container>(
+                        predicate: #Predicate {
+                            $0.backendId == backendId && $0.parentContainer == nil
+                        }
+                    )
+                ).first else {
+                    Logger.sync.error("Could not find root container for \(backendId)")
+                    return
+                }
+                var containersToProcess = [root]
+
+                while !containersToProcess.isEmpty {
+                    var nextContainers = [Container]()
+                    for container in containersToProcess {
+                        let presentChildren = container.childContainers.filter {
+                            songContainers.contains($0.identifier)
+                        }
+                        guard !presentChildren.isEmpty else {
+                            let allChildren = try containersWithChildren(
+                                parents: [container.identifier], backendId: backendId
+                            )
+                            protectedContainerHierarchy.formUnion(allChildren)
+                            continue
+                        }
+
+                        nextContainers.append(contentsOf: presentChildren)
+                    }
+                    containersToProcess = nextContainers
+                }
+            }
+
             let songsForRemoval = try backendSongs.filter(
                 #Predicate {
                     !exceptions.contains($0.identifier) &&
