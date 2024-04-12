@@ -231,6 +231,7 @@ final class SyncDataActorTests: XCTestCase {
         let child = Container(identifier: childIdentifier, backendId: "1", versionId: "1")
         let mockModelContext = ModelContext(mockModelContainer)
 
+        // Should insert parent first and then link the child
         await syncDataActor.ingestContainer(child, parentContainer: parent)
         let activeParent = try mockModelContext.fetch(
             FetchDescriptor<Container>(predicate: #Predicate { $0.identifier == parentIdentifier })
@@ -244,6 +245,18 @@ final class SyncDataActorTests: XCTestCase {
 
         XCTAssertEqual(activeChild?.parentContainer, activeParent)
         XCTAssertEqual(activeParent?.childContainers.contains(activeChild!), true)
-    }
 
+        // Now insert another child
+        let child2Identifier = "child2"
+        let child2 = Container(identifier: child2Identifier, backendId: "1", versionId: "1")
+        await syncDataActor.ingestContainer(child2, parentContainer: activeParent)
+        let activeChild2 = try mockModelContext.fetch(
+            FetchDescriptor<Container>(predicate: #Predicate { $0.identifier == child2Identifier })
+        ).first
+        XCTAssertNotNil(activeChild2)
+
+        XCTAssertEqual(activeChild2?.parentContainer, activeParent)
+        XCTAssertEqual(activeParent?.childContainers.contains(activeChild2!), true)
+        XCTAssertEqual(activeParent?.childContainers.count, 2)
+    }
 }
