@@ -155,4 +155,20 @@ class FilesBackendTests: XCTestCase {
             semaphore.wait()
         }
     }
+
+    func testScanCancel() throws {
+        try createTemporaryDirectoryStructure()
+        let backend = FilesBackend(path: temporaryDirectory, backendId: "test-be")
+        Task {
+            try await backend.scan(
+                containerScanApprover: { _,_ in return true },
+                songScanApprover: { _,_ in return true },
+                finalisedSongHandler: { song in self.songs.append(song) },
+                finalisedContainerHandler: { _,_ in }
+            )
+        }
+        backend.cancelScan()
+        XCTAssertFalse(backend.presentation.scanning, "Expected scanning to be false")
+        XCTAssertNotEqual(songs.count, 3, "All songs should not have been scanned")
+    }
 }
