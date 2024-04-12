@@ -44,12 +44,13 @@ jobs:
           security import $CERTIFICATE_PATH -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
           security set-key-partition-list -S apple-tool:,apple: -k "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
           security list-keychain -d user -s $KEYCHAIN_PATH
-      - name: Build
+      - name: Build and test
         env:
           scheme: ${{ matrix.scheme }}
           destination: ${{ matrix.destination }}
         run: |
           if [ "`ls -A | grep -i \\.xcworkspace\$`" ]; then filetype_parameter="workspace" && file_to_build="`ls -A | grep -i \\.xcworkspace\$`"; else filetype_parameter="project" && file_to_build="`ls -A | grep -i \\.xcodeproj\$`"; fi
           file_to_build=`echo $file_to_build | awk '{$1=$1;print}'`
-          xcodebuild clean build -scheme Harmony -"$filetype_parameter" "$file_to_build" -destination "${destination}" | xcpretty
-          xcodebuild test -scheme "${scheme}" -"$filetype_parameter" "$file_to_build" -destination "${destination}" | xcpretty && exit ${PIPESTATUS[0]}
+          xcodebuild clean build -scheme Harmony -"$filetype_parameter" "$file_to_build" -destination "${destination}"
+          xcodebuild test -scheme "${scheme}" -"$filetype_parameter" "$file_to_build" -destination "${destination}" && exit ${PIPESTATUS[0]}
+        
