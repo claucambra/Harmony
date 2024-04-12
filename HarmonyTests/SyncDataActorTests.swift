@@ -300,4 +300,37 @@ final class SyncDataActorTests: XCTestCase {
         let postDeleteSong = try mockModelContext.fetch(fetchDescriptor).first
         XCTAssertNil(postDeleteSong)
     }
+
+    func testClearSongs_DeletesOnlyBackendSongs() async throws {
+        let song1Identifier = "1"
+        let song2Identifier = "2"
+        let song1BackendId = "backend1"
+        let song2BackendId = "backend2"
+        let song1 = Song(
+            identifier: song1Identifier, parentContainerId: "container1", backendId: song1BackendId
+        )
+        let song2 = Song(
+            identifier: song2Identifier, parentContainerId: "container1", backendId: song2BackendId
+        )
+        let activeSong1 = await syncDataActor.ingestSong(song1)
+        let activeSong2 = await syncDataActor.ingestSong(song2)
+        XCTAssertNotNil(activeSong1)
+        XCTAssertNotNil(activeSong2)
+
+        await syncDataActor.clearSongs(
+            backendId: song1BackendId, withExceptions: [], avoidingContainers: []
+        )
+
+        let s1FetchDescriptor = FetchDescriptor<Song>(predicate: #Predicate {
+            $0.identifier == song1Identifier
+        })
+        let s2FetchDescriptor = FetchDescriptor<Song>(predicate: #Predicate {
+            $0.identifier == song2Identifier
+        })
+        let mockModelContext = ModelContext(mockModelContainer)
+        let retrievedS1 = try mockModelContext.fetch(s1FetchDescriptor).first
+        let retrievedS2 = try mockModelContext.fetch(s2FetchDescriptor).first
+        XCTAssertNil(retrievedS1)
+        XCTAssertNotNil(retrievedS2)
+    }
 }
