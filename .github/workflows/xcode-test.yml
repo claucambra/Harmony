@@ -12,6 +12,7 @@ jobs:
     runs-on: macos-14
     strategy:
         matrix:
+          scheme: ["Harmony", "HarmonyKit"]
           destination: ['platform=macOS,arch=arm64', 'platform=iOS Simulator,OS=17.2,name=iPhone 15 Pro']
     
     steps:
@@ -43,18 +44,11 @@ jobs:
           security import $CERTIFICATE_PATH -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
           security set-key-partition-list -S apple-tool:,apple: -k "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
           security list-keychain -d user -s $KEYCHAIN_PATH
-      - name: Set Default Scheme
-        run: |
-          scheme_list=$(xcodebuild -list -json | tr -d "\n")
-          default=$(echo $scheme_list | ruby -e "require 'json'; puts JSON.parse(STDIN.gets)['project']['targets'][0]")
-          echo $default | cat >default
-          echo Using default scheme: $default
       - name: Build
         env:
           scheme: ${{ 'default' }}
           destination: ${{ matrix.destination }}
         run: |
-          if [ $scheme = default ]; then scheme=$(cat default); fi
           if [ "`ls -A | grep -i \\.xcworkspace\$`" ]; then filetype_parameter="workspace" && file_to_build="`ls -A | grep -i \\.xcworkspace\$`"; else filetype_parameter="project" && file_to_build="`ls -A | grep -i \\.xcodeproj\$`"; fi
           file_to_build=`echo $file_to_build | awk '{$1=$1;print}'`
-          xcodebuild clean test -scheme "$scheme" -"$filetype_parameter" "$file_to_build" -destination "${destination}" | xcpretty && exit ${PIPESTATUS[0]}
+          xcodebuild clean test -scheme "${scheme}" -"$filetype_parameter" "$file_to_build" -destination "${destination}" | xcpretty && exit ${PIPESTATUS[0]}
