@@ -223,4 +223,27 @@ final class SyncDataActorTests: XCTestCase {
         XCTAssertEqual(artistsA2?.first?.albums.contains(album2!), true)
         XCTAssertEqual(artistsA3?.first?.albums.contains(album1!), true)
     }
+
+    func testIngestContainer_ShouldCorrectlyLinkToParentContainer() async throws {
+        let parentIdentifier = "parent1"
+        let childIdentifier = "child1"
+        let parent = Container(identifier: parentIdentifier, backendId: "1", versionId: "1")
+        let child = Container(identifier: childIdentifier, backendId: "1", versionId: "1")
+        let mockModelContext = ModelContext(mockModelContainer)
+
+        await syncDataActor.ingestContainer(child, parentContainer: parent)
+        let activeParent = try mockModelContext.fetch(
+            FetchDescriptor<Container>(predicate: #Predicate { $0.identifier == parentIdentifier })
+        ).first
+        XCTAssertNotNil(activeParent)
+
+        let activeChild = try mockModelContext.fetch(
+            FetchDescriptor<Container>(predicate: #Predicate { $0.identifier == childIdentifier })
+        ).first
+        XCTAssertNotNil(activeChild)
+
+        XCTAssertEqual(activeChild?.parentContainer, activeParent)
+        XCTAssertEqual(activeParent?.childContainers.contains(activeChild!), true)
+    }
+
 }
