@@ -352,4 +352,71 @@ final class SyncDataActorTests: XCTestCase {
         let postDeleteSong = try mockModelContext.fetch(fetchDescriptor).first
         XCTAssertNotNil(postDeleteSong)
     }
+
+    func testClearSongs_RespectsAvoidedContainers() async throws {
+        let backendId = "backend1"
+        let song1Id = "1"
+        let song2Id = "2"
+        let song3Id = "3"
+        let song4Id = "4"
+        let song5Id = "5"
+        let rootId = "root"
+        let rootChild1Id = "rootChild1"
+        let rootChild2Id = "rootChild2"
+        let rootChild1ChildId = "rootChild1Child"
+        let rootChild2ChildId = "rootChild2Child"
+        let song1 = Song(identifier: song1Id, parentContainerId: rootId, backendId: backendId)
+        let song2 = Song(identifier: song2Id, parentContainerId: rootChild1Id, backendId: backendId)
+        let song3 = Song(identifier: song3Id, parentContainerId: rootChild2Id, backendId: backendId)
+        let song4 = Song(
+            identifier: song4Id, parentContainerId: rootChild1ChildId, backendId: backendId
+        )
+        let song5 = Song(
+            identifier: song5Id, parentContainerId: rootChild2ChildId, backendId: backendId
+        )
+
+        let activeSong1 = await syncDataActor.ingestSong(song1)
+        let activeSong2 = await syncDataActor.ingestSong(song2)
+        let activeSong3 = await syncDataActor.ingestSong(song3)
+        let activeSong4 = await syncDataActor.ingestSong(song4)
+        let activeSong5 = await syncDataActor.ingestSong(song5)
+        XCTAssertNotNil(activeSong1)
+        XCTAssertNotNil(activeSong2)
+        XCTAssertNotNil(activeSong3)
+        XCTAssertNotNil(activeSong4)
+        XCTAssertNotNil(activeSong5)
+
+        let root = Container(identifier: rootId, backendId: backendId, versionId: "1")
+        let rootChild1 = Container(identifier: rootChild1Id, backendId: backendId, versionId: "1")
+        let rootChild2 = Container(identifier: rootChild2Id, backendId: backendId, versionId: "1")
+        let rootChild1Child = Container(
+            identifier: rootChild1ChildId, backendId: backendId, versionId: "1"
+        )
+        let rootChild2Child = Container(
+            identifier: rootChild2ChildId, backendId: backendId, versionId: "1"
+        )
+
+        await syncDataActor.ingestContainer(root, parentContainer: nil)
+        await syncDataActor.ingestContainer(rootChild1, parentContainer: root)
+        await syncDataActor.ingestContainer(rootChild2, parentContainer: root)
+        await syncDataActor.ingestContainer(rootChild1Child, parentContainer: rootChild1)
+        await syncDataActor.ingestContainer(rootChild2Child, parentContainer: rootChild2)
+
+        await syncDataActor.clearSongs(
+            backendId: backendId, withExceptions: [], avoidingContainers: [rootId, rootChild2Id]
+        )
+
+        let mockModelContext = ModelContext(mockModelContainer)
+        let fetchDescriptor = FetchDescriptor<Song>(predicate: #Predicate {
+            $0.backendId == backendId
+        })
+        let postDeleteSongs = try mockModelContext.fetch(fetchDescriptor)
+
+        XCTAssertEqual(postDeleteSongs.count, 3)
+        XCTAssertTrue(postDeleteSongs.contains(where: { $0.identifier == song1Id }))
+        XCTAssertFalse(postDeleteSongs.contains(where: { $0.identifier == song2Id }))
+        XCTAssertTrue(postDeleteSongs.contains(where: { $0.identifier == song3Id }))
+        XCTAssertFalse(postDeleteSongs.contains(where: { $0.identifier == song4Id }))
+        XCTAssertTrue(postDeleteSongs.contains(where: { $0.identifier == song5Id }))
+    }
 }
