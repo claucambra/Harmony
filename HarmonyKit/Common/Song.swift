@@ -152,9 +152,9 @@ public final class Song: ObservableObject {
     #if DEBUG
     init(
         identifier: String,
-        parentContainerId: String,
-        backendId: String,
-        url: URL,
+        parentContainerId: String = "parent",
+        backendId: String = "backendId",
+        url: URL = URL(string: "https://www.example.com")!,
         title: String = "",
         artist: String = "",
         album: String = "",
@@ -170,10 +170,10 @@ public final class Song: ObservableObject {
         parentAlbum: Album? = nil,
         parentArtists: [Artist] = [],
         artwork: Data? = nil,
-        local: Bool,
+        local: Bool = true,
         downloadState: DownloadState = .notDownloaded,
         downloadProgress: Double = 0.0,
-        versionId: String
+        versionId: String = "0"
     ) {
         self.identifier = identifier
         self.parentContainerId = parentContainerId
