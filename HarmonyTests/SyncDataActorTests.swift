@@ -122,4 +122,77 @@ final class SyncDataActorTests: XCTestCase {
         XCTAssertEqual(result?.songs, [activeSong1!, activeSong2!], "Songs should match!")
     }
 
+    func testProcessSongArtist_WhenArtistDoesNotExist_ShouldCreateArtist() async {
+        let song = Song(identifier: "1", artist: "Artist 1", album: "Album 1")
+        let activeSong = await syncDataActor.ingestSong(song)
+        XCTAssertNotNil(activeSong)
+
+        let album = await syncDataActor.processSongAlbum(activeSong!)
+        XCTAssertNotNil(album)
+
+        let artists = await syncDataActor.processSongArtist(song, inAlbum: album!)
+        XCTAssertNotNil(artists)
+        XCTAssertEqual(artists?.count, 1)
+        for artist in artists! {
+            XCTAssertEqual(artist.name, song.artist)
+            XCTAssertEqual(artist.songs.count, 1)
+            XCTAssertEqual(artist.albums.count, 1)
+            XCTAssertTrue(artist.songs.contains(activeSong!))
+            XCTAssertTrue(artist.albums.contains(album!))
+        }
+    }
+
+    func testProcessSongArtist_WhenArtistsDoNotExist_ShouldCreateMultipleArtists() async {
+        let song = Song(identifier: "1", artist: "Artist 1; Artist 2; Artist 3", album: "Album 1")
+        let songA1 = Song(identifier: "2", artist: "Artist 1", album: "Album 1")
+        let songA2 = Song(identifier: "3", artist: "Artist 2", album: "Album 2")
+        let activeSong = await syncDataActor.ingestSong(song)
+        let activeSongA1 = await syncDataActor.ingestSong(songA1)
+        let activeSongA2 = await syncDataActor.ingestSong(songA2)
+        XCTAssertNotNil(activeSong)
+        XCTAssertNotNil(activeSongA1)
+        XCTAssertNotNil(activeSongA2)
+
+        let album1 = await syncDataActor.processSongAlbum(activeSong!)
+        _ = await syncDataActor.processSongAlbum(activeSongA1!)
+        let album2 = await syncDataActor.processSongAlbum(activeSongA2!)
+        XCTAssertNotNil(album1)
+        XCTAssertNotNil(album2)
+        XCTAssertEqual(album1?.songs.count, 2)
+        XCTAssertEqual(album2?.songs.count, 1)
+
+        let artists = await syncDataActor.processSongArtist(activeSong!, inAlbum: album1!)
+        let artistsA1 = await syncDataActor.processSongArtist(activeSongA1!, inAlbum: album1!)
+        let artistsA2 = await syncDataActor.processSongArtist(activeSongA2!, inAlbum: album2!)
+        let artistsA3 = artists?.filter { $0.name == "Artist 3" }
+        XCTAssertNotNil(artists)
+        XCTAssertNotNil(artistsA1)
+        XCTAssertNotNil(artistsA2)
+        XCTAssertNotNil(artistsA3)
+        XCTAssertEqual(artists?.count, 3)
+        XCTAssertEqual(artistsA1?.count, 1)
+        XCTAssertEqual(artistsA2?.count, 1)
+        XCTAssertEqual(artistsA3?.count, 1)
+
+        XCTAssertEqual(artistsA1?.first?.songs.count, 2)
+        XCTAssertEqual(artistsA2?.first?.songs.count, 2)
+        XCTAssertEqual(artistsA3?.first?.songs.count, 1)
+
+        XCTAssertEqual(artistsA1?.first?.albums.count, 1)
+        XCTAssertEqual(artistsA2?.first?.albums.count, 2)
+        XCTAssertEqual(artistsA3?.first?.albums.count, 1)
+
+        XCTAssertEqual(artistsA1?.first?.songs.contains(activeSong!), true)
+        XCTAssertEqual(artistsA1?.first?.songs.contains(activeSongA1!), true)
+        XCTAssertEqual(artistsA2?.first?.songs.contains(activeSong!), true)
+        XCTAssertEqual(artistsA2?.first?.songs.contains(activeSongA2!), true)
+        XCTAssertEqual(artistsA3?.first?.songs.contains(activeSong!), true)
+
+        XCTAssertEqual(artistsA1?.first?.albums.contains(album1!), true)
+        XCTAssertEqual(artistsA2?.first?.albums.contains(album1!), true)
+        XCTAssertEqual(artistsA2?.first?.albums.contains(album2!), true)
+        XCTAssertEqual(artistsA3?.first?.albums.contains(album1!), true)
+    }
+
+
 }
