@@ -220,46 +220,13 @@ actor SyncDataActor {
 
         do {
             let backendSongs = try modelContext.fetch(fetchDescriptor)
-            var protectedContainerHierarchy = songContainers
-
-            if !songContainers.isEmpty {
-                // Deal with the container hierarchy here
-                guard let root = try modelContext.fetch(
-                    FetchDescriptor<Container>(
-                        predicate: #Predicate {
-                            $0.backendId == backendId && $0.parentContainer == nil
-                        }
-                    )
-                ).first else {
-                    Logger.sync.error("Could not find root container for \(backendId)")
-                    return
-                }
-                var containersToProcess = [root]
-
-                while !containersToProcess.isEmpty {
-                    var nextContainers = [Container]()
-                    for container in containersToProcess {
-                        let presentChildren = container.childContainers.filter {
-                            songContainers.contains($0.identifier)
-                        }
-                        guard !presentChildren.isEmpty else {
-                            let allChildren = try containerChildren(
-                                parentId: container.identifier, backendId: backendId
-                            )
-                            protectedContainerHierarchy.formUnion(allChildren)
-                            continue
-                        }
-
-                        nextContainers.append(contentsOf: presentChildren)
-                    }
-                    containersToProcess = nextContainers
-                }
-            }
-
+            let fullAvoidedContainerSet = try postSyncSafeContainers(
+                scannedContainers: songContainers, backendId: backendId
+            )
             let songsForRemoval = try backendSongs.filter(
                 #Predicate {
                     !exceptions.contains($0.identifier) &&
-                    !protectedContainerHierarchy.contains($0.parentContainerId)
+                    !fullAvoidedContainerSet.contains($0.parentContainerId)
                 }
             )
             for songToRemove in songsForRemoval {
@@ -272,6 +239,7 @@ actor SyncDataActor {
         }
     }
 
+    // Similar logic to clearSongs, but for containers.
     func clearSongContainers(
         backendId: String,
         withExceptions exceptions: Set<String>,
@@ -283,42 +251,9 @@ actor SyncDataActor {
 
         do {
             let backendSongContainers = try modelContext.fetch(fetchDescriptor)
-            var protectedContainerHierarchy = protectedParents
-
-            // TODO: Deduplicate with songs
-            if !protectedParents.isEmpty {
-                // Deal with the container hierarchy here
-                guard let root = try modelContext.fetch(
-                    FetchDescriptor<Container>(
-                        predicate: #Predicate {
-                            $0.backendId == backendId && $0.parentContainer == nil
-                        }
-                    )
-                ).first else {
-                    Logger.sync.error("Could not find root container for \(backendId)")
-                    return
-                }
-                var containersToProcess = [root]
-
-                while !containersToProcess.isEmpty {
-                    var nextContainers = [Container]()
-                    for container in containersToProcess {
-                        let presentChildren = container.childContainers.filter {
-                            protectedParents.contains($0.identifier)
-                        }
-                        guard !presentChildren.isEmpty else {
-                            let allChildren = try containerChildren(
-                                parentId: container.identifier, backendId: backendId
-                            )
-                            protectedContainerHierarchy.formUnion(allChildren)
-                            continue
-                        }
-
-                        nextContainers.append(contentsOf: presentChildren)
-                    }
-                    containersToProcess = nextContainers
-                }
-            }
+            let protectedContainerHierarchy = try postSyncSafeContainers(
+                scannedContainers: protectedParents, backendId: backendId
+            )
             let songContainersForRemoval = try backendSongContainers.filter(
                 #Predicate {
                     !exceptions.contains($0.identifier) &&
@@ -357,6 +292,47 @@ actor SyncDataActor {
         } catch let error {
             Logger.sync.error("Could not delete stale groupings: \(error)")
         }
+    }
+
+    // MARK: - Container graph helpers
+    private func postSyncSafeContainers(
+        scannedContainers: Set<String>, backendId: String
+    ) throws -> Set<String> {
+        guard !scannedContainers.isEmpty else { return scannedContainers }
+
+        guard let root = try modelContext.fetch(
+            FetchDescriptor<Container>(
+                predicate: #Predicate {
+                    $0.backendId == backendId && $0.parentContainer == nil
+                }
+            )
+        ).first else {
+            Logger.sync.error("Could not find root container for \(backendId)")
+            return scannedContainers
+        }
+
+        var protectedContainers = scannedContainers
+        var containersToProcess = [root]
+
+        while !containersToProcess.isEmpty {
+            var nextContainers = [Container]()
+            for container in containersToProcess {
+                let presentChildren = container.childContainers.filter {
+                    scannedContainers.contains($0.identifier)
+                }
+                guard !presentChildren.isEmpty else {
+                    let allChildren = try containerChildren(
+                        parentId: container.identifier, backendId: backendId
+                    )
+                    protectedContainers.formUnion(allChildren)
+                    continue
+                }
+                nextContainers.append(contentsOf: presentChildren)
+            }
+            containersToProcess = nextContainers
+        }
+
+        return protectedContainers
     }
 
     private func containerChildren(parentId: String, backendId: String) throws -> Set<String> {
