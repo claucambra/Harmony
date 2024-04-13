@@ -283,13 +283,45 @@ actor SyncDataActor {
 
         do {
             let backendSongContainers = try modelContext.fetch(fetchDescriptor)
-            let protectedContainers = try containersWithChildren(
-                parents: protectedParents, backendId: backendId
-            )
+            var protectedContainerHierarchy = protectedParents
+
+            if !protectedParents.isEmpty {
+                // Deal with the container hierarchy here
+                guard let root = try modelContext.fetch(
+                    FetchDescriptor<Container>(
+                        predicate: #Predicate {
+                            $0.backendId == backendId && $0.parentContainer == nil
+                        }
+                    )
+                ).first else {
+                    Logger.sync.error("Could not find root container for \(backendId)")
+                    return
+                }
+                var containersToProcess = [root]
+
+                while !containersToProcess.isEmpty {
+                    var nextContainers = [Container]()
+                    for container in containersToProcess {
+                        let presentChildren = container.childContainers.filter {
+                            protectedParents.contains($0.identifier)
+                        }
+                        guard !presentChildren.isEmpty else {
+                            let allChildren = try containersWithChildren(
+                                parents: [container.identifier], backendId: backendId
+                            )
+                            protectedContainerHierarchy.formUnion(allChildren)
+                            continue
+                        }
+
+                        nextContainers.append(contentsOf: presentChildren)
+                    }
+                    containersToProcess = nextContainers
+                }
+            }
             let songContainersForRemoval = try backendSongContainers.filter(
                 #Predicate {
                     !exceptions.contains($0.identifier) &&
-                    !protectedContainers.contains($0.identifier)
+                    !protectedContainerHierarchy.contains($0.identifier)
                 }
             )
             songContainersForRemoval.forEach {
