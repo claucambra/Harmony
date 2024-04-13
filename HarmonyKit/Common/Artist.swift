@@ -26,4 +26,13 @@ public final class Artist {
         }
         albums = Array(albumDict.values)
     }
+
+    #if DEBUG
+    init(songs: [Song], albums: [Album] = [], name: String, downloaded: Bool = false) {
+        self.songs = songs
+        self.albums = albums
+        self.name = name
+        self.downloaded = downloaded
+    }
+    #endif
 }
