@@ -484,4 +484,98 @@ final class SyncDataActorTests: XCTestCase {
         XCTAssertNotNil(postDeleteActiveAlbum)
         XCTAssertNotNil(postDeleteActiveArtist)
     }
+
+    func testClearSongContainers_DeletesOnlyBackendContainers() async throws {
+        let container1Identifier = "1"
+        let container2Identifier = "2"
+        let container1BackendId = "backend1"
+        let container2BackendId = "backend2"
+        let container1 = Container(
+            identifier: container1Identifier, backendId: container1BackendId, versionId: "v1"
+        )
+        let container2 = Container(
+            identifier: container2Identifier, backendId: container2BackendId, versionId: "v1"
+        )
+
+        await syncDataActor.ingestContainer(container1, parentContainer: nil)
+        await syncDataActor.ingestContainer(container2, parentContainer: nil)
+
+        await syncDataActor.clearSongContainers(
+            backendId: container1BackendId, withExceptions: [], withProtectedParents: []
+        )
+
+        let c1FetchDescriptor = FetchDescriptor<Container>(predicate: #Predicate {
+            $0.identifier == container1Identifier
+        })
+        let c2FetchDescriptor = FetchDescriptor<Container>(predicate: #Predicate {
+            $0.identifier == container2Identifier
+        })
+        let mockModelContext = ModelContext(mockModelContainer)
+        let retrievedC1 = try mockModelContext.fetch(c1FetchDescriptor).first
+        let retrievedC2 = try mockModelContext.fetch(c2FetchDescriptor).first
+        XCTAssertNil(retrievedC1)
+        XCTAssertNotNil(retrievedC2)
+    }
+
+    func testClearSongContainers_RespectsExceptions() async throws {
+        let containerId = "1"
+        let backendId = "backend1"
+        let container = Container(identifier: containerId, backendId: backendId, versionId: "v1")
+        await syncDataActor.ingestContainer(container, parentContainer: nil)
+
+        await syncDataActor.clearSongContainers(
+            backendId: backendId,
+            withExceptions: [containerId],
+            withProtectedParents: []
+        )
+
+        let mockModelContext = ModelContext(mockModelContainer)
+        let fetchDescriptor = FetchDescriptor<Container>(predicate: #Predicate {
+            $0.identifier == containerId && $0.backendId == backendId
+        })
+        let postDeleteContainer = try mockModelContext.fetch(fetchDescriptor).first
+        XCTAssertNotNil(postDeleteContainer)
+    }
+
+    func testClearSongContainers_RespectsProtectedParents() async throws {
+        let backendId = "backend1"
+        let rootId = "root"
+        let rootChild1Id = "rootChild1"
+        let rootChild2Id = "rootChild2"
+        let rootChild1ChildId = "rootChild1Child"
+        let rootChild2ChildId = "rootChild2Child"
+
+        let root = Container(identifier: rootId, backendId: backendId, versionId: "1")
+        let rootChild1 = Container(identifier: rootChild1Id, backendId: backendId, versionId: "1")
+        let rootChild2 = Container(identifier: rootChild2Id, backendId: backendId, versionId: "1")
+        let rootChild1Child = Container(
+            identifier: rootChild1ChildId, backendId: backendId, versionId: "1"
+        )
+        let rootChild2Child = Container(
+            identifier: rootChild2ChildId, backendId: backendId, versionId: "1"
+        )
+
+        await syncDataActor.ingestContainer(root, parentContainer: nil)
+        await syncDataActor.ingestContainer(rootChild1, parentContainer: root)
+        await syncDataActor.ingestContainer(rootChild2, parentContainer: root)
+        await syncDataActor.ingestContainer(rootChild1Child, parentContainer: rootChild1)
+        await syncDataActor.ingestContainer(rootChild2Child, parentContainer: rootChild2)
+
+        await syncDataActor.clearSongContainers(
+            backendId: backendId, withExceptions: [], withProtectedParents: [rootId, rootChild2Id]
+        )
+
+        let mockModelContext = ModelContext(mockModelContainer)
+        let fetchDescriptor = FetchDescriptor<Container>(predicate: #Predicate {
+            $0.backendId == backendId
+        })
+        let postDeleteContainers = try mockModelContext.fetch(fetchDescriptor)
+
+        XCTAssertEqual(postDeleteContainers.count, 3)
+        XCTAssertTrue(postDeleteContainers.contains(where: { $0.identifier == rootId }))
+        XCTAssertFalse(postDeleteContainers.contains(where: { $0.identifier == rootChild1Id }))
+        XCTAssertTrue(postDeleteContainers.contains(where: { $0.identifier == rootChild2Id }))
+        XCTAssertFalse(postDeleteContainers.contains(where: { $0.identifier == rootChild1ChildId }))
+        XCTAssertTrue(postDeleteContainers.contains(where: { $0.identifier == rootChild2ChildId }))
+    }
 }
