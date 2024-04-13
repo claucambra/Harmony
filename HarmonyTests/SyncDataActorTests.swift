@@ -422,4 +422,33 @@ final class SyncDataActorTests: XCTestCase {
         XCTAssertFalse(postDeleteSongs.contains(where: { $0.identifier == song4Id }))
         XCTAssertTrue(postDeleteSongs.contains(where: { $0.identifier == song5Id }))
     }
+
+    func testClearStaleGroupings_ShouldRemoveEmptyGroupings() async throws {
+        let albumTitle = "Empty Album"
+        let artistName = "Lonely Artist"
+        let album = Album(songs: [], title: albumTitle)
+        let artist = Artist(songs: [], albums: [], name: artistName)
+        let mockModelContext = ModelContext(mockModelContainer)
+        mockModelContext.insert(album)
+        mockModelContext.insert(artist)
+        try mockModelContext.save()
+
+        let albumFetchDescriptor = FetchDescriptor<Album>(predicate: #Predicate {
+            $0.title == albumTitle
+        })
+        let artistFetchDescriptor = FetchDescriptor<Artist>(predicate: #Predicate {
+            $0.name == artistName
+        })
+        let retrievedAlbum = try mockModelContext.fetch(albumFetchDescriptor).first
+        let retrievedArtist = try mockModelContext.fetch(artistFetchDescriptor).first
+        XCTAssertNotNil(retrievedAlbum)
+        XCTAssertNotNil(retrievedArtist)
+
+        await syncDataActor.clearStaleGroupings()
+
+        let postDeleteAlbum = try mockModelContext.fetch(albumFetchDescriptor).first
+        let postDeleteArtist = try mockModelContext.fetch(artistFetchDescriptor).first
+        XCTAssertNil(postDeleteAlbum)
+        XCTAssertNil(postDeleteArtist)
+    }
 }
