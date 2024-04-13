@@ -424,31 +424,64 @@ final class SyncDataActorTests: XCTestCase {
     }
 
     func testClearStaleGroupings_ShouldRemoveEmptyGroupings() async throws {
-        let albumTitle = "Empty Album"
-        let artistName = "Lonely Artist"
-        let album = Album(songs: [], title: albumTitle)
-        let artist = Artist(songs: [], albums: [], name: artistName)
+        let staleAlbumTitle = "Empty Album"
+        let staleArtistName = "Lonely Artist"
+        let nonStaleAlbumTitle = "Active Album"
+        let nonStaleArtistTitle = "Active Artist"
+
+        let staleAlbum = Album(songs: [], title: staleAlbumTitle)
+        let staleArtist = Artist(songs: [], albums: [], name: staleArtistName)
+        let song = Song(
+            identifier: "1", 
+            parentContainerId: "container1",
+            backendId: "backend1",
+            artist: nonStaleArtistTitle,
+            album: nonStaleAlbumTitle
+        )
         let mockModelContext = ModelContext(mockModelContainer)
-        mockModelContext.insert(album)
-        mockModelContext.insert(artist)
+        mockModelContext.insert(staleAlbum)
+        mockModelContext.insert(staleArtist)
         try mockModelContext.save()
 
-        let albumFetchDescriptor = FetchDescriptor<Album>(predicate: #Predicate {
-            $0.title == albumTitle
+        let activeSong = await syncDataActor.ingestSong(song)
+        XCTAssertNotNil(activeSong)
+        let activeAlbum = await syncDataActor.processSongAlbum(activeSong!)
+        XCTAssertNotNil(activeAlbum)
+        let activeArtists = await syncDataActor.processSongArtist(
+            activeSong!, inAlbum: activeAlbum!
+        )
+        XCTAssertNotNil(activeArtists)
+
+        let staleAlbumFetchDescriptor = FetchDescriptor<Album>(predicate: #Predicate {
+            $0.title == staleAlbumTitle
         })
-        let artistFetchDescriptor = FetchDescriptor<Artist>(predicate: #Predicate {
-            $0.name == artistName
+        let staleArtistFetchDescriptor = FetchDescriptor<Artist>(predicate: #Predicate {
+            $0.name == staleArtistName
         })
-        let retrievedAlbum = try mockModelContext.fetch(albumFetchDescriptor).first
-        let retrievedArtist = try mockModelContext.fetch(artistFetchDescriptor).first
-        XCTAssertNotNil(retrievedAlbum)
-        XCTAssertNotNil(retrievedArtist)
+        let activeAlbumFetchDescriptor = FetchDescriptor<Album>(predicate: #Predicate {
+            $0.title == nonStaleAlbumTitle
+        })
+        let activeArtistFetchDescriptor = FetchDescriptor<Artist>(predicate: #Predicate {
+            $0.name == nonStaleArtistTitle
+        })
+        let retrievedStaleAlbum = try mockModelContext.fetch(staleAlbumFetchDescriptor).first
+        let retrievedStaleArtist = try mockModelContext.fetch(staleArtistFetchDescriptor).first
+        let retrievedActiveAlbum = try mockModelContext.fetch(activeAlbumFetchDescriptor).first
+        let retrievedActiveArtist = try mockModelContext.fetch(activeArtistFetchDescriptor).first
+        XCTAssertNotNil(retrievedStaleAlbum)
+        XCTAssertNotNil(retrievedStaleArtist)
+        XCTAssertNotNil(retrievedActiveAlbum)
+        XCTAssertNotNil(retrievedActiveArtist)
 
         await syncDataActor.clearStaleGroupings()
 
-        let postDeleteAlbum = try mockModelContext.fetch(albumFetchDescriptor).first
-        let postDeleteArtist = try mockModelContext.fetch(artistFetchDescriptor).first
-        XCTAssertNil(postDeleteAlbum)
-        XCTAssertNil(postDeleteArtist)
+        let postDeleteStaleAlbum = try mockModelContext.fetch(staleAlbumFetchDescriptor).first
+        let postDeleteStaleArtist = try mockModelContext.fetch(staleArtistFetchDescriptor).first
+        let postDeleteActiveAlbum = try mockModelContext.fetch(activeAlbumFetchDescriptor).first
+        let postDeleteActiveArtist = try mockModelContext.fetch(activeArtistFetchDescriptor).first
+        XCTAssertNil(postDeleteStaleAlbum)
+        XCTAssertNil(postDeleteStaleArtist)
+        XCTAssertNotNil(postDeleteActiveAlbum)
+        XCTAssertNotNil(postDeleteActiveArtist)
     }
 }
