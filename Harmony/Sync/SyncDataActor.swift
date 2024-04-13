@@ -243,8 +243,8 @@ actor SyncDataActor {
                             songContainers.contains($0.identifier)
                         }
                         guard !presentChildren.isEmpty else {
-                            let allChildren = try containersWithChildren(
-                                parents: [container.identifier], backendId: backendId
+                            let allChildren = try containerChildren(
+                                parentId: container.identifier, backendId: backendId
                             )
                             protectedContainerHierarchy.formUnion(allChildren)
                             continue
@@ -285,6 +285,7 @@ actor SyncDataActor {
             let backendSongContainers = try modelContext.fetch(fetchDescriptor)
             var protectedContainerHierarchy = protectedParents
 
+            // TODO: Deduplicate with songs
             if !protectedParents.isEmpty {
                 // Deal with the container hierarchy here
                 guard let root = try modelContext.fetch(
@@ -306,8 +307,8 @@ actor SyncDataActor {
                             protectedParents.contains($0.identifier)
                         }
                         guard !presentChildren.isEmpty else {
-                            let allChildren = try containersWithChildren(
-                                parents: [container.identifier], backendId: backendId
+                            let allChildren = try containerChildren(
+                                parentId: container.identifier, backendId: backendId
                             )
                             protectedContainerHierarchy.formUnion(allChildren)
                             continue
@@ -358,13 +359,13 @@ actor SyncDataActor {
         }
     }
 
-    func containersWithChildren(parents: Set<String>, backendId: String) throws -> Set<String> {
+    private func containerChildren(parentId: String, backendId: String) throws -> Set<String> {
         let fetchDescriptor = FetchDescriptor<Container>(
-            predicate: #Predicate { parents.contains($0.identifier) && $0.backendId == backendId }
+            predicate: #Predicate { $0.identifier == parentId && $0.backendId == backendId }
         )
-        let parentContainers = try modelContext.fetch(fetchDescriptor)
-        var hierarchy = parents
-        var queue: [Container] = parentContainers
+        guard let parentContainer = try modelContext.fetch(fetchDescriptor).first else { return [] }
+        var hierarchy = Set<String>()
+        var queue = [parentContainer]
 
         while !queue.isEmpty {
             var newQueue: [Container] = []
