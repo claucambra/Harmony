@@ -211,4 +211,36 @@ final class PlayerQueueTests: XCTestCase {
             XCTAssertEqual(playerQueue.forward()?.identifier, song.identifier)
         }
     }
+
+    @MainActor func testForward_WithEmptyQueue_ReturnsNil() {
+        XCTAssertNil(playerQueue.forward())
+    }
+
+    @MainActor func testBackward_WithNoPastSongs_ReturnsNil() {
+        XCTAssertNil(playerQueue.backward())
+    }
+
+    @MainActor static func testForward_NoRepeating(results: [Song], playerQueue: PlayerQueue) {
+        let song = results.first!
+        playerQueue.addCurrentSong(song, parentResults: results)
+        XCTAssertEqual(playerQueue.currentSong?.song.identifier, song.identifier)
+
+        for _ in 1..<results.count { // Skip the first song as that is set to the current song
+            XCTAssertNotNil(playerQueue.forward())
+        }
+
+        XCTAssertNil(playerQueue.forward())
+    }
+
+    func testForward_NoRepeating_Basic() async {
+        await Self.testForward_NoRepeating(results: basicSongResults, playerQueue: playerQueue)
+    }
+
+    func testForward_NoRepeating_Short() async {
+        await Self.testForward_NoRepeating(results: shortSongResults, playerQueue: playerQueue)
+    }
+
+    func testForward_NoRepeating_Long() async {
+        await Self.testForward_NoRepeating(results: longSongResults, playerQueue: playerQueue)
+    }
 }
