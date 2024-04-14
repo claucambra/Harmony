@@ -30,7 +30,7 @@ final class PlayerQueueTests: XCTestCase {
         Song(identifier: "2"),
         Song(identifier: "3"),
     ]
-    let longSongResults = [ // Longer than default apge size
+    let longSongResults = [ // Longer than default page size, slightly shorter than double
         Song(identifier: "1"),
         Song(identifier: "2"),
         Song(identifier: "3"),
@@ -380,5 +380,13 @@ final class PlayerQueueTests: XCTestCase {
         XCTAssertTrue(playerQueue.pastSongs.isEmpty)
         XCTAssertTrue(playerQueue.futureSongs.isEmpty)
         XCTAssertNil(playerQueue.currentSong)
+    }
+
+    @MainActor func testLoadNextPageIfNeeded() {
+        let startSong = longSongResults.first!
+        playerQueue.addCurrentSong(startSong, parentResults: longSongResults)
+        XCTAssertNotEqual(longSongResults.last, playerQueue.futureSongs.last?.song)
+        playerQueue.loadNextPageIfNeeded(song: playerQueue.futureSongs.last!)
+        XCTAssertEqual(longSongResults.last, playerQueue.futureSongs.last?.song)
     }
 }
