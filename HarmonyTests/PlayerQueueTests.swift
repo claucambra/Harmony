@@ -319,4 +319,52 @@ final class PlayerQueueTests: XCTestCase {
             XCTAssertEqual(playerQueue.currentSong?.song.identifier, $0.identifier)
         }
     }
+
+    @MainActor func testClearPast() {
+        playerQueue.addCurrentSong(longSongResults.first!, parentResults: longSongResults)
+        longSongResults.forEach { playerQueue.insertNextSong($0) }
+        XCTAssertNotNil(playerQueue.forward())
+        playerQueue.clearPastSongs()
+
+        XCTAssertNotNil(playerQueue.currentSong)
+        XCTAssertTrue(playerQueue.pastSongs.isEmpty)
+        XCTAssertFalse(playerQueue.playNextSongs.isEmpty)
+        XCTAssertFalse(playerQueue.futureSongs.isEmpty)
+    }
+
+    @MainActor func testClearSongsAfterCurrent() {
+        playerQueue.addCurrentSong(longSongResults.first!, parentResults: longSongResults)
+        longSongResults.forEach { playerQueue.insertNextSong($0) }
+        XCTAssertNotNil(playerQueue.forward())
+        playerQueue.clearSongsAfterCurrent()
+
+        XCTAssertNotNil(playerQueue.currentSong)
+        XCTAssertFalse(playerQueue.pastSongs.isEmpty)
+        XCTAssertTrue(playerQueue.playNextSongs.isEmpty)
+        XCTAssertTrue(playerQueue.futureSongs.isEmpty)
+    }
+
+    @MainActor func testClear() {
+        playerQueue.addCurrentSong(longSongResults.first!, parentResults: longSongResults)
+        longSongResults.forEach { playerQueue.insertNextSong($0) }
+        XCTAssertNotNil(playerQueue.forward())
+        playerQueue.clear()
+
+        XCTAssertTrue(playerQueue.playNextSongs.isEmpty)
+        XCTAssertTrue(playerQueue.pastSongs.isEmpty)
+        XCTAssertTrue(playerQueue.futureSongs.isEmpty)
+        XCTAssertNotNil(playerQueue.currentSong)
+    }
+
+    @MainActor func testReset() {
+        playerQueue.addCurrentSong(longSongResults.first!, parentResults: longSongResults)
+        longSongResults.forEach { playerQueue.insertNextSong($0) }
+        XCTAssertNotNil(playerQueue.forward())
+        playerQueue.reset()
+
+        XCTAssertTrue(playerQueue.playNextSongs.isEmpty)
+        XCTAssertTrue(playerQueue.pastSongs.isEmpty)
+        XCTAssertTrue(playerQueue.futureSongs.isEmpty)
+        XCTAssertNil(playerQueue.currentSong)
+    }
 }
