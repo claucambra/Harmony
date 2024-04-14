@@ -243,4 +243,12 @@ final class PlayerQueueTests: XCTestCase {
     func testForward_NoRepeating_Long() async {
         await Self.testForward_NoRepeating(results: longSongResults, playerQueue: playerQueue)
     }
+
+    @MainActor func testForward_WithPlayNextSongs_MovesSongToCurrent() {
+        basicSongResults.forEach { playerQueue.insertNextSong($0) }
+        basicSongResults.forEach {
+            XCTAssertEqual(playerQueue.forward()?.identifier, $0.identifier)
+            XCTAssertEqual(playerQueue.currentSong?.song.identifier, $0.identifier)
+        }
+    }
 }
