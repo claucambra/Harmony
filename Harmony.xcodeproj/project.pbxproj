@@ -79,6 +79,7 @@
 		53802A3E2B6790330066208D /* ToolbarVolumeSliderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53802A3D2B6790330066208D /* ToolbarVolumeSliderView.swift */; };
 		5388E8992BC67F3800557E8A /* FLACMetadataKit in Frameworks */ = {isa = PBXBuildFile; productRef = 5388E8982BC67F3800557E8A /* FLACMetadataKit */; };
 		5388E89C2BC93EC800557E8A /* SyncDataActorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5388E89B2BC93EC800557E8A /* SyncDataActorTests.swift */; };
+		5388E8A22BCAE9CD00557E8A /* PlayerQueueTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5388E8A12BCAE9CD00557E8A /* PlayerQueueTests.swift */; };
 		539C54E72BBF0F97005C9F9A /* CurrentSyncDataActor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 539C54E62BBF0F97005C9F9A /* CurrentSyncDataActor.swift */; };
 		539C54E92BBF10C8005C9F9A /* SyncBackendButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 539C54E82BBF10C8005C9F9A /* SyncBackendButton.swift */; };
 		53B19BE42B9A0EBA00FE53E4 /* DownloadStateLabelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53B19BE32B9A0EBA00FE53E4 /* DownloadStateLabelView.swift */; };
@@ -242,6 +243,7 @@
 		53802A3D2B6790330066208D /* ToolbarVolumeSliderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolbarVolumeSliderView.swift; sourceTree = "<group>"; };
 		5388E89A2BC9357B00557E8A /* HarmonyKit.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = HarmonyKit.xctestplan; sourceTree = "<group>"; };
 		5388E89B2BC93EC800557E8A /* SyncDataActorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncDataActorTests.swift; sourceTree = "<group>"; };
+		5388E8A12BCAE9CD00557E8A /* PlayerQueueTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerQueueTests.swift; sourceTree = "<group>"; };
 		539C54E62BBF0F97005C9F9A /* CurrentSyncDataActor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentSyncDataActor.swift; sourceTree = "<group>"; };
 		539C54E82BBF10C8005C9F9A /* SyncBackendButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncBackendButton.swift; sourceTree = "<group>"; };
 		53B19BE32B9A0EBA00FE53E4 /* DownloadStateLabelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadStateLabelView.swift; sourceTree = "<group>"; };
@@ -623,6 +625,7 @@
 			isa = PBXGroup;
 			children = (
 				535F1BE22B4A8F1600C78D98 /* HarmonyTests.swift */,
+				5388E8A12BCAE9CD00557E8A /* PlayerQueueTests.swift */,
 				5388E89B2BC93EC800557E8A /* SyncDataActorTests.swift */,
 			);
 			path = HarmonyTests;
@@ -991,6 +994,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5388E8A22BCAE9CD00557E8A /* PlayerQueueTests.swift in Sources */,
 				5388E89C2BC93EC800557E8A /* SyncDataActorTests.swift in Sources */,
 				535F1BE32B4A8F1600C78D98 /* HarmonyTests.swift in Sources */,
 			);
