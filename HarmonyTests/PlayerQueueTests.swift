@@ -24,6 +24,33 @@ final class PlayerQueueTests: XCTestCase {
         Song(identifier: "9"),
         Song(identifier: "10"),
     ]
+    let shortSongResults = [
+        Song(identifier: "1"),
+        Song(identifier: "2"),
+        Song(identifier: "3"),
+    ]
+    let longSongResults = [
+        Song(identifier: "1"),
+        Song(identifier: "2"),
+        Song(identifier: "3"),
+        Song(identifier: "4"),
+        Song(identifier: "5"),
+        Song(identifier: "6"),
+        Song(identifier: "7"),
+        Song(identifier: "8"),
+        Song(identifier: "9"),
+        Song(identifier: "10"),
+        Song(identifier: "11"),
+        Song(identifier: "12"),
+        Song(identifier: "13"),
+        Song(identifier: "14"),
+        Song(identifier: "15"),
+        Song(identifier: "16"),
+        Song(identifier: "17"),
+        Song(identifier: "18"),
+        Song(identifier: "19"),
+        Song(identifier: "20"),
+    ]
 
     var playerQueue: PlayerQueue!
     var mockUserDefaults: UserDefaults!
@@ -127,17 +154,37 @@ final class PlayerQueueTests: XCTestCase {
         XCTAssertEqual(playerQueue.futureSongs.map { $0.identifier }, futureSongIds)
     }
 
-    @MainActor func testRepeatQueue_ContinuesToPlayPastEnd() {
-        let song = basicSongResults.first!
-        playerQueue.addCurrentSong(song, parentResults: basicSongResults)
+    @MainActor static func testRepeatQueue_ContinuesToPlayPastEnd(
+        results: [Song], playerQueue: PlayerQueue
+    ) {
+        let song = results.first!
+        playerQueue.addCurrentSong(song, parentResults: results)
         playerQueue.repeatState = .queue
         XCTAssertEqual(playerQueue.currentSong?.song.identifier, song.identifier)
 
-        for _ in 0..<basicSongResults.count * 3 {
+        for _ in 0..<results.count * 12 {
             _ = playerQueue.forward()
         }
 
         XCTAssertEqual(playerQueue.currentSong?.song.identifier, song.identifier)
+    }
+
+    @MainActor func testRepeatQueue_BasicQueue_ContinuesToPlayPastEnd() {
+        Self.testRepeatQueue_ContinuesToPlayPastEnd(
+            results: basicSongResults, playerQueue: playerQueue
+        )
+    }
+
+    @MainActor func testRepeatQueue_ShortQueue_ContinuesToPlayPastEnd() {
+        Self.testRepeatQueue_ContinuesToPlayPastEnd(
+            results: shortSongResults, playerQueue: playerQueue
+        )
+    }
+
+    @MainActor func testRepeatQueue_LongQueue_ContinuesToPlayPastEnd() {
+        Self.testRepeatQueue_ContinuesToPlayPastEnd(
+            results: longSongResults, playerQueue: playerQueue
+        )
     }
 
     @MainActor func testRepeatCurrentSong_RepeatsTheSameSong() async {
