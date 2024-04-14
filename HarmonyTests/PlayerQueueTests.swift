@@ -5,6 +5,7 @@
 //  Created by Claudio Cambra on 14/4/24.
 //
 
+import DequeModule
 import XCTest
 @testable import HarmonyKit
 @testable import Harmony
@@ -200,6 +201,45 @@ final class PlayerQueueTests: XCTestCase {
             results: longSongResults, playerQueue: playerQueue
         )
     }
+
+    @MainActor static func testShuffleWithRepeatQueue_ContinuesToPlayPastEnd(
+        results: [Song], playerQueue: PlayerQueue
+    ) {
+        playerQueue.results = results // Ease iterating in test
+        playerQueue.repeatState = .queue
+        playerQueue.shuffleEnabled = true
+
+        var idSet = Set(results.map { $0.identifier })
+        for i in 0..<results.count * 12 {
+            if i % results.count == 0, i != 0 {
+                XCTAssertTrue(idSet.isEmpty)
+                idSet = Set(results.map { $0.identifier })
+            }
+            let song = playerQueue.forward()
+            XCTAssertNotNil(song)
+            XCTAssertTrue(idSet.contains(song!.identifier))
+            idSet.remove(song!.identifier)
+        }
+    }
+
+    func testShuffleWithRepeatQueue_BasicQueue_ContinuesToPlayPastEnd() async {
+        await Self.testShuffleWithRepeatQueue_ContinuesToPlayPastEnd(
+            results: basicSongResults, playerQueue: playerQueue
+        )
+    }
+
+    func testShuffleWithRepeatQueue_ShortQueue_ContinuesToPlayPastEnd() async {
+        await Self.testShuffleWithRepeatQueue_ContinuesToPlayPastEnd(
+            results: shortSongResults, playerQueue: playerQueue
+        )
+    }
+
+    func testShuffleWithRepeatQueue_LongQueue_ContinuesToPlayPastEnd() async {
+        await Self.testShuffleWithRepeatQueue_ContinuesToPlayPastEnd(
+            results: longSongResults, playerQueue: playerQueue
+        )
+    }
+
 
     @MainActor func testRepeatCurrentSong_RepeatsTheSameSong() async {
         let song = basicSongResults.first!
