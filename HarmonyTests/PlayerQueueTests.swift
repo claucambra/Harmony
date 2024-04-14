@@ -35,6 +35,10 @@ final class PlayerQueueTests: XCTestCase {
         XCTAssertTrue(playerQueue.shuffleEnabled)
         XCTAssertTrue(mockUserDefaults.bool(forKey: UserDefaultsShuffleKey))
 
+        // Check that on init the state is restored
+        let newQueue = PlayerQueue(userDefaults: mockUserDefaults)
+        XCTAssertTrue(newQueue.shuffleEnabled)
+
         playerQueue.shuffleEnabled = false
 
         XCTAssertFalse(playerQueue.shuffleEnabled)
@@ -50,6 +54,10 @@ final class PlayerQueueTests: XCTestCase {
             mockUserDefaults.integer(forKey: UserDefaultsRepeatKey),
             PlayerQueue.RepeatState.queue.rawValue
         )
+
+        // Check that on init the state is restored
+        let newQueue = PlayerQueue(userDefaults: mockUserDefaults)
+        XCTAssertEqual(newQueue.repeatState, .queue)
 
         playerQueue.repeatState = .currentSong
         XCTAssertEqual(playerQueue.repeatState, .currentSong)
