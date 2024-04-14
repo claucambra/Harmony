@@ -26,4 +26,54 @@ final class PlayerQueueTests: XCTestCase {
         mockUserDefaults.removePersistentDomain(forName: defaultsName)
         super.tearDown()
     }
+
+    @MainActor func testShuffleEnabled_TogglesAndPersists() {
+        XCTAssertFalse(playerQueue.shuffleEnabled) // Test default
+
+        playerQueue.shuffleEnabled = true
+
+        XCTAssertTrue(playerQueue.shuffleEnabled)
+        XCTAssertTrue(mockUserDefaults.bool(forKey: UserDefaultsShuffleKey))
+
+        playerQueue.shuffleEnabled = false
+
+        XCTAssertFalse(playerQueue.shuffleEnabled)
+        XCTAssertFalse(mockUserDefaults.bool(forKey: UserDefaultsShuffleKey))
+    }
+
+    @MainActor func testRepeatState_TogglesAndPersists() {
+        XCTAssertEqual(playerQueue.repeatState, .disabled)
+
+        playerQueue.repeatState = .queue
+        XCTAssertEqual(playerQueue.repeatState, .queue)
+        XCTAssertEqual(
+            mockUserDefaults.integer(forKey: UserDefaultsRepeatKey),
+            PlayerQueue.RepeatState.queue.rawValue
+        )
+
+        playerQueue.repeatState = .currentSong
+        XCTAssertEqual(playerQueue.repeatState, .currentSong)
+        XCTAssertEqual(
+            mockUserDefaults.integer(forKey: UserDefaultsRepeatKey),
+            PlayerQueue.RepeatState.currentSong.rawValue
+        )
+
+        playerQueue.repeatState = .disabled
+        XCTAssertEqual(playerQueue.repeatState, .disabled)
+        XCTAssertEqual(
+            mockUserDefaults.integer(forKey: UserDefaultsRepeatKey),
+            PlayerQueue.RepeatState.disabled.rawValue
+        )
+    }
+
+    @MainActor func testRepeatStateCycle() {
+        XCTAssertEqual(playerQueue.repeatState, .disabled)
+
+        playerQueue.cycleRepeatState()
+        XCTAssertEqual(playerQueue.repeatState, .queue)
+        playerQueue.cycleRepeatState()
+        XCTAssertEqual(playerQueue.repeatState, .currentSong)
+        playerQueue.cycleRepeatState()
+        XCTAssertEqual(playerQueue.repeatState, .disabled)
+    }
 }
