@@ -11,8 +11,8 @@ import HarmonyKit
 import OSLog
 import SwiftData
 
-fileprivate let UserDefaultsRepeatKey = "queue-repeat"
-fileprivate let UserDefaultsShuffleKey = "queue-shuffle"
+let UserDefaultsRepeatKey = "queue-repeat"
+let UserDefaultsShuffleKey = "queue-shuffle"
 
 @MainActor
 class PlayerQueue: ObservableObject {
@@ -20,6 +20,7 @@ class PlayerQueue: ObservableObject {
 
     static let defaultPageSize = 10
     static let viewLoadTriggerCount = 5
+    let userDefaults: UserDefaults
     /// The parent list of songs that the user was viewing when they manually added a song. This is
     /// used to add contextually-relevant previous and upcoming songs.
     @Published var results: [Song]? {
@@ -42,20 +43,18 @@ class PlayerQueue: ObservableObject {
     /// priority over the upcoming songs.
     @Published var playNextSongs: Deque<PlayerQueueItem> = Deque()
     /// Shuffle state (on or off). This will affect how upcoming songs are ordered and generated.
-    @Published var shuffleEnabled = UserDefaults.standard.bool(forKey: UserDefaultsShuffleKey) {
+    @Published var shuffleEnabled: Bool {
         didSet {
             reloadFutureSongs()
-            UserDefaults.standard.set(shuffleEnabled, forKey: UserDefaultsShuffleKey)
+            userDefaults.set(shuffleEnabled, forKey: UserDefaultsShuffleKey)
         }
     }
     /// Repeat state (off, repeating queue, or repeating current song). This will affect how upcoming
     /// songs are generated.
-    @Published var repeatState = RepeatState(
-        rawValue: UserDefaults.standard.integer(forKey: UserDefaultsRepeatKey)
-    ) ?? .disabled {
+    @Published var repeatState: RepeatState {
         didSet {
             reloadFutureSongs()
-            UserDefaults.standard.set(repeatState.rawValue, forKey: UserDefaultsRepeatKey)
+            userDefaults.set(repeatState.rawValue, forKey: UserDefaultsRepeatKey)
         }
     }
     /// Contains the identifiers for songs that have already been added to upcoming songs. Needed to
@@ -96,12 +95,18 @@ class PlayerQueue: ObservableObject {
         pastSongs.count + currentSongCount + futureSongs.count
     }
 
-    init() {
-        let defaults = UserDefaults.standard
-        if defaults.value(forKey: UserDefaultsRepeatKey) == nil {
+    init(userDefaults: UserDefaults = UserDefaults.standard) {
+        self.userDefaults = userDefaults
+        if let repeatState = userDefaults.value(forKey: UserDefaultsRepeatKey) {
+            let intState = repeatState as? Int ?? 0
+            self.repeatState = RepeatState(rawValue: intState) ?? .disabled
+        } else {
             repeatState = .disabled
         }
-        if defaults.value(forKey: UserDefaultsShuffleKey) == nil {
+
+        if let shuffleEnabled = userDefaults.value(forKey: UserDefaultsShuffleKey) {
+            self.shuffleEnabled = shuffleEnabled as? Bool ?? false
+        } else {
             shuffleEnabled = false
         }
     }
