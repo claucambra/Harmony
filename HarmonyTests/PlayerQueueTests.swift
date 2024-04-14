@@ -251,6 +251,31 @@ final class PlayerQueueTests: XCTestCase {
         XCTAssertEqual(playerQueue.backward()?.identifier, song.identifier)
         XCTAssertEqual(playerQueue.currentSong?.song.identifier, song.identifier)
     }
+
+    @MainActor static func testBackward_PullsFromResults(
+        results: [Song], playerQueue: PlayerQueue
+    ) {
+        playerQueue.addCurrentSong(results.last!, parentResults: results)
+        XCTAssertEqual(playerQueue.currentSong?.song.identifier, results.last?.identifier)
+
+        for i in (0..<results.count - 1).reversed() { // Skip last song, was set to current song
+            XCTAssertEqual(playerQueue.backward()?.identifier, results[i].identifier)
+            XCTAssertEqual(playerQueue.currentSong?.song.identifier, results[i].identifier)
+        }
+    }
+
+    func testBackward_PullsFromResults_Basic() async {
+        await Self.testBackward_PullsFromResults(results: basicSongResults, playerQueue: playerQueue)
+    }
+
+    func testBackward_PullsFromResults_Short() async {
+        await Self.testBackward_PullsFromResults(results: shortSongResults, playerQueue: playerQueue)
+    }
+
+    func testBackward_PullsFromResults_Long() async {
+        await Self.testBackward_PullsFromResults(results: longSongResults, playerQueue: playerQueue)
+    }
+
     @MainActor func testInsertNextSong_AddsSongCorrectly() {
         basicSongResults.forEach { playerQueue.insertNextSong($0) }
         XCTAssertEqual(
