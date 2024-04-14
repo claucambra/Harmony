@@ -25,14 +25,6 @@ struct PlayerQueueView: View {
                         ForEach(queue.pastSongs) { song in
                             PlayerQueueListItemView(song: song, isCurrentSong: false)
                                 .listRowBackground(rowBackground)
-                                .contextMenu { _ in
-                                    // TODO: Add a context menu
-                                } primaryAction: {
-                                    $0.forEach {
-                                        playerController.playSongFromPastSongs(instanceId: $0)
-                                        proxy.scrollTo(currentSongSectionId, anchor: .top)
-                                    }
-                                }
                         }
                         .onDelete(perform: { indexSet in queue.removePastSongs(indexSet) })
                     } header: {
@@ -62,14 +54,6 @@ struct PlayerQueueView: View {
                         ForEach(queue.playNextSongs) { song in
                             PlayerQueueListItemView(song: song, isCurrentSong: false)
                                 .listRowBackground(rowBackground)
-                                .contextMenu { _ in
-                                    // TODO: Add a context menu
-                                } primaryAction: {
-                                    $0.forEach {
-                                        playerController.playSongFromPlayNext(instanceId: $0)
-                                        proxy.scrollTo(currentSongSectionId, anchor: .top)
-                                    }
-                                }
                         }
                         .onDelete(perform: { indexSet in queue.removePlayNextSongs(indexSet) })
                     }
@@ -81,14 +65,6 @@ struct PlayerQueueView: View {
                                 .listRowBackground(rowBackground)
                                 .onAppear {
                                     queue.loadNextPageIfNeeded(song: song)
-                                }
-                                .contextMenu { _ in
-                                    // TODO: Add a context menu
-                                } primaryAction: {
-                                    $0.forEach {
-                                        playerController.playSongFromFutureSongs(instanceId: $0)
-                                        proxy.scrollTo(currentSongSectionId, anchor: .top)
-                                    }
                                 }
                         }
                         .onDelete(perform: { indexSet in queue.removeFutureSongs(indexSet) })
@@ -105,6 +81,16 @@ struct PlayerQueueView: View {
                             .labelStyle(.iconOnly)
                         }
                     }
+                }
+            }
+            .contextMenu { _ in
+                // TODO: Add a context menu
+            } primaryAction: {
+                $0.forEach {
+                    // HACK: This is a workaround for the fact that we can't get the section for a
+                    // given item, so we need to call the generic method to check each subqueue
+                    // rather than calling the playSongFromXXX for the specific subqueue. Slow!
+                    playerController.playSongFromQueues(instanceId: $0)
                 }
             }
             .onChange(of: queue.currentSong) {

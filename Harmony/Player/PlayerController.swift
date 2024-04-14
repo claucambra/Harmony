@@ -317,6 +317,18 @@ class PlayerController: NSObject, ObservableObject  {
         play()
     }
 
+    func playSongFromQueues(instanceId: ObjectIdentifier) {
+        if queue.pastSongs.contains(where: { $0.id == instanceId }) {
+            playSongFromPastSongs(instanceId: instanceId)
+        } else if queue.playNextSongs.contains(where: { $0.id == instanceId }) {
+            playSongFromPlayNext(instanceId: instanceId)
+        } else if queue.futureSongs.contains(where: { $0.id == instanceId }) {
+            playSongFromFutureSongs(instanceId: instanceId)
+        } else {
+            Logger.player.error("Song not found in any queue")
+        }
+    }
+
     @discardableResult func togglePlayPause() -> MPRemoteCommandHandlerStatus {
         if timeControlStatus != .paused {
             return pause()
