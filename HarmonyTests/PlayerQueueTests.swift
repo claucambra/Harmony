@@ -105,4 +105,25 @@ final class PlayerQueueTests: XCTestCase {
         playerQueue.cycleRepeatState()
         XCTAssertEqual(playerQueue.repeatState, .disabled)
     }
+
+    @MainActor func testShuffleChanges_ReloadsFutureSongs() {
+        XCTAssertFalse(playerQueue.shuffleEnabled)
+
+        let futureSongIds = basicSongResults[1..<basicSongResults.count].map { $0.identifier }
+        playerQueue.addCurrentSong(basicSongResults.first!, parentResults: basicSongResults)
+        XCTAssertEqual(playerQueue.results, basicSongResults)
+        XCTAssertEqual(playerQueue.futureSongs.map { $0.identifier }, futureSongIds)
+
+        playerQueue.shuffleEnabled = true
+        // Check if future songs are shuffled
+        XCTAssertEqual(playerQueue.futureSongs.count, futureSongIds.count)
+        XCTAssertNotEqual(playerQueue.futureSongs.map { $0.identifier }, futureSongIds)
+        for songId in futureSongIds {
+            XCTAssertTrue(playerQueue.futureSongs.contains { $0.identifier == songId })
+        }
+
+        playerQueue.shuffleEnabled = false
+        XCTAssertEqual(playerQueue.results, basicSongResults)
+        XCTAssertEqual(playerQueue.futureSongs.map { $0.identifier }, futureSongIds)
+    }
 }
