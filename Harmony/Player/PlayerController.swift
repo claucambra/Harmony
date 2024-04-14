@@ -299,18 +299,22 @@ class PlayerController: NSObject, ObservableObject  {
         currentSong = queueCurrentSong.song
     }
 
-    func playSongFromQueue(instanceId: ObjectIdentifier) {
-        Task {
-            await queue.moveToSong(instanceId: instanceId)
-            guard let queueCurrentSong = queue.currentSong else {
-                Logger.player.error("No current song in queue")
-                return
-            }
-            Task { @MainActor in
-                currentSong = queueCurrentSong.song
-                play()
-            }
-        }
+    func playSongFromPlayNext(instanceId: ObjectIdentifier) {
+        queue.moveToPlayNextSong(instanceId: instanceId)
+        applyCurrentSongFromQueue()
+        play()
+    }
+
+    func playSongFromFutureSongs(instanceId: ObjectIdentifier) {
+        queue.moveToFutureSong(instanceId: instanceId)
+        applyCurrentSongFromQueue()
+        play()
+    }
+
+    func playSongFromPastSongs(instanceId: ObjectIdentifier) {
+        queue.moveToPastSong(instanceId: instanceId)
+        applyCurrentSongFromQueue()
+        play()
     }
 
     @discardableResult func togglePlayPause() -> MPRemoteCommandHandlerStatus {

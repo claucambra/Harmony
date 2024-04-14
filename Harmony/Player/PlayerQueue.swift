@@ -159,68 +159,69 @@ class PlayerQueue: ObservableObject {
         return nextSong.song
     }
 
-    // TODO: This is unnecessary, in the view we know which section each song belongs to, create
-    // TODO: more efficient implementation with independent methods
-    func moveToSong(instanceId: ObjectIdentifier) async {
-        guard let currentSong = currentSong, currentSong.id != instanceId else { return }
+    private func findAndSetSong(
+        _ songs: Deque<PlayerQueueItem>,
+        findSongId: ObjectIdentifier,
+        findHandler: @escaping (Int) -> ()
+    ) {
+        guard let songIndex = songs.firstIndex(where: { song in
+            song.id == findSongId
+        }) else { return }
+        let song = songs[songIndex]
+        findHandler(songIndex)
+        self.currentSong = song
+    }
 
-        @Sendable func findAndSetSong(
-            _ songs: Deque<PlayerQueueItem>,
-            findHandler: @escaping (Int) -> ()
-        ) {
-            guard let songIndex = songs.firstIndex(where: { song in
-                song.id == instanceId
-            }) else { return }
-            let song = songs[songIndex]
-
-            Task { @MainActor in
-                findHandler(songIndex)
-                self.currentSong = song
-                print(song.title)
-            }
+    func moveToPlayNextSong(instanceId: ObjectIdentifier) {
+        guard let index = playNextSongs.firstIndex(where: { $0.id == instanceId }) else { return }
+        if let currentSong = currentSong {
+            self.pastSongs.append(currentSong)
         }
-
-        // Explore all queues
-        await withDiscardingTaskGroup { group in
-            group.addTask {
-                await findAndSetSong(self.playNextSongs) { index in
-                    Task { @MainActor in
-                        self.pastSongs.append(currentSong)
-                        self.playNextSongs.remove(at: index)
-                    }
-                }
-            }
-            group.addTask {
-                await findAndSetSong(self.futureSongs) { index in
-                    Task { @MainActor in
-                        self.pastSongs.append(currentSong)
-                        let preSongIndex = index - 1
-                        if preSongIndex >= 0 {
-                            for i in 0...preSongIndex {
-                                let song = self.futureSongs[i]
-                                self.pastSongs.append(song)
-                            }
-                        }
-                        self.futureSongs.removeFirst(index + 1)
-                    }
-                }
-            }
-            group.addTask {
-                await findAndSetSong(self.pastSongs) { index in
-                    Task { @MainActor in
-                        let postSongIndex = index + 1
-                        if postSongIndex < self.pastSongs.count {
-                            for i in (postSongIndex..<self.pastSongs.count).reversed() {
-                                let song = self.pastSongs[i]
-                                self.futureSongs.prepend(song)
-                            }
-                        }
-                        self.pastSongs.removeLast(self.pastSongs.count - index)
-                        self.futureSongs.append(currentSong)
-                    }
-                }
-            }
+        currentSong = playNextSongs[index]
+        guard index > 0 else {
+            playNextSongs.remove(at: index)
+            return
         }
+        for _ in 0..<index {
+            guard let song = playNextSongs.popFirst() else { continue }
+            pastSongs.append(song)
+        }
+        playNextSongs.removeFirst()
+    }
+
+    func moveToFutureSong(instanceId: ObjectIdentifier) {
+        guard let index = futureSongs.firstIndex(where: { $0.id == instanceId }) else { return }
+        if let currentSong = currentSong {
+            self.pastSongs.append(currentSong)
+        }
+        playNextSongs.forEach { pastSongs.append($0) }
+        currentSong = futureSongs[index]
+        guard index > 0 else {
+            futureSongs.remove(at: index)
+            return
+        }
+        for _ in 0..<index {
+            guard let song = futureSongs.popFirst() else { continue }
+            pastSongs.append(song)
+        }
+        futureSongs.removeFirst()
+    }
+
+    func moveToPastSong(instanceId: ObjectIdentifier) {
+        guard let index = pastSongs.firstIndex(where: { $0.id == instanceId }) else { return }
+        if let currentSong = currentSong {
+            futureSongs.prepend(currentSong)
+        }
+        currentSong = pastSongs[index]
+        guard index + 1 <= pastSongs.count - 1 else {
+            pastSongs.remove(at: index)
+            return
+        }
+        for _ in (index + 1...pastSongs.count - 1).reversed() {
+            guard let song = pastSongs.popLast() else { continue }
+            futureSongs.prepend(song)
+        }
+        pastSongs.removeLast()
     }
 
     func returnToStart() {
