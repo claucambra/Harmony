@@ -12,7 +12,7 @@ import XCTest
 final class PlayerQueueTests: XCTestCase {
 
     let defaultsName = "TestDefaults"
-    let basicSongResults = [
+    let basicSongResults = [ // Length of default page size -> future songs, so excluding first
         Song(identifier: "1"),
         Song(identifier: "2"),
         Song(identifier: "3"),
@@ -23,13 +23,14 @@ final class PlayerQueueTests: XCTestCase {
         Song(identifier: "8"),
         Song(identifier: "9"),
         Song(identifier: "10"),
+        Song(identifier: "11"),
     ]
-    let shortSongResults = [
+    let shortSongResults = [ // Shorter than default page size
         Song(identifier: "1"),
         Song(identifier: "2"),
         Song(identifier: "3"),
     ]
-    let longSongResults = [
+    let longSongResults = [ // Longer than default apge size
         Song(identifier: "1"),
         Song(identifier: "2"),
         Song(identifier: "3"),
