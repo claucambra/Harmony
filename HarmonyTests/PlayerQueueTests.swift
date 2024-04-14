@@ -320,6 +320,20 @@ final class PlayerQueueTests: XCTestCase {
         }
     }
 
+    @MainActor func testInsertNextSong_MovesSongImmediatelyAfterCurrent() {
+        let firstSong = basicSongResults.first!
+        let secondSong = longSongResults.last!
+        let thirdSong = basicSongResults[1]
+        playerQueue.addCurrentSong(firstSong, parentResults: basicSongResults)
+        playerQueue.insertNextSong(secondSong)
+
+        XCTAssertEqual(playerQueue.currentSong?.song, firstSong)
+        XCTAssertEqual(playerQueue.forward(), secondSong)
+        XCTAssertEqual(playerQueue.currentSong?.song, secondSong)
+        XCTAssertEqual(playerQueue.forward(), thirdSong)
+        XCTAssertEqual(playerQueue.currentSong?.song, thirdSong)
+    }
+
     @MainActor func testClearPast() {
         playerQueue.addCurrentSong(longSongResults.first!, parentResults: longSongResults)
         longSongResults.forEach { playerQueue.insertNextSong($0) }
