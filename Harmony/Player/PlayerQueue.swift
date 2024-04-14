@@ -414,21 +414,22 @@ class PlayerQueue: ObservableObject {
               !results.isEmpty
         else { return }
 
-        var remainingResults = repeatState == .queue
-            ? results.count - loadedIdentifiers.count
-            : results.count - 1 - (addedSongResultsIndex ?? 0)
-        guard remainingResults > 0 else { return }
         let eligibleRange = 0...results.count - 1
-        var insertedCount = 0
-
         var index = eligibleRange.lowerBound
         if !shuffleEnabled,
            let lastLoadedSong = lastLoadedSong?.song,
-            let lastLoadedIndex = results.firstIndex(of: lastLoadedSong)
+           let lastLoadedIndex = results.firstIndex(of: lastLoadedSong)
         {
             // Pick up from where the last load left off
             index = lastLoadedIndex
         }
+
+        var remainingResults = repeatState == .queue
+            ? results.count - loadedIdentifiers.count
+            : results.count - 1 - index
+        guard remainingResults > 0 else { return }
+
+        var insertedCount = 0
 
         while remainingResults > 0, insertedCount < nextPageSize {
             if shuffleEnabled {
