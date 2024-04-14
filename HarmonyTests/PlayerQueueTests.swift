@@ -397,4 +397,35 @@ final class PlayerQueueTests: XCTestCase {
         playerQueue.loadNextPageIfNeeded(song: playerQueue.futureSongs.first!)
         XCTAssertNotEqual(longSongResults.last, playerQueue.futureSongs.last?.song)
     }
+
+    @MainActor func testMoveToSong_FindsAndSetsSongAsCurrent() async {
+        var insertedBasicSongResultsCount = 0
+        playerQueue.addCurrentSong(basicSongResults.first!, parentResults: basicSongResults)
+        insertedBasicSongResultsCount += basicSongResults.count
+
+        playerQueue.moveToFutureSong(instanceId: playerQueue.futureSongs.first!.id)
+        XCTAssertEqual(playerQueue.currentSong?.song, basicSongResults[1])
+        XCTAssertEqual(playerQueue.pastSongs.first?.song, basicSongResults.first)
+
+        // Test moving to play next. Should move to play next before future songs, as expected, with
+        // play next moved into past songs. When moving into the future songs, this should also
+        // behave as expected
+        basicSongResults.forEach { playerQueue.insertNextSong($0) }
+        insertedBasicSongResultsCount += basicSongResults.count
+        playerQueue.moveToPlayNextSong(instanceId: playerQueue.playNextSongs.last!.id)
+        XCTAssertEqual(playerQueue.currentSong?.song, basicSongResults.last)
+        XCTAssertEqual( // Second to last song, because the last song was set to the current song
+            playerQueue.pastSongs.last?.song, basicSongResults[basicSongResults.count - 2]
+        )
+        XCTAssertTrue(playerQueue.playNextSongs.isEmpty)
+
+        let pastSongIndex = 2
+        let pastSongTarget = playerQueue.pastSongs[pastSongIndex]
+        playerQueue.moveToPastSong(instanceId: pastSongTarget.id)
+        XCTAssertEqual(playerQueue.currentSong?.song, pastSongTarget.song)
+        XCTAssertEqual(playerQueue.pastSongs.count, pastSongIndex)
+        XCTAssertEqual(
+            playerQueue.futureSongs.count, insertedBasicSongResultsCount - pastSongIndex - 1
+        )
+    }
 }
