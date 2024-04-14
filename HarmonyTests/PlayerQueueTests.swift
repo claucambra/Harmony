@@ -127,6 +127,19 @@ final class PlayerQueueTests: XCTestCase {
         XCTAssertEqual(playerQueue.futureSongs.map { $0.identifier }, futureSongIds)
     }
 
+    @MainActor func testRepeatQueue_ContinuesToPlayPastEnd() {
+        let song = basicSongResults.first!
+        playerQueue.addCurrentSong(song, parentResults: basicSongResults)
+        playerQueue.repeatState = .queue
+        XCTAssertEqual(playerQueue.currentSong?.song.identifier, song.identifier)
+
+        for _ in 0..<basicSongResults.count * 3 {
+            _ = playerQueue.forward()
+        }
+
+        XCTAssertEqual(playerQueue.currentSong?.song.identifier, song.identifier)
+    }
+
     @MainActor func testRepeatCurrentSong_RepeatsTheSameSong() async {
         let song = basicSongResults.first!
         playerQueue.addCurrentSong(song, parentResults: basicSongResults)
