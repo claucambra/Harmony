@@ -382,11 +382,19 @@ final class PlayerQueueTests: XCTestCase {
         XCTAssertNil(playerQueue.currentSong)
     }
 
-    @MainActor func testLoadNextPageIfNeeded() {
-        let startSong = longSongResults.first!
-        playerQueue.addCurrentSong(startSong, parentResults: longSongResults)
+    @MainActor func testLoadNextPageIfNeeded_IsNeeded() {
+        playerQueue.addCurrentSong(longSongResults.first!, parentResults: longSongResults)
         XCTAssertNotEqual(longSongResults.last, playerQueue.futureSongs.last?.song)
         playerQueue.loadNextPageIfNeeded(song: playerQueue.futureSongs.last!)
         XCTAssertEqual(longSongResults.last, playerQueue.futureSongs.last?.song)
+    }
+
+    @MainActor func testLoadNextPageIfNeeded_IsNotNeeded() {
+        playerQueue.addCurrentSong(longSongResults.first!, parentResults: longSongResults)
+        XCTAssertNotEqual(longSongResults.last, playerQueue.futureSongs.last?.song)
+        playerQueue.loadNextPageIfNeeded(song: playerQueue.currentSong!)
+        XCTAssertNotEqual(longSongResults.last, playerQueue.futureSongs.last?.song)
+        playerQueue.loadNextPageIfNeeded(song: playerQueue.futureSongs.first!)
+        XCTAssertNotEqual(longSongResults.last, playerQueue.futureSongs.last?.song)
     }
 }
