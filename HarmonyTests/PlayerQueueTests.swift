@@ -67,12 +67,25 @@ final class PlayerQueueTests: XCTestCase {
         super.tearDown()
     }
 
-    @MainActor func testAddCurrentSong() {
-        let futureSongIds = basicSongResults[1..<basicSongResults.count].map { $0.identifier }
-        playerQueue.addCurrentSong(basicSongResults.first!, parentResults: basicSongResults)
-        XCTAssertEqual(playerQueue.currentSong?.song, basicSongResults.first!)
-        XCTAssertEqual(playerQueue.results, basicSongResults)
+    @MainActor static func testAddCurrentSong(results: [Song], playerQueue: PlayerQueue) {
+        let futureCount = min(results.count, PlayerQueue.defaultPageSize + 1)
+        let futureSongIds = results[1..<futureCount].map { $0.identifier }
+        playerQueue.addCurrentSong(results.first!, parentResults: results)
+        XCTAssertEqual(playerQueue.currentSong?.song, results.first!)
+        XCTAssertEqual(playerQueue.results, results)
         XCTAssertEqual(playerQueue.futureSongs.map { $0.identifier }, futureSongIds)
+    }
+
+    func testAddCurrentSong_Basic() async {
+        await Self.testAddCurrentSong(results: basicSongResults, playerQueue: playerQueue)
+    }
+
+    func testAddCurrentSong_Short() async {
+        await Self.testAddCurrentSong(results: shortSongResults, playerQueue: playerQueue)
+    }
+
+    func testAddCurrentSong_Long() async {
+        await Self.testAddCurrentSong(results: longSongResults, playerQueue: playerQueue)
     }
 
     @MainActor func testShuffleEnabled_TogglesAndPersists() {
