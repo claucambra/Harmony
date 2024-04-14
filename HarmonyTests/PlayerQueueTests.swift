@@ -12,6 +12,19 @@ import XCTest
 final class PlayerQueueTests: XCTestCase {
 
     let defaultsName = "TestDefaults"
+    let basicSongResults = [
+        Song(identifier: "1"),
+        Song(identifier: "2"),
+        Song(identifier: "3"),
+        Song(identifier: "4"),
+        Song(identifier: "5"),
+        Song(identifier: "6"),
+        Song(identifier: "7"),
+        Song(identifier: "8"),
+        Song(identifier: "9"),
+        Song(identifier: "10"),
+    ]
+
     var playerQueue: PlayerQueue!
     var mockUserDefaults: UserDefaults!
 
@@ -25,6 +38,14 @@ final class PlayerQueueTests: XCTestCase {
     override func tearDownWithError() throws {
         mockUserDefaults.removePersistentDomain(forName: defaultsName)
         super.tearDown()
+    }
+
+    @MainActor func testAddCurrentSong() {
+        let futureSongIds = basicSongResults[1..<basicSongResults.count].map { $0.identifier }
+        playerQueue.addCurrentSong(basicSongResults.first!, parentResults: basicSongResults)
+        XCTAssertEqual(playerQueue.currentSong?.song, basicSongResults.first!)
+        XCTAssertEqual(playerQueue.results, basicSongResults)
+        XCTAssertEqual(playerQueue.futureSongs.map { $0.identifier }, futureSongIds)
     }
 
     @MainActor func testShuffleEnabled_TogglesAndPersists() {
