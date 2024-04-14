@@ -183,20 +183,20 @@ final class PlayerQueueTests: XCTestCase {
         XCTAssertEqual(playerQueue.currentSong?.song.identifier, song.identifier)
     }
 
-    @MainActor func testRepeatQueue_BasicQueue_ContinuesToPlayPastEnd() {
-        Self.testRepeatQueue_ContinuesToPlayPastEnd(
+    func testRepeatQueue_BasicQueue_ContinuesToPlayPastEnd() async {
+        await Self.testRepeatQueue_ContinuesToPlayPastEnd(
             results: basicSongResults, playerQueue: playerQueue
         )
     }
 
-    @MainActor func testRepeatQueue_ShortQueue_ContinuesToPlayPastEnd() {
-        Self.testRepeatQueue_ContinuesToPlayPastEnd(
+    func testRepeatQueue_ShortQueue_ContinuesToPlayPastEnd() async {
+        await Self.testRepeatQueue_ContinuesToPlayPastEnd(
             results: shortSongResults, playerQueue: playerQueue
         )
     }
 
-    @MainActor func testRepeatQueue_LongQueue_ContinuesToPlayPastEnd() {
-        Self.testRepeatQueue_ContinuesToPlayPastEnd(
+    func testRepeatQueue_LongQueue_ContinuesToPlayPastEnd() async {
+        await Self.testRepeatQueue_ContinuesToPlayPastEnd(
             results: longSongResults, playerQueue: playerQueue
         )
     }
