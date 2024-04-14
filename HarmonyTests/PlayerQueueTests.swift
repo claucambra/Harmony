@@ -428,4 +428,13 @@ final class PlayerQueueTests: XCTestCase {
             playerQueue.futureSongs.count, insertedBasicSongResultsCount - pastSongIndex - 1
         )
     }
+
+    @MainActor func testReturnToStart() {
+        playerQueue.addCurrentSong(basicSongResults.first!, parentResults: basicSongResults)
+        XCTAssertNotNil(playerQueue.currentSong)
+        while playerQueue.forward() != nil {}
+        playerQueue.returnToStart()
+        XCTAssertNil(playerQueue.currentSong)
+        XCTAssertEqual(playerQueue.futureSongs.first?.song, basicSongResults.first)
+    }
 }
