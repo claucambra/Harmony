@@ -80,6 +80,7 @@ public class NextcloudBackend: NSObject, Backend, NKCommonDelegate, URLSessionWe
         )
 
         super.init()
+        ncKit.setup(delegate: self)
         reconnectWebSocket()
     }
 
