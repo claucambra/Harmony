@@ -20,9 +20,7 @@ fileprivate let NotifyPushWebSocketPingIntervalNanoseconds: UInt64 = 30 * 1_000_
 fileprivate let NotifyPushWebSocketPingFailLimit = 8
 fileprivate let NotifyPushWebSocketAuthenticationFailLimit = 3
 
-public class NextcloudBackend: 
-    NSObject, Backend, NKCommonDelegate, URLSessionDelegate, URLSessionWebSocketDelegate
-{
+public class NextcloudBackend: NSObject, Backend, NKCommonDelegate, URLSessionWebSocketDelegate {
     public let typeDescription: BackendDescription = ncBackendTypeDescription
     public let backendId: String
     public var presentation: BackendPresentable
@@ -148,10 +146,12 @@ public class NextcloudBackend:
         Logger.ncBackend.info("Successfully configured push notifications for \(self.backendId)")
     }
 
-    public func urlSession(
+    public func authenticationChallenge(
         _ session: URLSession,
         didReceive challenge: URLAuthenticationChallenge,
-        completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
+        completionHandler: @escaping (
+            URLSession.AuthChallengeDisposition, URLCredential?
+        ) -> Void
     ) {
         let authMethod = challenge.protectionSpace.authenticationMethod
         Logger.ncBackend.debug("Received authentication challenge with method: \(authMethod)")
@@ -174,7 +174,7 @@ public class NextcloudBackend:
         } else {
             Logger.ncBackend.warning("Unhandled auth method: \(authMethod)")
             // Handle other authentication methods or cancel the challenge
-            completionHandler(.cancelAuthenticationChallenge, nil)
+            completionHandler(.performDefaultHandling, nil)
         }
     }
 
