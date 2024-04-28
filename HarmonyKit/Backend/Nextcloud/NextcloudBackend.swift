@@ -450,7 +450,7 @@ public class NextcloudBackend: NSObject, Backend, NKCommonDelegate, URLSessionWe
 
         try Task.checkCancellation()
         let asset = AVURLAsset(url: songUrl)
-        asset.resourceLoader.setDelegate(assetResourceLoaderDelegate, queue: DispatchQueue.global())
+        asset.resourceLoader.setDelegate(assetResourceLoaderDelegate, queue: .global())
 
         guard let song = await Song(
             url: songUrl, 
@@ -461,7 +461,7 @@ public class NextcloudBackend: NSObject, Backend, NKCommonDelegate, URLSessionWe
             local: false,
             versionId: etag,
             fetchSession: ncKit.sessionManager,
-            fetchHeaders: ncKit.nkCommonInstance.getStandardHeaders(options: NKRequestOptions())
+            fetchHeaders: ncKit.nkCommonInstance.getStandardHeaders(options: .init())
         ) else {
             logger.error("Could not create song from \(receivedFileUrl)")
             return nil
@@ -489,7 +489,7 @@ public class NextcloudBackend: NSObject, Backend, NKCommonDelegate, URLSessionWe
         } // TODO: Reset downloaded state here if file not found
         Logger.ncBackend.debug("Providing url \(url) for \(song.title)")
         let asset = AVURLAsset(url: url)
-        asset.resourceLoader.setDelegate(assetResourceLoaderDelegate, queue: DispatchQueue.global())
+        asset.resourceLoader.setDelegate(assetResourceLoaderDelegate, queue: .global())
         return asset
     }
     
