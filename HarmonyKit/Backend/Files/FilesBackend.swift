@@ -20,7 +20,7 @@ public class FilesBackend: NSObject, Backend {
     public var configValues: BackendConfiguration = [:]
     public private(set) var presentation: BackendPresentable
     public private(set) var path: URL {
-        didSet { DispatchQueue.main.async { self.presentation.config = self.path.path } }
+        didSet { Task { @MainActor in self.presentation.config = self.path.path } }
     }
     private var scanTask: Task<(), Error>?
 
