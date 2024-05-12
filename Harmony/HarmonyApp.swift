@@ -12,6 +12,7 @@ import SwiftUI
 @main
 struct HarmonyApp: App {
     @State var backendsModel = BackendsModel.shared  // Ensure backends are instantiated
+    @State var syncController = SyncController.shared // Ensure sync controller is instantiated
     var body: some Scene {
         WindowGroup {
             ContentView()
