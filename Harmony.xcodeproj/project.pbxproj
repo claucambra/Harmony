@@ -359,12 +359,12 @@
 		5350534C2B5955F900D7EAF2 /* Backend */ = {
 			isa = PBXGroup;
 			children = (
+				5350534E2B5955F900D7EAF2 /* Files */,
+				53D666542B6E9C1D0042C03D /* Nextcloud */,
 				535053912B5BD41200D7EAF2 /* AvailableBackends.swift */,
 				5350534D2B5955F900D7EAF2 /* Backend.swift */,
 				535053872B5BCD0200D7EAF2 /* BackendDescription.swift */,
 				5350541C2B63C71400D7EAF2 /* BackendPresentable.swift */,
-				5350534E2B5955F900D7EAF2 /* Files */,
-				53D666542B6E9C1D0042C03D /* Nextcloud */,
 			);
 			path = Backend;
 			sourceTree = "<group>";
@@ -593,8 +593,8 @@
 				53D666682B74C51B0042C03D /* Common */,
 				535054022B6356E400D7EAF2 /* Extensions */,
 				535053742B5AA63500D7EAF2 /* Library */,
-				5350537A2B5BB1E200D7EAF2 /* Navigation */,
 				5350539E2B5D1CB700D7EAF2 /* Models */,
+				5350537A2B5BB1E200D7EAF2 /* Navigation */,
 				535053F52B625A9D00D7EAF2 /* Player */,
 				5350537F2B5BBB5F00D7EAF2 /* Settings */,
 				535054302B64EF5300D7EAF2 /* Sync */,
