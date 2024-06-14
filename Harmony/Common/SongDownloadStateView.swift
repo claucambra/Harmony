@@ -9,7 +9,7 @@ import HarmonyKit
 import SwiftUI
 
 struct SongDownloadStateView: View {
-    @State var song: Song
+    let song: Song
     @State private var progress = 0.0
 
     var body: some View {
