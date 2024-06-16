@@ -99,9 +99,7 @@ struct PlayerQueueView: View {
                     }
                 }
                 .onChange(of: queue.currentSong) {
-                    #if os(macOS) // TODO: iPadOS?
                     proxy.scrollTo(currentSongSectionId, anchor: .top)
-                    #endif
                 }
             }
         }
