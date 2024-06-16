@@ -25,7 +25,6 @@ struct PlayerQueueView: View {
         } else {
             ScrollViewReader { proxy in
                 List(selection: $selection) {
-                    #if os(macOS) // TODO: iPadOS?
                     if !queue.pastSongs.isEmpty {
                         Section {
                             ForEach(queue.pastSongs) { song in
@@ -47,7 +46,6 @@ struct PlayerQueueView: View {
                             }
                         }
                     }
-                    #endif
                     if let currentSong = queue.currentSong {
                         Section("Currently playing") {
                             PlayerQueueListItemView(song: currentSong, isCurrentSong: true)
