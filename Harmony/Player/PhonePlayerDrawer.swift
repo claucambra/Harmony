@@ -89,7 +89,9 @@ struct PhonePlayerDrawer: View {
                 secondaryButton(AirPlayButton().labelStyle(.iconOnly))
                 Spacer()
                 secondaryButton(Button {
-                    queueVisible.toggle()
+                    withAnimation(.spring()) {
+                        queueVisible.toggle()
+                    }
                 } label: {
                     Label("Toggle queue", systemImage: "list.triangle")
                 })
