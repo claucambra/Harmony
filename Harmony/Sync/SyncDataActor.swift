@@ -42,7 +42,7 @@ actor SyncDataActor {
             }
             return existingSong.versionId != versionId
         } catch let error {
-            Logger.sync.error("Could not get accurate approval for container, approving")
+            Logger.sync.error("Could not get accurate approval for container (\(error)), approving")
             return true
         }
     }
@@ -57,7 +57,7 @@ actor SyncDataActor {
             }
             return existingSongContainer.versionId != versionId
         } catch let error {
-            Logger.sync.error("Could not get accurate approval for container, approving")
+            Logger.sync.error("Could not get accurate approval for container (\(error)), approving")
             return true
         }
     }
