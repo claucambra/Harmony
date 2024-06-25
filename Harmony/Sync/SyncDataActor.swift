@@ -230,7 +230,7 @@ actor SyncDataActor {
                 }
             )
             for songToRemove in songsForRemoval {
-                Logger.sync.debug("Removing song: \(songToRemove.url)")
+                Logger.sync.debug("Removing song: \(songToRemove.url) parentContainer: \(songToRemove.parentContainerId)")
                 modelContext.delete(songToRemove)
             }
             try modelContext.save()
