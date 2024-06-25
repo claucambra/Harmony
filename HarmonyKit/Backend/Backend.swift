@@ -12,6 +12,7 @@ public let BackendNewScanRequiredNotification = Notification.Name("BackendNewSca
 
 public enum ScanError: Error {
     case generalError(String)
+    case remoteReadError(String)
 }
 
 public protocol Backend: Identifiable, Hashable, ObservableObject {

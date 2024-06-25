@@ -434,12 +434,11 @@ public class NextcloudBackend: NSObject, Backend, NKCommonDelegate, URLSessionWe
     ) async throws -> Song? {
         // Process received file
         guard let songUrl = URL(string: receivedFileUrl) else {
-            logger.error("Received serverUrl for \(receivedFileUrl) is invalid")
-            return nil
+            throw ScanError.remoteReadError("Received invalid song URL \(receivedFileUrl)")
         }
 
         guard fileHasPlayableExtension(fileURL: songUrl) else {
-            logger.info("File at \(songUrl) is not a playable song file, skip")
+            logger.info("File at \(songUrl) is not a playable song file, skipping.")
             return nil
         }
 
@@ -463,8 +462,7 @@ public class NextcloudBackend: NSObject, Backend, NKCommonDelegate, URLSessionWe
             fetchSession: ncKit.sessionManager,
             fetchHeaders: ncKit.nkCommonInstance.getStandardHeaders(options: .init())
         ) else {
-            logger.error("Could not create song from \(receivedFileUrl)")
-            return nil
+            throw ScanError.remoteReadError("Could not create song from \(receivedFileUrl)")
         }
 
         logger.debug("Acquired valid song: \(songUrl)")
