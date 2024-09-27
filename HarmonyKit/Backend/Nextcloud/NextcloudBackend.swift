@@ -512,6 +512,7 @@ public class NextcloudBackend: NSObject, Backend, NKCommonDelegate, URLSessionWe
                 serverUrlFileName: song.url, 
                 fileNameLocalPath: localPath,
                 progressHandler: { progress in
+                    guard !progress.isFinished else { return }
                     song.downloadState = DownloadState.downloading.rawValue
                     song.downloadProgress = progress.fractionCompleted
                 },
