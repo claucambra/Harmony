@@ -536,9 +536,7 @@ public class NextcloudBackend: NSObject, Backend, NKCommonDelegate, URLSessionWe
 
         do {
             try FileManager.default.removeItem(at: localUrl)
-            Task { @MainActor in
-                song.downloadState = DownloadState.notDownloaded.rawValue
-            }
+            song.downloadState = DownloadState.notDownloaded.rawValue
         } catch let error {
             Logger.ncBackend.error("Could not delete song \(song.url) at \(localUrl): \(error)")
         }
