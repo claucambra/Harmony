@@ -31,6 +31,7 @@ struct PhonePlayerDrawer: View {
                         .listStyle(.grouped)
                         .scrollContentBackground(.hidden)
                         .mask(maskGradient)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
                 } else {
                     VStack {
                         Spacer()
