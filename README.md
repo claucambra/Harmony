@@ -4,6 +4,7 @@ Unify your music library and play your songs from anywhere.
 
 Currently supports local playback, and streaming from:
 
+* Apple Music
 * iCloud
 * Nextcloud
 
