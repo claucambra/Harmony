@@ -16,17 +16,17 @@ struct BackendConfigurationView: View {
 
     var body: some View {
         platformSpecificView
-        .navigationTitle("New " + backendDescription.name)
-        .toolbar {
-            Button("Save") {
-                saveBackendConfig(configValues, forBackendDescription: backendDescription)
-                if let dismiss = dismiss {
-                    dismiss()
-                } else {
-                    defaultDismiss()
+            .navigationTitle("New " + backendDescription.name)
+            .toolbar {
+                Button("Save") {
+                    saveBackendConfig(configValues, forBackendDescription: backendDescription)
+                    if let dismiss = dismiss {
+                        dismiss()
+                    } else {
+                        defaultDismiss()
+                    }
                 }
             }
-        }
     }
 
     @ViewBuilder var platformSpecificView: some View {
