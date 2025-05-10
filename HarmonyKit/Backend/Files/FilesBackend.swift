@@ -14,7 +14,7 @@ extension Logger {
 }
 
 // TODO: Find a way to do container versioning?
-public class FilesBackend: NSObject, Backend {
+public class FilesBackend: NSObject, Backend, BackendDefaultPlayerCompatible {
     public let typeDescription = filesBackendTypeDescription
     public let backendId: String
     public var configValues: BackendConfiguration = [:]

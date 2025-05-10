@@ -20,7 +20,9 @@ fileprivate let NotifyPushWebSocketPingIntervalNanoseconds: UInt64 = 30 * 1_000_
 fileprivate let NotifyPushWebSocketPingFailLimit = 8
 fileprivate let NotifyPushWebSocketAuthenticationFailLimit = 3
 
-public class NextcloudBackend: NSObject, Backend, NKCommonDelegate, URLSessionWebSocketDelegate {
+public class NextcloudBackend:
+    NSObject, Backend, BackendDefaultPlayerCompatible, NKCommonDelegate, URLSessionWebSocketDelegate
+{
     public let typeDescription: BackendDescription = ncBackendTypeDescription
     public let backendId: String
     public var presentation: BackendPresentable

@@ -159,11 +159,7 @@ public class AppleMusicBackend: NSObject, Backend {
     public func cancelScan() {
         return // TODO
     }
-
-    public func assetForSong(_ song: Song) -> AVAsset? {
-        return nil
-    }
-
+    
     public func fetchSong(_ song: Song) async {
         return
     }
