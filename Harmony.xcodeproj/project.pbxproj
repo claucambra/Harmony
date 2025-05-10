@@ -10,6 +10,7 @@
 		530429832DCF305B004BB598 /* AppleMusicBackend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 530429822DCF305B004BB598 /* AppleMusicBackend.swift */; };
 		530429852DCF30B8004BB598 /* AppleMusicBackendDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 530429842DCF30AE004BB598 /* AppleMusicBackendDescription.swift */; };
 		530429872DCF42EB004BB598 /* BackendPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 530429862DCF42EB004BB598 /* BackendPlayer.swift */; };
+		530429892DCF4418004BB598 /* AppleMusicPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 530429882DCF4415004BB598 /* AppleMusicPlayer.swift */; };
 		5304298B2DCF4A81004BB598 /* BackendDefaultPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5304298A2DCF4A7B004BB598 /* BackendDefaultPlayer.swift */; };
 		5315227B2B8BC936002E31BE /* KeychainUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5315227A2B8BC936002E31BE /* KeychainUtils.swift */; };
 		5315227D2B8CF235002E31BE /* CurrentlyPlayingSongIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5315227C2B8CF235002E31BE /* CurrentlyPlayingSongIndicatorView.swift */; };
@@ -165,6 +166,7 @@
 		530429822DCF305B004BB598 /* AppleMusicBackend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleMusicBackend.swift; sourceTree = "<group>"; };
 		530429842DCF30AE004BB598 /* AppleMusicBackendDescription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleMusicBackendDescription.swift; sourceTree = "<group>"; };
 		530429862DCF42EB004BB598 /* BackendPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendPlayer.swift; sourceTree = "<group>"; };
+		530429882DCF4415004BB598 /* AppleMusicPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleMusicPlayer.swift; sourceTree = "<group>"; };
 		5304298A2DCF4A7B004BB598 /* BackendDefaultPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendDefaultPlayer.swift; sourceTree = "<group>"; };
 		5315227A2B8BC936002E31BE /* KeychainUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainUtils.swift; sourceTree = "<group>"; };
 		5315227C2B8CF235002E31BE /* CurrentlyPlayingSongIndicatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentlyPlayingSongIndicatorView.swift; sourceTree = "<group>"; };
@@ -331,6 +333,7 @@
 		530429812DCF3046004BB598 /* AppleMusic */ = {
 			isa = PBXGroup;
 			children = (
+				530429882DCF4415004BB598 /* AppleMusicPlayer.swift */,
 				530429842DCF30AE004BB598 /* AppleMusicBackendDescription.swift */,
 				530429822DCF305B004BB598 /* AppleMusicBackend.swift */,
 			);
@@ -921,6 +924,7 @@
 				535053552B5955F900D7EAF2 /* FilesBackend.swift in Sources */,
 				530429852DCF30B8004BB598 /* AppleMusicBackendDescription.swift in Sources */,
 				535053622B5975A100D7EAF2 /* Logger+Extension.swift in Sources */,
+				530429892DCF4418004BB598 /* AppleMusicPlayer.swift in Sources */,
 				53D666562B6E9C300042C03D /* NextcloudBackend.swift in Sources */,
 				535DAFC72B9F7AC100C94B62 /* Artist.swift in Sources */,
 				53D666582B6E9DB60042C03D /* NextcloudBackendDescription.swift in Sources */,
