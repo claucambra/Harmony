@@ -35,11 +35,13 @@ func playSongsFromIds(_ ids: Set<Song.ID>, songs: [Song]) {
 }
 
 func fetchSong(_ song: Song) {
-    let backend = BackendsModel.shared.backends[song.backendId]
-    Task { await backend?.fetchSong(song) }
+    if let backend = BackendsModel.shared.backends[song.backendId] as? BackendKeepOfflineCapable {
+        Task { await backend.fetchSong(song) }
+    }
 }
 
 func evictSong(_ song: Song) {
-    let backend = BackendsModel.shared.backends[song.backendId]
-    Task { await backend?.evictSong(song) }
+    if let backend = BackendsModel.shared.backends[song.backendId] as? BackendKeepOfflineCapable {
+        Task { await backend.evictSong(song) }
+    }
 }

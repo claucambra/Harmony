@@ -21,7 +21,12 @@ fileprivate let NotifyPushWebSocketPingFailLimit = 8
 fileprivate let NotifyPushWebSocketAuthenticationFailLimit = 3
 
 public class NextcloudBackend:
-    NSObject, Backend, BackendDefaultPlayerCompatible, NKCommonDelegate, URLSessionWebSocketDelegate
+    NSObject,
+    Backend,
+    BackendDefaultPlayerCompatible,
+    BackendKeepOfflineCapable,
+    NKCommonDelegate,
+    URLSessionWebSocketDelegate
 {
     public let typeDescription: BackendDescription = ncBackendTypeDescription
     public let backendId: String

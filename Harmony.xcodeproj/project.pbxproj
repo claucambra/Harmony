@@ -13,6 +13,7 @@
 		530429892DCF4418004BB598 /* AppleMusicPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 530429882DCF4415004BB598 /* AppleMusicPlayer.swift */; };
 		5304298B2DCF4A81004BB598 /* BackendDefaultPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5304298A2DCF4A7B004BB598 /* BackendDefaultPlayer.swift */; };
 		5304298D2DCFAC0F004BB598 /* BackendDefaultPlayerCompatible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5304298C2DCFAC08004BB598 /* BackendDefaultPlayerCompatible.swift */; };
+		5304298F2DCFAE0B004BB598 /* BackendKeepOfflineCapable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5304298E2DCFADFA004BB598 /* BackendKeepOfflineCapable.swift */; };
 		5315227B2B8BC936002E31BE /* KeychainUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5315227A2B8BC936002E31BE /* KeychainUtils.swift */; };
 		5315227D2B8CF235002E31BE /* CurrentlyPlayingSongIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5315227C2B8CF235002E31BE /* CurrentlyPlayingSongIndicatorView.swift */; };
 		534F81292BA078A70068D145 /* ArtistsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534F81282BA078A70068D145 /* ArtistsListView.swift */; };
@@ -170,6 +171,7 @@
 		530429882DCF4415004BB598 /* AppleMusicPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleMusicPlayer.swift; sourceTree = "<group>"; };
 		5304298A2DCF4A7B004BB598 /* BackendDefaultPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendDefaultPlayer.swift; sourceTree = "<group>"; };
 		5304298C2DCFAC08004BB598 /* BackendDefaultPlayerCompatible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendDefaultPlayerCompatible.swift; sourceTree = "<group>"; };
+		5304298E2DCFADFA004BB598 /* BackendKeepOfflineCapable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendKeepOfflineCapable.swift; sourceTree = "<group>"; };
 		5315227A2B8BC936002E31BE /* KeychainUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainUtils.swift; sourceTree = "<group>"; };
 		5315227C2B8CF235002E31BE /* CurrentlyPlayingSongIndicatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentlyPlayingSongIndicatorView.swift; sourceTree = "<group>"; };
 		5335FA0D2BC5B22000AC4596 /* Harmony.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = Harmony.xctestplan; sourceTree = "<group>"; };
@@ -388,8 +390,9 @@
 				5350534D2B5955F900D7EAF2 /* Backend.swift */,
 				5304298A2DCF4A7B004BB598 /* BackendDefaultPlayer.swift */,
 				5304298C2DCFAC08004BB598 /* BackendDefaultPlayerCompatible.swift */,
-				530429862DCF42EB004BB598 /* BackendPlayer.swift */,
 				535053872B5BCD0200D7EAF2 /* BackendDescription.swift */,
+				5304298E2DCFADFA004BB598 /* BackendKeepOfflineCapable.swift */,
+				530429862DCF42EB004BB598 /* BackendPlayer.swift */,
 				5350541C2B63C71400D7EAF2 /* BackendPresentable.swift */,
 			);
 			path = Backend;
@@ -927,6 +930,7 @@
 				530429872DCF42EB004BB598 /* BackendPlayer.swift in Sources */,
 				535053552B5955F900D7EAF2 /* FilesBackend.swift in Sources */,
 				530429852DCF30B8004BB598 /* AppleMusicBackendDescription.swift in Sources */,
+				5304298F2DCFAE0B004BB598 /* BackendKeepOfflineCapable.swift in Sources */,
 				535053622B5975A100D7EAF2 /* Logger+Extension.swift in Sources */,
 				530429892DCF4418004BB598 /* AppleMusicPlayer.swift in Sources */,
 				53D666562B6E9C300042C03D /* NextcloudBackend.swift in Sources */,

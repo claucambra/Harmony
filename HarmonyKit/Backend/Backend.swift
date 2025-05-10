@@ -30,8 +30,5 @@ public protocol Backend: Identifiable, Hashable, ObservableObject {
     ) async throws  // Container, ParentContainer | final container handler must run after all songs
     func cancelScan()
 
-    func fetchSong(_ song: Song) async
-    func evictSong(_ song: Song) async
-
     init(config: BackendConfiguration)
 }
