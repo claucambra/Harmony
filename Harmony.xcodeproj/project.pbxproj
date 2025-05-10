@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		530429872DCF42EB004BB598 /* BackendPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 530429862DCF42EB004BB598 /* BackendPlayer.swift */; };
+		5304298B2DCF4A81004BB598 /* BackendDefaultPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5304298A2DCF4A7B004BB598 /* BackendDefaultPlayer.swift */; };
 		5315227B2B8BC936002E31BE /* KeychainUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5315227A2B8BC936002E31BE /* KeychainUtils.swift */; };
 		5315227D2B8CF235002E31BE /* CurrentlyPlayingSongIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5315227C2B8CF235002E31BE /* CurrentlyPlayingSongIndicatorView.swift */; };
 		534F81292BA078A70068D145 /* ArtistsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534F81282BA078A70068D145 /* ArtistsListView.swift */; };
@@ -160,6 +161,7 @@
 
 /* Begin PBXFileReference section */
 		530429862DCF42EB004BB598 /* BackendPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendPlayer.swift; sourceTree = "<group>"; };
+		5304298A2DCF4A7B004BB598 /* BackendDefaultPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendDefaultPlayer.swift; sourceTree = "<group>"; };
 		5315227A2B8BC936002E31BE /* KeychainUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainUtils.swift; sourceTree = "<group>"; };
 		5315227C2B8CF235002E31BE /* CurrentlyPlayingSongIndicatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentlyPlayingSongIndicatorView.swift; sourceTree = "<group>"; };
 		5335FA0D2BC5B22000AC4596 /* Harmony.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = Harmony.xctestplan; sourceTree = "<group>"; };
@@ -365,6 +367,7 @@
 				53D666542B6E9C1D0042C03D /* Nextcloud */,
 				535053912B5BD41200D7EAF2 /* AvailableBackends.swift */,
 				5350534D2B5955F900D7EAF2 /* Backend.swift */,
+				5304298A2DCF4A7B004BB598 /* BackendDefaultPlayer.swift */,
 				530429862DCF42EB004BB598 /* BackendPlayer.swift */,
 				535053872B5BCD0200D7EAF2 /* BackendDescription.swift */,
 				5350541C2B63C71400D7EAF2 /* BackendPresentable.swift */,
@@ -895,6 +898,7 @@
 				5350538D2B5BD1A700D7EAF2 /* FilePlayability.swift in Sources */,
 				535053512B5955F900D7EAF2 /* Song.swift in Sources */,
 				534F813D2BA311E00068D145 /* Container.swift in Sources */,
+				5304298B2DCF4A81004BB598 /* BackendDefaultPlayer.swift in Sources */,
 				535053922B5BD41200D7EAF2 /* AvailableBackends.swift in Sources */,
 				535053FF2B62892500D7EAF2 /* AVPlayer+Extension.swift in Sources */,
 				53B979732B80274C002DA742 /* NextcloudAVAssetResourceLoaderDelegate.swift in Sources */,
