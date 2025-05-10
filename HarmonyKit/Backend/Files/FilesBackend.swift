@@ -18,6 +18,7 @@ public class FilesBackend: NSObject, Backend {
     public let typeDescription = filesBackendTypeDescription
     public let backendId: String
     public var configValues: BackendConfiguration = [:]
+    public let player = BackendDefaultPlayer() as (any BackendPlayer)
     public private(set) var presentation: BackendPresentable
     public private(set) var path: URL {
         didSet { Task { @MainActor in self.presentation.config = self.path.path } }
@@ -50,6 +51,7 @@ public class FilesBackend: NSObject, Backend {
             config: "Path: " + localPath.path
         )
         super.init()
+        (player as! BackendDefaultPlayer).backend = self
         configurePath()
     }
 

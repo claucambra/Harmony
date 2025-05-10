@@ -25,6 +25,7 @@ public class NextcloudBackend: NSObject, Backend, NKCommonDelegate, URLSessionWe
     public let backendId: String
     public var presentation: BackendPresentable
     public var configValues: BackendConfiguration
+    public let player = BackendDefaultPlayer() as (any BackendPlayer)
     private let assetResourceLoaderDelegate: NextcloudAVAssetResourceLoaderDelegate
     private let ncKit: NextcloudKit
     private let ncKitBackground: NKBackground
@@ -80,6 +81,8 @@ public class NextcloudBackend: NSObject, Backend, NKCommonDelegate, URLSessionWe
         )
 
         super.init()
+        
+        (player as! BackendDefaultPlayer).backend = self
         ncKit.setup(delegate: self)
         reconnectWebSocket()
     }

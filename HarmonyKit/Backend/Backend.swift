@@ -20,6 +20,7 @@ public protocol Backend: Identifiable, Hashable, ObservableObject {
     var backendId: String { get }
     var presentation: BackendPresentable { get }
     var configValues: BackendConfiguration { get }
+    var player: any BackendPlayer { get }
 
     func scan(
         containerScanApprover: @Sendable @escaping (String, String) async -> Bool,  // ID, VersionID
