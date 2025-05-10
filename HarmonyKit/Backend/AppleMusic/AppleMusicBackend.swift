@@ -12,6 +12,15 @@ import OSLog
 extension MusicKit.Song {
     var logger: Logger { Logger(subsystem: Logger.subsystem, category: "MusicKitSongExtension") }
 
+    func artworkData() async throws -> Data? {
+        if let amArtwork = artwork, let amArtworkUrl = amArtwork.url(width: 1024, height: 1024) {
+            let urlRequest = URLRequest(url: amArtworkUrl)
+            let (data, _) = try await URLSession.shared.data(for: urlRequest)
+            return data
+        }
+        return nil
+    }
+
     func toHarmonySong(backendId: String) async -> Song {
         var harmonyYear = 0
         if let amDate = releaseDate,
@@ -20,6 +29,11 @@ extension MusicKit.Song {
             harmonyYear = amYear
         }
         var harmonyArtwork: Data? = nil
+        do {
+            harmonyArtwork = try await artworkData()
+        } catch let error {
+            logger.error("Failed to retrive artwork data for \(title): \(error)")
+        }
         return Song(
             identifier: id.rawValue,
             parentContainerId: "AppleMusic",
