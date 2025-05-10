@@ -62,6 +62,11 @@ extension MusicKit.Song {
 public class AppleMusicBackend: NSObject {
     private let logger: Logger = Logger(subsystem: Logger.subsystem, category: "AppleMusic")
 
+    func requestAuthorization() async -> MusicAuthorization.Status {
+        guard MusicAuthorization.currentStatus != .authorized else { return .authorized }
+        return await MusicAuthorization.request()
+    }
+
     public func appleMusicSong(id: String) async -> MusicKit.Song? {
         let appleMusicId = MusicItemID(id)
         var request = MusicLibraryRequest<MusicKit.Song>()
