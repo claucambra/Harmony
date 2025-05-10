@@ -27,6 +27,17 @@ struct ConfiguredBackendsListView: View {
                         }
                         .contextMenu {
                             SyncBackendButton(backendPresentable: presentable)
+                            Button("Delete") {
+                                let identifier = presentable.backendId
+                                guard let backend = backendsModel.backends[identifier] else {
+                                    print("Could not delete unknown container")
+                                    return
+                                }
+                                deleteBackendConfig(
+                                    id: backend.backendId,
+                                    withBackendDescriptionId: backend.typeDescription.id
+                                )
+                            }
                         }
                 }
                 .onDelete(perform: { indexSet in
