@@ -14,7 +14,7 @@ fileprivate struct InternalMacAirPlayButton: NSViewRepresentable {
     func makeNSView(context: Context) -> some NSView {
         let routePickerView = AVRoutePickerView()
         routePickerView.isRoutePickerButtonBordered = false
-        PlayerController.shared.configureRoutePickerView(routePickerView)
+        //PlayerController.shared.configureRoutePickerView(routePickerView)
         return AVRoutePickerView()
     }
 

@@ -77,8 +77,7 @@ class BackendsModel: ObservableObject {
         }
     }
 
-    func assetForSong(_ song: Song) -> AVAsset? {
-        guard let backend = backends[song.backendId] else { return nil }
-        return backend.assetForSong(song)
+    func playerForSong(_ song: Song) -> (any BackendPlayer)? {
+        return backends[song.backendId]?.player
     }
 }

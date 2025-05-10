@@ -6,7 +6,7 @@
 //
 
 import AVFoundation
-import AVKit
+import Combine
 import Foundation
 import HarmonyKit
 import MediaPlayer
@@ -18,9 +18,6 @@ import AppKit
 #else
 import UIKit
 #endif
-
-fileprivate let AVPlayerTimeControlStatusKeyPath = "timeControlStatus"
-fileprivate let hundredMsTime = CMTime(seconds: 0.1, preferredTimescale: CMTimeScale(MSEC_PER_SEC))
 
 fileprivate let UserDefaultsVolumeKey = "player-volume"
 
@@ -36,83 +33,53 @@ class PlayerController: NSObject, ObservableObject  {
     let remoteCommandCenter = MPRemoteCommandCenter.shared()
     @Published var currentSong: Song? {
         didSet {
-            guard let currentSong = currentSong else {
+            guard let currentSong else {
                 Logger.player.error("Provided current song is nil")
-                avPlayer = nil
+                player = nil
                 nowPlayingInfoCenter.nowPlayingInfo = nil
                 return
             }
 
-            guard let asset = BackendsModel.shared.assetForSong(currentSong) else {
-                Logger.player.error("Could not acquire asset for song \(currentSong.url)")
-                avPlayer = nil
+            songDuration = currentSong.duration
+
+            guard let player = BackendsModel.shared.playerForSong(currentSong) else {
+                Logger.player.error("Could not acquire player for song \(currentSong.url)")
+                player = nil
                 nowPlayingInfoCenter.nowPlayingInfo = nil
                 return
             }
 
-            let playerItem = AVPlayerItem(asset: asset)
-            avPlayer = AVPlayer(playerItem: playerItem)
+            self.player = player
+            player.song = currentSong
             updateNowPlayingMetadataInfo()
             Logger.player.info("Set current song: \(currentSong.title) \(currentSong.url)")
         }
     }
-    @Published private var avPlayer: AVPlayer? {
-        willSet {
-            avPlayer?.removeObserver(self, forKeyPath: AVPlayerTimeControlStatusKeyPath)
-            NotificationCenter.default.removeObserver(
-                self,
-                name: .AVPlayerItemDidPlayToEndTime,
-                object: avPlayer?.currentItem
-            )
-            currentTime = nil
-            if periodicTimeObserver != nil {
-                avPlayer?.removeTimeObserver(periodicTimeObserver!)
-                periodicTimeObserver = nil
-            }
-        }
+    @Published private var playerCancellable: Cancellable?
+    @Published private var player: (any BackendPlayer)? {
         didSet {
-            guard let avPlayer = avPlayer else { return }
-            avPlayer.addObserver(
-                self,
-                forKeyPath: "timeControlStatus",
-                options: [.old, .new],
-                context: &playerContext
-            )
-            NotificationCenter.default.addObserver(
-                self,
-                selector: #selector(playerDidFinishPlayingItemToEnd),
-                name: .AVPlayerItemDidPlayToEndTime,
-                object: avPlayer.currentItem
-            )
-            avPlayer.volume = volume
-            songDuration = avPlayer.currentItem?.duration.seconds ?? 0
-            if songDuration.isNaN {
-                Logger.player.warning("AVPlayer current item duration seconds isNaN.")
-                Logger.player.warning("Trying to use controller's current song's duration secs.")
-                songDuration = currentSong?.duration ?? 0
-            }
-            periodicTimeObserver = avPlayer.addPeriodicTimeObserver(
-                forInterval: hundredMsTime, queue: .main
-            ) { [weak self] time in
-                switch self?.scrubState {
-                case .inactive:
-                    self?.currentTime = time
-                case .started, nil:
-                    return
-                case .finished:
-                    // Prevent jumping of the scrubber
-                    let seconds = self?.currentSeconds ?? 0
-                    let timeScale = self?.currentTime?.timescale ?? 1
-                    self?.currentTime = CMTime(seconds: seconds, preferredTimescale: timeScale)
-                    self?.scrubState = .inactive
+            guard let player else { return }
+            player.volume = volume
+            playerCancellable = (player as! AppleMusicPlayer)
+                .objectWillChange
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] _ in
+                    guard let self, let player = self.player else { return }
+                    // Only update the states in PlayerController that we depend on the player for.
+                    // States that the player is a slave to (rate, volume, song, etc) should be kept
+                    // out.
+                    self.timeControlStatus = player.state
+                    if self.scrubState == .inactive {
+                        self.currentTime = CMTime(value: CMTimeValue(player.time), timescale: 1)
+                    }
+                    self.objectWillChange.send()
                 }
-            }
         }
     }
     @Published var volume: Float = UserDefaults.standard.float(forKey: UserDefaultsVolumeKey) {
         didSet {
             UserDefaults.standard.set(volume, forKey: UserDefaultsVolumeKey)
-            avPlayer?.volume = volume
+            player?.volume = volume
         }
     }
     @Published var scrubState: ScrubState = .inactive {
@@ -200,9 +167,7 @@ class PlayerController: NSObject, ObservableObject  {
     }
 
     func updateNowPlayingMetadataInfo() {
-        guard let currentSong = currentSong else {
-            return
-        }
+        guard let currentSong else { return }
 
         nowPlayingInfoCenter.nowPlayingInfo = [
             MPNowPlayingInfoPropertyAssetURL: currentSong.url,
@@ -225,13 +190,9 @@ class PlayerController: NSObject, ObservableObject  {
     }
 
     func updateNowPlayingPlaybackInfo() {
-        guard let currentTime = currentTime,
-              let avPlayer = avPlayer else {
-            return
-        }
-
+        guard let currentTime, let player else { return }
         let playbackInfo: [String: Any] = [
-            MPNowPlayingInfoPropertyPlaybackRate: avPlayer.rate,
+            MPNowPlayingInfoPropertyPlaybackRate: player.rate,
             MPNowPlayingInfoPropertyElapsedPlaybackTime: currentTime.seconds,
             MPMediaItemPropertyPlaybackDuration: songDuration
         ]
@@ -262,7 +223,7 @@ class PlayerController: NSObject, ObservableObject  {
     #endif
 
     @discardableResult func play() -> MPRemoteCommandHandlerStatus {
-        guard let avPlayer = avPlayer else { return playNextSong() }
+        guard let player else { return playNextSong() }
         #if os(macOS)
         nowPlayingInfoCenter.playbackState = .playing
         #else
@@ -272,16 +233,16 @@ class PlayerController: NSObject, ObservableObject  {
             Logger.player.error("Failed to activate audio session: \(error)")
         }
         #endif
-        avPlayer.play()
+        Task { await player.play() }
         return .success
     }
 
     @discardableResult func pause() -> MPRemoteCommandHandlerStatus {
-        guard let avPlayer = avPlayer else { return .noActionableNowPlayingItem }
+        guard let player else { return .noActionableNowPlayingItem }
         #if os(macOS)
         nowPlayingInfoCenter.playbackState = .paused
         #endif
-        avPlayer.pause()
+        player.pause()
         return .success
     }
 
@@ -357,15 +318,14 @@ class PlayerController: NSObject, ObservableObject  {
     }
 
     @discardableResult func seek(to position: TimeInterval) -> MPRemoteCommandHandlerStatus {
-        guard let avPlayer = avPlayer else { return .noActionableNowPlayingItem }
-        let timescale = currentTime?.timescale ?? 1
-        avPlayer.seek(to: CMTime(seconds: position, preferredTimescale: timescale))
+        guard let player else { return .noActionableNowPlayingItem }
+        player.time = position
         return .success
     }
 
     private func setRate(_ rate: Float) -> MPRemoteCommandHandlerStatus {
-        guard let avPlayer = avPlayer else { return .noActionableNowPlayingItem }
-        avPlayer.rate = rate
+        guard let player else { return .noActionableNowPlayingItem }
+        player.rate = rate
         return .success
     }
 
@@ -390,27 +350,4 @@ class PlayerController: NSObject, ObservableObject  {
             queue.returnToStart()
         }
     }
-
-    override func observeValue(
-        forKeyPath keyPath: String?,
-        of object: Any?,
-        change: [NSKeyValueChangeKey : Any]?,
-        context: UnsafeMutableRawPointer?
-    ) {
-        guard context == &playerContext else { // give super to handle own cases
-            super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
-            return
-        }
-
-        guard let keyPath = keyPath else { return }
-        if keyPath == AVPlayerTimeControlStatusKeyPath {
-            timeControlStatus = avPlayer?.timeControlStatus ?? .paused
-        }
-    }
-
-    #if os(macOS)
-    func configureRoutePickerView(_ routePickerView: AVRoutePickerView) {
-        routePickerView.player = avPlayer
-    }
-    #endif
 }
