@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		530429852DCF30B8004BB598 /* AppleMusicBackendDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 530429842DCF30AE004BB598 /* AppleMusicBackendDescription.swift */; };
 		530429872DCF42EB004BB598 /* BackendPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 530429862DCF42EB004BB598 /* BackendPlayer.swift */; };
 		5304298B2DCF4A81004BB598 /* BackendDefaultPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5304298A2DCF4A7B004BB598 /* BackendDefaultPlayer.swift */; };
 		5315227B2B8BC936002E31BE /* KeychainUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5315227A2B8BC936002E31BE /* KeychainUtils.swift */; };
@@ -160,6 +161,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		530429842DCF30AE004BB598 /* AppleMusicBackendDescription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleMusicBackendDescription.swift; sourceTree = "<group>"; };
 		530429862DCF42EB004BB598 /* BackendPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendPlayer.swift; sourceTree = "<group>"; };
 		5304298A2DCF4A7B004BB598 /* BackendDefaultPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendDefaultPlayer.swift; sourceTree = "<group>"; };
 		5315227A2B8BC936002E31BE /* KeychainUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainUtils.swift; sourceTree = "<group>"; };
@@ -324,6 +326,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		530429812DCF3046004BB598 /* AppleMusic */ = {
+			isa = PBXGroup;
+			children = (
+				530429842DCF30AE004BB598 /* AppleMusicBackendDescription.swift */,
+			);
+			path = AppleMusic;
+			sourceTree = "<group>";
+		};
 		5350532A2B5955C800D7EAF2 /* HarmonyKit */ = {
 			isa = PBXGroup;
 			children = (
@@ -363,6 +373,7 @@
 		5350534C2B5955F900D7EAF2 /* Backend */ = {
 			isa = PBXGroup;
 			children = (
+				530429812DCF3046004BB598 /* AppleMusic */,
 				5350534E2B5955F900D7EAF2 /* Files */,
 				53D666542B6E9C1D0042C03D /* Nextcloud */,
 				535053912B5BD41200D7EAF2 /* AvailableBackends.swift */,
@@ -904,6 +915,7 @@
 				53B979732B80274C002DA742 /* NextcloudAVAssetResourceLoaderDelegate.swift in Sources */,
 				530429872DCF42EB004BB598 /* BackendPlayer.swift in Sources */,
 				535053552B5955F900D7EAF2 /* FilesBackend.swift in Sources */,
+				530429852DCF30B8004BB598 /* AppleMusicBackendDescription.swift in Sources */,
 				535053622B5975A100D7EAF2 /* Logger+Extension.swift in Sources */,
 				53D666562B6E9C300042C03D /* NextcloudBackend.swift in Sources */,
 				535DAFC72B9F7AC100C94B62 /* Artist.swift in Sources */,
