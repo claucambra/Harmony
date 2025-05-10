@@ -74,4 +74,15 @@ public class AppleMusicBackend: NSObject {
             return nil
         }
     }
+
+    public func appleMusicSongSynchronous(id: String) -> MusicKit.Song? {
+        let semaphore = DispatchSemaphore(value: 0)
+        var appleMusicSong: MusicKit.Song?
+        Task {
+            appleMusicSong = await self.appleMusicSong(id: id)
+            semaphore.signal()
+        }
+        semaphore.wait()
+        return appleMusicSong
+    }
 }
