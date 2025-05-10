@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		530429832DCF305B004BB598 /* AppleMusicBackend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 530429822DCF305B004BB598 /* AppleMusicBackend.swift */; };
 		530429852DCF30B8004BB598 /* AppleMusicBackendDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 530429842DCF30AE004BB598 /* AppleMusicBackendDescription.swift */; };
 		530429872DCF42EB004BB598 /* BackendPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 530429862DCF42EB004BB598 /* BackendPlayer.swift */; };
 		5304298B2DCF4A81004BB598 /* BackendDefaultPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5304298A2DCF4A7B004BB598 /* BackendDefaultPlayer.swift */; };
@@ -161,6 +162,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		530429822DCF305B004BB598 /* AppleMusicBackend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleMusicBackend.swift; sourceTree = "<group>"; };
 		530429842DCF30AE004BB598 /* AppleMusicBackendDescription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleMusicBackendDescription.swift; sourceTree = "<group>"; };
 		530429862DCF42EB004BB598 /* BackendPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendPlayer.swift; sourceTree = "<group>"; };
 		5304298A2DCF4A7B004BB598 /* BackendDefaultPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendDefaultPlayer.swift; sourceTree = "<group>"; };
@@ -330,6 +332,7 @@
 			isa = PBXGroup;
 			children = (
 				530429842DCF30AE004BB598 /* AppleMusicBackendDescription.swift */,
+				530429822DCF305B004BB598 /* AppleMusicBackend.swift */,
 			);
 			path = AppleMusic;
 			sourceTree = "<group>";
@@ -905,6 +908,7 @@
 				535053F42B6239AC00D7EAF2 /* FilePickerRepresentable.swift in Sources */,
 				535053782B5AB24500D7EAF2 /* AVAsset+Extension.swift in Sources */,
 				535053522B5955F900D7EAF2 /* LocalFileUtils.swift in Sources */,
+				530429832DCF305B004BB598 /* AppleMusicBackend.swift in Sources */,
 				535053882B5BCD0200D7EAF2 /* BackendDescription.swift in Sources */,
 				5350538D2B5BD1A700D7EAF2 /* FilePlayability.swift in Sources */,
 				535053512B5955F900D7EAF2 /* Song.swift in Sources */,
