@@ -16,6 +16,7 @@ let filesBackendTypeDescription = BackendDescription(
     name: "Files",
     description: "Provides music stored as files.",
     systemImageName: "doc",
+    supportsMultipleInstances: true,
     configDescription: [
         BackendConfigurationField(
             id: FilesBackendFieldId.pathConfig.rawValue,

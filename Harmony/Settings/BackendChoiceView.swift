@@ -16,6 +16,10 @@ struct BackendChoiceView: View {
     var body: some View {
         NavigationStack {
             List(availableBackends, id: \.self, selection: $selection) { backendDescription in
+                let disabled = BackendsModel.shared.backends.contains(where: {
+                    $0.value.typeDescription.id == backendDescription.id &&
+                    $0.value.typeDescription.supportsMultipleInstances == false
+                })
                 NavigationLink {
                     BackendConfigurationView(
                         backendDescription: backendDescription,
@@ -28,6 +32,8 @@ struct BackendChoiceView: View {
                         selection: $selection
                     )
                 }
+                .selectionDisabled(disabled)
+                .disabled(disabled)
             }
             .navigationTitle("Available backends")
         }

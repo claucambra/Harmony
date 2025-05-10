@@ -19,6 +19,7 @@ let ncBackendTypeDescription = BackendDescription(
     name: "Nextcloud",
     description: "Provides music stored on your Nextcloud server.",
     systemImageName: "cloud",
+    supportsMultipleInstances: true,
     configDescription: [
         BackendConfigurationField(
             id: NextcloudBackendFieldId.serverUrl.rawValue,

@@ -39,6 +39,10 @@ func saveBackendConfig(
             fullConfig.merge(existingConfig) { current, _ in current }
         }
     } else {
+        guard backendDescription.supportsMultipleInstances ||
+              !BackendsModel.shared.backends.values.contains(
+                where: { $0.typeDescription.id == descriptionId })
+        else { return }
         var suffixNumber = existingConfigsCount
         var proposedId = descriptionId + String(existingConfigsCount)
         if let existingConfigs = existingConfigs {

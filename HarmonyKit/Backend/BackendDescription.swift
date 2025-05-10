@@ -38,6 +38,7 @@ public struct BackendDescription: Hashable, Identifiable {
     public let name: String
     public let description: String
     public let systemImageName: String
+    public let supportsMultipleInstances: Bool
     public let configDescription: BackendConfigurationDescription
 }
 

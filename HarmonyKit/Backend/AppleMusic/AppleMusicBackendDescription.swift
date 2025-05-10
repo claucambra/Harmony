@@ -10,5 +10,6 @@ let appleMusicBackendTypeDescription = BackendDescription(
     name: "Apple Music",
     description: "Provides music stored in your Apple Music library.",
     systemImageName: "music.note",
+    supportsMultipleInstances: false,
     configDescription: []
 )
