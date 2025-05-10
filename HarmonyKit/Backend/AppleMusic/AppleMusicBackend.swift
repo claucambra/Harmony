@@ -59,12 +59,65 @@ extension MusicKit.Song {
     }
 }
 
-public class AppleMusicBackend: NSObject {
-    private let logger: Logger = Logger(subsystem: Logger.subsystem, category: "AppleMusic")
+public class AppleMusicBackend: NSObject, Backend {
+    public let typeDescription = appleMusicBackendTypeDescription
+    public let backendId: String
+    public var presentation: BackendPresentable
+    public var configValues: BackendConfiguration
+    public let player = AppleMusicPlayer() as any BackendPlayer
+
+    private let logger: Logger
+
+    public required init(config: BackendConfiguration) {
+        configValues = config
+        backendId = config[BackendConfigurationIdFieldKey] as! String
+        presentation = BackendPresentable(
+            backendId: backendId,
+            typeId: appleMusicBackendTypeDescription.id,
+            systemImage: appleMusicBackendTypeDescription.systemImageName,
+            primary: appleMusicBackendTypeDescription.name,
+            secondary: appleMusicBackendTypeDescription.description,
+            config: "Automatically available."
+        )
+        logger = Logger(subsystem: Logger.subsystem, category: backendId)
+
+        super.init()
+
+        (player as! AppleMusicPlayer).backend = self
+        Task { await requestAuthorization() }
+    }
 
     func requestAuthorization() async -> MusicAuthorization.Status {
         guard MusicAuthorization.currentStatus != .authorized else { return .authorized }
         return await MusicAuthorization.request()
+    }
+
+    public func scan(
+        containerScanApprover: @Sendable @escaping (
+            _ containerId: String, _ versionId: String
+        ) async -> Bool,
+        songScanApprover: @escaping @Sendable (String, String) async -> Bool,
+        finalisedSongHandler: @escaping @Sendable (Song) async -> Void,
+        finalisedContainerHandler: @escaping @Sendable (Container, Container?) async -> Void
+    ) async throws {
+        let currentScanDate = Date().description
+        let appleMusicContainer = Container(
+            identifier: self.backendId, backendId: self.backendId, versionId: currentScanDate
+        )
+        guard await containerScanApprover(appleMusicContainer.identifier, currentScanDate) else {
+            logger.debug("Container scan denied. This should not happen!")
+            return
+        }
+
+        let request = MusicLibraryRequest<MusicKit.Song>()
+        let response = try await request.response()
+
+        for appleMusicSong in response.items {
+            guard await songScanApprover(appleMusicSong.id.rawValue, "0") else { continue }
+            let harmonySong = await appleMusicSong.toHarmonySong(backendId: backendId)
+            await finalisedSongHandler(harmonySong)
+        }
+        await finalisedContainerHandler(appleMusicContainer, nil)
     }
 
     public func appleMusicSong(id: String) async -> MusicKit.Song? {
@@ -96,10 +149,26 @@ public class AppleMusicBackend: NSObject {
         let semaphore = DispatchSemaphore(value: 0)
         var harmonySong: Song?
         Task {
-            harmonySong = await appleMusicSong.toHarmonySong(backendId: "TODO")
+            harmonySong = await appleMusicSong.toHarmonySong(backendId: backendId)
             semaphore.signal()
         }
         semaphore.wait()
         return harmonySong
+    }
+
+    public func cancelScan() {
+        return // TODO
+    }
+
+    public func assetForSong(_ song: Song) -> AVAsset? {
+        return nil
+    }
+
+    public func fetchSong(_ song: Song) async {
+        return
+    }
+
+    public func evictSong(_ song: Song) async {
+        return
     }
 }
