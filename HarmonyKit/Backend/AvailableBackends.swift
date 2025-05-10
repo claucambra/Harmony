@@ -8,6 +8,7 @@
 import Foundation
 
 public let availableBackends = [
+    appleMusicBackendTypeDescription,
     filesBackendTypeDescription,
     ncBackendTypeDescription
 ]
@@ -16,6 +17,8 @@ public func backendFromDescriptionId(
     _ id: String, withConfig config: BackendConfiguration
 ) -> (any Backend)? {
     switch id {
+    case appleMusicBackendTypeDescription.id:
+        return AppleMusicBackend(config: config)
     case filesBackendTypeDescription.id:
         return FilesBackend(config: config)
     case ncBackendTypeDescription.id:
