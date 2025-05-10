@@ -21,11 +21,15 @@ struct BackendChoiceView: View {
                     $0.value.typeDescription.supportsMultipleInstances == false
                 })
                 NavigationLink {
-                    BackendConfigurationView(
-                        backendDescription: backendDescription,
-                        configValues: [:],
-                        dismiss: dismiss
-                    )
+                    if disabled {
+                        Text("You can only add one \(backendDescription.name) backend.")
+                    } else {
+                        BackendConfigurationView(
+                            backendDescription: backendDescription,
+                            configValues: [:],
+                            dismiss: dismiss
+                        )
+                    }
                 } label: {
                     BackendChoiceListItemView(
                         backendDescription: backendDescription,
