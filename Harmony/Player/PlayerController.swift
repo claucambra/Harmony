@@ -65,7 +65,7 @@ class PlayerController: NSObject, ObservableObject  {
         didSet {
             guard let player else { return }
             player.volume = volume
-            playerCancellable = (player as! AppleMusicPlayer)
+            playerCancellable = player
                 .objectWillChange
                 .receive(on: DispatchQueue.main)
                 .sink { [weak self] _ in

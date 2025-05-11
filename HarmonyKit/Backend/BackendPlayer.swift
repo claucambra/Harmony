@@ -6,8 +6,11 @@
 //
 
 import AVFoundation
+import Combine
 
-public protocol BackendPlayer: ObservableObject {
+public protocol BackendPlayer:
+    ObservableObject where ObjectWillChangePublisher == ObservableObjectPublisher
+{
     var backendTypeId: String? { get }
     var state: AVPlayer.TimeControlStatus { get }
     var song: Song? { get set }
