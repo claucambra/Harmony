@@ -29,6 +29,7 @@ public class AppleMusicPlayer: BackendPlayer {
                 return
             }
             internalPlayer.queue = .init(arrayLiteral: appleMusicSong)
+            time = 0
         }
     }
     public var volume: Float = 100

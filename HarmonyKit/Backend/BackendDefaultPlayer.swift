@@ -26,6 +26,7 @@ public class BackendDefaultPlayer: NSObject, BackendPlayer {
                 return
             }
             internalPlayer.replaceCurrentItem(with: AVPlayerItem(asset: asset))
+            time = 0
         }
     }
     public var volume: Float {
