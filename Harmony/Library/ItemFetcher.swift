@@ -14,11 +14,11 @@ class ItemFetcher<T> where T: PersistentModel {
     actor BackgroundActor {
         func fetchItems(
             predicate: Predicate<T>?, sortDescriptors: [SortDescriptor<T>]
-        ) throws -> [PersistentIdentifier] {
+        ) throws -> Set<PersistentIdentifier> {
             let backgroundContext = ModelContext(modelContainer)
             let descriptor = FetchDescriptor<T>(predicate: predicate, sortBy: sortDescriptors)
             let items = try backgroundContext.fetch(descriptor)
-            return items.map { $0.persistentModelID }
+            return Set(items.map { $0.persistentModelID })
         }
     }
 
@@ -31,7 +31,7 @@ class ItemFetcher<T> where T: PersistentModel {
 
     func getItems(
         predicate: Predicate<T>? = nil, sortDescriptors: [SortDescriptor<T>] = []
-    ) async throws -> [PersistentIdentifier] {
+    ) async throws -> Set<PersistentIdentifier> {
         try await backgroundActor.fetchItems(predicate: predicate, sortDescriptors: sortDescriptors)
     }
 }
