@@ -14,7 +14,10 @@ fileprivate let hundredMsTime = CMTime(seconds: 0.1, preferredTimescale: CMTimeS
 public class BackendDefaultPlayer: NSObject, BackendPlayer {
     private let internalPlayer = AVPlayer()
 
-    public var backend: (any BackendDefaultPlayerCompatible)?
+    public var backend: (any BackendDefaultPlayerCompatible)? {
+        didSet { backendTypeId = backend?.typeDescription.id }
+    }
+    public var backendTypeId: String? = nil
     private(set)public var state: AVPlayer.TimeControlStatus = .paused
     public var song: Song? {
         didSet {

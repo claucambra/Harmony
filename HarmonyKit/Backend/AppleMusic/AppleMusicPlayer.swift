@@ -12,7 +12,10 @@ import MediaPlayer
 public class AppleMusicPlayer: BackendPlayer {
     private let internalPlayer = ApplicationMusicPlayer.shared
 
-    public var backend: AppleMusicBackend?
+    public var backend: AppleMusicBackend? {
+        didSet { backendTypeId = backend?.typeDescription.id }
+    }
+    public var backendTypeId: String? = nil
     public var song: Song? {
         get {
             guard let currentEntryId = internalPlayer.queue.currentEntry?.id else { return nil }

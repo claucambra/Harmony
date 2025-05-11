@@ -8,5 +8,7 @@
 import AVFoundation
 
 public protocol BackendDefaultPlayerCompatible {
+    var typeDescription: BackendDescription { get }
+    
     func assetForSong(_ song: Song) -> AVAsset?
 }

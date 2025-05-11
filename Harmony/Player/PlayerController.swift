@@ -42,15 +42,20 @@ class PlayerController: NSObject, ObservableObject  {
 
             songDuration = currentSong.duration
 
-            guard let player = BackendsModel.shared.playerForSong(currentSong) else {
-                Logger.player.error("Could not acquire player for song \(currentSong.url)")
-                player = nil
-                nowPlayingInfoCenter.nowPlayingInfo = nil
-                return
-            }
+            let backendsModel = BackendsModel.shared
+            if player == nil ||
+               backendsModel.backendForSong(currentSong)?.typeDescription.id != player?.backendTypeId
+            {
+                guard let player = backendsModel.playerForSong(currentSong) else {
+                    Logger.player.error("Could not acquire player for song \(currentSong.url)")
+                    player = nil
+                    nowPlayingInfoCenter.nowPlayingInfo = nil
+                    return
+                }
 
-            self.player = player
-            player.song = currentSong
+                self.player = player
+            }
+            player?.song = currentSong
             updateNowPlayingMetadataInfo()
             Logger.player.info("Set current song: \(currentSong.title) \(currentSong.url)")
         }

@@ -8,6 +8,7 @@
 import AVFoundation
 
 public protocol BackendPlayer: ObservableObject {
+    var backendTypeId: String? { get }
     var state: AVPlayer.TimeControlStatus { get }
     var song: Song? { get set }
     var volume: Float { get set }
