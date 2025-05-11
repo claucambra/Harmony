@@ -126,10 +126,9 @@ struct SongsTable: View {
 
         let songIds = try! await songsFetcher?.getItems(predicate: initialPredicate) ?? []
         let predicate = #Predicate<Song> { songIds.contains($0.persistentModelID) }
-        let sortDescriptor = SortDescriptor<Song>(\.title, order: .reverse)
-        let descriptor = FetchDescriptor<Song>(predicate: predicate, sortBy: [sortDescriptor])
+        let descriptor = FetchDescriptor<Song>(predicate: predicate)
         let fetchedItems = try! modelContext.fetch(descriptor)
-        songs = fetchedItems
+        songs = fetchedItems.sorted(using: sortOrder)
     }
 }
 
