@@ -71,10 +71,10 @@ class PlayerController: NSObject, ObservableObject  {
                 .sink { [weak self] _ in
                     guard let self, let player = self.player else { return }
                     // Only update the states in PlayerController that we depend on the player for.
-                    // States that the player is a slave to (rate, volume, song, etc) should be kept
+                    // States that the player is a slave to (volume, song, etc) should be kept
                     // out.
                     self.timeControlStatus = player.state
-                    if self.scrubState == .inactive {
+                    if self.scrubState != .started {
                         self.currentTime = CMTime(value: CMTimeValue(player.time), timescale: 1)
                     }
                     self.objectWillChange.send()
