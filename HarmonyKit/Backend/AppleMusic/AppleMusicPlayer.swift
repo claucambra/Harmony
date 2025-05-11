@@ -80,4 +80,9 @@ public class AppleMusicPlayer: BackendPlayer {
             }
         }
     }
+
+    public convenience init(backend: AppleMusicBackend) {
+        self.init()
+        self.backend = backend
+    }
 }

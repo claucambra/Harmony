@@ -78,6 +78,11 @@ public class BackendDefaultPlayer: NSObject, BackendPlayer {
         }
     }
 
+    public convenience init(backend: any BackendDefaultPlayerCompatible) {
+        self.init()
+        self.backend = backend
+    }
+
     @objc func playerDidFinishPlayingItemToEnd(notification: Notification) {
         objectWillChange.send()
     }

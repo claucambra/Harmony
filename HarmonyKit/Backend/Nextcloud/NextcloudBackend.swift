@@ -32,7 +32,6 @@ public class NextcloudBackend:
     public let backendId: String
     public var presentation: BackendPresentable
     public var configValues: BackendConfiguration
-    public let player = BackendDefaultPlayer() as (any BackendPlayer)
     private let assetResourceLoaderDelegate: NextcloudAVAssetResourceLoaderDelegate
     private let ncKit: NextcloudKit
     private let ncKitBackground: NKBackground
@@ -89,7 +88,6 @@ public class NextcloudBackend:
 
         super.init()
         
-        (player as! BackendDefaultPlayer).backend = self
         ncKit.setup(delegate: self)
         reconnectWebSocket()
     }
@@ -486,6 +484,10 @@ public class NextcloudBackend:
             (dataTasks, uploadTasks, downloadTasks) in
             dataTasks.forEach { $0.cancel() }
         }
+    }
+
+    public func createPlayer() -> any BackendPlayer {
+        return BackendDefaultPlayer(backend: self)
     }
 
     public func assetForSong(_ song: Song) -> AVAsset? {

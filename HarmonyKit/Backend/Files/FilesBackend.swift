@@ -20,7 +20,6 @@ public class FilesBackend:
     public let typeDescription = filesBackendTypeDescription
     public let backendId: String
     public var configValues: BackendConfiguration = [:]
-    public let player = BackendDefaultPlayer() as (any BackendPlayer)
     public private(set) var presentation: BackendPresentable
     public private(set) var path: URL {
         didSet { Task { @MainActor in self.presentation.config = self.path.path } }
@@ -53,7 +52,7 @@ public class FilesBackend:
             config: "Path: " + localPath.path
         )
         super.init()
-        (player as! BackendDefaultPlayer).backend = self
+        // TODO: Clear the player?
         configurePath()
     }
 
@@ -222,6 +221,10 @@ public class FilesBackend:
     public func cancelScan() {
         Logger.filesBackend.info("Cancelling scan for \(self.backendId)")
         scanTask?.cancel()
+    }
+
+    public func createPlayer() -> any BackendPlayer {
+        return BackendDefaultPlayer(backend: self)
     }
 
     public func fetchSong(_ song: Song) async {

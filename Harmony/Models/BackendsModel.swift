@@ -78,6 +78,6 @@ class BackendsModel: ObservableObject {
     }
 
     func playerForSong(_ song: Song) -> (any BackendPlayer)? {
-        return backends[song.backendId]?.player
+        return backends[song.backendId]?.createPlayer()
     }
 }

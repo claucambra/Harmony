@@ -159,4 +159,8 @@ public class AppleMusicBackend: NSObject, Backend {
     public func cancelScan() {
         return // TODO
     }
+
+    public func createPlayer() -> any BackendPlayer {
+        return AppleMusicPlayer(backend: self)
+    }
 }
