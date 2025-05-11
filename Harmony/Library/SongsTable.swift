@@ -11,12 +11,14 @@ import SwiftData
 import SwiftUI
 
 struct SongsTable: View {
-    @Query(sort: \Song.title) var songs: [Song]
+    @Environment(\.modelContext) private var modelContext
+
+    @State var songs: [Song] = []
     @Binding var searchText: String
     @Binding var showOnlineSongs: Bool
     @State var selection: Set<Song.ID> = []
     @State private var sortOrder = [KeyPathComparator(\Song.title)]
-    @State private var sortedSongs: [Song] = []
+    @State private var songsFetcher: ItemFetcher<Song>?
 
     #if os(iOS)
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -25,36 +27,8 @@ struct SongsTable: View {
     private let isCompact = false
     #endif
 
-    init(searchText: Binding<String>, showOnlineSongs: Binding<Bool>) {
-        _searchText = searchText
-        _showOnlineSongs  = showOnlineSongs
-        let searchTextVal = searchText.wrappedValue
-        let showOnlineSongsVal = showOnlineSongs.wrappedValue
-        let downloadedState = DownloadState.downloaded.rawValue
-        let outdatedDownloadedState = DownloadState.downloadedOutdated.rawValue
-        var predicate: Predicate<Song>
-        if searchTextVal.isEmpty, showOnlineSongsVal {
-            predicate = #Predicate<Song> { !$0.identifier.isEmpty }
-        } else if !searchTextVal.isEmpty, showOnlineSongsVal {
-            predicate = #Predicate<Song> { $0.title.localizedStandardContains(searchTextVal) }
-        } else if searchTextVal.isEmpty, !showOnlineSongsVal {
-            predicate = #Predicate<Song> {
-                $0.downloadState == downloadedState ||
-                $0.downloadState == outdatedDownloadedState
-            }
-        } else {
-            predicate = #Predicate<Song> {
-                $0.title.localizedStandardContains(searchTextVal)
-                && ($0.downloadState == downloadedState ||
-                    $0.downloadState == outdatedDownloadedState)
-            }
-        }
-        _songs = Query(filter: predicate, sort: \Song.title)
-        sortedSongs = songs.sorted(using: sortOrder)
-    }
-
     var body: some View {
-        Table(sortedSongs, selection: $selection, sortOrder: $sortOrder) {
+        Table(songs, selection: $selection, sortOrder: $sortOrder) {
             TableColumn("Title", value: \.title) { song in
                 titleItem(song: song)
             }
@@ -75,9 +49,9 @@ struct SongsTable: View {
         } primaryAction: { ids in
             playSongsFromIds(ids, songs: songs)
         }
-        .onAppear { sortedSongs = songs.sorted(using: sortOrder) }
-        .onChange(of: songs) { sortedSongs = songs.sorted(using: sortOrder) }
-        .onChange(of: sortOrder) { sortedSongs = songs.sorted(using: sortOrder) } // HACK: slow.
+        .task { await loadSongs() }
+        .onChange(of: sortOrder) { Task { await loadSongs() } }
+        .onChange(of: showOnlineSongs) { Task { await loadSongs() } }
         #if !os(macOS)
         .searchable(text: $searchText, placement: .navigationBarDrawer)
         .toolbar {
@@ -121,6 +95,41 @@ struct SongsTable: View {
                 .labelStyle(.iconOnly)
                 .foregroundStyle(.tertiary)
         }
+    }
+
+    private func loadSongs() async {
+        if songsFetcher == nil {
+            songsFetcher = ItemFetcher<Song>(modelContainer: modelContext.container)
+        }
+
+        let searchTextVal = $searchText.wrappedValue
+        let showOnlineSongsVal = $showOnlineSongs.wrappedValue
+        let downloadedState = DownloadState.downloaded.rawValue
+        let outdatedDownloadedState = DownloadState.downloadedOutdated.rawValue
+        var initialPredicate: Predicate<Song>
+        if searchTextVal.isEmpty, showOnlineSongsVal {
+            initialPredicate = #Predicate<Song> { !$0.identifier.isEmpty }
+        } else if !searchTextVal.isEmpty, showOnlineSongsVal {
+            initialPredicate = #Predicate<Song> { $0.title.localizedStandardContains(searchTextVal) }
+        } else if searchTextVal.isEmpty, !showOnlineSongsVal {
+            initialPredicate = #Predicate<Song> {
+                $0.downloadState == downloadedState ||
+                $0.downloadState == outdatedDownloadedState
+            }
+        } else {
+            initialPredicate = #Predicate<Song> {
+                $0.title.localizedStandardContains(searchTextVal)
+                && ($0.downloadState == downloadedState ||
+                    $0.downloadState == outdatedDownloadedState)
+            }
+        }
+
+        let songIds = try! await songsFetcher?.getItems(predicate: initialPredicate) ?? []
+        let predicate = #Predicate<Song> { songIds.contains($0.persistentModelID) }
+        let sortDescriptor = SortDescriptor<Song>(\.title, order: .reverse)
+        let descriptor = FetchDescriptor<Song>(predicate: predicate, sortBy: [sortDescriptor])
+        let fetchedItems = try! modelContext.fetch(descriptor)
+        songs = fetchedItems
     }
 }
 
