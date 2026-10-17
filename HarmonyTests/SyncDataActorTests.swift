@@ -34,14 +34,20 @@ final class SyncDataActorTests: XCTestCase {
     }
 
     func testCleanup_ShouldChangeDownloadStateOfDownloadingSongs() async throws {
-        let song1 = Song(identifier: "1", downloadState: .downloading)
-        XCTAssertNotNil(song1)
+        let songIdentifier = "1"
+        let song1 = Song(identifier: songIdentifier, downloadState: .downloading)
         let mockModelContext = ModelContext(mockModelContainer)
         mockModelContext.insert(song1)
         try mockModelContext.save()
 
         await syncDataActor.cleanup()
-        XCTAssertEqual(song1.downloadState, DownloadState.notDownloaded.rawValue)
+
+        // The actor saves through a different context; refetch the persisted state.
+        let verificationContext = ModelContext(mockModelContainer)
+        let cleanedUpSong = try XCTUnwrap(verificationContext.fetch(
+            FetchDescriptor<Song>(predicate: #Predicate { $0.identifier == songIdentifier })
+        ).first)
+        XCTAssertEqual(cleanedUpSong.downloadState, DownloadState.notDownloaded.rawValue)
     }
 
     func testApprovalForSongScan_WhenSongDoesNotExist() async {
@@ -270,14 +276,21 @@ final class SyncDataActorTests: XCTestCase {
         let child2Identifier = "child2"
         let child2 = Container(identifier: child2Identifier, backendId: "1", versionId: "1")
         await syncDataActor.ingestContainer(child2, parentContainer: activeParent)
-        let activeChild2 = try mockModelContext.fetch(
-            FetchDescriptor<Container>(predicate: #Predicate { $0.identifier == child2Identifier })
-        ).first
-        XCTAssertNotNil(activeChild2)
 
-        XCTAssertEqual(activeChild2?.parentContainer, activeParent)
-        XCTAssertEqual(activeParent?.childContainers.contains(activeChild2!), true)
-        XCTAssertEqual(activeParent?.childContainers.count, 2)
+        let verificationContext = ModelContext(mockModelContainer)
+        let updatedParent = try XCTUnwrap(verificationContext.fetch(
+            FetchDescriptor<Container>(predicate: #Predicate { $0.identifier == parentIdentifier })
+        ).first)
+        let activeChild2 = try XCTUnwrap(verificationContext.fetch(
+            FetchDescriptor<Container>(predicate: #Predicate { $0.identifier == child2Identifier })
+        ).first)
+
+        XCTAssertEqual(activeChild2.parentContainer, updatedParent)
+        XCTAssertEqual(
+            Set(updatedParent.childContainers.map(\.identifier)),
+            [childIdentifier, child2Identifier]
+        )
+        XCTAssertEqual(updatedParent.childContainers.count, 2)
     }
 
     func testClearSongs_BasicDelete() async throws {
