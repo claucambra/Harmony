@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B096E4EAC3FE4B058542D55A /* BackendConfigurationUtilsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 514503A588CB483F9DB39728 /* BackendConfigurationUtilsTests.swift */; };
 		530429832DCF305B004BB598 /* AppleMusicBackend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 530429822DCF305B004BB598 /* AppleMusicBackend.swift */; };
 		530429852DCF30B8004BB598 /* AppleMusicBackendDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 530429842DCF30AE004BB598 /* AppleMusicBackendDescription.swift */; };
 		530429872DCF42EB004BB598 /* BackendPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 530429862DCF42EB004BB598 /* BackendPlayer.swift */; };
@@ -166,6 +167,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		514503A588CB483F9DB39728 /* BackendConfigurationUtilsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendConfigurationUtilsTests.swift; sourceTree = "<group>"; };
 		530429822DCF305B004BB598 /* AppleMusicBackend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleMusicBackend.swift; sourceTree = "<group>"; };
 		530429842DCF30AE004BB598 /* AppleMusicBackendDescription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleMusicBackendDescription.swift; sourceTree = "<group>"; };
 		530429862DCF42EB004BB598 /* BackendPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendPlayer.swift; sourceTree = "<group>"; };
@@ -654,6 +656,7 @@
 		535F1BE12B4A8F1600C78D98 /* HarmonyTests */ = {
 			isa = PBXGroup;
 			children = (
+				514503A588CB483F9DB39728 /* BackendConfigurationUtilsTests.swift */,
 				5388E8A12BCAE9CD00557E8A /* PlayerQueueTests.swift */,
 				5388E89B2BC93EC800557E8A /* SyncDataActorTests.swift */,
 			);
@@ -1032,6 +1035,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5388E8A22BCAE9CD00557E8A /* PlayerQueueTests.swift in Sources */,
+				B096E4EAC3FE4B058542D55A /* BackendConfigurationUtilsTests.swift in Sources */,
 				5388E89C2BC93EC800557E8A /* SyncDataActorTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

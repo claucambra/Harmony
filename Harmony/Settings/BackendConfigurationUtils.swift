@@ -100,8 +100,14 @@ func existingConfigsForBackend(_ backendDescription: BackendDescription) -> [Bac
     return existingConfigsForBackend(descriptionId: backendDescription.id)
 }
 
-func existingConfigsForBackend(descriptionId: String) -> [BackendConfiguration] {
-    guard let existingConfigs = UserDefaults.standard.array(forKey: descriptionId) else {
+func existingConfigsForBackend(
+    descriptionId: String,
+    defaults: UserDefaults = .standard,
+    getPassword: (String, String) -> String? = {
+        getPasswordInKeychain(forBackend: $0, fieldId: $1)
+    }
+) -> [BackendConfiguration] {
+    guard let existingConfigs = defaults.array(forKey: descriptionId) else {
         return []
     }
 
@@ -156,7 +162,7 @@ func existingConfigsForBackend(descriptionId: String) -> [BackendConfiguration] 
                 Logger.config.error("Could not get password field id!")
                 continue
             }
-            let password = getPasswordInKeychain(forBackend: backendId, fieldId: fieldId)
+            let password = getPassword(backendId, fieldId)
             config[fieldId] = password
         }
 
@@ -174,9 +180,19 @@ func existingBackendConfigs() -> [BackendConfiguration] {
     return configs
 }
 
-func deleteBackendConfig(id: String, withBackendDescriptionId descriptionId: String) {
-    let defaults = UserDefaults.standard
-    var backendConfigs = existingConfigsForBackend(descriptionId: descriptionId)
+func deleteBackendConfig(
+    id: String,
+    withBackendDescriptionId descriptionId: String,
+    defaults: UserDefaults = .standard,
+    deletePassword: (String, String) -> Void = {
+        deletePasswordInKeychain(forBackend: $0, withFieldId: $1)
+    },
+    updateBackends: () -> Void = { BackendsModel.shared.updateBackends() }
+) {
+    // Persist stored configurations, never the copies hydrated with Keychain passwords.
+    var backendConfigs = defaults.array(forKey: descriptionId)?.compactMap {
+        $0 as? BackendConfiguration
+    } ?? []
     guard let configIdx = backendConfigs.firstIndex(where: { config in
         config[BackendConfigurationIdFieldKey] as? String == id
     }) else {
@@ -193,11 +209,11 @@ func deleteBackendConfig(id: String, withBackendDescriptionId descriptionId: Str
             Logger.config.error("Could not get password field id!")
             continue
         }
-        deletePasswordInKeychain(forBackend: id, withFieldId: fieldId)
+        deletePassword(id, fieldId)
     }
 
     backendConfigs.remove(at: configIdx)
     defaults.set(backendConfigs, forKey: descriptionId)
     Logger.config.info("Deleted config with id: \(id)")
-    BackendsModel.shared.updateBackends()
+    updateBackends()
 }
